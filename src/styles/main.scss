@@ -1,0 +1,65 @@
+@use "index"as *;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+body {
+    padding-top: 100px;
+    font-family: $font-primary;
+    color: $text-primary;
+
+    background-color: $background-body;
+
+    &::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+
+        background-image:
+            radial-gradient(ellipse at top, $gradient-body-start, transparent),
+            radial-gradient(ellipse at bottom, $gradient-body-end, transparent),
+            url('noisepng.com/100-90-4.png');
+
+        background-color: $background-body;
+        opacity: 0.7;
+    }
+}
+
+.container {
+    max-width: $container-width;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 $spacing-md;
+}
+
+
+input,
+textarea,
+button {
+    border: none;
+    outline: none;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    background: transparent;
+}
+
+button {
+    cursor: pointer;
+}
