@@ -1,42 +1,32 @@
-import { useSelector } from 'react-redux';
 import style from './productCard.module.scss'
 import { FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const ProductCard = () => {
-    const { products } = useSelector((state) => state.products);
-    const productsArr = Object.values(products);
+const ProductCard = (product) => {
+    const { id, title, price, category, thumbnail, rating, reviews } = product;
 
     return (
-        <div className={style.content}>
-            {productsArr.map((product) => {
-                const { id, title, price, category, thumbnail, rating, reviews } = product;
+        <Link to={`/product/${product.id}`} key={id} className={style.card}>
+            <div className={style.card__imageWrapper}>
+                <img src={thumbnail} alt={title} className={style.card__image} />
+                <span className={style.card__category}>{category}</span>
+            </div>
 
-                return (
-                    <Link to={`/product/${product.id}`} key={id} className={style.card}>
-                        <div className={style.card__imageWrapper}>
-                            <img src={thumbnail} alt={title} className={style.card__image} />
-                            <span className={style.card__category}>{category}</span>
-                        </div>
+            <div className={style.card__body}>
+                <h3 className={style.card__title}>{title}</h3>
 
-                        <div className={style.card__body}>
-                            <h3 className={style.card__title}>{title}</h3>
+                <div className={style.card__rating}>
+                    <span>{rating}</span>
+                    <FaStar />
+                    <span className={style.card__ratingCount}>({reviews.length} reviews)</span>
+                </div>
+            </div>
 
-                            <div className={style.card__rating}>
-                                <span>{rating}</span>
-                                <FaStar />
-                                <span className={style.card__ratingCount}>({reviews.length} reviews)</span>
-                            </div>
-                        </div>
-
-                        <div className={style.card__footer}>
-                            <p className={style.card__price}>${price}</p>
-                            <button className={style.card__button}>Add to Cart</button>
-                        </div>
-                    </Link>
-                );
-            })}
-        </div>
+            <div className={style.card__footer}>
+                <p className={style.card__price}>${price}</p>
+                <button className={style.card__button}>Add to Cart</button>
+            </div>
+        </Link>
     );
 };
 
