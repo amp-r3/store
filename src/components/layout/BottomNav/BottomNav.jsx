@@ -44,7 +44,7 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
             return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
         }
 
-    }, [totalItems, itemsPerPage, currentPage]);
+    }, [currentPage, totalPages]);
 
 
     const onNext = () => {
