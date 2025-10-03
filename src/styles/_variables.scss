@@ -97,8 +97,10 @@ $spacing-xl: 2rem !default; // 32px
 $spacing-xxl: 3rem !default; // 48px
 
 // --- Sizing ---
-$loader-size-md: 56px !default;
-$loader-border-width: 7px !default;
+$loader-size-sm: 1.5rem !default; // 24px
+$loader-size-md: 3.5rem !default; // 56px
+$loader-border-width-sm: 0.1875rem !default; // 3px
+$loader-border-width: 0.4375rem !default; // 7px
 
 // --- Border Radius ---
 $radius-sm: 8px !default;

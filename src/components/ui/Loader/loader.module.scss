@@ -1,6 +1,5 @@
-@use '../../../styles/index'  as *;
+@use '../../../styles/index' as *;
 
-// Анимация вращения
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -11,7 +10,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20rem;
+  padding: 20rem; 
+}
+
+.spinnerWrapper--small {
+  padding: $spacing-sm; 
 }
 
 .spinner {
@@ -29,4 +32,16 @@
     #000 0);
 
   animation: spin $transition-slow linear infinite;
+}
+
+.spinner--small {
+  width: $loader-size-sm;
+  height: $loader-size-sm;
+
+  mask-image: radial-gradient(farthest-side,
+    transparent calc(100% - #{$loader-border-width-sm}),
+    #000 0);
+  -webkit-mask-image: radial-gradient(farthest-side,
+    transparent calc(100% - #{$loader-border-width-sm}),
+    #000 0);
 }

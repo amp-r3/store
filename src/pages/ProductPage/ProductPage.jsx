@@ -58,7 +58,7 @@ const ProductPage = () => {
     }
 
     if (status === 'succeeded' && product) {
-        const { id, title, price, description, category, thumbnail, rating, reviews } = product;
+        const { id, title, price, description, category, images, rating, reviews } = product;
 
         return (
             <main className={style['product-page']}>
@@ -73,7 +73,7 @@ const ProductPage = () => {
                     <div className={style['product-page__layout']}>
                         <div className={style['product-page__image-column']}>
                             <div className={style['product-page__image-wrapper']}>
-                                <img src={thumbnail} alt={title} className={style['product-page__image']} />
+                                <img src={images[0]} alt={title} className={style['product-page__image']} />
                             </div>
                         </div>
 
