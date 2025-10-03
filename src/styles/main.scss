@@ -19,7 +19,7 @@ body {
     padding-top: 100px;
     font-family: $font-primary;
     color: $text-primary;
-
+    scroll-behavior: smooth;
     background-color: $background-body;
 
     &::before {

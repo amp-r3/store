@@ -1,21 +1,21 @@
 @use '../../styles/index'as *;
 
-.productPage {
+.product-page {
     padding: $spacing-xxl 0;
     min-height: 100vh;
 }
 
-.container {
+.product-page__container {
     max-width: $container-width;
     margin: 0 auto;
     padding: 0 $spacing-lg;
 }
 
-.backLinkWrapper {
+.product-page__back-wrapper {
     margin-bottom: $spacing-lg;
 }
 
-.backLink {
+.product-page__back-link {
     display: inline-flex;
     align-items: center;
     gap: $spacing-xs;
@@ -29,7 +29,7 @@
     }
 }
 
-.productLayout {
+.product-page__layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: $spacing-xxl;
@@ -39,13 +39,13 @@
     }
 }
 
-.imageColumn {
+.product-page__image-column {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.imageWrapper {
+.product-page__image-wrapper {
     width: 100%;
     padding: $spacing-xl;
     overflow: hidden;
@@ -56,32 +56,20 @@
     justify-content: center;
     aspect-ratio: 1 / 1;
     background: $background-image-holder;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center,
-                transparent 50%,
-                rgba($primary-accent, 0.03) 100%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity $transition-base ease;
-    }
 }
 
-.productImage {
+.product-page__image {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
 }
 
-.detailsColumn {
+.product-page__details-column {
     display: flex;
     flex-direction: column;
 }
 
-.category {
+.product-page__category {
     display: inline-block;
     background-color: rgba($primary-accent, 0.1);
     color: $primary-accent-light;
@@ -95,7 +83,7 @@
     align-self: flex-start;
 }
 
-.title {
+.product-page__title {
     font-size: $fs-xxl;
     font-weight: $fw-bold;
     color: $text-primary;
@@ -103,7 +91,7 @@
     line-height: $lh-tight;
 }
 
-.rating {
+.product-page__rating {
     display: flex;
     align-items: center;
     gap: $spacing-xs;
@@ -111,13 +99,13 @@
     color: $rating-color;
 }
 
-.ratingValue {
+.product-page__rating-value {
     font-size: $fs-md;
     font-weight: $fw-bold;
     color: $text-primary;
 }
 
-.ratingCount {
+.product-page__rating-count {
     font-size: $fs-base;
     color: $text-secondary;
     text-decoration: none;
@@ -130,14 +118,14 @@
     }
 }
 
-.description {
+.product-page__description {
     font-size: $fs-base;
     color: $text-muted;
     line-height: $lh-relaxed;
     flex-grow: 1;
 }
 
-.purchaseBox {
+.product-page__purchase-box {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -147,13 +135,13 @@
     border-top: 1px solid $border-color;
 }
 
-.price {
+.product-page__price {
     font-size: $fs-xxl;
     font-weight: $fw-bold;
     color: $primary-accent;
 }
 
-.addToCartButton {
+.product-page__add-to-cart-btn {
     display: inline-flex;
     align-items: center;
     gap: $spacing-sm;
@@ -165,6 +153,7 @@
     font-size: $fs-md;
     font-weight: $fw-semibold;
     transition: $transition-base;
+    cursor: pointer;
 
     &:hover {
         background-color: $primary-accent-dark;
@@ -175,4 +164,71 @@
     &:active {
         transform: scale(1);
     }
+}
+
+.product-page__reviews {
+    margin-top: $spacing-xxl;
+    padding-top: $spacing-xl;
+    border-top: 1px solid $border-color;
+}
+
+.product-page__reviews-title {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    font-size: $fs-xl;
+    font-weight: $fw-bold;
+    color: $text-primary;
+    margin-bottom: $spacing-lg;
+}
+
+.product-page__reviews-list {
+    display: grid;
+    gap: $spacing-lg;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+.product-page__review-card {
+    background: $glass-background;
+    border: 1px solid $glass-border;
+    backdrop-filter: $glass-backdrop-blur;
+    padding: $spacing-lg;
+    border-radius: $radius-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.product-page__review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-xs;
+}
+
+.product-page__review-author {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    color: $text-primary;
+}
+
+.product-page__review-rating {
+    display: flex;
+    gap: $spacing-xxs;
+    color: $rating-color;
+}
+
+.product-page__review-meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $fs-sm;
+    color: $text-muted;
+}
+
+.product-page__review-comment {
+    color: $text-secondary;
+    line-height: $lh-normal;
+    margin: 0;
+    padding-top: $spacing-sm;
 }
