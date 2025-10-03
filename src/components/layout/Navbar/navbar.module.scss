@@ -1,4 +1,20 @@
-@use '../../../styles/index.scss' as *;
+@use '../../../styles/index.scss'as *;
+
+// Анимация логотипа
+@keyframes gradient-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 .nav {
     display: flex;
     align-items: center;
@@ -28,18 +44,24 @@
     }
 
     &__logo {
-        background: linear-gradient(130deg, $gradient-start, $gradient-mid-1, $gradient-mid-2, $gradient-end);
+        background: linear-gradient(130deg,
+                $gradient-start,
+                $gradient-mid-1,
+                $gradient-mid-2,
+                $gradient-end);
         background-size: 300% 300%;
-        background-position: 0% 50%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: text;
         font-size: $fs-logo;
         font-weight: $fw-bold;
-        transition: $transition-slow;
-        margin-right: $spacing-lg;  
+        margin-right: $spacing-lg;
+        transition: $transition-base;
+
+        animation: gradient-flow 3s ease infinite;
 
         &:hover {
-            background-position: 100% 50%;
+            transform: scale(1.05);
         }
     }
 
@@ -73,7 +95,7 @@
     }
 
     &__search {
-        background-color: rgba(0, 0, 0, 0.2); 
+        background-color: rgba(0, 0, 0, 0.2);
         border-radius: $radius-input;
         border: 1px solid transparent;
         width: 150px;
@@ -120,7 +142,7 @@
 
     &__cart {
         font-size: $fs-icon-lg;
-        width: 42px; 
+        width: 42px;
         height: 42px;
         cursor: pointer;
         padding: 0;

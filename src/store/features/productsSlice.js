@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { fetchProducts } from '../../api/productsApi'
+import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit'
+import { fetchProducts, fetchProductsById } from '../../api/productsApi'
 
 
 export const getProducts = createAsyncThunk('products/getProducts',
@@ -7,7 +7,7 @@ export const getProducts = createAsyncThunk('products/getProducts',
     try {
       const response = await fetchProducts(limit)
       if (response) {
-        const {products} = response.data
+        const { products } = response.data
         console.log(products);
         return products
       }
@@ -21,9 +21,28 @@ export const getProducts = createAsyncThunk('products/getProducts',
     }
   }
 )
+
+export const getProductsById = createAsyncThunk('products/getProductsById',
+  async (product, { rejectWithValue }) => {
+    try {
+      const response = await fetchProductsById(product)
+      if (response) {
+        const product = response.data
+        return product
+      }
+      else {
+        throw Error('Ошибка HTTP!')
+      }
+    } catch (error) {
+      console.error('Не удалось получить данные!', error);
+      return rejectWithValue(error)
+    }
+  }
+)
+
 const initialState = {
-  products: null,
-  status: null,
+  products: [],
+  status: 'idle',
   error: null
 }
 
@@ -32,18 +51,37 @@ export const productsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getProducts.pending, (state) => {
-      state.error = null;
-      state.status = 'loading'
-    })
+    const thunks = [getProducts, getProductsById];
+
+    // builder для fullfiled отдельный для каждого из thunk'ов
     builder.addCase(getProducts.fulfilled, (state, action) => {
-      state.products = action.payload;
-      state.status = 'succeeded'
-    })
-    builder.addCase(getProducts.rejected, (state, action) => {
+      state.status = 'succeeded';
+      state.products = action.payload
+    });
+
+    builder.addCase(getProductsById.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      const newProduct = action.payload;
+
+      const existingProduct = state.products.find(p => p.id === newProduct.id);
+
+      if (!existingProduct) {
+        state.products.push(newProduct)
+      }
+    });
+    // А для pending и rejected общий
+
+    builder.addMatcher(isPending(...thunks), (state) => {
+      state.error = null;
+      state.status = 'loading';
+    });
+
+    builder.addMatcher(isRejected(...thunks), (state, action) => {
       state.error = action.payload.message;
-      state.status = 'failed'
-    })
+      state.status = 'failed';
+    });
+
+
   }
 })
 

@@ -63,3 +63,45 @@ button {
 button {
     cursor: pointer;
 }
+
+// =============================================
+//            CUSTOM SCROLLBAR STYLES
+// =============================================
+
+// --- Webkit browsers (Chrome, Safari, Edge) ---
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: $background-component;
+    border-radius: $radius-pill;
+    margin: $spacing-xs;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+            $primary-accent-light,
+            $primary-accent);
+    border-radius: $radius-pill;
+    border: 2px solid $background-component;
+    transition: background $transition-base ease;
+
+    &:hover {
+        background: linear-gradient(180deg,
+                $primary-accent,
+                $primary-accent-dark);
+        box-shadow: $shadow-accent-sm;
+    }
+
+    &:active {
+        background: $primary-accent-dark;
+    }
+}
+
+// --- Firefox ---
+* {
+    scrollbar-width: thin;
+    scrollbar-color: $primary-accent $background-component;
+}

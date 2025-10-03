@@ -9,3 +9,7 @@ export const fetchProducts = (page) => {
     const skip = (page - 1) * limit;
     return apiClient.get(`/products?limit=${limit}&skip=${skip}`)
 }
+
+export const fetchProductsById = (product) => {
+    return apiClient.get(`/products/${product}`)
+}

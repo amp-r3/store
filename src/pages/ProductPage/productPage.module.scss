@@ -1,4 +1,4 @@
-@use '../../styles/index' as *;
+@use '../../styles/index'as *;
 
 .productPage {
     padding: $spacing-xxl 0;
@@ -48,12 +48,26 @@
 .imageWrapper {
     width: 100%;
     padding: $spacing-xl;
-    background-color: $background-image-holder;
+    overflow: hidden;
     border-radius: $radius-xl;
+    border: 1px solid $border-color-light;
     display: flex;
     align-items: center;
     justify-content: center;
     aspect-ratio: 1 / 1;
+    background: $background-image-holder;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center,
+                transparent 50%,
+                rgba($primary-accent, 0.03) 100%);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity $transition-base ease;
+    }
 }
 
 .productImage {

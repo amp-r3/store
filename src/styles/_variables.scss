@@ -21,11 +21,13 @@ $text-muted: #adb5bd !default;
 $background-body: #121212 !default;
 $background-component: #1e1e24 !default;
 $background-glass-base: #1e1e2d !default;
-$background-image-holder: #ffffff !default;
+$background-image-holder: linear-gradient(135deg,
+    rgba(138, 120, 255, 0.08),
+    rgba(164, 150, 255, 0.04)) !default;
 
 // --- Body Gradients ---
 $gradient-body-start: #3a2562 !default;
-$gradient-body-end: #2c4a6b !default; 
+$gradient-body-end: #2c4a6b !default;
 
 // --- Border Colors ---
 $border-color: rgba(255, 255, 255, 0.1) !default;
@@ -46,7 +48,8 @@ $gradient-end: #667eea !default;
 // ---------------------------------------------
 
 // --- Font Family ---
-$font-primary: 'Inter', sans-serif !default;
+$font-primary: 'Inter',
+sans-serif !default;
 
 // --- Font Sizes (fs) ---
 $fs-sm: 0.8rem !default;
@@ -80,13 +83,13 @@ $letter-spacing-wide: 0.5px !default;
 // ---------------------------------------------
 
 // --- Spacing Scale (используйте для padding, margin, gap) ---
-$spacing-xxs: 0.25rem !default;  // 4px 
-$spacing-xs: 0.5rem !default;   // 8px
-$spacing-sm: 0.75rem !default;  // 12px
-$spacing-md: 1rem !default;     // 16px
-$spacing-lg: 1.5rem !default;   // 24px
-$spacing-xl: 2rem !default;     // 32px
-$spacing-xxl: 3rem !default;    // 48px
+$spacing-xxs: 0.25rem !default; // 4px 
+$spacing-xs: 0.5rem !default; // 8px
+$spacing-sm: 0.75rem !default; // 12px
+$spacing-md: 1rem !default; // 16px
+$spacing-lg: 1.5rem !default; // 24px
+$spacing-xl: 2rem !default; // 32px
+$spacing-xxl: 3rem !default; // 48px
 
 // --- Sizing ---
 $loader-size-md: 56px !default;
@@ -122,8 +125,8 @@ $shadow-text-accent: 0 0 10px rgba($primary-accent, 0.5) !default;
 
 // --- Transitions ---
 $transition-base: 0.3s !default;
-$transition-fast: 0.2s !default; 
-$transition-slow: 0.5s !default; 
+$transition-fast: 0.2s !default;
+$transition-slow: 0.5s !default;
 
 // --- Filters ---
 $backdrop-blur: blur(10px) !default;
