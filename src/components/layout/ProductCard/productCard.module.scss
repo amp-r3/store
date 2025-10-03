@@ -1,4 +1,4 @@
-@use '../../../styles/index' as *;
+@use '../../../styles/index'as *;
 
 .card {
     background-color: $background-component;
@@ -17,11 +17,26 @@
         box-shadow: $shadow-accent;
     }
 
+    // Контейнер изображения (родительский элемент для img)
     &__imageWrapper {
         position: relative;
         width: 100%;
         padding-top: 100%;
-        background-color: $background-image-holder;
+        border-radius: $radius-lg $radius-lg 0 0;
+        overflow: hidden;
+
+        background: linear-gradient(135deg,
+                rgba($primary-accent-light, 0.1),
+                rgba($primary-accent, 0.05));
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center,
+                    transparent 40%,
+                    rgba($primary-accent, 0.05) 100%);
+            pointer-events: none;
+        }
     }
 
     &__image {
@@ -32,6 +47,11 @@
         height: 100%;
         object-fit: contain;
         padding: $spacing-lg;
+        transition: transform $transition-base ease;
+
+        .card:hover & {
+            transform: scale(1.05);
+        }
     }
 
     &__category {

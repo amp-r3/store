@@ -5,25 +5,37 @@ import { useEffect, useMemo } from 'react';
 import Loader from '../../components/ui/Loader/Loader';
 import ErrorView from '../ErrorView/ErrorView';
 import { FaStar, FaShoppingCart, FaChevronLeft } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { getProductsById } from '../../store/features/productsSlice';
 
 const ProductPage = () => {
     const { products, status } = useSelector((state) => state.products);
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const product = useMemo(() => {
-        if (status !== 'succeeded') {
+        if (!products) {
             return null
         }
         const productsArr = Object.values(products);
         return productsArr.find((elem) => elem.id === Number(id));
-    }, [status, products, id])
+    }, [ products, id])
+
     useEffect(() => {
+        if (product) {
+            return;
+        }
+
         if (status === 'succeeded' && !product) {
             navigate('/404', { replace: true });
+            return;
         }
-    }, [product, navigate, status]);
 
+        if (!product && status !== 'loading') {
+            dispatch(getProductsById(id))
+        }
+    }, [product, navigate, status, dispatch, id]);
 
 
     if (status === 'loading') {
@@ -80,7 +92,7 @@ const ProductPage = () => {
         );
     }
 
-    return null;
+    return <Loader />;
 };
 
 export default ProductPage;
