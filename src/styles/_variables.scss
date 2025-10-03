@@ -43,6 +43,11 @@ $gradient-mid-1: #c2e9fb !default;
 $gradient-mid-2: #89f7fe !default;
 $gradient-end: #667eea !default;
 
+// --- Glass Effect ---
+$glass-background: rgba(30, 30, 45, 0.7) !default;
+$glass-border: rgba(255, 255, 255, 0.15) !default;
+$glass-backdrop-blur: blur(12px) !default;
+
 // ---------------------------------------------
 // # ТИПОГРАФИКА (TYPOGRAPHY)
 // ---------------------------------------------

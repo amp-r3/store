@@ -1,23 +1,25 @@
 @use '../../../styles/index'as *;
 
 .card {
-    background-color: $background-component;
+    background: $glass-background;
+    backdrop-filter: $glass-backdrop-blur;
+    -webkit-backdrop-filter: $glass-backdrop-blur;
     border-radius: $radius-lg;
     overflow: hidden;
     color: $text-primary;
     display: flex;
     flex-direction: column;
     max-width: 320px;
-    border: 1px solid $border-color;
+    border: 1px solid $glass-border;
     transition: transform $transition-base, box-shadow $transition-base;
-    box-shadow: $shadow-card;
+    box-shadow: $shadow-card,
+        0 8px 32px 0 rgba(31, 38, 135, 0.37);
     cursor: pointer;
 
     &:hover {
         box-shadow: $shadow-accent;
     }
 
-    // Контейнер изображения (родительский элемент для img)
     &__imageWrapper {
         position: relative;
         width: 100%;
@@ -28,6 +30,7 @@
         background: linear-gradient(135deg,
                 rgba($primary-accent-light, 0.1),
                 rgba($primary-accent, 0.05));
+
         &::before {
             content: '';
             position: absolute;
