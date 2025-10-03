@@ -1,11 +1,18 @@
-import { NavLink, Link } from 'react-router';
-import style from './navbar.module.scss'
-import { IoSearchSharp } from "react-icons/io5";
-import { IoMdCart } from "react-icons/io";
-import { useEffect, useRef } from 'react';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import style from './navbar.module.scss';
+import { IoSearchSharp, IoCartOutline, IoClose } from "react-icons/io5";
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from '../../ui/Loader/Loader';
+import { clearSearch, getProductsBySearch } from '../../../store/features/productsSlice';
 
 const Navbar = () => {
   const navRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { status } = useSelector((state) => state.products);
+
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +29,22 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const isLoading = status === 'loading';
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    dispatch(getProductsBySearch(searchQuery));
+    navigate('/');
+  };
+
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      dispatch(clearSearch());
+    }
+  }, [searchQuery, dispatch]);
+
   return (
     <header className="container">
       <nav ref={navRef} className={style.nav}>
@@ -34,22 +57,36 @@ const Navbar = () => {
             <NavLink to="/" className={style.nav__link} end>Main</NavLink>
           </li>
         </ul>
-        <div className={style.nav__actions}>
-          <button className={style.nav__cart}>
-            <IoMdCart />
+        <form onSubmit={handleSearch} className={style.nav__actions}>
+          <button type='button' className={style.nav__cart}>
+            <IoCartOutline />
           </button>
-          <input
-            className={style.nav__search}
-            type="text"
-            placeholder="Search..."
-          />
-          <button className={style.nav__btn} aria-label="Search">
-            <IoSearchSharp />
+          <div className={style.nav__searchContainer}>
+            <input
+              className={style.nav__search}
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button
+              type="button"
+              className={`${style.nav__clearBtn} ${searchQuery ? style.visible : ''}`}
+              onClick={()=>{setSearchQuery('')}}
+              aria-label="Clear search"
+            >
+              <IoClose />
+            </button>
+          </div>
+          <button type='submit' className={style.nav__btn} aria-label="Search" disabled={isLoading}>
+            {
+              isLoading ? <Loader size={'small'} /> : <IoSearchSharp />
+            }
           </button>
-        </div>
+        </form>
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

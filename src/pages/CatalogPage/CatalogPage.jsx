@@ -9,22 +9,29 @@ import { useEffect } from 'react'
 import { getProducts } from '../../store/features/productsSlice'
 import { useSearchParams } from 'react-router-dom'
 const CatalogPage = () => {
-  const { products, status } = useSelector((state) => state.products)
+  const { products, status, searchResults } = useSelector((state) => state.products)
   const [searchParams, setSearchParams] = useSearchParams();
+  const isSearchActive = searchResults !== null;
+  const dispatch = useDispatch()
 
   const currentPage = Number(searchParams.get('page')) || 1;
+
 
   const setCurrentPage = (newPage) => {
     setSearchParams({ page: newPage });
   };
 
 
-  const dispatch = useDispatch()
-  useEffect(
-    () => {
-      dispatch(getProducts(currentPage))
-    },
-    [dispatch, currentPage])
+  useEffect(() => {
+    if (!isSearchActive) {
+      dispatch(getProducts(currentPage));
+    }
+  }, [dispatch, currentPage, isSearchActive]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
+
   if (status === 'loading') {
     return (
       <Loader />
@@ -34,21 +41,34 @@ const CatalogPage = () => {
     return (<ErrorView />)
   }
   if (status === 'succeeded') {
-    const productsArr = Object.values(products);
+    const productsToDisplay = isSearchActive ? searchResults : products
     return (
       <main className='container'>
         <div className={style.content}>
           {
-            productsArr.map((product) => (
+            productsToDisplay.map((product) => (
               <ProductCard key={product.id} {...product} />
             ))
           }
+          {
+            isSearchActive && productsToDisplay.length === 0 && (
+              <div>
+                <h3>По вашему запросу ничего не найдено</h3>
+                <p>Попробуйте изменить поисковый запрос.</p>
+              </div>
+            )
+          }
         </div>
-        <BottomNav
-          totalItems={100}
-          currentPage={currentPage}
-          itemsPerPage={12}
-          setCurrentPage={setCurrentPage} />
+        {
+          !isSearchActive && (
+            <BottomNav
+              totalItems={100}
+              currentPage={currentPage}
+              itemsPerPage={12}
+              setCurrentPage={setCurrentPage}
+            />
+          )
+        }
       </main>
     )
   }

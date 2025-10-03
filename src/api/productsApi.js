@@ -13,3 +13,7 @@ export const fetchProducts = (page) => {
 export const fetchProductsById = (product) => {
     return apiClient.get(`/products/${product}`)
 }
+
+export const searchProducts = (query) => {
+    return apiClient.get(`/products/search?q=${query}`)
+}

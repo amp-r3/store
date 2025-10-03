@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit'
-import { fetchProducts, fetchProductsById } from '../../api/productsApi'
+import { fetchProducts, fetchProductsById, searchProducts } from '../../api/productsApi'
 
-
+// Ассинхронный запрос для получения массива продуктов
 export const getProducts = createAsyncThunk('products/getProducts',
   async (limit, { rejectWithValue }) => {
     try {
@@ -21,7 +21,7 @@ export const getProducts = createAsyncThunk('products/getProducts',
     }
   }
 )
-
+// Ассинхронный запрос для полученения одного объекта по его id
 export const getProductsById = createAsyncThunk('products/getProductsById',
   async (product, { rejectWithValue }) => {
     try {
@@ -39,9 +39,29 @@ export const getProductsById = createAsyncThunk('products/getProductsById',
     }
   }
 )
+// Ассинхронный запрос для получения массива продуктов соответствующих запросу
+export const getProductsBySearch = createAsyncThunk('products/getProductsBySearch',
+  async (query, { rejectWithValue }) => {
+    try {
+      const response = await searchProducts(query)
+      if (response) {
+        const { products } = response.data
+        console.log(products);
+        return products
+      }
+      else {
+        throw Error('Ошибка HTTP!')
+      }
+    } catch (error) {
+      console.error('Не удалось получить данные!', error);
+      return rejectWithValue(error)
+    }
+  }
+)
 
 const initialState = {
   products: [],
+  searchResults: null,
   status: 'idle',
   error: null
 }
@@ -49,9 +69,13 @@ const initialState = {
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    clearSearch(state) {
+      state.searchResults = null
+    }
+  },
   extraReducers: (builder) => {
-    const thunks = [getProducts, getProductsById];
+    const thunks = [getProducts, getProductsById, getProductsBySearch];
 
     // builder для fullfiled отдельный для каждого из thunk'ов
     builder.addCase(getProducts.fulfilled, (state, action) => {
@@ -69,6 +93,11 @@ export const productsSlice = createSlice({
         state.products.push(newProduct)
       }
     });
+
+    builder.addCase(getProductsBySearch.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.searchResults = action.payload
+    })
     // А для pending и rejected общий
 
     builder.addMatcher(isPending(...thunks), (state) => {
@@ -84,5 +113,7 @@ export const productsSlice = createSlice({
 
   }
 })
+
+export const { clearSearch } = productsSlice.actions
 
 export default productsSlice.reducer

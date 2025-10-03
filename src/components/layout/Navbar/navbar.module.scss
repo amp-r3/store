@@ -94,12 +94,18 @@
         gap: $spacing-sm;
     }
 
+    &__searchContainer {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
     &__search {
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: $radius-input;
         border: 1px solid transparent;
         width: 150px;
-        padding: $spacing-xs $spacing-md;
+        padding: $spacing-xs $spacing-xl $spacing-xs $spacing-md;
         font-size: $fs-sm;
         color: $text-inverse;
         transition: $transition-base;
@@ -114,6 +120,37 @@
 
         &::placeholder {
             color: $text-muted;
+        }
+    }
+
+    &__clearBtn {
+        position: absolute;
+        right: $spacing-sm;
+        top: 50%;
+        background: transparent;
+        border: none;
+        color: $text-muted;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: $spacing-xxs;
+        font-size: $fs-md;
+
+        opacity: 0;
+        transform: translateY(-50%) scale(0.7);
+        pointer-events: none; 
+
+        transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+
+        &:hover {
+            color: $text-inverse;
+        }
+
+        &.visible {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+            pointer-events: auto;
         }
     }
 
@@ -138,6 +175,25 @@
 
     &__btn {
         padding: $spacing-sm;
+
+        &:disabled {
+            cursor: wait;
+            padding: 0;
+            transition: none;
+            transform: scale(0.9);
+
+            &:hover {
+                background-color: transparent;
+                color: $text-muted;
+                border-color: $border-color;
+            }
+
+            .spinnerWrapper,
+            .spinnerWrapper--small {
+                padding: 0;
+            }
+
+        }
     }
 
     &__cart {

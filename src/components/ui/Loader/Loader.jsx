@@ -1,10 +1,14 @@
-import style from './loader.module.scss'
-const Loader = () => {
-    return (
-        <div className={style.spinnerWrapper}>
-            <div className={style.spinner}></div>
-        </div>
-    )
-}
+import style from './loader.module.scss';
 
-export default Loader
+const Loader = ({ size = 'md' }) => {
+    const wrapperClass = `${style.spinnerWrapper} ${style[`spinnerWrapper--${size}`] || ''}`;
+    const spinnerClass = `${style.spinner} ${style[`spinner--${size}`] || ''}`;
+
+    return (
+        <div className={wrapperClass}>
+            <div className={spinnerClass}></div>
+        </div>
+    );
+};
+
+export default Loader;
