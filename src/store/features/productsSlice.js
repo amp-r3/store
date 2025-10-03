@@ -3,9 +3,9 @@ import { fetchProducts, fetchProductsById, searchProducts } from '../../api/prod
 
 // Ассинхронный запрос для получения массива продуктов
 export const getProducts = createAsyncThunk('products/getProducts',
-  async (limit, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const response = await fetchProducts(limit)
+      const response = await fetchProducts(params)
       if (response) {
         const { products } = response.data
         console.log(products);
