@@ -8,11 +8,16 @@ import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { getProducts } from '../../store/features/productsSlice'
 import { useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
+import { sortingOptions } from '../../utils/sortingOptions'
+import SortPanel from '../../components/features/SortPanel/SortPanel'
 const CatalogPage = () => {
   const { products, status, searchResults } = useSelector((state) => state.products)
   const [searchParams, setSearchParams] = useSearchParams();
   const isSearchActive = searchResults !== null;
   const dispatch = useDispatch()
+
+  const [currentSortId, setCurrentSortId] = useState('default');
 
   const currentPage = Number(searchParams.get('page')) || 1;
 
@@ -24,9 +29,17 @@ const CatalogPage = () => {
 
   useEffect(() => {
     if (!isSearchActive) {
-      dispatch(getProducts(currentPage));
+      const activeSortOption = sortingOptions.find(opt => opt.id === currentSortId);
+
+      const params = {
+        page: currentPage,
+        sortBy: activeSortOption.sortBy,
+        order: activeSortOption.order
+      };
+
+      dispatch(getProducts(params));
     }
-  }, [dispatch, currentPage, isSearchActive]);
+  }, [dispatch, currentPage, isSearchActive, currentSortId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -44,6 +57,13 @@ const CatalogPage = () => {
     const productsToDisplay = isSearchActive ? searchResults : products
     return (
       <main className='container'>
+        {!isSearchActive && (
+          <SortPanel
+            options={sortingOptions}
+            currentSort={currentSortId}
+            onSortChange={setCurrentSortId}
+          />
+        )}
         <div className={style.content}>
           {
             productsToDisplay.map((product) => (
@@ -62,7 +82,7 @@ const CatalogPage = () => {
         {
           !isSearchActive && (
             <BottomNav
-              totalItems={100}
+              totalItems={200}
               currentPage={currentPage}
               itemsPerPage={12}
               setCurrentPage={setCurrentPage}
