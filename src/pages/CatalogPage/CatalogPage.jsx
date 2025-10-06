@@ -59,9 +59,9 @@ const CatalogPage = () => {
       <main className='container'>
         {!isSearchActive && (
           <SortPanel
-            options={sortingOptions}
-            currentSort={currentSortId}
-            onSortChange={setCurrentSortId}
+          options={sortingOptions}
+          currentSort={currentSortId}
+          onSortChange={setCurrentSortId}
           />
         )}
         <div className={style.content}>
@@ -70,23 +70,23 @@ const CatalogPage = () => {
               <ProductCard key={product.id} {...product} />
             ))
           }
-          {
-            isSearchActive && productsToDisplay.length === 0 && (
-              <div>
-                <h3>По вашему запросу ничего не найдено</h3>
-                <p>Попробуйте изменить поисковый запрос.</p>
-              </div>
-            )
-          }
         </div>
         {
           !isSearchActive && (
             <BottomNav
-              totalItems={200}
-              currentPage={currentPage}
-              itemsPerPage={12}
-              setCurrentPage={setCurrentPage}
+            totalItems={200}
+            currentPage={currentPage}
+            itemsPerPage={12}
+            setCurrentPage={setCurrentPage}
             />
+          )
+        }
+        {
+          isSearchActive && productsToDisplay.length === 0 && (
+            <div>
+              <h3>По вашему запросу ничего не найдено</h3>
+              <p>Попробуйте изменить поисковый запрос.</p>
+            </div>
           )
         }
       </main>

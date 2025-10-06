@@ -63,6 +63,7 @@ const initialState = {
   products: [],
   searchResults: null,
   status: 'idle',
+  searchStatus: 'idle',
   error: null
 }
 
@@ -95,16 +96,21 @@ export const productsSlice = createSlice({
     });
 
     builder.addCase(getProductsBySearch.fulfilled, (state, action) => {
-      state.status = 'succeeded';
+      state.searchStatus = 'succeeded';
       state.searchResults = action.payload
     })
-    // А для pending и rejected общий
+    // penidng отдельный для getProductsBySearch
 
-    builder.addMatcher(isPending(...thunks), (state) => {
+    builder.addCase(getProductsBySearch.pending, (state) => {
+      state.error = null;
+      state.searchStatus = 'loading';
+    })
+    // Для pending общий у getProducts и getProductsById
+    builder.addMatcher(isPending(getProducts, getProductsById), (state) => {
       state.error = null;
       state.status = 'loading';
-    });
-
+    })
+    // rejected общий у всех
     builder.addMatcher(isRejected(...thunks), (state, action) => {
       state.error = action.payload.message;
       state.status = 'failed';
