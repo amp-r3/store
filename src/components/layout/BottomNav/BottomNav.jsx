@@ -1,51 +1,17 @@
-import { useMemo } from 'react';
 import style from './bottomNav.module.scss';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { usePagination, DOTS } from '../../../hooks/usePagination';
 
-const DOTS = '...';
 
 const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) => {
+    
+    const paginationRange = usePagination({
+        totalItems,
+        currentPage,
+        itemsPerPage,
+    })
+    
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    const paginationRange = useMemo(() => {
-        const totalPageNumbers = 4;
-
-        // Случай 1: Если страниц меньше, чем мы хотим отображать, показываем все
-        if (totalPages <= totalPageNumbers) {
-            return Array.from({ length: totalPages }, (_, i) => i + 1);
-        }
-
-        const leftSiblingIndex = Math.max(currentPage - 1, 1);
-        const rightSiblingIndex = Math.min(currentPage + 1, totalPages);
-
-        const shouldShowLeftDots = leftSiblingIndex > 2;
-        const shouldShowRightDots = rightSiblingIndex < totalPages - 2;
-
-        const firstPageIndex = 1;
-        const lastPageIndex = totalPages;
-
-        // Случай 2: Показываем многоточие только справа
-        if (!shouldShowLeftDots && shouldShowRightDots) {
-            let leftItemCount = 5;
-            let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1);
-            return [...leftRange, DOTS, lastPageIndex];
-        }
-
-        // Случай 3: Показываем многоточие только слева
-        if (shouldShowLeftDots && !shouldShowRightDots) {
-            let rightItemCount = 5;
-            let rightRange = Array.from({ length: rightItemCount }, (_, i) => totalPages - rightItemCount + 1 + i);
-            return [firstPageIndex, DOTS, ...rightRange];
-        }
-
-        // Случай 4: Показываем многоточие с обеих сторон
-        if (shouldShowLeftDots && shouldShowRightDots) {
-            let middleRange = [leftSiblingIndex, currentPage, rightSiblingIndex];
-            return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
-        }
-
-    }, [currentPage, totalPages]);
-
 
     const onNext = () => {
         if (currentPage < totalPages) {

@@ -10,7 +10,7 @@ const Navbar = () => {
   const navRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status } = useSelector((state) => state.products);
+  const { searchStatus } = useSelector((state) => state.products);
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -29,7 +29,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isLoading = status === 'loading';
+  const isLoading = searchStatus === 'loading';
 
   const handleSearch = (e) => {
     e.preventDefault();
