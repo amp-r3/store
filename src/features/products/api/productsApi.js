@@ -4,7 +4,7 @@ const apiClient = axios.create({
     baseURL: 'https://dummyjson.com'
 });
 
-export const fetchProducts = (params) => {
+export const getProducts = (params) => {
     const { page, sortBy, order } = params;
     const limit = 12;
     const skip = (page - 1) * limit;
@@ -18,8 +18,8 @@ export const fetchProducts = (params) => {
     return apiClient.get(url);
 }
 
-export const fetchProductsById = (product) => {
-    return apiClient.get(`/products/${product}`);
+export const getProductById = (id) => {
+    return apiClient.get(`/products/${id}`);
 }
 
 export const searchProducts = (query) => {

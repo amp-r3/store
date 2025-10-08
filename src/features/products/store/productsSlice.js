@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit'
-import { fetchProducts, fetchProductsById, searchProducts } from '../../api/productsApi'
+import { getProducts as fetchProducts, getProductById as fetchProductsById, searchProducts} from '../api'
 
 // Async request to get an array of products
 export const getProducts = createAsyncThunk('products/getProducts',

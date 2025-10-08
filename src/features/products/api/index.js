@@ -1,0 +1,1 @@
+export { getProducts, getProductById, searchProducts} from './productsApi'
