@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import style from './error.module.scss'
+import style from './errorView.module.scss'
 import { TbAlertTriangle } from 'react-icons/tb';
 import { useEffect } from 'react';
 const ErrorView = () => {
