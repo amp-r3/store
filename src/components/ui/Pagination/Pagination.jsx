@@ -1,9 +1,9 @@
-import style from './bottomNav.module.scss';
+import style from './pagination.module.scss';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { usePagination, DOTS } from '../../../hooks/usePagination';
 
 
-const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) => {
+const Pagination = ({ totalItems, currentPage, itemsPerPage, onPageChange }) => {
 
     const paginationRange = usePagination({
         totalItems,
@@ -15,13 +15,13 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
 
     const onNext = () => {
         if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
+            onPageChange(currentPage + 1);
         }
     };
 
     const onPrevious = () => {
         if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+            onPageChange(currentPage - 1);
         }
     };
 
@@ -53,7 +53,7 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
                     <button
                         key={pageNumber}
                         className={`${style.pagination__item} ${pageNumber === currentPage ? style['pagination__item--active'] : ''}`}
-                        onClick={() => setCurrentPage(pageNumber)}
+                        onClick={() => onPageChange(pageNumber)}
                         aria-current={pageNumber === currentPage ? 'page' : undefined}
                     >
                         {pageNumber}
@@ -74,4 +74,4 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
     );
 };
 
-export default BottomNav;
+export default Pagination;

@@ -1,18 +1,15 @@
-import { useState } from "react";
-import { useRef } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { clearSearch, getProductsBySearch } from "../store/features/productsSlice";
-import { useScrollEffect } from "./useScrollEffect";
+import { useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { clearSearch, getProductsBySearch } from '@/features/products/store/productsSlice';
+import { useNavbarScroll } from "./useNavbarScroll";
 
 export default function useSearch(style) {
     const navRef = useRef(null);
     const dispatch = useDispatch();
     const { searchStatus } = useSelector((state) => state.products);
-
     const [searchQuery, setSearchQuery] = useState('');
 
-    useScrollEffect(style, navRef);
+    useNavbarScroll(style, navRef);
 
     const isLoading = searchStatus === 'loading';
 

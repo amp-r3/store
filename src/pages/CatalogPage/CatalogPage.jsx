@@ -1,16 +1,22 @@
-import ProductCard from '../../components/layout/ProductCard/ProductCard'
-import Loader from '../../components/ui/Loader/Loader'
-import { useSelector } from 'react-redux'
-import ErrorView from '../ErrorView/ErrorView'
-import BottomNav from '../../components/layout/BottomNav/BottomNav'
-import style from './catalogPage.module.scss'
-import { useDispatch } from 'react-redux'
-import { useEffect } from 'react'
-import { getProducts } from '../../store/features/productsSlice'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-import { useState } from 'react'
-import { sortingOptions } from '../../utils/sortingOptions'
-import SortPanel from '../../components/features/SortPanel/SortPanel'
+
+// UI components
+import { Loader, Pagination, ErrorView } from '@/components/ui'
+
+// Product Feature Components
+import { ProductCard, SortPanel } from '@/features/products/components'
+
+// Redux actions
+import { getProducts } from '@/features/products/store/productsSlice'
+
+// Utilities features
+import { sortingOptions } from '@/features/products/utils/sortingOptions'
+
+// Styles
+import style from './catalogPage.module.scss'
+
 const CatalogPage = () => {
   const { products, status, searchResults } = useSelector((state) => state.products)
   const [searchParams, setSearchParams] = useSearchParams();
@@ -59,9 +65,9 @@ const CatalogPage = () => {
       <main className='container'>
         {!isSearchActive && (
           <SortPanel
-          options={sortingOptions}
-          currentSort={currentSortId}
-          onSortChange={setCurrentSortId}
+            options={sortingOptions}
+            currentSort={currentSortId}
+            onSortChange={setCurrentSortId}
           />
         )}
         <div className={style.content}>
@@ -73,11 +79,11 @@ const CatalogPage = () => {
         </div>
         {
           !isSearchActive && (
-            <BottomNav
-            totalItems={200}
-            currentPage={currentPage}
-            itemsPerPage={12}
-            setCurrentPage={setCurrentPage}
+            <Pagination
+              totalItems={200}
+              currentPage={currentPage}
+              itemsPerPage={12}
+              onPageChange={setCurrentPage}
             />
           )
         }

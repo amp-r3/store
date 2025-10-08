@@ -2,8 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import style from './productPage.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';
-import Loader from '../../components/ui/Loader/Loader';
-import ErrorView from '../ErrorView/ErrorView';
+import { Loader, ErrorView } from '../../components/ui';
 import {
     FaStar,
     FaShoppingCart,
@@ -12,7 +11,7 @@ import {
     FaCalendarAlt,
     FaRegStar
 } from 'react-icons/fa';
-import { getProductsById } from '../../store/features/productsSlice';
+import { getProductsById } from '@/features/products/store/productsSlice';
 
 const ProductPage = () => {
     const { products, status } = useSelector((state) => state.products);

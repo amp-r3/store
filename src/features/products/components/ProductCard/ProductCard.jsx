@@ -2,11 +2,10 @@ import style from './productCard.module.scss'
 import { FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const ProductCard = (product) => {
-    const { id, title, price, category, thumbnail, rating, reviews } = product;
+const ProductCard = ({ id, title, price, category, thumbnail, rating, reviews }) => {
 
     return (
-        <Link to={`/product/${product.id}`} key={id} className={style.card}>
+        <Link to={`/product/${id}`} key={id} className={style.card}>
             <div className={style.card__imageWrapper}>
                 <img src={thumbnail} alt={title} className={style.card__image} />
                 <span className={style.card__category}>{category}</span>
