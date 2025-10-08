@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit'
 import { fetchProducts, fetchProductsById, searchProducts } from '../../api/productsApi'
 
-// Ассинхронный запрос для получения массива продуктов
+// Async request to get an array of products
 export const getProducts = createAsyncThunk('products/getProducts',
   async (params, { rejectWithValue }) => {
     try {
@@ -21,7 +21,7 @@ export const getProducts = createAsyncThunk('products/getProducts',
     }
   }
 )
-// Ассинхронный запрос для полученения одного объекта по его id
+// Async request to get a single object by its id
 export const getProductsById = createAsyncThunk('products/getProductsById',
   async (product, { rejectWithValue }) => {
     try {
@@ -39,7 +39,7 @@ export const getProductsById = createAsyncThunk('products/getProductsById',
     }
   }
 )
-// Ассинхронный запрос для получения массива продуктов соответствующих запросу
+// Async request to get an array of products by search
 export const getProductsBySearch = createAsyncThunk('products/getProductsBySearch',
   async (query, { rejectWithValue }) => {
     try {
@@ -78,7 +78,7 @@ export const productsSlice = createSlice({
   extraReducers: (builder) => {
     const thunks = [getProducts, getProductsById, getProductsBySearch];
 
-    // builder для fullfiled отдельный для каждого из thunk'ов
+    // builder for fullfiled separate for each of the thunks
     builder.addCase(getProducts.fulfilled, (state, action) => {
       state.status = 'succeeded';
       state.products = action.payload
@@ -99,18 +99,18 @@ export const productsSlice = createSlice({
       state.searchStatus = 'succeeded';
       state.searchResults = action.payload
     })
-    // penidng отдельный для getProductsBySearch
+    // penidng separate for getProductsBySearch
 
     builder.addCase(getProductsBySearch.pending, (state) => {
       state.error = null;
       state.searchStatus = 'loading';
     })
-    // Для pending общий у getProducts и getProductsById
+    // For pending, getProducts and getProductsById have a common method.
     builder.addMatcher(isPending(getProducts, getProductsById), (state) => {
       state.error = null;
       state.status = 'loading';
     })
-    // rejected общий у всех
+    // rejected is common to everyone
     builder.addMatcher(isRejected(...thunks), (state, action) => {
       state.error = action.payload.message;
       state.status = 'failed';

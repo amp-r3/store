@@ -84,8 +84,8 @@ const CatalogPage = () => {
         {
           isSearchActive && productsToDisplay.length === 0 && (
             <div>
-              <h3>По вашему запросу ничего не найдено</h3>
-              <p>Попробуйте изменить поисковый запрос.</p>
+              <h3>Nothing was found for your request</h3>
+              <p>Try changing your search query.</p>
             </div>
           )
         }

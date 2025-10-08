@@ -6,7 +6,7 @@ const SortPanel = ({ options, currentSort, onSortChange }) => {
     <div className={style.sort_panel}>
       <div className={style.sort_panel__header}>
         <IoSwapVertical className={style.sort_panel__icon} />
-        <span className={style.sort_panel__label}>Сортировать:</span>
+        <span className={style.sort_panel__label}>Sort:</span>
       </div>
       <div className={style.sort_panel__options}>
         {options.map((option) => (

@@ -6,46 +6,46 @@ import {
     IoCheckmarkCircle
 } from 'react-icons/io5';
 /**
- * Массив объектов с опциями для сортировки продуктов.
- * Каждый объект содержит:
- * - id: Уникальный идентификатор для отслеживания активной сортировки.
- * - label: Текст, который будет отображаться на кнопке/в списке.
- * - sortBy: Параметр `sortBy` для API запроса. `null` для сортировки по умолчанию.
- * - order: Параметр `order` для API запроса (`asc` или `desc`). `null` для сортировки по умолчанию.
+* An array of objects with product sorting options.
+* Each object contains:
+* - id: Unique identifier for tracking active sorting.
+* - label: Text to display on the button/in the list.
+* - sortBy: The `sortBy` parameter for the API request. `null` for default sorting.
+* - order: The `order` parameter for the API request (`asc` or `desc`). `null` for default sorting.
  */
 
 export const sortingOptions = [
     {
         id: 'default',
-        label: 'Популярные',
+        label: 'Popular',
         sortBy: null,
         order: null,
-        icon: IoFlame 
+        icon: IoFlame
     },
     {
         id: 'price-asc',
-        label: 'Сначала дешевые',
+        label: 'Cheap first',
         sortBy: 'price',
         order: 'asc',
-        icon: IoArrowDown 
+        icon: IoArrowDown
     },
     {
         id: 'price-desc',
-        label: 'Сначала дорогие',
+        label: 'Expensive first',
         sortBy: 'price',
         order: 'desc',
-        icon: IoArrowUp 
+        icon: IoArrowUp
     },
     {
         id: 'title-asc',
-        label: 'По названию (А-Я)',
+        label: 'By name (A-Z)',
         sortBy: 'title',
         order: 'asc',
         icon: IoText
     },
     {
         id: 'stock-desc',
-        label: 'По наличию',
+        label: 'By stock',
         sortBy: 'stock',
         order: 'desc',
         icon: IoCheckmarkCircle

@@ -4,13 +4,13 @@ import { usePagination, DOTS } from '../../../hooks/usePagination';
 
 
 const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) => {
-    
+
     const paginationRange = usePagination({
         totalItems,
         currentPage,
         itemsPerPage,
     })
-    
+
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     const onNext = () => {
@@ -25,7 +25,7 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
         }
     };
 
-    // Если страниц всего одна или меньше, компонент не отображается
+    // If there is only one or fewer pages, the component is not displayed.
     if (totalPages <= 1) {
         return null;
     }
@@ -33,7 +33,7 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
 
     return (
         <nav className={style.pagination} aria-label="Pagination">
-            {/* Кнопка "Назад" */}
+            {/* Back button" */}
             <button
                 className={`${style.pagination__item} ${currentPage === 1 ? style['pagination__item--disabled'] : ''}`}
                 onClick={onPrevious}
@@ -43,7 +43,7 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
                 <FaChevronLeft />
             </button>
 
-            {/* Номера страниц */}
+            {/* Numbers of pages */}
             {paginationRange.map((pageNumber, index) => {
                 if (pageNumber === DOTS) {
                     return <span key={`${DOTS}-${index}`} className={style.pagination__dots}>&#8230;</span>;
@@ -61,7 +61,7 @@ const BottomNav = ({ totalItems, currentPage, itemsPerPage, setCurrentPage }) =>
                 );
             })}
 
-            {/* Кнопка "Вперед" */}
+            {/* Next button*/}
             <button
                 className={`${style.pagination__item} ${currentPage === totalPages ? style['pagination__item--disabled'] : ''}`}
                 onClick={onNext}
