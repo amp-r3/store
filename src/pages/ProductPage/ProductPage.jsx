@@ -1,8 +1,8 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import style from './productPage.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';
-import { Loader, ErrorView } from '../../components/ui';
+import { Loader, ErrorView } from '@/components/ui';
+import style from './productPage.module.scss';
 import {
     FaStar,
     FaShoppingCart,
@@ -12,6 +12,7 @@ import {
     FaRegStar
 } from 'react-icons/fa';
 import { getProductsById } from '@/features/products/store/productsSlice';
+import { applyDiscount } from '@/features/products/utils';
 
 const ProductPage = () => {
     const { products, status } = useSelector((state) => state.products);
@@ -48,17 +49,19 @@ const ProductPage = () => {
         );
     };
 
+    
     if (status === 'loading') {
         return <Loader />;
     }
-
+    
     if (status === 'failed') {
         return <ErrorView />;
     }
-
+    
     if (status === 'succeeded' && product) {
-        const { id, title, price, description, category, images, rating, reviews } = product;
-
+        const { id, title, price, description, category, images, rating, reviews, discountPercentage, stock } = product;
+        const discountedPrice = applyDiscount(discountPercentage, price);
+        
         return (
             <main className={style['product-page']}>
                 <div className={style['product-page__container']} key={id}>
@@ -80,6 +83,8 @@ const ProductPage = () => {
                             <span className={style['product-page__category']}>{category}</span>
                             <h1 className={style['product-page__title']}>{title}</h1>
 
+                            <span className={style['product-page__stock']}>{stock} in stock</span>
+
                             <div className={style['product-page__rating']}>
                                 <span className={style['product-page__rating-value']}>{rating}</span>
                                 <FaStar />
@@ -92,6 +97,7 @@ const ProductPage = () => {
 
                             <div className={style['product-page__purchase-box']}>
                                 <p className={style['product-page__price']}>${price}</p>
+                                <p className={style['product-page__discount-price']}>${discountedPrice}</p>
                                 <button className={style['product-page__add-to-cart-btn']}>
                                     <FaShoppingCart size={20} />
                                     <span>Add to Cart</span>

@@ -1,15 +1,12 @@
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearSearch, getProductsBySearch } from '@/features/products/store/productsSlice';
-import { useNavbarScroll } from "./useNavbarScroll";
 
-export default function useSearch(style) {
+export  function useSearch() {
     const navRef = useRef(null);
     const dispatch = useDispatch();
     const { searchStatus } = useSelector((state) => state.products);
     const [searchQuery, setSearchQuery] = useState('');
-
-    useNavbarScroll(style, navRef);
 
     const isLoading = searchStatus === 'loading';
 
@@ -36,10 +33,17 @@ export default function useSearch(style) {
     const handleInputChange = (event) => {
         const newText = event.target.value
         updateSearchText(newText)
-        if (newText === ''){
+        if (newText === '') {
             clearSearchResults();
         }
     }
 
-    return { isLoading, searchQuery, navRef, handleSearch, handleClear, handleInputChange }
+    return {
+        isLoading,
+        searchQuery,
+        navRef,
+        handleSearch,
+        handleClear,
+        handleInputChange
+    }
 }

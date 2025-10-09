@@ -1,11 +1,16 @@
 import { NavLink, Link } from 'react-router-dom';
-import style from './navbar.module.scss';
+// Icons
 import { IoSearchSharp, IoCartOutline, IoClose } from "react-icons/io5";
-import Loader from '../../ui/Loader/Loader';
-import useSearch from '../../../hooks/useSearch';
+// Components
+import { Loader } from '@/components/ui'
+// Custom Hooks
+import { useNavbarScroll, useSearch } from '@/hooks';
+// Styles
+import style from './navbar.module.scss';
 
 const Navbar = () => {
-  const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange} = useSearch(style);
+  const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange} = useSearch();
+  useNavbarScroll(navRef);
 
 
   return (

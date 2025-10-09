@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
-export function useNavbarScroll(style, navRef) {
+export function useNavbarScroll(navRef) {
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 50) {
-                navRef.current.classList.add(style.scrolled);
+                navRef.current.classList.add('scrolled');
             } else {
-                navRef.current.classList.remove(style.scrolled);
+                navRef.current.classList.remove('scrolled');
             }
         };
         window.addEventListener('scroll', handleScroll);
