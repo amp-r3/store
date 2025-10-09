@@ -12,7 +12,7 @@
     background: rgba($background-glass-base, 0.7);
     backdrop-filter: $backdrop-blur;
     -webkit-backdrop-filter: $backdrop-blur;
-    border: 1px solid $border-color;
+    border: 2px solid $border-color;
     box-shadow: $shadow-md;
 
     position: relative;
@@ -33,7 +33,6 @@
         color: $text-muted;
         font-size: $fs-base;
         font-weight: $fw-semibold;
-        cursor: pointer;
         transition: $transition-base;
 
         &:hover {

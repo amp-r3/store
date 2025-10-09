@@ -1,7 +1,7 @@
 import { IoSwapVertical } from 'react-icons/io5';
 import style from './sortPanel.module.scss';
 
-const SortPanel = ({ options, currentSort, onSortChange }) => {
+const SortPanel = ({ options, currentSort, onSortChange  }) => {
   return (
     <div className={style.sort_panel}>
       <div className={style.sort_panel__header}>

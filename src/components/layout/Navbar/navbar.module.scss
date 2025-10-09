@@ -21,25 +21,24 @@
     gap: $spacing-lg;
     padding: $spacing-sm $spacing-lg;
     border-radius: $radius-pill;
-    max-width: 40rem;
-    width: 100%;
+    max-width: 45rem;
     margin: $spacing-lg auto 0;
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: $z-index-sticky;
-
+    width: 100%;
     background: rgba($background-glass-base, 0.3);
-    border: 1px solid $border-color-light;
+    border: 2px solid rgba($border-color, 0.03);
     backdrop-filter: $backdrop-blur-sm;
     box-shadow: none;
     transition: $transition-base;
 
-    &.scrolled {
-        background: rgba($background-glass-base, 0.7);
+    &:global(.scrolled) {
+        background: rgba($background-glass-base, 0.8);
         backdrop-filter: $backdrop-blur;
-        border: 1px solid $border-color;
+        border: 2px solid $border-color;
         box-shadow: $shadow-md;
     }
 

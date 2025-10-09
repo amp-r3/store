@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .product-page {
     padding: $spacing-xxl 0;
@@ -87,15 +87,21 @@
     font-size: $fs-xxl;
     font-weight: $fw-bold;
     color: $text-primary;
-    margin: 0 0 $spacing-md 0;
+    margin: 0 0 $spacing-sm 0;
     line-height: $lh-tight;
+}
+
+.product-page__stock {
+    font-size: $fs-md;
+    font-weight: $fw-semibold;
+    color: $primary-accent-light;
 }
 
 .product-page__rating {
     display: flex;
     align-items: center;
     gap: $spacing-xs;
-    margin-bottom: $spacing-lg;
+    margin: $spacing-md 0 $spacing-lg 0;
     color: $rating-color;
 }
 
@@ -136,6 +142,14 @@
 }
 
 .product-page__price {
+    font-size: $fs-lg;
+    font-weight: $fw-normal;
+    color: $text-secondary;
+    text-decoration: line-through;
+    margin-right: $spacing-xxs;
+}
+
+.product-page__discount-price {
     font-size: $fs-xxl;
     font-weight: $fw-bold;
     color: $primary-accent;

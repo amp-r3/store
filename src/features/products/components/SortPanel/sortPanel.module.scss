@@ -11,11 +11,6 @@
   box-shadow: $shadow-md;
   transition: all $transition-base ease;
 
-  &:hover {
-    border-color: rgba($primary-accent, 0.3);
-    box-shadow: $shadow-accent-sm;
-  }
-
   &__header {
     display: flex;
     align-items: center;
@@ -155,7 +150,6 @@
   }
 }
 
-// Адаптивность
 @media (max-width: 768px) {
   .sort_panel {
     padding: $spacing-md;
