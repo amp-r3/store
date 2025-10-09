@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import ProductPage from './pages/ProductPage/ProductPage'
-import NotFoundPage from './pages/NotFoundPage/NotFoundPage'
+import NotFoundPage from './pages/Page404/Page404'
 import Layout from './components/layout/Layout'
 import CatalogPage from './pages/CatalogPage/CatalogPage'
 const App = () => {

@@ -1,8 +1,8 @@
-import style from './notFound.module.scss'
+import style from './page404.module.scss'
 import { Link } from 'react-router-dom';
 import { TbHome } from 'react-icons/tb';
 
-const NotFoundPage = () => {
+const Page404 = () => {
   return (
     <main className={style.notFoundPage}>
       <div className={style.content}>
@@ -19,4 +19,4 @@ const NotFoundPage = () => {
     </main>
   );
 };
-export default NotFoundPage;
+export default Page404;
