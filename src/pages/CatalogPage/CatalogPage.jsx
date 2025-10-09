@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 
 // UI components
-import { Loader, Pagination, ErrorView } from '@/components/ui'
+import { Loader, Pagination, ErrorView, NoResults } from '@/components/ui'
 
 // Product Feature Components
 import { ProductCard, SortPanel } from '@/features/products/components'
@@ -89,10 +89,7 @@ const CatalogPage = () => {
         }
         {
           isSearchActive && productsToDisplay.length === 0 && (
-            <div>
-              <h3>Nothing was found for your request</h3>
-              <p>Try changing your search query.</p>
-            </div>
+            <NoResults />
           )
         }
       </main>
