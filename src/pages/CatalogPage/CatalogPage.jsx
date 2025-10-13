@@ -1,102 +1,74 @@
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useSearchParams } from 'react-router-dom'
-
+import { useEffect } from 'react'
 // UI components
 import { Loader, Pagination, ErrorView, NoResults } from '@/components/ui'
 
 // Product Feature Components
 import { ProductCard, SortPanel } from '@/features/products/components'
 
-// Redux actions
-import { getProducts } from '@/features/products/store/productsSlice'
-
-// Utilities features
-import { sortingOptions } from '@/features/products/utils/sortingOptions'
+// Custom Hooks
+import { useProductCatalog } from '@/hooks'
 
 // Styles
 import style from './catalogPage.module.scss'
 
 const CatalogPage = () => {
-  const { products, status, searchResults } = useSelector((state) => state.products)
-  const [searchParams, setSearchParams] = useSearchParams();
-  const isSearchActive = searchResults !== null;
-  const dispatch = useDispatch()
+  const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions } = useProductCatalog();
 
-  const [currentSortId, setCurrentSortId] = useState('default');
-
-  const currentPage = Number(searchParams.get('page')) || 1;
-
-
-  const setCurrentPage = (newPage) => {
-    setSearchParams({ page: newPage });
-  };
-
-
-  useEffect(() => {
-    if (!isSearchActive) {
-      const activeSortOption = sortingOptions.find(opt => opt.id === currentSortId);
-
-      const params = {
-        page: currentPage,
-        sortBy: activeSortOption.sortBy,
-        order: activeSortOption.order
-      };
-
-      dispatch(getProducts(params));
+  useEffect(()=>{
+    if (status === 'succeeded') {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      })
     }
-  }, [dispatch, currentPage, isSearchActive, currentSortId]);
+  }, [currentPage, status])
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentPage]);
-
-  if (status === 'loading') {
-    return (
-      <Loader />
-    )
-  }
-  if (status === 'failed') {
-    return (<ErrorView />)
-  }
-  if (status === 'succeeded') {
-    const productsToDisplay = isSearchActive ? searchResults : products
-    return (
-      <main className='container'>
-        {!isSearchActive && (
-          <SortPanel
-            options={sortingOptions}
-            currentSort={currentSortId}
-            onSortChange={setCurrentSortId}
+if (status === 'loading') {
+  return (
+    <Loader />
+  )
+}
+if (status === 'failed') {
+  return (<ErrorView />)
+}
+if (status === 'succeeded') {
+  return (
+    <main className='container'>
+      {!isSearchActive && (
+        <SortPanel
+          options={sortingOptions}
+          currentSort={currentSortId}
+          onSortChange={setCurrentSortId}
+        />
+      )}
+      <div className={style.content}>
+        {
+          productsToDisplay.map((product) => (
+            <ProductCard key={product.id} {...product} />
+          ))
+        }
+      </div>
+      {
+        !isSearchActive && (
+          <Pagination
+            totalItems={200}
+            currentPage={currentPage}
+            itemsPerPage={12}
+            onPageChange={setCurrentPage}
           />
-        )}
-        <div className={style.content}>
-          {
-            productsToDisplay.map((product) => (
-              <ProductCard key={product.id} {...product} />
-            ))
-          }
-        </div>
-        {
-          !isSearchActive && (
-            <Pagination
-              totalItems={200}
-              currentPage={currentPage}
-              itemsPerPage={12}
-              onPageChange={setCurrentPage}
-            />
-          )
-        }
-        {
-          isSearchActive && productsToDisplay.length === 0 && (
-            <NoResults />
-          )
-        }
-      </main>
-    )
-  }
+        )
+      }
+      {
+        isSearchActive && productsToDisplay.length === 0 && (
+          <NoResults />
+        )
+      }
+    </main>
+  )
+}
 
-  return <Loader />;
+return <Loader />;
 }
 
 export default CatalogPage
