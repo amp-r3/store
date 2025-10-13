@@ -9,20 +9,19 @@ import { useNavbarScroll, useSearch } from '@/hooks';
 import style from './navbar.module.scss';
 
 const Navbar = () => {
-  const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange} = useSearch();
+  const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange } = useSearch();
   useNavbarScroll(navRef);
 
 
   return (
     <header className="container">
       <nav ref={navRef} className={style.nav}>
-        <Link to="/" className={style.nav__logo}>store</Link>
-
-        <ul className={style.nav__menu}>
-          <li>
-            <NavLink to="/" className={style.nav__link} end>Main</NavLink>
-          </li>
-        </ul>
+          <Link to="/" className={style.nav__logo}>store</Link>
+          <ul className={style.nav__menu}>
+            <li>
+              <NavLink to="/" className={style.nav__link} end>Main</NavLink>
+            </li>
+          </ul>
         <form onSubmit={handleSearch} className={style.nav__actions}>
           <button type='button' className={style.nav__cart}>
             <IoCartOutline />

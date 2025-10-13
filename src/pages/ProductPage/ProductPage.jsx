@@ -1,47 +1,28 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
+//Components
 import { Loader, ErrorView } from '@/components/ui';
-import style from './productPage.module.scss';
+// Icons
 import {
     FaStar,
-    FaShoppingCart,
+    FaCartShopping,
     FaChevronLeft,
     FaComments,
-    FaCalendarAlt,
+    FaCalendarDays,
     FaRegStar
-} from 'react-icons/fa';
-import { getProductsById } from '@/features/products/store/productsSlice';
-import { applyDiscount } from '@/features/products/utils';
+} from 'react-icons/fa6';
+import { applyDiscount, scrollToTop } from '@/features/products/utils';
+import style from './productPage.module.scss';
+import { useProduct } from '@/hooks/useProduct';
 
 const ProductPage = () => {
-    const { products, status } = useSelector((state) => state.products);
+    const navigate = useNavigate()
     const { id } = useParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const product = useMemo(() => {
-        if (!products) {
-            return null;
-        }
-        const productsArr = Object.values(products);
-        return productsArr.find((elem) => elem.id === Number(id));
-    }, [products, id]);
+    const { product, status, isNotFound } = useProduct(id)
 
     useEffect(() => {
-        if (product) {
-            return;
-        }
-
-        if (status === 'succeeded' && !product) {
-            navigate('/404', { replace: true });
-            return;
-        }
-
-        if (!product && status !== 'loading') {
-            dispatch(getProductsById(id));
-        }
-    }, [product, navigate, status, dispatch, id]);
+        scrollToTop()
+    }, [])
 
     const renderStars = (rating) => {
         return Array.from({ length: 5 }, (_, i) =>
@@ -49,19 +30,23 @@ const ProductPage = () => {
         );
     };
 
-    
+
     if (status === 'loading') {
         return <Loader />;
     }
-    
+
     if (status === 'failed') {
         return <ErrorView />;
     }
-    
+
+    if (isNotFound) {
+        return navigate('/404')
+    }
+
     if (status === 'succeeded' && product) {
         const { id, title, price, description, category, images, rating, reviews, discountPercentage, stock } = product;
         const discountedPrice = applyDiscount(discountPercentage, price);
-        
+
         return (
             <main className={style['product-page']}>
                 <div className={style['product-page__container']} key={id}>
@@ -99,7 +84,7 @@ const ProductPage = () => {
                                 <p className={style['product-page__price']}>${price}</p>
                                 <p className={style['product-page__discount-price']}>${discountedPrice}</p>
                                 <button className={style['product-page__add-to-cart-btn']}>
-                                    <FaShoppingCart size={20} />
+                                    <FaCartShopping size={20} />
                                     <span>Add to Cart</span>
                                 </button>
                             </div>
@@ -122,7 +107,7 @@ const ProductPage = () => {
                                             </div>
                                         </div>
                                         <div className={style['product-page__review-meta']}>
-                                            <FaCalendarAlt />
+                                            <FaCalendarDays />
                                             <span>{new Date(review.date).toLocaleDateString()}</span>
                                         </div>
                                         <p className={style['product-page__review-comment']}>{review.comment}</p>

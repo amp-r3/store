@@ -9,10 +9,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<CatalogPage />} />
+          <Route path="/product/:id" element={<ProductPage />} />
         </Route>
-          <Route path='*' element={<NotFoundPage />}></Route>
-          <Route path='/404' element={<NotFoundPage />}></Route>
-        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path='*' element={<NotFoundPage />}></Route>
+        <Route path='/404' element={<NotFoundPage />}></Route>
       </Routes>
     </>
   )

@@ -112,7 +112,9 @@ $radius-pill: 999px !default;
 $radius-circle: 50% !default;
 
 // --- Layouts ---
-$header-height: 100px !default;
+$header-height: 7rem !default; // 112px
+$header-height-tablet: 4.35 !default; // ~70px
+$header-height-mobile: 3.75 !default; // 60 px
 $container-width: 1100px !default;
 $z-index-sticky: 1000 !default;
 

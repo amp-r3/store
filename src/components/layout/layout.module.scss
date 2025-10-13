@@ -1,0 +1,14 @@
+@use '@/styles/index' as *;
+
+.layout {
+    padding-top: $header-height;
+    min-height: 100vh;
+
+    @media (max-width: 768px) {
+        padding-top: $header-height-tablet;
+    }
+
+    @media (max-width: 480px) {
+        padding-top: $header-height-mobile;
+    }
+}
