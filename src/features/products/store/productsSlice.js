@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit'
-import { getProducts as fetchProducts, getProductById as fetchProductsById, searchProducts} from '../api'
+import { getProducts as fetchProducts, getProductById as fetchProductsById, searchProducts } from '../api'
+import { createSelector } from 'reselect'
 
 // Async request to get an array of products
 export const getProducts = createAsyncThunk('products/getProducts',
@@ -60,7 +61,7 @@ export const getProductsBySearch = createAsyncThunk('products/getProductsBySearc
 )
 
 const initialState = {
-  products: [],
+  products: {},
   searchResults: null,
   status: 'idle',
   searchStatus: 'idle',
@@ -81,18 +82,18 @@ export const productsSlice = createSlice({
     // builder for fullfiled separate for each of the thunks
     builder.addCase(getProducts.fulfilled, (state, action) => {
       state.status = 'succeeded';
-      state.products = action.payload
+      state.products = action.payload.reduce((accumulator, currentProduct) => {
+        accumulator[currentProduct.id] = currentProduct
+        return accumulator
+      }, {})
+
     });
 
     builder.addCase(getProductsById.fulfilled, (state, action) => {
       state.status = 'succeeded';
       const newProduct = action.payload;
 
-      const existingProduct = state.products.find(p => p.id === newProduct.id);
-
-      if (!existingProduct) {
-        state.products.push(newProduct)
-      }
+      state.products[newProduct.id] = newProduct
     });
 
     builder.addCase(getProductsBySearch.fulfilled, (state, action) => {
@@ -119,6 +120,17 @@ export const productsSlice = createSlice({
 
   }
 })
+
+// --- SELECTORS ---
+
+const selectProductsObject = (state) => state.products.products;
+
+export const selectAllProducts = createSelector(
+  [selectProductsObject],
+  (productsObject) => {
+    return Object.values(productsObject)
+  }
+)
 
 export const { clearSearch } = productsSlice.actions
 

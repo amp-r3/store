@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 // Logo animation
 @keyframes gradient-flow {
@@ -24,7 +24,7 @@
     max-width: 45rem;
     margin: $spacing-lg auto 0;
     position: fixed;
-    top: 20px;
+    top: $spacing-lg;
     left: 50%;
     transform: translateX(-50%);
     z-index: $z-index-sticky;
@@ -54,7 +54,6 @@
         background-clip: text;
         font-size: $fs-logo;
         font-weight: $fw-bold;
-        margin-right: $spacing-lg;
         transition: $transition-base;
 
         animation: gradient-flow 3s ease infinite;
@@ -138,7 +137,7 @@
 
         opacity: 0;
         transform: translateY(-50%) scale(0.7);
-        pointer-events: none; 
+        pointer-events: none;
 
         transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
 

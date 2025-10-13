@@ -2,14 +2,8 @@
 
 .product-page {
     padding: $spacing-xxl 0;
-    min-height: 100vh;
 }
 
-.product-page__container {
-    max-width: $container-width;
-    margin: 0 auto;
-    padding: 0 $spacing-lg;
-}
 
 .product-page__back-wrapper {
     margin-bottom: $spacing-lg;
@@ -194,6 +188,7 @@
     font-weight: $fw-bold;
     color: $text-primary;
     margin-bottom: $spacing-lg;
+    color: $primary-accent-light;
 }
 
 .product-page__reviews-list {

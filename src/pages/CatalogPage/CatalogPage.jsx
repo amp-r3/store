@@ -10,17 +10,14 @@ import { useProductCatalog } from '@/hooks'
 
 // Styles
 import style from './catalogPage.module.scss'
+import { scrollToTop } from '@/features/products/utils'
 
 const CatalogPage = () => {
   const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions } = useProductCatalog();
 
   useEffect(()=>{
     if (status === 'succeeded') {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-      })
+      scrollToTop()
     }
   }, [currentPage, status])
 

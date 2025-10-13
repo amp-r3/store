@@ -1,14 +1,16 @@
-import { getProducts } from "@/features/products/store/productsSlice";
+import { getProducts, selectAllProducts } from "@/features/products/store/productsSlice";
 import { sortingOptions } from "@/features/products/utils";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router";
 
 export function useProductCatalog() {
-    const { products, status, searchResults } = useSelector((state) => state.products)
+    const { status, searchResults } = useSelector((state) => state.products)
+    const productArray = useSelector(selectAllProducts);
     const [searchParams, setSearchParams] = useSearchParams();
     const isSearchActive = searchResults !== null;
     const dispatch = useDispatch()
+
 
     const [currentSortId, setCurrentSortId] = useState('default');
 
@@ -35,7 +37,7 @@ export function useProductCatalog() {
         }
     }, [dispatch, currentPage, isSearchActive, currentSortId]);
 
-    const productsToDisplay = isSearchActive ? searchResults : products;
+    const productsToDisplay = isSearchActive ? searchResults : productArray;
     
     return { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, status, isSearchActive, sortingOptions }
 }
