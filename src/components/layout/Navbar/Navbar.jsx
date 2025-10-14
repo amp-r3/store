@@ -1,6 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 // Icons
-import { IoSearchSharp, IoCartOutline, IoClose } from "react-icons/io5";
+import { IoSearchSharp, IoCartOutline, IoClose, IoHome } from "react-icons/io5";
 // Components
 import { Loader } from '@/components/ui'
 // Custom Hooks
@@ -9,23 +9,14 @@ import { useNavbarScroll, useSearch } from '@/hooks';
 import style from './navbar.module.scss';
 
 const Navbar = () => {
-  const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange } = useSearch();
+  const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange, isSearchActive, handleSearchActive } = useSearch();
   useNavbarScroll(navRef);
-
 
   return (
     <header className="container">
-      <nav ref={navRef} className={style.nav}>
-          <Link to="/" className={style.nav__logo}>store</Link>
-          <ul className={style.nav__menu}>
-            <li>
-              <NavLink to="/" className={style.nav__link} end>Main</NavLink>
-            </li>
-          </ul>
-        <form onSubmit={handleSearch} className={style.nav__actions}>
-          <button type='button' className={style.nav__cart}>
-            <IoCartOutline />
-          </button>
+      <nav ref={navRef} className={`${style.nav} ${isSearchActive ? style.searchActive : ''}`}>
+        <Link to="/" className={style.nav__logo}>store</Link>
+        <form onSubmit={handleSearch} className={style.nav__search_form}>
           <div className={style.nav__searchContainer}>
             <input
               className={style.nav__search}
@@ -44,12 +35,27 @@ const Navbar = () => {
               <IoClose />
             </button>
           </div>
-          <button type='submit' className={style.nav__btn} aria-label="Search" disabled={isLoading}>
+          <button
+            type='submit'
+            className={style.nav__searchBtn}
+            aria-label="Search"
+            disabled={isLoading}
+            onClick={handleSearchActive}>
             {
-              isLoading ? <Loader size={'small'} /> : <IoSearchSharp />
+              isLoading ? <Loader size={'small'} /> : isSearchActive ? <IoClose /> : <IoSearchSharp />
             }
           </button>
         </form>
+        <div className={style.nav__main_actions}>
+          <ul className={style.nav__menu}>
+            <li>
+              <NavLink to="/" className={style.nav__link} end><IoHome /></NavLink>
+            </li>
+          </ul>
+          <button type='button' className={style.nav__cart}>
+            <IoCartOutline />
+          </button>
+        </div>
       </nav>
     </header>
   );

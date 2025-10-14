@@ -8,7 +8,7 @@
         padding-top: $header-height-tablet;
     }
 
-    @media (max-width: 480px) {
-        padding-top: $header-height-mobile;
+    @media (max-width: 460px) {
+        padding-top: 0;
     }
 }
