@@ -1,6 +1,5 @@
 @use '@/styles/index'as *;
 
-// Logo animation
 @keyframes gradient-flow {
     0% {
         background-position: 0% 50%;
@@ -29,37 +28,36 @@
     transform: translateX(-50%);
     z-index: $z-index-sticky;
     width: 100%;
-    background: rgba($background-glass-base, 0.3);
-    border: 2px solid rgba($border-color, 0.03);
+    background: $navbar-bg-default;
+    border: 2px solid $border-color-subtle;
     backdrop-filter: $backdrop-blur-sm;
     box-shadow: none;
     transition: $transition-base;
 
     &:global(.scrolled) {
-        background: rgba($background-glass-base, 0.8);
+        background: $navbar-bg-scrolled;
         backdrop-filter: $backdrop-blur;
         border: 2px solid $border-color;
-        box-shadow: $shadow-md;
+        box-shadow: $shadow-default;
     }
 
     &__logo {
         background: linear-gradient(130deg,
-                $gradient-start,
-                $gradient-mid-1,
-                $gradient-mid-2,
-                $gradient-end);
+                $gradient-logo-start,
+                $gradient-logo-mid-1,
+                $gradient-logo-mid-2,
+                $gradient-logo-end);
         background-size: 300% 300%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        font-size: $fs-logo;
+        font-size: $fs-logo-fluid;
         font-weight: $fw-bold;
         transition: $transition-base;
-
-        animation: gradient-flow 3s ease infinite;
+        animation: gradient-flow $animation-gradient-duration $ease-in-out-smooth infinite;
 
         &:hover {
-            transform: scale(1.05);
+            transform: scale($scale-up-sm);
         }
     }
 
@@ -105,7 +103,7 @@
         align-items: center;
         gap: $spacing-md;
         overflow: hidden;
-        transition: $transition-fast;
+        transition: $transition-layout $ease-out-expo;
     }
 
     &__searchContainer {
@@ -115,7 +113,7 @@
     }
 
     &__search {
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(black, 0.2);
         border-radius: $radius-input;
         border: 1px solid transparent;
         width: 160px;
@@ -129,7 +127,7 @@
             outline: none;
             border-color: $border-color;
             width: 200px;
-            box-shadow: $shadow-focus-accent;
+            box-shadow: $shadow-focus-input;
         }
 
         &::placeholder {
@@ -148,12 +146,10 @@
         place-items: center;
         padding: $spacing-xxs;
         font-size: $fs-md;
-
         opacity: 0;
         transform: translateY(-50%) scale(0.7);
         pointer-events: none;
-
-        transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+        transition: opacity $transition-fast ease, transform $transition-fast ease, color $transition-fast ease;
 
         &:hover {
             color: $text-inverse;
@@ -190,7 +186,7 @@
             cursor: wait;
             padding: 0;
             transition: none;
-            transform: scale(0.9);
+            transform: scale($scale-down-md);
 
             &:hover {
                 background-color: transparent;
@@ -243,7 +239,7 @@
             pointer-events: none;
         }
 
-        &__search_form{
+        &__search_form {
             order: 1;
             margin-left: auto;
         }
@@ -262,7 +258,6 @@
                 opacity: 0;
                 pointer-events: none;
             }
-
         }
     }
 }

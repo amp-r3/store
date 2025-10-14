@@ -1,9 +1,8 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .product-page {
     padding: $spacing-xxl 0;
 }
-
 
 .product-page__back-wrapper {
     margin-bottom: $spacing-lg;
@@ -160,17 +159,16 @@
     padding: $spacing-md $spacing-xl;
     font-size: $fs-md;
     font-weight: $fw-semibold;
-    transition: $transition-base;
-    cursor: pointer;
+    transition: transform $transition-pressed, background-color $transition-base, box-shadow $transition-base;
 
     &:hover {
         background-color: $primary-accent-dark;
-        transform: scale(1.05);
+        transform: scale($scale-up-sm);
         box-shadow: $shadow-accent-hover;
     }
 
     &:active {
-        transform: scale(1);
+        transform: scale($button-pressed-scale);
     }
 }
 
@@ -186,7 +184,6 @@
     gap: $spacing-sm;
     font-size: $fs-xl;
     font-weight: $fw-bold;
-    color: $text-primary;
     margin-bottom: $spacing-lg;
     color: $primary-accent-light;
 }

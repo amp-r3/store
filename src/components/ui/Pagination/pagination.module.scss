@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .pagination {
     display: flex;
@@ -7,14 +7,12 @@
     gap: $spacing-xs;
     padding: $spacing-sm $spacing-md;
     border-radius: $radius-pill;
-    margin: 30px;
-
-    background: rgba($background-glass-base, 0.7);
-    backdrop-filter: $backdrop-blur;
-    -webkit-backdrop-filter: $backdrop-blur;
+    margin-top: $spacing-xl;
+    background: $glass-background;
+    backdrop-filter: $glass-backdrop-blur;
+    -webkit-backdrop-filter: $glass-backdrop-blur;
     border: 2px solid $border-color;
-    box-shadow: $shadow-md;
-
+    box-shadow: $shadow-default;
     position: relative;
     bottom: 20px;
     left: 50%;
@@ -25,8 +23,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 42px;
-        height: 42px;
+        width: $touch-target-min;
+        height: $touch-target-min;
         border-radius: $radius-circle;
         border: 1px solid $border-color;
         background: transparent;
@@ -39,7 +37,7 @@
             background-color: $primary-accent;
             color: $text-inverse;
             border-color: transparent;
-            transform: scale(1.1);
+            transform: scale($scale-up-md);
         }
 
         &--active {
@@ -67,8 +65,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 42px;
-        height: 42px;
+        width: $touch-target-min;
+        height: $touch-target-min;
         color: $text-muted;
         font-size: $fs-base;
     }

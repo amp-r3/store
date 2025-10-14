@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .sort_panel {
   background: $glass-background;
@@ -8,8 +8,8 @@
   padding: $spacing-lg;
   margin-top: $spacing-xl;
   margin-bottom: $spacing-lg;
-  box-shadow: $shadow-md;
-  transition: all $transition-base ease;
+  box-shadow: $shadow-default;
+  transition: all $transition-base $ease-in-out-smooth;
 
   &__header {
     display: flex;
@@ -22,7 +22,7 @@
     font-size: $fs-icon-lg;
     color: $primary-accent;
     filter: drop-shadow($shadow-text-accent);
-    animation: pulse 2s ease-in-out infinite;
+    animation: pulse $animation-pulse-duration ease-in-out infinite;
   }
 
   &__label {
@@ -51,7 +51,7 @@
     font-weight: $fw-normal;
     font-family: $font-primary;
     cursor: pointer;
-    transition: all $transition-fast ease;
+    transition: all $transition-fast $ease-in-out-smooth;
     position: relative;
     overflow: hidden;
 
@@ -59,24 +59,25 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba($primary-accent, 0.05),
-        rgba($primary-accent-light, 0.02)
-      );
+      background: linear-gradient(135deg,
+          rgba($primary-accent, 0.05),
+          rgba($primary-accent-light, 0.02));
       opacity: 0;
-      transition: opacity $transition-fast ease;
+      transition: opacity $transition-fast $ease-in-out-smooth;
     }
 
     &_icon {
-      font-size: $fs-md;
-      transition: transform $transition-fast ease;
+      font-size: $fs-icon-md;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform $transition-fast $ease-out-expo;
     }
 
     &:hover {
       border-color: rgba($primary-accent, 0.4);
       color: $text-primary;
-      transform: translateY(-2px);
+      transform: $hover-lift;
       box-shadow: $shadow-accent-hover;
 
       &::before {
@@ -90,14 +91,14 @@
 
     &:active {
       transform: translateY(0);
+      scale: $button-pressed-scale;
+      transition: transform $transition-pressed, scale $transition-pressed;
     }
 
     &__active {
-      background: linear-gradient(
-        135deg,
-        rgba($primary-accent, 0.2),
-        rgba($primary-accent-dark, 0.15)
-      );
+      background: linear-gradient(135deg,
+          rgba($primary-accent, 0.2),
+          rgba($primary-accent-dark, 0.15));
       border-color: $primary-accent;
       color: $text-inverse;
       font-weight: $fw-semibold;
@@ -109,11 +110,9 @@
         inset: 0;
         border-radius: $radius-pill;
         padding: 1px;
-        background: linear-gradient(
-          135deg,
-          $primary-accent,
-          $primary-accent-light
-        );
+        background: linear-gradient(135deg,
+            $primary-accent,
+            $primary-accent-light);
         -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
         -webkit-mask-composite: xor;
         mask-composite: exclude;
@@ -121,13 +120,11 @@
       }
 
       &:hover {
-        background: linear-gradient(
-          135deg,
-          rgba($primary-accent, 0.3),
-          rgba($primary-accent-dark, 0.25)
-        );
+        background: linear-gradient(135deg,
+            rgba($primary-accent, 0.3),
+            rgba($primary-accent-dark, 0.25));
         box-shadow: $shadow-accent;
-        transform: translateY(-2px);
+        transform: $hover-lift;
       }
 
       .sort_panel__button_icon {
@@ -139,13 +136,15 @@
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
-    transform: scale(1.1);
+    transform: scale($scale-up-md);
     opacity: 0.8;
   }
 }

@@ -32,12 +32,9 @@ body {
         width: 100vw;
         height: 100vh;
         z-index: -1;
-
         background-image:
             radial-gradient(ellipse at top, $gradient-body-start, transparent),
-            radial-gradient(ellipse at bottom, $gradient-body-end, transparent),
-            url('noisepng.com/100-90-4.png');
-
+            radial-gradient(ellipse at bottom, $gradient-body-end, transparent);
         background-color: $background-body;
         opacity: 0.7;
     }
@@ -66,14 +63,9 @@ button {
     cursor: pointer;
 }
 
-// =============================================
-//            CUSTOM SCROLLBAR STYLES
-// =============================================
-
-// --- Webkit browsers (Chrome, Safari, Edge) ---
 ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: $spacing-sm;
+    height: $spacing-sm;
 }
 
 ::-webkit-scrollbar-track {
@@ -87,8 +79,8 @@ button {
             $primary-accent-light,
             $primary-accent);
     border-radius: $radius-pill;
-    border: 2px solid $background-component;
-    transition: background $transition-base ease;
+    border: $loader-border-width-xs solid $background-component;
+    transition: background $transition-base $ease-in-out-smooth;
 
     &:hover {
         background: linear-gradient(180deg,
@@ -102,7 +94,6 @@ button {
     }
 }
 
-// --- Firefox ---
 * {
     scrollbar-width: thin;
     scrollbar-color: $primary-accent $background-component;
