@@ -11,9 +11,12 @@ import {
     FaCalendarDays,
     FaRegStar
 } from 'react-icons/fa6';
+// Utils
 import { applyDiscount, scrollToTop } from '@/features/products/utils';
+// Custom Hooks
+import { useProduct } from '@/hooks';
+// Styles
 import style from './productPage.module.scss';
-import { useProduct } from '@/hooks/useProduct';
 
 const ProductPage = () => {
     const navigate = useNavigate()

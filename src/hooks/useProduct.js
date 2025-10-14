@@ -1,7 +1,6 @@
 import { getProductsById } from "@/features/products/store/productsSlice";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export function useProduct(id) {
     const { products, status } = useSelector((state) => state.products);
