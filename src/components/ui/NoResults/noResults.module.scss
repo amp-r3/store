@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .noResults {
     display: flex;
@@ -9,10 +9,11 @@
     padding: $spacing-xxl $spacing-lg;
     margin: 10em auto auto;
     max-width: 500px;
-    background-color: $background-glass-base;
+    background-color: $background-component;
     border: 1px solid $border-color;
     border-radius: $radius-lg;
     color: $text-primary;
+    box-shadow: $shadow-default;
 
     &__title {
         font-size: $fs-error-title;
@@ -41,13 +42,14 @@
         &:hover {
             background-color: $primary-accent;
             color: $text-inverse;
-            transform: translateY(-2px);
-            box-shadow: $shadow-accent-sm;
+            transform: $hover-lift;
+            box-shadow: $shadow-accent-hover;
         }
 
         &:active {
             transform: translateY(0);
             box-shadow: none;
+            transition: $transition-pressed;
         }
     }
 }

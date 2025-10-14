@@ -3,7 +3,7 @@
 // =============================================
 
 // ---------------------------------------------
-// # ЦВЕТА (COLORS)
+// # COLORS
 // ---------------------------------------------
 
 // --- Brand & Accent Colors ---
@@ -12,10 +12,11 @@ $primary-accent-dark: #705de0 !default;
 $primary-accent-light: #a496ff !default;
 
 // --- Text Colors ---
+// Note: All text colors meet WCAG AA contrast requirements (4.5:1 minimum)
 $text-primary: #f0f0f0 !default;
 $text-inverse: #ffffff !default;
-$text-secondary: #b8b8b8 !default;
-$text-muted: #c5cdd5 !default;
+$text-secondary: #b8b8b8 !default; // Enhanced from #9e9e9e for better contrast
+$text-muted: #c5cdd5 !default; // Enhanced from #adb5bd for WCAG compliance
 
 // --- Background Colors ---
 $background-body: #121212 !default;
@@ -30,43 +31,62 @@ $gradient-body-start: #3a2562 !default;
 $gradient-body-end: #2c4a6b !default;
 
 // --- Border Colors ---
-$border-color: rgba(255, 255, 255, 0.1) !default;
-$border-color-light: rgba(255, 255, 255, 0.05) !default;
+// Hierarchical border opacity system for consistent visual weight
+$border-color-subtle: rgba(255, 255, 255, 0.03) !default; // Barely visible borders
+$border-color-light: rgba(255, 255, 255, 0.05) !default; // Light borders
+$border-color: rgba(255, 255, 255, 0.1) !default; // Standard borders
+$border-color-strong: rgba(255, 255, 255, 0.15) !default; // Emphasized borders
 
 // --- Semantic Colors ---
 $rating-color: #fdd835 !default;
 $error-color: #ff6b6b !default;
 
-// --- Gradient Colors ---
-$gradient-start: #a1c4fd !default;
-$gradient-mid-1: #c2e9fb !default;
-$gradient-mid-2: #89f7fe !default;
-$gradient-end: #667eea !default;
+// --- Gradient Colors (Logo & Decorative) ---
+// Optimized for light content on dark backgrounds
+$gradient-logo-start: #a1c4fd !default;
+$gradient-logo-mid-1: #c2e9fb !default;
+$gradient-logo-mid-2: #89f7fe !default;
+$gradient-logo-end: #667eea !default;
+$gradient-opacity: 0.9 !default; // For dimming gradients if needed
 
 // --- Glass Effect ---
-$glass-background: rgba(30, 30, 45, 0.7) !default;
+// Multiple levels for different contexts (subtle, default, strong)
+$glass-background-subtle: rgba(30, 30, 45, 0.3) !default; // For default navbar state
+$glass-background: rgba(30, 30, 45, 0.7) !default; // Standard glass effect
+$glass-background-strong: rgba(30, 30, 45, 0.8) !default; // For scrolled navbar state
+$glass-background-fallback: rgba(30, 30, 45, 0.98) !default; // For browsers without backdrop-filter support
+$glass-border-subtle: rgba(255, 255, 255, 0.05) !default;
 $glass-border: rgba(255, 255, 255, 0.15) !default;
 $glass-backdrop-blur: blur(12px) !default;
 
+// --- Navbar Specific Backgrounds ---
+$navbar-bg-default: $glass-background-subtle !default;
+$navbar-bg-scrolled: $glass-background-strong !default;
+$navbar-bg-fallback: $glass-background-fallback !default;
+
 // ---------------------------------------------
-// # ТИПОГРАФИКА (TYPOGRAPHY)
+// # TYPOGRAPHY
 // ---------------------------------------------
 
 // --- Font Family ---
-$font-primary: 'Inter',
-sans-serif !default;
+$font-primary: 'Inter', sans-serif !default;
 
 // --- Font Sizes (fs) ---
-$fs-sm: 0.8rem !default;
-$fs-base: 1rem !default;
-$fs-md: 1.1rem !default;
-$fs-icon-lg: 1.25rem !default;
-$fs-lg: 1.5rem !default;
-$fs-xl: 2rem !default;
-$fs-error-title: 1.75rem !default;
-$fs-logo: 2.25rem !default;
-$fs-xxl: 2.5rem !default;
-$fs-display: clamp(6rem, 25vw, 12rem) !default;
+// Responsive sizes use clamp() for fluid typography across viewports
+$fs-sm: 0.8rem !default; // 12.8px
+$fs-base: 1rem !default; // 16px
+$fs-md: 1.1rem !default; // 17.6px
+$fs-icon-sm: 1rem !default; // 16px - Small icons
+$fs-icon-md: 1.25rem !default; // 20px - Medium icons (most common)
+$fs-icon-lg: 1.5rem !default; // 24px - Large icons
+$fs-lg: 1.5rem !default; // 24px
+$fs-xl: 2rem !default; // 32px
+$fs-error-title: 1.75rem !default; // 28px
+$fs-logo: 2.25rem !default; // 36px
+$fs-logo-fluid: clamp(1.75rem, 4vw, 2.25rem) !default; // Responsive logo size
+$fs-icon-fluid: clamp(1.25rem, 2.5vw, 1.5rem) !default; // Responsive icon size
+$fs-xxl: 2.5rem !default; // 40px
+$fs-display: clamp(6rem, 25vw, 12rem) !default; // 96-192px
 
 // --- Font Weights (fw) ---
 $fw-normal: 400 !default;
@@ -75,20 +95,25 @@ $fw-bold: 700 !default;
 $fw-black: 900 !default;
 
 // --- Line Heights (lh) ---
-$lh-tight: 1.2 !default;
-$lh-normal: 1.6 !default;
-$lh-relaxed: 1.7 !default;
+$lh-ui: 1 !default; // For buttons and inputs (vertically centered text)
+$lh-button: 1.2 !default; // For buttons with breathing room
+$lh-tight: 1.2 !default; // For headings
+$lh-normal: 1.6 !default; // For body text
+$lh-relaxed: 1.7 !default; // For long-form content
 
 // --- Letter Spacing ---
-$letter-spacing-wide: 0.5px !default;
-
+$letter-spacing-tight: -0.02em !default; // For large headings
+$letter-spacing-normal: 0 !default; // Default spacing
+$letter-spacing-wide: 0.025em !default; // For UI elements (0.5px equivalent)
+$letter-spacing-wider: 0.05em !default; // For buttons and labels
 
 // ---------------------------------------------
-// # РАЗМЕРЫ И ОТСТУПЫ (SIZING & SPACING)
+// # SIZING & SPACING
 // ---------------------------------------------
 
-// --- Spacing Scale (используйте для padding, margin, gap) ---
-$spacing-xxs: 0.25rem !default; // 4px 
+// --- Spacing Scale (Use for padding, margin, gap) ---
+// Based on 4px base unit with consistent mathematical progression
+$spacing-xxs: 0.25rem !default; // 4px
 $spacing-xs: 0.5rem !default; // 8px
 $spacing-sm: 0.75rem !default; // 12px
 $spacing-md: 1rem !default; // 16px
@@ -96,47 +121,125 @@ $spacing-lg: 1.5rem !default; // 24px
 $spacing-xl: 2rem !default; // 32px
 $spacing-xxl: 3rem !default; // 48px
 
-// --- Sizing ---
-$loader-size-sm: 1.5rem !default; // 24px
-$loader-size-md: 3.5rem !default; // 56px
-$loader-border-width-sm: 0.1875rem !default; // 3px
-$loader-border-width: 0.4375rem !default; // 7px
+// --- Touch Target Sizes ---
+// Ensuring interactive elements meet accessibility guidelines
+$touch-target-min: 44px !default; // iOS minimum (WCAG 2.5.5 Level AAA)
+$touch-target-comfortable: 48px !default; // Material Design recommendation
+
+// --- Loader Sizes ---
+$loader-size-xs: 1rem !default; // 16px - For small buttons
+$loader-size-sm: 1.5rem !default; // 24px - For regular buttons
+$loader-size-md: 3.5rem !default; // 56px - For page loading
+$loader-border-width-xs: 2px !default; // For xs loader
+$loader-border-width-sm: 0.1875rem !default; // 3px - For sm loader
+$loader-border-width: 0.4375rem !default; // 7px - For md loader
 
 // --- Border Radius ---
+// Consistent radius scale for different UI elements
 $radius-sm: 8px !default;
 $radius-md: 12px !default;
 $radius-lg: 16px !default;
-$radius-input: 20px !default;
+$radius-input: 20px !default; // Intentionally softer for form elements
 $radius-xl: 24px !default;
 $radius-pill: 999px !default;
 $radius-circle: 50% !default;
 
+// --- Icon Sizes ---
+// Standardized icon sizing system
+$icon-size-sm: 1rem !default; // 16px
+$icon-size-md: 1.25rem !default; // 20px
+$icon-size-lg: 1.5rem !default; // 24px
+
 // --- Layouts ---
 $header-height: 7rem !default; // 112px
-$header-height-tablet: 4.35 !default; // ~70px
-$header-height-mobile: 3.75 !default; // 60 px
+$header-height-tablet: 4.35rem !default; // ~70px
+$header-height-mobile: 3.75rem !default; // 60px
 $container-width: 1100px !default;
-$z-index-sticky: 1000 !default;
+$container-width-fluid: min(1100px, 95vw) !default; // Responsive container
+$container-padding: 1rem !default; // Horizontal padding for containers
 
+// --- Safe Area Insets ---
+// For devices with notches and rounded corners
+$safe-area-top: env(safe-area-inset-top, 0px) !default;
+$safe-area-bottom: env(safe-area-inset-bottom, 0px) !default;
+$safe-area-left: env(safe-area-inset-left, 0px) !default;
+$safe-area-right: env(safe-area-inset-right, 0px) !default;
+
+// --- Z-Index System ---
+// Hierarchical layering for predictable stacking contexts
+$z-index-base: 0 !default; // Base content layer
+$z-index-dropdown: 100 !default; // Dropdowns and popovers
+$z-index-sticky: 200 !default; // Sticky headers (navbar)
+$z-index-fixed: 300 !default; // Other fixed elements
+$z-index-modal-backdrop: 400 !default; // Modal backdrops
+$z-index-modal: 500 !default; // Modal dialogs
+$z-index-popover: 600 !default; // Tooltips and popovers
+$z-index-toast: 700 !default; // Toast notifications
 
 // ---------------------------------------------
-// # ЭФФЕКТЫ (EFFECTS)
+// # EFFECTS
 // ---------------------------------------------
 
 // --- Box Shadows ---
-$shadow-md: 0 8px 32px rgba(0, 0, 0, 0.2) !default;
-$shadow-card: 0 4px 15px rgba(0, 0, 0, 0.2) !default;
-$shadow-accent: 0 10px 25px rgba($primary-accent, 0.2) !default;
-$shadow-accent-sm: 0 4px 15px rgba($primary-accent, 0.2) !default;
-$shadow-accent-hover: 0 4px 20px rgba($primary-accent, 0.3) !default;
-$shadow-focus-accent: 0 0 15px rgba($primary-accent, 0.2) !default;
-$shadow-text-accent: 0 0 10px rgba($primary-accent, 0.5) !default;
+// Progressive shadow system from subtle to dramatic
+$shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.1) !default; // Barely visible
+$shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.15) !default; // Light elevation
+$shadow-default: 0 8px 32px rgba(0, 0, 0, 0.2) !default; // Standard elevation (former $shadow-md)
+$shadow-card: 0 4px 15px rgba(0, 0, 0, 0.2) !default; // Card elevation
+$shadow-accent: 0 10px 25px rgba($primary-accent, 0.2) !default; // Accent glow
+$shadow-accent-sm: 0 4px 15px rgba($primary-accent, 0.2) !default; // Small accent glow
+$shadow-accent-hover: 0 4px 20px rgba($primary-accent, 0.3) !default; // Hover accent glow
+$shadow-text-accent: 0 0 10px rgba($primary-accent, 0.5) !default; // Text glow effect
+
+// --- Focus Styles ---
+// Accessible focus indicators for keyboard navigation
+$focus-ring-width: 2px !default; // Width of focus ring
+$focus-ring-offset: 2px !default; // Space between element and focus ring
+$focus-ring-color: rgba($primary-accent, 0.5) !default; // Focus ring color
+$shadow-focus-input: 0 0 15px rgba($primary-accent, 0.2) !default; // Focus glow for inputs
+$shadow-focus-button: 0 0 0 3px rgba($primary-accent, 0.3) !default; // Focus ring for buttons
 
 // --- Transitions ---
-$transition-base: 0.3s !default;
-$transition-fast: 0.2s !default;
-$transition-slow: 0.5s !default;
+// Specialized timing for different interaction types
+$transition-micro: 150ms !default; // Instant feedback (icon hover, button press)
+$transition-fast: 200ms !default; // Quick interactions
+$transition-base: 250ms !default; // Standard interactions
+$transition-layout: 400ms !default; // Layout changes (mobile menu, search expansion)
+$transition-smooth: 600ms !default; // Smooth animations (modals, page transitions)
+$transition-reduced: 0.01ms !default; // For prefers-reduced-motion
+
+// --- Timing Functions ---
+// Custom easing curves for natural motion
+$ease-in-out-smooth: cubic-bezier(0.4, 0, 0.2, 1) !default; // Material Design standard
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1) !default; // Smooth deceleration
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1) !default; // Subtle bounce effect
+
+// --- Animation Durations ---
+// Standardized durations for various animations
+$animation-gradient-duration: 3s !default; // For gradient flow animations
+$animation-pulse-duration: 2s !default; // For pulse effects
+$animation-spin-duration: 1s !default; // For loader spinners
+$animation-play-state-reduced: paused !default; // For prefers-reduced-motion
 
 // --- Filters ---
-$backdrop-blur: blur(10px) !default;
-$backdrop-blur-sm: blur(5px) !default;
+$backdrop-blur: blur(10px) !default; // Standard blur
+$backdrop-blur-sm: blur(5px) !default; // Subtle blur
+
+// --- Hover & Active States ---
+// Standardized interaction effects
+$hover-brightness: 1.1 !default; // Brightness increase on hover
+$hover-opacity: 0.9 !default; // Opacity decrease on hover (alternative)
+$hover-lift: translateY(-2px) !default; // Lift effect on hover
+
+// --- Transform Scales ---
+// Consistent scale values for press and hover effects
+$scale-down-sm: 0.95 !default; // Subtle pressed effect
+$scale-down-md: 0.9 !default; // Obvious pressed effect
+$scale-up-sm: 1.05 !default; // Subtle hover lift
+$scale-up-md: 1.1 !default; // Dramatic hover lift
+
+// --- Button States ---
+// Specific values for button interactions
+$button-pressed-scale: 0.95 !default; // Scale on active/press
+$button-pressed-opacity: 0.9 !default; // Alternative to scale
+$transition-pressed: 100ms !default; // Instant press feedback

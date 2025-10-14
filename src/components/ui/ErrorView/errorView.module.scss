@@ -13,6 +13,7 @@
     border: 1px solid $border-color;
     border-radius: $radius-lg;
     color: $text-primary;
+    box-shadow: $shadow-default;
 }
 
 .errorIcon {
@@ -47,12 +48,13 @@
     &:hover {
         background-color: $primary-accent;
         color: $text-inverse;
-        transform: translateY(-2px);
-        box-shadow: $shadow-accent-sm;
+        transform: $hover-lift;
+        box-shadow: $shadow-accent-hover;
     }
 
     &:active {
         transform: translateY(0);
         box-shadow: none;
+        transition: $transition-pressed;
     }
 }

@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .notFoundPage {
   display: grid;
@@ -12,28 +12,26 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  
-  background: rgba($background-glass-base, 0.5);
-  backdrop-filter: $backdrop-blur;
+  background: $glass-background;
+  backdrop-filter: $glass-backdrop-blur;
   border: 1px solid $border-color;
   border-radius: $radius-xl;
   padding: $spacing-xxl;
   max-width: 600px;
   width: 100%;
-  box-shadow: $shadow-md;
+  box-shadow: $shadow-default;
 }
 
 .errorCode {
   font-size: $fs-display;
   font-weight: $fw-black;
   margin: 0;
-  line-height: 1;
-
-  background: linear-gradient(130deg, $gradient-start, $gradient-mid-1, $gradient-mid-2, $gradient-end);
+  line-height: $lh-ui;
+  background: linear-gradient(130deg, $gradient-logo-start, $gradient-logo-mid-1, $gradient-logo-mid-2, $gradient-logo-end);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-pan 4s ease infinite;
+  animation: gradient-pan $animation-gradient-duration $ease-in-out-smooth infinite;
 }
 
 .title {
@@ -63,24 +61,34 @@
   padding: $spacing-sm $spacing-lg;
   font-size: $fs-base;
   font-weight: $fw-semibold;
-  text-decoration: none;
-  cursor: pointer;
-  transition: $transition-base;
+  transition:
+    background-color $transition-base $ease-in-out-smooth,
+    transform $transition-base $ease-in-out-smooth,
+    box-shadow $transition-base $ease-in-out-smooth;
 
   &:hover {
     background-color: $primary-accent-dark;
-    transform: translateY(-2px);
+    transform: $hover-lift;
     box-shadow: $shadow-accent-sm;
   }
 
   &:active {
     transform: translateY(0);
     box-shadow: none;
+    transition: transform $transition-pressed;
   }
 }
 
 @keyframes gradient-pan {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }

@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .card {
     background: $glass-background;
@@ -12,12 +12,11 @@
     max-width: 320px;
     border: 1px solid $glass-border;
     transition: transform $transition-base, box-shadow $transition-base;
-    box-shadow: $shadow-card,
-        0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    box-shadow: $shadow-card, $shadow-accent;
     cursor: pointer;
 
     &:hover {
-        box-shadow: $shadow-accent;
+        box-shadow: $shadow-accent-hover;
     }
 
     &__imageWrapper {
@@ -26,10 +25,7 @@
         padding-top: 100%;
         border-radius: $radius-lg $radius-lg 0 0;
         overflow: hidden;
-
-        background: linear-gradient(135deg,
-                rgba($primary-accent-light, 0.1),
-                rgba($primary-accent, 0.05));
+        background: $background-image-holder;
 
         &::before {
             content: '';
@@ -50,10 +46,10 @@
         height: 100%;
         object-fit: contain;
         padding: $spacing-lg;
-        transition: transform $transition-base ease;
+        transition: transform $transition-base $ease-out-expo;
 
         .card:hover & {
-            transform: scale(1.05);
+            transform: scale($scale-up-sm);
         }
     }
 
@@ -78,12 +74,13 @@
     &__title {
         font-size: $fs-md;
         font-weight: $fw-semibold;
+        line-height: $lh-tight;
         margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        min-height: 33px;
+        min-height: calc($fs-md * $lh-tight * 2);
     }
 
     &__rating {
@@ -121,7 +118,7 @@
         text-decoration: line-through;
         margin-right: $spacing-xs;
     }
-    
+
     &__discountPrice {
         font-size: $fs-lg;
         font-weight: $fw-bold;
@@ -139,11 +136,11 @@
 
         &:hover {
             background-color: $primary-accent-dark;
-            transform: scale(1.05);
+            transform: scale($scale-up-sm);
         }
 
         &:active {
-            transform: scale(0.98);
+            transform: scale($button-pressed-scale);
         }
     }
 }
