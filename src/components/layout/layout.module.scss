@@ -4,10 +4,6 @@
     padding-top: $header-height;
     min-height: 100vh;
 
-    @media (max-width: 768px) {
-        padding-top: $header-height-tablet;
-    }
-
     @media (max-width: 460px) {
         padding-top: 0;
     }

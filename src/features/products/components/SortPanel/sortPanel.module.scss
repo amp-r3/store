@@ -1,5 +1,33 @@
 @use '@/styles/index'as *;
 
+// Keyframe for the main icon's pulse effect
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale($scale-up-md);
+    opacity: 0.8;
+  }
+}
+
+// Keyframe for staggering button animation on mobile
+@keyframes slideInButton {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .sort_panel {
   background: $glass-background;
   backdrop-filter: $glass-backdrop-blur;
@@ -16,6 +44,12 @@
     align-items: center;
     gap: $spacing-sm;
     margin-bottom: $spacing-md;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
   }
 
   &__icon {
@@ -33,9 +67,12 @@
   }
 
   &__options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $spacing-sm;
+    >div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-sm;
+      transition: all $transition-layout $ease-in-out-smooth;
+    }
   }
 
   &__button {
@@ -135,20 +172,7 @@
   }
 }
 
-@keyframes pulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale($scale-up-md);
-    opacity: 0.8;
-  }
-}
-
+// --- Responsive adjustments for smaller screens ---
 @media (max-width: 768px) {
   .sort_panel {
     padding: $spacing-md;
@@ -160,6 +184,88 @@
     &__button {
       padding: $spacing-xs $spacing-md;
       font-size: $fs-sm;
+    }
+  }
+}
+
+// --- Mobile Accordion ---
+@media (max-width: 550px) {
+  .sort_panel {
+    padding: 0;
+
+    &__header {
+      cursor: pointer;
+      user-select: none;
+      padding: $spacing-md $spacing-lg;
+      margin-bottom: 0;
+      border-radius: $radius-lg;
+      transition: background-color $transition-fast $ease-in-out-smooth;
+      position: relative;
+      justify-content: space-between;
+
+      &:hover {
+        background-color: rgba($primary-accent, 0.05);
+      }
+    }
+
+    &__chevron {
+      font-size: $fs-icon-md;
+      color: $text-secondary;
+      transition: all $transition-layout $ease-out-expo;
+
+      &.expanded {
+        transform: rotate(180deg);
+        color: $primary-accent;
+      }
+    }
+
+    &__label {
+      flex: 1;
+      font-size: $fs-base;
+    }
+
+    &__icon {
+      animation: none;
+      font-size: $fs-icon-md;
+    }
+
+    &__options {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition:
+        max-height $transition-layout $ease-in-out-smooth,
+        opacity $transition-fast $ease-in-out-smooth;
+
+      >div {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: $spacing-sm;
+        padding: $spacing-md;
+        padding-top: $spacing-sm;
+      }
+
+      &.expanded {
+        max-height: 40rem;
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+
+    &__button {
+      font-size: $fs-sm;
+      display: flex;
+      justify-content: center;
+      opacity: 0;
+      animation: slideInButton $transition-layout $ease-out-expo forwards;
+
+      @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{$i * 40}ms;
+        }
+      }
     }
   }
 }

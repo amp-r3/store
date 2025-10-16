@@ -21,23 +21,22 @@ export function useProductCatalog() {
         setSearchParams({ page: newPage });
     };
 
+    const activeSortOption = sortingOptions.find(opt => opt.id === currentSortId);
 
     useEffect(() => {
         if (!isSearchActive) {
-            const activeSortOption = sortingOptions.find(opt => opt.id === currentSortId);
 
             const params = {
                 page: currentPage,
                 sortBy: activeSortOption.sortBy,
                 order: activeSortOption.order
             };
-            console.log(params);
 
             dispatch(getProducts(params));
         }
-    }, [dispatch, currentPage, isSearchActive, currentSortId]);
+    }, [dispatch, currentPage, isSearchActive, activeSortOption ]);
 
     const productsToDisplay = isSearchActive ? searchResults : productArray;
     
-    return { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, status, isSearchActive, sortingOptions }
+    return { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, status, isSearchActive, sortingOptions, activeSortOption }
 }

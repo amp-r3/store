@@ -17,7 +17,7 @@ import {
 export const sortingOptions = [
     {
         id: 'default',
-        label: 'Popular',
+        label: 'by Popular',
         sortBy: null,
         order: null,
         icon: IoFlame
