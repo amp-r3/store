@@ -10,6 +10,7 @@
     display: flex;
     flex-direction: column;
     max-width: 320px;
+    width: 100%;
     border: 1px solid $glass-border;
     transition: transform $transition-base, box-shadow $transition-base;
     box-shadow: $shadow-card, $shadow-accent;
@@ -67,6 +68,9 @@
     }
 
     &__body {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
         padding: $spacing-md;
         flex-grow: 1;
     }
@@ -77,38 +81,49 @@
         line-height: $lh-tight;
         margin: 0;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        min-height: calc($fs-md * $lh-tight * 2);
+        text-overflow: ellipsis;
+        min-height: calc($fs-md * $lh-tight);
+    }
+
+    &__ratingCount {
+        color: $text-secondary;
+        font-size: $fs-sm;
     }
 
     &__rating {
         display: flex;
         align-items: center;
         gap: $spacing-xxs;
-        margin-top: $spacing-md;
-        font-size: $fs-sm;
+        margin-top: $spacing-xs;
+        font-size: $fs-base;
         color: $rating-color;
     }
 
-    &__ratingCount {
-        color: $text-secondary;
-    }
-
     &__stock {
-        font-size: $fs-sm;
-        font-weight: $fw-semibold;
+        font-size: $fs-base;
+        font-weight: $fw-normal;
         color: $primary-accent-light;
     }
 
     &__footer {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
         padding: $spacing-md;
         border-top: 1px solid $border-color;
         margin-top: auto;
+        gap: $spacing-md;
+    }
+
+    &__price_wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: $spacing-xs;
     }
 
     &__price {
@@ -129,10 +144,13 @@
         background-color: $primary-accent;
         color: $text-inverse;
         border-radius: $radius-sm;
-        padding: $spacing-sm $spacing-md;
+        padding: $spacing-sm $spacing-sm;
         font-size: $fs-sm;
         font-weight: $fw-semibold;
         transition: background-color $transition-base, transform $transition-fast;
+        min-width: max-content;
+        width: 100%;
+
 
         &:hover {
             background-color: $primary-accent-dark;
@@ -142,5 +160,41 @@
         &:active {
             transform: scale($button-pressed-scale);
         }
+    }
+}
+
+@media (max-width: 720px) {
+    .card {
+        max-width: 280px;
+
+        &__title {
+            font-size: $fs-base;
+        }
+
+    }
+}
+@media (max-width: 505px) {
+    .card {
+
+        &__title {
+            font-size: $fs-base;
+        }
+
+        &__stock {
+            font-size: $fs-sm;
+        }
+
+        &__rating {
+            font-size: $fs-sm;;
+        }
+
+        &__price {
+            font-size: $fs-sm;
+        }
+
+        &__discountPrice {
+            font-size: $fs-md;
+        }
+
     }
 }

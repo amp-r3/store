@@ -4,13 +4,15 @@ import { IoSearchSharp, IoCartOutline, IoClose, IoHome } from "react-icons/io5";
 // Components
 import { Loader } from '@/components/ui'
 // Custom Hooks
-import { useNavbarScroll, useSearch } from '@/hooks';
+import { useMediaQuery, useNavbarScroll, useSearch } from '@/hooks';
 // Styles
 import style from './navbar.module.scss';
 
 const Navbar = () => {
   const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange, isSearchActive, handleSearchActive } = useSearch();
   useNavbarScroll(navRef);
+  const isMobile = useMediaQuery('(max-width: 460px)')
+  console.log(isMobile);
 
   return (
     <header className="container">
@@ -42,7 +44,13 @@ const Navbar = () => {
             disabled={isLoading}
             onClick={handleSearchActive}>
             {
-              isLoading ? <Loader size={'small'} /> : isSearchActive ? <IoClose /> : <IoSearchSharp />
+              isLoading ? (
+                <Loader size={'small'} />
+              ) : isSearchActive && isMobile ? (
+                <IoClose />
+              ) : (
+                <IoSearchSharp />
+              )
             }
           </button>
         </form>

@@ -26,8 +26,10 @@ const ProductCard = ({ id, title, price, category, thumbnail, rating, reviews, d
             </div>
 
             <div className={style.card__footer}>
-                <p className={style.card__price}>${price}</p>
-                <p className={style.card__discountPrice}>${discountedPrice}</p>
+                <div className={style.card__price_wrapper}>
+                    <p className={style.card__price}>${price}</p>
+                    <p className={style.card__discountPrice}>${discountedPrice}</p>
+                </div>
                 <button className={style.card__button}>Add to Cart</button>
             </div>
         </Link>

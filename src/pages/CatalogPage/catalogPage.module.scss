@@ -1,7 +1,37 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
+
 .content {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: $spacing-xl;
     padding: $spacing-xl 0;
+    justify-items: center;
+}
+
+@media (max-width: 720px) {
+    .content {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 505px) {
+    .content {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: $spacing-md;
+        padding: $spacing-md 0;
+    }
+}
+
+@media (max-width: 425px) {
+    .content {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: $spacing-sm;
+        padding: $spacing-sm 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .content {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
 }
