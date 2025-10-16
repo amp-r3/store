@@ -13,7 +13,7 @@ import style from './catalogPage.module.scss'
 import { scrollToTop } from '@/features/products/utils'
 
 const CatalogPage = () => {
-  const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions } = useProductCatalog();
+  const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions, activeSortOption } = useProductCatalog();
 
   useEffect(()=>{
     if (status === 'succeeded') {
@@ -36,6 +36,7 @@ if (status === 'succeeded') {
         <SortPanel
           options={sortingOptions}
           currentSort={currentSortId}
+          activeSortOption={activeSortOption.label}
           onSortChange={setCurrentSortId}
         />
       )}

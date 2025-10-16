@@ -181,6 +181,7 @@
 
     &__searchBtn {
         padding: $spacing-sm;
+        font-size: $fs-icon-lg;
 
         &:disabled {
             cursor: wait;
@@ -218,6 +219,21 @@
                 width: 115px;
             }
         }
+
+        &__cart {
+            font-size: $fs-icon-md;
+            padding: $spacing-xs;
+        }
+
+        &__link {
+            font-size: $fs-icon-md;
+            padding: $spacing-xs;
+        }
+
+        &__searchBtn {
+            font-size: $fs-icon-md;
+            padding: $spacing-xs;
+        }
     }
 }
 
@@ -227,6 +243,26 @@
         bottom: $spacing-md;
         justify-content: unset;
         max-width: 17rem;
+        background: $navbar-bg-scrolled;
+        backdrop-filter: $backdrop-blur;
+        border: 2px solid $border-color;
+        box-shadow: $shadow-default;
+
+        &__cart {
+            font-size: $fs-icon-lg;
+            padding: $spacing-xs;
+        }
+
+        &__link {
+            font-size: $fs-icon-lg;
+            padding: $spacing-xs;
+        }
+
+        &__searchBtn {
+            font-size: $fs-icon-lg;
+            padding: $spacing-xs;
+        }
+
 
         &__logo {
             display: none;
