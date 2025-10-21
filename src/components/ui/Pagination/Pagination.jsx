@@ -1,14 +1,20 @@
 import style from './pagination.module.scss';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { usePagination, DOTS } from '../../../hooks/usePagination';
+import { usePagination, DOTS } from '@/hooks/usePagination';
+import { useMediaQuery } from '@/hooks';
 
 
 const Pagination = ({ totalItems, currentPage, itemsPerPage, onPageChange }) => {
+
+    const isMobile = useMediaQuery('(max-width: 640px)')
+
+    const siblingCount = isMobile ? 0 : 1;
 
     const paginationRange = usePagination({
         totalItems,
         currentPage,
         itemsPerPage,
+        siblingCount,
     })
 
     const totalPages = Math.ceil(totalItems / itemsPerPage);

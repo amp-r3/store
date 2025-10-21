@@ -2,7 +2,7 @@
 
 .pagination {
     display: flex;
-    max-width: 500px;
+    max-width: max-content;
     width: 100%;
     gap: $spacing-xs;
     padding: $spacing-sm $spacing-md;
@@ -69,5 +69,29 @@
         height: $touch-target-min;
         color: $text-muted;
         font-size: $fs-base;
+    }
+}
+
+// =============================================
+//               MOBILE ADAPTATION
+// =============================================
+
+@media (max-width: 600px) {
+    .pagination {
+        padding: $spacing-xs $spacing-sm;
+        gap: $spacing-xxs;
+
+        &__item,
+        &__dots {
+            width: 40px;
+            height: 40px;
+            font-size: $fs-sm;
+        }
+
+        &__item {
+            &:hover {
+                transform: none;
+            }
+        }
     }
 }

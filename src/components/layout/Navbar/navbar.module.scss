@@ -26,7 +26,7 @@
     top: $spacing-lg;
     left: 50%;
     transform: translateX(-50%);
-    z-index: $z-index-sticky;
+    z-index: $z-index-fixed;
     width: 100%;
     background: $navbar-bg-default;
     border: 2px solid $border-color-subtle;
