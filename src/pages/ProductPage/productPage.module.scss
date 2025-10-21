@@ -287,11 +287,15 @@
         padding: $spacing-lg 0;
 
         &__title {
-            font-size: $fs-md;
+            font-size: $fs-lg;
         }
 
-        &__discount-price {
-            font-size: $fs-md;
+        &__description {
+            line-height: $lh-tight;
+        }
+
+        &__price {
+            font-size: $fs-lg;
         }
 
         &__reviews-list {
