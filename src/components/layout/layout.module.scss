@@ -3,6 +3,7 @@
 .layout {
     padding-top: $header-height;
     min-height: 100vh;
+    padding-bottom: $header-height;
 
     @media (max-width: 460px) {
         padding-top: 0;

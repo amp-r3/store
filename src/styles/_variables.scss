@@ -52,7 +52,7 @@ $gradient-opacity: 0.9 !default;
 // --- Glass Effect ---
 // Multiple levels for different contexts (subtle, default, strong)
 $glass-background-subtle: rgba(22, 22, 31, 0.35) !default;
-$glass-background: rgba(22, 22, 31, 0.65) !default;
+$glass-background: rgba(22, 22, 31, 0.5) !default;
 $glass-background-strong: rgba(22, 22, 31, 0.85) !default;
 $glass-background-fallback: rgba(22, 22, 31, 0.98) !default;
 $glass-border-subtle: rgba(255, 255, 255, 0.06) !default;
@@ -113,6 +113,7 @@ $letter-spacing-wider: 0.05em !default;
 // ---------------------------------------------
 
 // --- Spacing Scale (Use for padding, margin, gap) ---
+
 $spacing-xxs: 0.25rem !default;
 $spacing-xs: 0.5rem !default;
 $spacing-sm: 0.75rem !default;
@@ -222,7 +223,7 @@ $animation-spin-duration: 1s !default;
 $animation-play-state-reduced: paused !default;
 
 // --- Filters ---
-$backdrop-blur: blur(12px) !default;
+$backdrop-blur: blur(10px) !default;
 $backdrop-blur-sm: blur(6px) !default;
 
 // --- Hover & Active States ---

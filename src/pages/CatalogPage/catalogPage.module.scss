@@ -18,7 +18,6 @@
     .content {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: $spacing-md;
-        padding: $spacing-md 0;
     }
 }
 
@@ -26,7 +25,6 @@
     .content {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: $spacing-sm;
-        padding: $spacing-sm 0;
     }
 }
 
