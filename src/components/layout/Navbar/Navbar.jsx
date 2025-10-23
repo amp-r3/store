@@ -12,7 +12,6 @@ const Navbar = () => {
   const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange, isSearchActive, handleSearchActive } = useSearch();
   useNavbarScroll(navRef);
   const isMobile = useMediaQuery('(max-width: 460px)')
-  console.log(isMobile);
 
   return (
     <header className="container">
