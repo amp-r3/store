@@ -16,10 +16,6 @@
     box-shadow: $shadow-card, $shadow-accent;
     cursor: pointer;
 
-    &:hover {
-        box-shadow: $shadow-accent-hover;
-    }
-
     &__imageWrapper {
         position: relative;
         width: 100%;
@@ -58,8 +54,8 @@
         position: absolute;
         top: $spacing-sm;
         left: $spacing-sm;
-        background-color: rgba($primary-accent, 0.9);
-        color: $text-inverse;
+        background-color: rgba($primary-accent-dark, 0.8);
+        color: $text-primary;
         padding: $spacing-xxs $spacing-sm;
         border-radius: $radius-input;
         font-size: $fs-sm;
@@ -141,20 +137,20 @@
     }
 
     &__button {
-        background-color: $primary-accent;
+        background-color: $primary-accent-dark;
         color: $text-inverse;
         border-radius: $radius-sm;
         padding: $spacing-sm $spacing-sm;
         font-size: $fs-sm;
         font-weight: $fw-semibold;
-        transition: background-color $transition-base, transform $transition-fast;
+        transition: background-color $transition-base, transform $transition-fast, box-shadow $transition-base;
         min-width: max-content;
         width: 100%;
 
 
         &:hover {
-            background-color: $primary-accent-dark;
             transform: scale($scale-up-sm);
+            box-shadow: $shadow-accent-hover;
         }
 
         &:active {

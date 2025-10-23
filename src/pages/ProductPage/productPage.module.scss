@@ -147,7 +147,7 @@
         display: inline-flex;
         align-items: center;
         gap: $spacing-sm;
-        background-color: $primary-accent;
+        background-color: $primary-accent-dark;
         color: $text-inverse;
         border: none;
         border-radius: $radius-md;
@@ -157,7 +157,6 @@
         transition: transform $transition-pressed, background-color $transition-base, box-shadow $transition-base;
 
         &:hover {
-            background-color: $primary-accent-dark;
             transform: scale($scale-up-sm);
             box-shadow: $shadow-accent-hover;
         }
@@ -180,7 +179,7 @@
         font-size: $fs-xl;
         font-weight: $fw-bold;
         margin-bottom: $spacing-lg;
-        color: $primary-accent-light;
+        color: $text-inverse;
     }
 
     &__reviews-list {
