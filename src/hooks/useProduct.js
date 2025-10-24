@@ -12,8 +12,6 @@ export function useProduct(id) {
         if (product) {
             return;
         }
-
-        
         if (!product && status !== 'loading') {
             dispatch(getProductsById(id));
         }

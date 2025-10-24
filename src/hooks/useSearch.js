@@ -19,44 +19,40 @@ export function useSearch() {
     };
 
     const handleSearchActive = () => {
-    if (!searchQuery) {
-        setIsSearchActive(!isSearchActive)
+        if (!searchQuery) {
+            setIsSearchActive(!isSearchActive)
+        }
     }
-}
 
-const updateSearchText = (text) => {
-    setSearchQuery(text);
-};
-
-const clearSearchResults = () => {
-    dispatch(clearSearch())
-}
-
-const handleClear = () => {
-    updateSearchText('');
-    clearSearchResults();
-    setIsSearchActive(false)
-}
-
-const handleInputChange = (event) => {
-    const newText = event.target.value
-    if (searchQuery) {
-        setIsSearchActive(true)
+    const clearSearchResults = () => {
+        dispatch(clearSearch())
     }
-    updateSearchText(newText)
-    if (newText === '') {
+
+    const handleClear = () => {
+        setSearchQuery('');
         clearSearchResults();
+        setIsSearchActive(false)
     }
-}
 
-return {
-    isLoading,
-    searchQuery,
-    navRef,
-    handleSearch,
-    handleClear,
-    handleInputChange,
-    isSearchActive,
-    handleSearchActive
-}
+    const handleInputChange = (event) => {
+        const newText = event.target.value;
+        setSearchQuery(newText);
+
+        if (newText === '') {
+            clearSearchResults();
+        } else if (!isSearchActive) {
+            setIsSearchActive(true);
+        }
+    }
+
+    return {
+        isLoading,
+        searchQuery,
+        navRef,
+        handleSearch,
+        handleClear,
+        handleInputChange,
+        isSearchActive,
+        handleSearchActive
+    }
 }

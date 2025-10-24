@@ -44,7 +44,7 @@ const Navbar = () => {
             onClick={handleSearchActive}>
             {
               isLoading ? (
-                <Loader size={'small'} />
+                <Loader size={'sm'} />
               ) : isSearchActive && isMobile ? (
                 <IoClose />
               ) : (

@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 // UI components
 import { Loader, Pagination, ErrorView, NoResults } from '@/components/ui'
 
@@ -15,11 +14,12 @@ import { scrollToTop } from '@/features/products/utils'
 const CatalogPage = () => {
   const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions, activeSortOption } = useProductCatalog();
 
-  useEffect(()=>{
-    if (status === 'succeeded') {
+  const onPageChange = (page) => {
+    setCurrentPage(page)
+    if (status === 'succeeded'){
       scrollToTop()
     }
-  }, [currentPage, status])
+  }
 
 if (status === 'loading') {
   return (
@@ -53,7 +53,7 @@ if (status === 'succeeded') {
             totalItems={200}
             currentPage={currentPage}
             itemsPerPage={12}
-            onPageChange={setCurrentPage}
+            onPageChange={onPageChange}
           />
         )
       }

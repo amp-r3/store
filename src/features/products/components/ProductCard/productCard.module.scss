@@ -61,6 +61,8 @@
         font-size: $fs-sm;
         font-weight: $fw-semibold;
         text-transform: capitalize;
+        max-width: max-content;;
+        width: 100%;
     }
 
     &__body {
@@ -171,7 +173,6 @@
 }
 @media (max-width: 505px) {
     .card {
-
         &__title {
             font-size: $fs-base;
         }

@@ -14,5 +14,5 @@ export function useNavbarScroll(navRef) {
 
         return () => window.removeEventListener('scroll', handleScroll);
 
-    }, []);
+    }, [navRef]);
 }
