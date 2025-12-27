@@ -16,8 +16,10 @@ const CatalogPage = () => {
 
   const onPageChange = (page) => {
     setCurrentPage(page)
-    if (status === 'succeeded'){
-      scrollToTop()
+    if (productsToDisplay){
+      setTimeout(() => {
+        scrollToTop()
+      }, 150);
     }
   }
 
