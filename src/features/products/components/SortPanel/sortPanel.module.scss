@@ -1,6 +1,5 @@
 @use '@/styles/index'as *;
 
-// Keyframe for the main icon's pulse effect
 @keyframes pulse {
 
   0%,
@@ -15,7 +14,6 @@
   }
 }
 
-// Keyframe for staggering button animation on mobile
 @keyframes slideInButton {
   from {
     opacity: 0;
@@ -172,7 +170,6 @@
   }
 }
 
-// --- Responsive adjustments for smaller screens ---
 @media (max-width: 768px) {
   .sort_panel {
     padding: $spacing-md;
