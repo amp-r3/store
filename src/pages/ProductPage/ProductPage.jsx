@@ -54,10 +54,10 @@ const ProductPage = () => {
             <main className={style['product-page']}>
                 <div className={style['product-page__container']} key={id}>
                     <div className={style['product-page__back-wrapper']}>
-                        <Link to="/" className={style['product-page__back-link']}>
+                        <button onClick={()=> navigate(-1)} className={style['product-page__back-link']}>
                             <FaChevronLeft size={14} />
                             <span>Back to catalog</span>
-                        </Link>
+                        </button>
                     </div>
 
                     <div className={style['product-page__layout']}>
