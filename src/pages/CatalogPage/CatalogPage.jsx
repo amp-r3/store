@@ -16,59 +16,59 @@ const CatalogPage = () => {
 
   const onPageChange = (page) => {
     setCurrentPage(page)
-    if (productsToDisplay){
+    if (productsToDisplay) {
       setTimeout(() => {
         scrollToTop()
       }, 150);
     }
   }
 
-if (status === 'loading') {
-  return (
-    <Loader />
-  )
-}
-if (status === 'failed') {
-  return (<ErrorView />)
-}
-if (status === 'succeeded') {
-  return (
-    <main className='container'>
-      {!isSearchActive && (
-        <SortPanel
-          options={sortingOptions}
-          currentSort={currentSortId}
-          activeSortOption={activeSortOption.label}
-          onSortChange={setCurrentSortId}
-        />
-      )}
-      <div className={style.content}>
-        {
-          productsToDisplay.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))
-        }
-      </div>
-      {
-        !isSearchActive && (
-          <Pagination
-            totalItems={200}
-            currentPage={currentPage}
-            itemsPerPage={12}
-            onPageChange={onPageChange}
+  if (status === 'loading') {
+    return (
+      <Loader />
+    )
+  }
+  if (status === 'failed') {
+    return (<ErrorView />)
+  }
+  if (status === 'succeeded') {
+    return (
+      <main className='container'>
+        {!isSearchActive && (
+          <SortPanel
+            options={sortingOptions}
+            currentSort={currentSortId}
+            activeSortOption={activeSortOption.label}
+            onSortChange={setCurrentSortId}
           />
-        )
-      }
-      {
-        isSearchActive && productsToDisplay.length === 0 && (
-          <NoResults />
-        )
-      }
-    </main>
-  )
-}
+        )}
+        <div className={style.content}>
+          {
+            productsToDisplay.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))
+          }
+        </div>
+        {
+          !isSearchActive && (
+            <Pagination
+              totalItems={200}
+              currentPage={currentPage}
+              itemsPerPage={12}
+              onPageChange={onPageChange}
+            />
+          )
+        }
+        {
+          isSearchActive && productsToDisplay.length === 0 && (
+            <NoResults />
+          )
+        }
+      </main>
+    )
+  }
 
-return <Loader />;
+  return <Loader />;
 }
 
 export default CatalogPage
