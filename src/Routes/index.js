@@ -3,7 +3,6 @@ import { Paths } from "./path";
 import Layout from "@/components/layout/Layout";
 import { ErrorView } from "@/components/ui";
 import CatalogPage from "@/pages/CatalogPage/CatalogPage";
-import Page404 from "@/pages/Page404/Page404";
 
 export const router = createBrowserRouter([
     {
@@ -26,7 +25,10 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "*",
-                        Component: Page404,
+                        lazy: async () => {
+                            const module = await import("@/pages/Page404/Page404");
+                            return { Component: module.default }
+                        }
                     }
                 ]
             }
