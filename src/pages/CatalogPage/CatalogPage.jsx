@@ -14,6 +14,7 @@ import { scrollToTop } from '@/features/products/utils'
 const CatalogPage = () => {
   const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions, activeSortOption } = useProductCatalog();
 
+
   const onPageChange = (page) => {
     setCurrentPage(page)
     if (productsToDisplay) {

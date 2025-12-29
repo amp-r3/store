@@ -9,7 +9,7 @@ const ProductCard = ({ id, title, price, category, thumbnail, rating, reviews, d
     return (
         <Link to={`/product/${id}`} key={id} className={style.card}>
             <div className={style.card__imageWrapper}>
-                <img src={thumbnail} alt={title} className={style.card__image} />
+                <img src={thumbnail} alt={title} className={style.card__image} loading="lazy" decoding="async" />
                 <span className={style.card__category}>{category}</span>
             </div>
 
