@@ -1,15 +1,17 @@
+import { params } from "@/features/products/api/productsApi";
 import { getProducts, selectAllProducts } from "@/features/products/store/productsSlice";
 import { sortingOptions } from "@/features/products/utils";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router";
 
 export function useProductCatalog() {
-    const { status, searchResults } = useSelector((state) => state.products)
+    const { status, searchResults } = useAppSelector((state) => state.products)
     const productArray = useSelector(selectAllProducts);
     const [searchParams, setSearchParams] = useSearchParams();
     const isSearchActive = searchResults !== null;
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
 
     const [currentSortId, setCurrentSortId] = useState('default');

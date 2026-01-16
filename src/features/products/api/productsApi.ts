@@ -18,10 +18,16 @@ export const getProducts = (params) => {
     return apiClient.get(url);
 }
 
-export const getProductById = (id) => {
+export const getProductById = (id: string) => {
     return apiClient.get(`/products/${id}`);
 }
 
-export const searchProducts = (query) => {
+export const searchProducts = (query: string) => {
     return apiClient.get(`/products/search?q=${query}`);
+}
+
+export interface params {
+    page: number;
+    sortBy: string | null;
+    order: string | null;
 }

@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { clearSearch, getProductsBySearch } from '@/features/products/store/productsSlice';
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 
 export function useSearch() {
     const navRef = useRef(null);
-    const dispatch = useDispatch();
-    const { searchStatus } = useSelector((state) => state.products);
+    const dispatch = useAppDispatch();
+    const { searchStatus } = useAppSelector((state) => state.products);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchActive, setIsSearchActive] = useState(false)
 

@@ -1,8 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 // Icons
 import { IoSearchSharp, IoCartOutline, IoClose, IoHome } from "react-icons/io5";
-// Components
-import { Loader } from '@/components/ui'
 // Custom Hooks
 import { useMediaQuery, useNavbarScroll, useSearch } from '@/hooks';
 // Styles

@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 //Components
 import { Loader, ErrorView } from '@/components/ui';
@@ -17,6 +17,7 @@ import { applyDiscount, scrollToTop } from '@/features/products/utils';
 import { useProduct } from '@/hooks';
 // Styles
 import style from './productPage.module.scss';
+import { Navigate } from 'react-router';
 
 const ProductPage = () => {
     const navigate = useNavigate()
@@ -27,7 +28,7 @@ const ProductPage = () => {
         scrollToTop()
     }, [])
 
-    const renderStars = (rating) => {
+    const renderStars = (rating: number) => {
         return Array.from({ length: 5 }, (_, i) =>
             i < Math.round(rating) ? <FaStar key={i} /> : <FaRegStar key={i} />
         );
@@ -43,7 +44,7 @@ const ProductPage = () => {
     }
 
     if (isNotFound) {
-        return navigate('/404')
+        return <Navigate to="/404" replace />
     }
 
     if (status === 'succeeded' && product) {

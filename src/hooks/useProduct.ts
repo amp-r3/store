@@ -1,10 +1,11 @@
 import { getProductsById } from "@/features/products/store/productsSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-export function useProduct(id) {
-    const { products, status } = useSelector((state) => state.products);
-    const dispatch = useDispatch();
+export function useProduct(id: string) {
+    const { products, status } = useAppSelector((state) => state.products);
+    const dispatch = useAppDispatch();
 
     const product = products[id]
 

@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit'
 import { getProducts as fetchProducts, getProductById as fetchProductsById, searchProducts } from '../api'
 import { createSelector } from 'reselect'
+import { ProductStateType } from '@/types/productStateType'
+import { params } from '../api/productsApi'
 
 // Async request to get an array of products
 export const getProducts = createAsyncThunk('products/getProducts',
-  async (params, { rejectWithValue }) => {
+  async (params: params, { rejectWithValue }) => {
     try {
       const response = await fetchProducts(params)
       if (response) {
@@ -23,7 +25,7 @@ export const getProducts = createAsyncThunk('products/getProducts',
 )
 // Async request to get a single object by its id
 export const getProductsById = createAsyncThunk('products/getProductsById',
-  async (product, { rejectWithValue }) => {
+  async (product:string, { rejectWithValue }) => {
     try {
       const response = await fetchProductsById(product)
       if (response) {
@@ -41,7 +43,7 @@ export const getProductsById = createAsyncThunk('products/getProductsById',
 )
 // Async request to get an array of products by search
 export const getProductsBySearch = createAsyncThunk('products/getProductsBySearch',
-  async (query, { rejectWithValue }) => {
+  async (query: string, { rejectWithValue }) => {
     try {
       const response = await searchProducts(query)
       if (response) {
@@ -59,7 +61,7 @@ export const getProductsBySearch = createAsyncThunk('products/getProductsBySearc
   }
 )
 
-const initialState = {
+const initialState: ProductStateType = {
   products: {},
   searchResults: null,
   status: 'idle',
@@ -111,9 +113,12 @@ export const productsSlice = createSlice({
       state.status = 'loading';
     })
     // rejected is common to everyone
-    builder.addMatcher(isRejected(...thunks), (state, action) => {
-      state.error = action.payload.message;
+    builder.addMatcher(isRejected, (state, action) => {
       state.status = 'failed';
+      state.error =
+        (action.payload as any)?.message ??
+        action.error?.message ??
+        'Unknown error';
     });
 
 

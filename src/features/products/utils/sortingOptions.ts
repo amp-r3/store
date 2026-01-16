@@ -14,7 +14,20 @@ import {
 * - order: The `order` parameter for the API request (`asc` or `desc`). `null` for default sorting.
  */
 
-export const sortingOptions = [
+import { IconType } from 'react-icons';
+
+type SortField = 'price' | 'title' | 'stock';
+type SortOrder = 'asc' | 'desc';
+
+interface SortingOption {
+    id: string;
+    label: string;
+    sortBy: SortField | null;
+    order: SortOrder | null;
+    icon: IconType;
+}
+
+export const sortingOptions: readonly SortingOption[] = [
     {
         id: 'default',
         label: 'by Popular',
@@ -50,4 +63,4 @@ export const sortingOptions = [
         order: 'desc',
         icon: IoCheckmarkCircle
     },
-];
+] as const;
