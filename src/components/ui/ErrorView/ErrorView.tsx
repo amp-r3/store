@@ -2,12 +2,13 @@ import { useSelector } from 'react-redux';
 import style from './errorView.module.scss'
 import { TbAlertTriangle } from 'react-icons/tb';
 import { useNavigate } from 'react-router';
+import { useAppSelector } from '@/store/hook';
 const ErrorView = () => {
-    const { error } = useSelector((state) => state.products)
+    const { error } = useAppSelector((state) => state.products)
     const navigate = useNavigate();
 
     const onRetry = () => {
-        window.location.reload(false)
+        window.location.reload()
         navigate('/')
     }
 
