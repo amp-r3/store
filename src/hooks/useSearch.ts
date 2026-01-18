@@ -1,49 +1,75 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router";
 import { clearSearch, getProductsBySearch } from '@/features/products/store/productsSlice';
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 
 export function useSearch() {
-    const navRef = useRef(null);
+    const navRef = useRef<HTMLDivElement>(null); 
     const dispatch = useAppDispatch();
+    
     const { searchStatus } = useAppSelector((state) => state.products);
+    const [searchParams, setSearchParams] = useSearchParams();
+    
     const [searchQuery, setSearchQuery] = useState('');
-    const [isSearchActive, setIsSearchActive] = useState(false)
+    const [isSearchActive, setIsSearchActive] = useState(false);
 
     const isLoading = searchStatus === 'loading';
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!searchQuery) return;
+    const queryFromUrl = searchParams.get('q') || '';
 
-        dispatch(getProductsBySearch(searchQuery));
-    };
+    useEffect(() => {
+        setSearchQuery(queryFromUrl);
 
-    const handleSearchActive = () => {
-        if (!searchQuery) {
-            setIsSearchActive(!isSearchActive)
+        if (queryFromUrl) {
+            setIsSearchActive(true);
+            dispatch(getProductsBySearch(queryFromUrl));
+        } else {
+             dispatch(clearSearch());
         }
-    }
 
-    const clearSearchResults = () => {
-        dispatch(clearSearch())
-    }
+    }, [queryFromUrl, dispatch]); 
 
-    const handleClear = () => {
-        setSearchQuery('');
-        clearSearchResults();
-        setIsSearchActive(false)
-    }
+    const clearSearchResults = useCallback(() => {
+        dispatch(clearSearch());
+    }, [dispatch]);
 
-    const handleInputChange = (event) => {
-        const newText = event.target.value;
-        setSearchQuery(newText);
+    const handleSearch = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
 
-        if (newText === '') {
+        const trimmedQuery = searchQuery.trim();
+
+        if (trimmedQuery) {
+            setSearchParams({ q: trimmedQuery });
+        } else {
+            setSearchParams({});
             clearSearchResults();
+        }
+    }, [searchQuery, setSearchParams, clearSearchResults]);
+
+    const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+        setSearchQuery(newValue);
+
+        if (newValue === '') {
+            clearSearchResults();
+            setSearchParams({})
         } else if (!isSearchActive) {
             setIsSearchActive(true);
         }
-    }
+    }, [isSearchActive, clearSearchResults]);
+
+    const handleSearchActive = useCallback(() => {
+        if (!searchQuery) {
+            setIsSearchActive(prev => !prev);
+        }
+    }, [searchQuery]);
+
+    const handleClear = useCallback(() => {
+        setSearchQuery('');
+        setSearchParams({});
+        clearSearchResults();
+        setIsSearchActive(false);
+    }, [setSearchParams, clearSearchResults]);
 
     return {
         isLoading,
@@ -54,5 +80,5 @@ export function useSearch() {
         handleInputChange,
         isSearchActive,
         handleSearchActive
-    }
+    };
 }
