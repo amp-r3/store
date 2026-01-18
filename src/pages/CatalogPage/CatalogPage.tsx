@@ -7,9 +7,12 @@ import { ProductCard, SortPanel } from '@/features/products/components'
 // Custom Hooks
 import { useProductCatalog } from '@/hooks'
 
+// Utils
+import { scrollToTop } from '@/features/products/utils'
+
 // Styles
 import style from './catalogPage.module.scss'
-import { scrollToTop } from '@/features/products/utils'
+import { Product } from '@/types/productStateType'
 
 const CatalogPage = () => {
   const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions, activeSortOption } = useProductCatalog();
@@ -45,7 +48,7 @@ const CatalogPage = () => {
         )}
         <div className={style.content}>
           {
-            productsToDisplay.map((product) => (
+            productsToDisplay.map((product: Product) => (
               <ProductCard key={product.id} {...product} />
             ))
           }

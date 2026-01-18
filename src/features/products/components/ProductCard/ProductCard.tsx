@@ -2,16 +2,20 @@ import style from './productCard.module.scss'
 import { FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { applyDiscount } from '@/features/products/utils'
+import { Product } from '@/types/productStateType';
+import { FC } from 'react';
 
-const ProductCard = ({ id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock }) => {
+interface ProductCardProps extends Product { }
+
+const ProductCard: FC<ProductCardProps> = ({ id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock }) => {
 
     const discountedPrice = applyDiscount(discountPercentage, price);
     return (
-        <Link to={`/product/${id}`} key={id} className={style.card}>
-            <div className={style.card__imageWrapper}>
+        <div key={id} className={style.card}>
+            <Link to={`/product/${id}`} className={style.card__imageWrapper}>
                 <img src={thumbnail} alt={title} className={style.card__image} loading="lazy" decoding="async" />
                 <span className={style.card__category}>{category}</span>
-            </div>
+            </Link>
 
             <div className={style.card__body}>
                 <h3 className={style.card__title}>{title}</h3>
@@ -32,7 +36,7 @@ const ProductCard = ({ id, title, price, category, thumbnail, rating, reviews, d
                 </div>
                 <button className={style.card__button}>Add to Cart</button>
             </div>
-        </Link>
+        </div>
     );
 };
 

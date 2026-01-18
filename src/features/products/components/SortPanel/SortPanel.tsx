@@ -3,6 +3,7 @@ import style from './sortPanel.module.scss';
 import { useMediaQuery } from '@/hooks';
 import { useState } from 'react';
 
+
 const SortPanel = ({ options, currentSort, onSortChange, activeSortOption }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobileAccordion = useMediaQuery('(max-width: 550px)');

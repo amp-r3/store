@@ -16,10 +16,10 @@ import {
 
 import { IconType } from 'react-icons';
 
-type SortField = 'price' | 'title' | 'stock';
-type SortOrder = 'asc' | 'desc';
+export type SortField = 'price' | 'title' | 'stock';
+export type SortOrder = 'asc' | 'desc';
 
-interface SortingOption {
+export interface SortingOption {
     id: string;
     label: string;
     sortBy: SortField | null;
