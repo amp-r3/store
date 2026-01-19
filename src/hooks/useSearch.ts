@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router";
-import { clearSearch, getProductsBySearch } from '@/features/products/store/productsSlice';
+import { clearSearch, getProducts } from '@/features/products/store/productsSlice';
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 
 export function useSearch() {
-    const navRef = useRef<HTMLDivElement>(null); 
+    const navRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
-    
+
     const { searchStatus } = useAppSelector((state) => state.products);
     const [searchParams, setSearchParams] = useSearchParams();
-    
+
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchActive, setIsSearchActive] = useState(false);
 
@@ -22,12 +22,12 @@ export function useSearch() {
 
         if (queryFromUrl) {
             setIsSearchActive(true);
-            dispatch(getProductsBySearch(queryFromUrl));
+            dispatch(getProducts({search: queryFromUrl}));
         } else {
-             dispatch(clearSearch());
+            dispatch(clearSearch());
         }
 
-    }, [queryFromUrl, dispatch]); 
+    }, [queryFromUrl, dispatch]);
 
     const clearSearchResults = useCallback(() => {
         dispatch(clearSearch());
@@ -47,6 +47,7 @@ export function useSearch() {
     }, [searchQuery, setSearchParams, clearSearchResults]);
 
     const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+
         const newValue = event.target.value;
         setSearchQuery(newValue);
 

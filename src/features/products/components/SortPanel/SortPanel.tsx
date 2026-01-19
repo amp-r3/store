@@ -1,10 +1,15 @@
-import { IoSwapVertical, IoChevronDown } from 'react-icons/io5';
-import style from './sortPanel.module.scss';
-import { useMediaQuery } from '@/hooks';
 import { useState } from 'react';
+// Icons
+import { IoSwapVertical, IoChevronDown } from 'react-icons/io5';
+// Custom hooks
+import { useMediaQuery } from '@/hooks';
+// Style
+import style from './sortPanel.module.scss';
+import { useSort } from '@/hooks/useSort';
 
 
-const SortPanel = ({ options, currentSort, onSortChange, activeSortOption }) => {
+const SortPanel = () => {
+  const { changeSort,  sortingOptions, activeSortOption } = useSort()
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobileAccordion = useMediaQuery('(max-width: 550px)');
 
@@ -16,7 +21,7 @@ const SortPanel = ({ options, currentSort, onSortChange, activeSortOption }) => 
     <>
       <IoSwapVertical className={style.sort_panel__icon} />
       <span className={style.sort_panel__label}>
-        Sort: {activeSortOption}
+        Sort: {activeSortOption.label}
       </span>
       {isMobileAccordion && (
         <IoChevronDown
@@ -45,12 +50,12 @@ const SortPanel = ({ options, currentSort, onSortChange, activeSortOption }) => 
 
       <div className={`${style.sort_panel__options} ${isMobileAccordion && isExpanded ? style.expanded : ''}`}>
         <div>
-          {options.map((option) => (
+          {sortingOptions.map((option) => (
             <button
               key={option.id}
-              className={`${style.sort_panel__button} ${option.id === currentSort ? style.sort_panel__button__active : ''
+              className={`${style.sort_panel__button} ${option.id === activeSortOption.id ? style.sort_panel__button__active : ''
                 }`}
-              onClick={() => onSortChange(option.id)}
+              onClick={() => changeSort(option.id)}
             >
               {option.icon && (
                 <span className={style.sort_panel__button_icon}>

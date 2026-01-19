@@ -4,30 +4,37 @@ const apiClient = axios.create({
     baseURL: 'https://dummyjson.com'
 });
 
-export const getProducts = (params) => {
-    const { page, sortBy, order } = params;
+export interface ProductParams {
+    page?: number;
+    sortBy?: string | null;
+    order?: string | null;
+    search?: string | null;
+}
+
+export const getProducts = (params: ProductParams) => {
+    const { page, sortBy, order, search } = params;
     const limit = 12;
     const skip = (page - 1) * limit;
 
-    let url = `/products?limit=${limit}&skip=${skip}`;
+    const endpoint = search ? '/products/search' : '/products';
 
-    if (sortBy && order) {
-        url += `&sortBy=${sortBy}&order=${order}`;
+    const queryParams = new URLSearchParams({
+        limit: limit.toString(),
+        skip: skip.toString()
+    });
+
+    if (search) {
+        queryParams.append('q', search);
     }
 
-    return apiClient.get(url);
+    if (sortBy && order) {
+        queryParams.append('sortBy', sortBy);
+        queryParams.append('order', order);
+    }
+
+    return apiClient.get(`${endpoint}?${queryParams.toString()}`);
 }
 
 export const getProductById = (id: string) => {
     return apiClient.get(`/products/${id}`);
-}
-
-export const searchProducts = (query: string) => {
-    return apiClient.get(`/products/search?q=${query}`);
-}
-
-export interface params {
-    page: number;
-    sortBy: string | null;
-    order: string | null;
 }

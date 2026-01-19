@@ -1,15 +1,14 @@
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router';
 // Icons
 import { IoSearchSharp, IoCartOutline, IoClose, IoHome } from "react-icons/io5";
 // Custom Hooks
-import { useMediaQuery, useNavbarScroll, useSearch } from '@/hooks';
+import { useNavbarScroll, useSearch } from '@/hooks';
 // Styles
 import style from './navbar.module.scss';
 
 const Navbar = () => {
   const { navRef, handleSearch, searchQuery, isLoading, handleClear, handleInputChange, isSearchActive, handleSearchActive } = useSearch();
   useNavbarScroll(navRef);
-  const isMobile = useMediaQuery('(max-width: 460px)')
 
   return (
     <header className="container">
@@ -38,15 +37,8 @@ const Navbar = () => {
             type='submit'
             className={style.nav__searchBtn}
             aria-label="Search"
-            disabled={isLoading}
             onClick={handleSearchActive}>
-            {
-              isSearchActive && isMobile ? (
-                <IoClose />
-              ) : (
-                <IoSearchSharp />
-              )
-            }
+            <IoSearchSharp />
           </button>
         </form>
         <div className={style.nav__main_actions}>

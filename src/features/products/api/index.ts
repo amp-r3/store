@@ -1,1 +1,1 @@
-export { getProducts, getProductById, searchProducts} from './productsApi'
+export { getProducts, getProductById } from './productsApi'

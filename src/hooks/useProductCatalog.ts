@@ -1,18 +1,18 @@
 import { getProducts, selectAllProducts } from "@/features/products/store/productsSlice";
 import { sortingOptions } from "@/features/products/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router";
+import { useSort } from "./useSort";
 
 export function useProductCatalog() {
     const { status, searchResults } = useAppSelector((state) => state.products)
     const productArray = useAppSelector(selectAllProducts);
     const [searchParams, setSearchParams] = useSearchParams();
-    const isSearchActive = searchResults !== null;
+    const { activeSortOption } = useSort()
     const dispatch = useAppDispatch()
 
-
-    const [currentSortId, setCurrentSortId] = useState('default');
+    const isSearchActive = searchResults !== null;
 
     const currentPage = Number(searchParams.get('page')) || 1;
 
@@ -21,22 +21,21 @@ export function useProductCatalog() {
         setSearchParams({ page: newPage });
     };
 
-    const activeSortOption = sortingOptions.find(opt => opt.id === currentSortId);
 
     useEffect(() => {
-        if (!isSearchActive) {
 
-            const params = {
-                page: currentPage,
-                sortBy: activeSortOption.sortBy,
-                order: activeSortOption.order
-            };
+        const params = {
+            page: currentPage,
+            sortBy: activeSortOption.sortBy,
+            order: activeSortOption.order
+        };
 
-            dispatch(getProducts(params));
-        }
-    }, [dispatch, currentPage, isSearchActive, activeSortOption ]);
+
+        dispatch(getProducts(params));
+
+    }, [dispatch, currentPage, isSearchActive, activeSortOption]);
 
     const productsToDisplay = isSearchActive ? searchResults : productArray;
-    
-    return { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, status, isSearchActive, sortingOptions, activeSortOption }
+
+    return { productsToDisplay, setCurrentPage, currentPage, status, isSearchActive, sortingOptions }
 }

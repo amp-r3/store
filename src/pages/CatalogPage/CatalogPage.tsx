@@ -15,7 +15,7 @@ import style from './catalogPage.module.scss'
 import { Product } from '@/types/productStateType'
 
 const CatalogPage = () => {
-  const { productsToDisplay, setCurrentSortId, currentSortId, setCurrentPage, currentPage, isSearchActive, status, sortingOptions, activeSortOption } = useProductCatalog();
+  const { productsToDisplay, setCurrentPage, currentPage, isSearchActive, status, sortingOptions } = useProductCatalog();
 
 
   const onPageChange = (page) => {
@@ -39,12 +39,7 @@ const CatalogPage = () => {
     return (
       <main className='container'>
         {!isSearchActive && (
-          <SortPanel
-            options={sortingOptions}
-            currentSort={currentSortId}
-            activeSortOption={activeSortOption.label}
-            onSortChange={setCurrentSortId}
-          />
+          <SortPanel/>
         )}
         <div className={style.content}>
           {
