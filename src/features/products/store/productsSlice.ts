@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
 import { getProducts as fetchProducts, getProductById as fetchProductsById } from '../api'
 import { createSelector } from 'reselect'
 import { ProductStateType } from '@/types/productStateType'
@@ -51,6 +51,7 @@ export const getProductsById = createAsyncThunk('products/getProductsById',
 
 const initialState: ProductStateType = {
   products: {},
+  total: 0,
   searchResults: null,
   status: 'idle',
   searchStatus: 'idle',
@@ -69,8 +70,8 @@ export const productsSlice = createSlice({
   extraReducers: (builder) => {
     // Process getProducts
     builder.addCase(getProducts.fulfilled, (state, action) => {
-      const { products, isSearch } = action.payload;
-
+      const { products, isSearch, total } = action.payload;
+      state.total = total
       if (isSearch) {
         // If this is a search, save it in searchResults
         state.searchStatus = 'succeeded';

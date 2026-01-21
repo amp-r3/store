@@ -2,14 +2,13 @@ import { useState } from 'react';
 // Icons
 import { IoSwapVertical, IoChevronDown } from 'react-icons/io5';
 // Custom hooks
-import { useMediaQuery } from '@/hooks';
+import { useMediaQuery, useSort } from '@/hooks';
 // Style
 import style from './sortPanel.module.scss';
-import { useSort } from '@/hooks/useSort';
 
 
 const SortPanel = () => {
-  const { changeSort,  sortingOptions, activeSortOption } = useSort()
+  const { changeSort, sortingOptions, activeSortOption } = useSort()
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobileAccordion = useMediaQuery('(max-width: 550px)');
 

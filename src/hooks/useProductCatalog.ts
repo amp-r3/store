@@ -6,11 +6,13 @@ import { useSearchParams } from "react-router";
 import { useSort } from "./useSort";
 
 export function useProductCatalog() {
-    const { status, searchResults } = useAppSelector((state) => state.products)
+    const { status, searchResults, total } = useAppSelector((state) => state.products)
     const productArray = useAppSelector(selectAllProducts);
     const [searchParams, setSearchParams] = useSearchParams();
     const { activeSortOption } = useSort()
     const dispatch = useAppDispatch()
+
+    const query = searchParams.get('q')
 
     const isSearchActive = searchResults !== null;
 
@@ -18,24 +20,29 @@ export function useProductCatalog() {
 
 
     const setCurrentPage = (newPage) => {
-        setSearchParams({ page: newPage });
+        const params = new URLSearchParams(searchParams);
+        params.set('page', newPage.toString());
+        setSearchParams(params);
     };
-
-
+    
+    
     useEffect(() => {
 
         const params = {
             page: currentPage,
             sortBy: activeSortOption.sortBy,
-            order: activeSortOption.order
+            order: activeSortOption.order,
+            search: query || undefined
         };
 
-
+        
         dispatch(getProducts(params));
-
-    }, [dispatch, currentPage, isSearchActive, activeSortOption]);
+        
+    }, [dispatch, currentPage, activeSortOption, query]);
 
     const productsToDisplay = isSearchActive ? searchResults : productArray;
+    
+    const totalItems = total
 
-    return { productsToDisplay, setCurrentPage, currentPage, status, isSearchActive, sortingOptions }
+    return { productsToDisplay, setCurrentPage, currentPage, status, isSearchActive, sortingOptions, totalItems }
 }

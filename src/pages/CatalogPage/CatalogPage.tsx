@@ -15,7 +15,7 @@ import style from './catalogPage.module.scss'
 import { Product } from '@/types/productStateType'
 
 const CatalogPage = () => {
-  const { productsToDisplay, setCurrentPage, currentPage, isSearchActive, status, sortingOptions } = useProductCatalog();
+  const { productsToDisplay, setCurrentPage, currentPage, isSearchActive, status, totalItems } = useProductCatalog();
 
 
   const onPageChange = (page) => {
@@ -38,9 +38,7 @@ const CatalogPage = () => {
   if (status === 'succeeded') {
     return (
       <main className='container'>
-        {!isSearchActive && (
-          <SortPanel/>
-        )}
+        <SortPanel />
         <div className={style.content}>
           {
             productsToDisplay.map((product: Product) => (
@@ -48,16 +46,12 @@ const CatalogPage = () => {
             ))
           }
         </div>
-        {
-          !isSearchActive && (
-            <Pagination
-              totalItems={200}
-              currentPage={currentPage}
-              itemsPerPage={12}
-              onPageChange={onPageChange}
-            />
-          )
-        }
+        <Pagination
+          totalItems={totalItems}
+          currentPage={currentPage}
+          itemsPerPage={12}
+          onPageChange={onPageChange}
+        />
         {
           isSearchActive && productsToDisplay.length === 0 && (
             <NoResults />

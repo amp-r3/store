@@ -44,6 +44,7 @@ export type LoadingStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
 
 export interface ProductStateType {
     products: Record<number, Product>;
+    total: number;
     searchResults: Product[] | null;
     status: LoadingStatus;
     searchStatus: LoadingStatus;
