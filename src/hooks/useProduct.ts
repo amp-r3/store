@@ -1,7 +1,6 @@
 import { getProductsById } from "@/features/products/store/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
 export function useProduct(id: string) {
     const { products, status } = useAppSelector((state) => state.products);

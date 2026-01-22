@@ -12,14 +12,16 @@ import { scrollToTop } from '@/features/products/utils'
 
 // Styles
 import style from './catalogPage.module.scss'
+
+// Types
 import { Product } from '@/types/productStateType'
 
 const CatalogPage = () => {
-  const { productsToDisplay, setCurrentPage, currentPage, isSearchActive, status, totalItems } = useProductCatalog();
+  const { productsToDisplay, setPage, page, isSearchActive, status, totalItems } = useProductCatalog();
 
 
   const onPageChange = (page) => {
-    setCurrentPage(page)
+    setPage(page)
     if (productsToDisplay) {
       setTimeout(() => {
         scrollToTop()
@@ -48,7 +50,7 @@ const CatalogPage = () => {
         </div>
         <Pagination
           totalItems={totalItems}
-          currentPage={currentPage}
+          currentPage={page}
           itemsPerPage={12}
           onPageChange={onPageChange}
         />

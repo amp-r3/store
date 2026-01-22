@@ -123,17 +123,6 @@ export const productsSlice = createSlice({
   }
 })
 
-// --- SELECTORS ---
-
-const selectProductsObject = (state) => state.products.products;
-
-export const selectAllProducts = createSelector(
-  [selectProductsObject],
-  (productsObject) => {
-    return Object.values(productsObject)
-  }
-)
-
 export const { clearSearch } = productsSlice.actions
 
 export default productsSlice.reducer
