@@ -48,3 +48,7 @@ export interface ProductStateType {
     status: LoadingStatus;
     error: string | null;
 }
+
+export interface CartItem extends Product {
+    quantity: number;
+}

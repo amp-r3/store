@@ -1,4 +1,4 @@
-import {  useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useEffect } from 'react';
 import { Navigate } from 'react-router';
 //Components
@@ -15,18 +15,21 @@ import {
 // Utils
 
 import { scrollToTop } from '@/utils';
-import { applyDiscount,  } from '@/features/products/utils';
+import { applyDiscount, } from '@/features/products/utils';
 
 // Custom Hooks
 import { useProduct } from '@/hooks';
 
 // Styles
 import style from './productPage.module.scss';
+import { useAppDispatch } from '@/store/hook';
+import { addToCart } from '@/features/cart/store/cartSlice';
 
 const ProductPage = () => {
     const navigate = useNavigate()
     const { id } = useParams();
     const { product, status, isNotFound } = useProduct(id)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         scrollToTop()
@@ -37,6 +40,10 @@ const ProductPage = () => {
             i < Math.round(rating) ? <FaStar key={i} /> : <FaRegStar key={i} />
         );
     };
+
+    const handleAddToCart = () => {
+        dispatch(addToCart(product))
+    }
 
 
     if (status === 'loading') {
@@ -59,7 +66,7 @@ const ProductPage = () => {
             <main className={style['product-page']}>
                 <div className={style['product-page__container']} key={id}>
                     <div className={style['product-page__back-wrapper']}>
-                        <button onClick={()=> navigate('/')} className={style['product-page__back-link']}>
+                        <button onClick={() => navigate('/')} className={style['product-page__back-link']}>
                             <FaChevronLeft size={14} />
                             <span>Back to catalog</span>
                         </button>
@@ -91,7 +98,7 @@ const ProductPage = () => {
                             <div className={style['product-page__purchase-box']}>
                                 <p className={style['product-page__price']}>${price}</p>
                                 <p className={style['product-page__discount-price']}>${discountedPrice}</p>
-                                <button className={style['product-page__add-to-cart-btn']}>
+                                <button onClick={handleAddToCart} className={style['product-page__add-to-cart-btn']}>
                                     <FaCartShopping size={20} />
                                     <span>Add to Cart</span>
                                 </button>

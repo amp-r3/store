@@ -14,7 +14,7 @@ import { scrollToTop } from '@/utils'
 import style from './catalogPage.module.scss'
 
 // Types
-import { Product } from '@/types/productStateType'
+import { Product } from '@/types/products'
 
 const CatalogPage = () => {
   const { productsToDisplay, setPage, page, status, totalItems } = useProductCatalog();

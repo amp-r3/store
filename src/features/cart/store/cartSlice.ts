@@ -1,55 +1,55 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { CartItem, Product } from "@/types/products";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-const updateTotals = (state) => {
-    state.totalPrice = 0;
-    state.totalQuantity = 0;
 
-    const cartItems = Object.values(state.items);
-
-    // cartItems.forEach((item) => {
-    //     state.totalPrice += item.product.price * item.quantity;
-    //     state.totalQuantity += item.quantity;
-    // });
+export interface CartState {
+    items: Record<number, CartItem>;
+    isOpen: boolean;
 }
 
-const initialState = {
+const initialState: CartState = {
     items: {},
-    totalPrice: 109.95,
-    totalQuantity: 1,
     isOpen: false
 }
 export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addToCart(state, action) {
-            const { id } = action.payload
+        addToCart: (state, action: PayloadAction<Product>) => {
+            const product = action.payload;
+            const id = product.id;
+
             if (state.items[id]) {
-                state.items[id].quantity++
-            }
-            else {
-                state.items[id] = { product: action.payload, quantity: 1 }
-            }
-            updateTotals(state)
-        },
-        removeFromCart(state, action) {
-            const id = action.payload
-            delete state.items[id]
-            updateTotals(state)
-        },
-        updateQuantity(state, action) {
-            const { id, quantity } = action.payload;
-            if (quantity === 0) {
-                delete state.items[id];
+                state.items[id].quantity += 1;
             } else {
-                state.items[id].quantity = quantity;
+                state.items[id] = {
+                    ...product,
+                    quantity: 1,
+                };
             }
-            updateTotals(state);
         },
-        clearCart(state) {
-            state.items = {}
-            state.totalPrice = 0
-            state.totalQuantity = 0
+        removeFromCart: (state, action: PayloadAction<number>) => {
+            const id = action.payload;
+            delete state.items[id];
+        },
+        changeQuantity: (state, action: PayloadAction<{ id: number; type: 'inc' | 'dec' }>) => {
+            const { id, type } = action.payload;
+            const item = state.items[id];
+
+            if (item) {
+                if (type === 'inc') {
+                    item.quantity++;
+                } else {
+                    if (item.quantity > 1) {
+                        item.quantity--;
+                    } else {
+                        delete state.items[id];
+                    }
+                }
+            }
+        },
+        clearCart: (state) => {
+            state.items = {};
         },
         openCart: (state) => {
             state.isOpen = true;
@@ -60,5 +60,5 @@ export const cartSlice = createSlice({
 
     },
 })
-export const { addToCart, removeFromCart, updateQuantity, clearCart, openCart, closeCart } = cartSlice.actions
+export const { addToCart, removeFromCart, changeQuantity, clearCart, openCart, closeCart } = cartSlice.actions
 export default cartSlice.reducer

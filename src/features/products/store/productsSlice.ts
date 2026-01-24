@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
 import { getProducts as fetchProducts, getProductById as fetchProductsById } from '../api'
-import { ProductStateType } from '@/types/productStateType'
+import { ProductStateType } from '@/types/products'
 import { ProductParams } from '../api/productsApi'
 
 // Async request to get an array of products

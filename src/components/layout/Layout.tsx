@@ -12,12 +12,13 @@ import { closeCart } from '@/features/cart/store/cartSlice';
 
 // Style
 import style from './layout.module.scss';
+import { selectIsCartOpen } from '@/features/cart/store/cartSelectors';
 
 const Layout = () => {
     const navigation = useNavigation();
     const isLoading = navigation.state === 'loading';
     const dispatch = useAppDispatch();
-    const { isOpen } = useAppSelector((state) => state.cart);
+    const isOpen= useAppSelector(selectIsCartOpen);
 
     const handleClose = () => {
         dispatch(closeCart())

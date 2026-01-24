@@ -2,7 +2,7 @@ import style from './productCard.module.scss'
 import { FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { applyDiscount } from '@/features/products/utils'
-import { Product } from '@/types/productStateType';
+import { Product } from '@/types/products';
 import { FC } from 'react';
 
 interface ProductCardProps extends Product { }
