@@ -4,12 +4,11 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useSort } from "./useSort";
-import { selectCatalogDisplayData, selectIsSearchActive } from "@/features/products/store/selectors";
+import { selectAllProducts,} from "@/features/products/store/selectors";
 import { useUrlPagination } from "./useUrlPagination";
 
 export function useProductCatalog() {
-    const productsToDisplay = useAppSelector(selectCatalogDisplayData);
-    const isSearchActive = useAppSelector(selectIsSearchActive);
+    const productsToDisplay = useAppSelector(selectAllProducts);
     const {status, total} = useAppSelector((state) => state.products)
     const [searchParams] = useSearchParams();
     const { activeSortOption } = useSort()
@@ -36,5 +35,5 @@ export function useProductCatalog() {
 
     const totalItems = total
 
-    return { productsToDisplay, setPage, page, status, isSearchActive, sortingOptions, totalItems }
+    return { productsToDisplay, setPage, page, status, sortingOptions, totalItems }
 }

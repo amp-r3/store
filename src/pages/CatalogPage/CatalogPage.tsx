@@ -17,7 +17,7 @@ import style from './catalogPage.module.scss'
 import { Product } from '@/types/productStateType'
 
 const CatalogPage = () => {
-  const { productsToDisplay, setPage, page, isSearchActive, status, totalItems } = useProductCatalog();
+  const { productsToDisplay, setPage, page, status, totalItems } = useProductCatalog();
 
 
   const onPageChange = (page) => {
@@ -55,7 +55,7 @@ const CatalogPage = () => {
           onPageChange={onPageChange}
         />
         {
-          isSearchActive && productsToDisplay.length === 0 && (
+           productsToDisplay.length === 0 && (
             <NoResults />
           )
         }

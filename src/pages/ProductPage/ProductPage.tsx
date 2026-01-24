@@ -1,5 +1,6 @@
 import {  useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Navigate } from 'react-router';
 //Components
 import { Loader, ErrorView } from '@/components/ui';
 // Icons
@@ -17,7 +18,6 @@ import { applyDiscount, scrollToTop } from '@/features/products/utils';
 import { useProduct } from '@/hooks';
 // Styles
 import style from './productPage.module.scss';
-import { Navigate } from 'react-router';
 
 const ProductPage = () => {
     const navigate = useNavigate()

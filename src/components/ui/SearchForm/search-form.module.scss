@@ -79,16 +79,9 @@
         }
 
         &:disabled {
-            cursor: wait;
-            padding: 0;
-            transition: none;
-            transform: scale($scale-down-md);
-
-            &:hover {
-                background-color: transparent;
-                color: $text-muted;
-                border-color: $border-color;
-            }
+            background-color: transparent;
+            border-color: $border-color;
+            color: $text-muted;
         }
     }
 }

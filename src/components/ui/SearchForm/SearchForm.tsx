@@ -8,7 +8,8 @@ interface SearchFormProps {
     handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handleClear: () => void;
     toggleSearch: () => void;
-    isActive: boolean
+    isActive: boolean;
+    isHomePage: boolean;
 }
 
 const SearchForm: FC<SearchFormProps> = ({
@@ -17,7 +18,8 @@ const SearchForm: FC<SearchFormProps> = ({
     handleInputChange,
     handleClear,
     toggleSearch,
-    isActive
+    isActive,
+    isHomePage
 }) => {
 
     return (
@@ -32,13 +34,14 @@ const SearchForm: FC<SearchFormProps> = ({
                     placeholder="Search..."
                     value={inputValue}
                     onChange={handleInputChange}
+                    disabled={!isHomePage}
                 />
                 <button
                     type="button"
                     className={`${styles.searchForm__clearBtn} ${inputValue ? styles['searchForm__clearBtn--visible'] : ''}`}
                     onClick={handleClear}
                     aria-label="Clear search"
-                >
+                    >
                     <IoClose />
                 </button>
             </div>
@@ -47,6 +50,7 @@ const SearchForm: FC<SearchFormProps> = ({
                 className={styles.searchForm__submitBtn}
                 aria-label="Search"
                 onClick={toggleSearch}
+                disabled={!isHomePage || !inputValue}
             >
                 <IoSearchSharp />
             </button>

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
 import { getProducts as fetchProducts, getProductById as fetchProductsById } from '../api'
-import { createSelector } from 'reselect'
 import { ProductStateType } from '@/types/productStateType'
 import { ProductParams } from '../api/productsApi'
 
@@ -10,7 +9,7 @@ export const getProducts = createAsyncThunk('products/getProducts',
     try {
 
       const requestParams = {
-        page: params.page || 1, 
+        page: params.page || 1,
         ...params
       };
 
@@ -52,9 +51,7 @@ export const getProductsById = createAsyncThunk('products/getProductsById',
 const initialState: ProductStateType = {
   products: {},
   total: 0,
-  searchResults: null,
   status: 'idle',
-  searchStatus: 'idle',
   error: null
 }
 
@@ -63,8 +60,8 @@ export const productsSlice = createSlice({
   initialState,
   reducers: {
     clearSearch(state) {
-      state.searchResults = null
-      state.searchStatus = 'idle'
+      state.products = null
+      state.status = 'idle'
     }
   },
   extraReducers: (builder) => {
@@ -74,8 +71,11 @@ export const productsSlice = createSlice({
       state.total = total
       if (isSearch) {
         // If this is a search, save it in searchResults
-        state.searchStatus = 'succeeded';
-        state.searchResults = products;
+        state.status = 'succeeded';
+        state.products = products.reduce((accumulator, currentProduct) => {
+          accumulator[currentProduct.id] = currentProduct;
+          return accumulator;
+        }, {});
       } else {
         // If it's a regular list, save it in products
         state.status = 'succeeded';
@@ -95,14 +95,7 @@ export const productsSlice = createSlice({
     // Pending for getProducts
     builder.addCase(getProducts.pending, (state, action) => {
       state.error = null;
-      const params = action.meta.arg;
-
-      // Defining a status update based on parameters
-      if (params.search) {
-        state.searchStatus = 'loading';
-      } else {
-        state.status = 'loading';
-      }
+      state.status = 'loading';
     });
 
     // Pending for getProductsById
@@ -114,7 +107,6 @@ export const productsSlice = createSlice({
     // Rejected
     builder.addMatcher(isRejected, (state, action) => {
       state.status = 'failed';
-      state.searchStatus = 'failed';
       state.error =
         (action.payload as any)?.message ??
         action.error?.message ??

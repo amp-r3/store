@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 import { clearSearch } from '@/features/products/store/productsSlice';
 import { useAppDispatch } from "@/store/hook";
 
 export function useSearch() {
     const dispatch = useAppDispatch();
+    const location = useLocation()
+
+    const isHomePage = location.pathname === '/';
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -28,20 +31,19 @@ export function useSearch() {
             setSearchParams({ q: trimmedQuery });
         } else {
             setSearchParams({});
-            dispatch(clearSearch());
         }
     }, [inputValue, setSearchParams, dispatch]);
 
     const handleClear = useCallback(() => {
         setInputValue('');
         setSearchParams({});
-        dispatch(clearSearch());
-    }, [setSearchParams, dispatch]);
+    }, [setSearchParams]);
 
     return {
         inputValue,
         handleSearch,
         handleClear,
-        handleInputChange
+        handleInputChange,
+        isHomePage
     };
 }

@@ -10,7 +10,7 @@ import { SearchForm } from '@/components/ui';
 import style from './navbar.module.scss';
 
 const Navbar = () => {
-  const { handleSearch, inputValue, handleClear, handleInputChange,  } = useSearch();
+  const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage  } = useSearch();
   const navRef = useRef<HTMLDivElement>(null);
   useNavbarScroll(navRef);
   const [isActive, setIsSearchActive] = useState(false);
@@ -35,6 +35,7 @@ const Navbar = () => {
           handleClear={handleClear}
           toggleSearch={toggleSearch}
           isActive={isActive}
+          isHomePage={isHomePage}
         />
         <div className={style.nav__main_actions}>
           <ul className={style.nav__menu}>
