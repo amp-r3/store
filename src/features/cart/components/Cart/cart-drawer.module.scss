@@ -1,0 +1,269 @@
+@use '@/styles/index' as *;
+
+.cart {
+    // --- Layout & Positioning ---
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    z-index: $z-index-modal;
+
+    display: flex;
+    flex-direction: column;
+
+    // --- Visuals (Glassmorphism) ---
+    background: $glass-background-strong;
+    backdrop-filter: $glass-backdrop-blur;
+    border-left: 1px solid $glass-border;
+    box-shadow: $shadow-default;
+
+    // --- Animation & State ---
+    transform: translateX(100%);
+    transition: transform $transition-layout $ease-spring;
+    will-change: transform;
+
+    &--open {
+        transform: translateX(0);
+    }
+
+    // --- Backdrop Overlay ---
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: $z-index-modal-backdrop;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity $transition-base ease;
+
+        &--visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+
+    // --- Header Section ---
+    &__header {
+        flex-shrink: 0;
+        padding: $spacing-lg;
+        border-bottom: 1px solid $border-color;
+        background: rgba($background-body, 0.4);
+    }
+
+    &__headerContent {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__title {
+        font-family: $font-primary;
+        font-size: $fs-xl;
+        font-weight: $fw-bold;
+        color: $text-primary;
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        margin: 0;
+    }
+
+    &__count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: $primary-accent;
+        color: $text-inverse;
+        font-size: $fs-sm;
+        font-weight: $fw-bold;
+        height: 1.5rem;
+        min-width: 1.5rem;
+        padding: 0 0.4rem;
+        border-radius: $radius-pill;
+    }
+
+    &__closeBtn {
+        background: transparent;
+        border: none;
+        color: $text-secondary;
+        padding: $spacing-xs;
+        border-radius: $radius-circle;
+        cursor: pointer;
+        transition: all $transition-fast ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background: $border-color;
+            color: $text-primary;
+            transform: rotate(90deg);
+        }
+    }
+
+    // --- Body Section (Scrollable) ---
+    &__body {
+        flex: 1;
+        overflow-y: auto;
+        padding: $spacing-lg;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $border-color-strong;
+            border-radius: $radius-pill;
+        }
+    }
+
+    &__emptyState {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: $text-muted;
+        text-align: center;
+        gap: $spacing-md;
+
+        p {
+            font-size: $fs-md;
+        }
+    }
+
+    &__emptyIcon {
+        opacity: 0.5;
+        color: $text-secondary;
+    }
+
+    // --- Footer Section ---
+    &__footer {
+        flex-shrink: 0;
+        padding: $spacing-xl $spacing-lg;
+        background: rgba($background-body, 0.4);
+        border-top: 1px solid $border-color;
+        backdrop-filter: blur(10px);
+    }
+
+    &__summary {
+        margin-bottom: $spacing-lg;
+    }
+
+    &__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: $spacing-xs;
+    }
+
+    &__label {
+        color: $text-secondary;
+        font-size: $fs-md;
+    }
+
+    &__total {
+        color: $text-primary;
+        font-size: $fs-xxl;
+        font-weight: $fw-bold;
+        letter-spacing: $letter-spacing-tight;
+    }
+
+    &__note {
+        font-size: $fs-sm;
+        color: $text-muted;
+        margin: 0;
+    }
+
+    &__checkoutBtn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: $spacing-sm;
+        padding: $spacing-md;
+
+        background: $primary-accent;
+        color: $text-inverse;
+        font-size: $fs-md;
+        font-weight: $fw-semibold;
+        border: none;
+        border-radius: $radius-md;
+        cursor: pointer;
+
+        box-shadow: $shadow-accent-sm;
+        transition: all $transition-base $ease-out-expo;
+
+        &:hover {
+            background: $primary-accent-dark;
+            box-shadow: $shadow-accent-hover;
+            transform: translateY(-2px);
+        }
+
+        &:active {
+            transform: scale($button-pressed-scale);
+        }
+    }
+
+    // =============================================
+    //               RESPONSIVE
+    // =============================================
+
+    // --- Small Mobile (<375px) ---
+    @media (max-width: 375px) {
+
+        &__header,
+        &__footer {
+            padding: $spacing-md;
+        }
+
+        &__title {
+            font-size: $fs-lg;
+        }
+
+        &__total {
+            font-size: $fs-xl;
+        }
+    }
+
+    // --- Tablet & Desktop (>=768px) ---
+    @media (min-width: 768px) {
+        width: 50vw;
+        max-width: 600px;
+
+        border-top-left-radius: $radius-lg;
+        border-bottom-left-radius: $radius-lg;
+        box-shadow: $shadow-accent;
+    }
+
+    // --- Large Screens (>=1440px) ---
+    @media (min-width: 1440px) {
+
+        &__header,
+        &__body,
+        &__footer {
+            padding: $spacing-xl;
+        }
+
+        &__title {
+            font-size: $fs-xxl;
+        }
+    }
+
+    // --- Landscape Mobile ---
+    @media (max-height: 500px) and (orientation: landscape) {
+
+        &__header,
+        &__footer {
+            padding: $spacing-sm $spacing-md;
+        }
+    }
+
+    // --- Safe Area Support ---
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+        &__footer {
+            padding-bottom: calc(#{$spacing-lg} + #{$safe-area-bottom});
+        }
+    }
+}

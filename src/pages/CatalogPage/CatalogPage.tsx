@@ -8,7 +8,7 @@ import { ProductCard, SortPanel } from '@/features/products/components'
 import { useProductCatalog } from '@/hooks'
 
 // Utils
-import { scrollToTop } from '@/features/products/utils'
+import { scrollToTop } from '@/utils'
 
 // Styles
 import style from './catalogPage.module.scss'

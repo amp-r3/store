@@ -8,10 +8,13 @@ import { useNavbarScroll, useSearch } from '@/hooks';
 import { SearchForm } from '@/components/ui';
 // Styles
 import style from './navbar.module.scss';
+import { useAppDispatch } from '@/store/hook';
+import { openCart } from '@/features/cart/store/cartSlice';
 
 const Navbar = () => {
   const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage  } = useSearch();
   const navRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch()
   useNavbarScroll(navRef);
   const [isActive, setIsSearchActive] = useState(false);
 
@@ -43,7 +46,7 @@ const Navbar = () => {
               <NavLink to="/" className={style.nav__link} end><IoHome /></NavLink>
             </li>
           </ul>
-          <button type='button' className={style.nav__cart}>
+          <button onClick={()=>{ dispatch(openCart()) }} role='button' className={style.nav__cart}>
             <IoCartOutline />
           </button>
         </div>

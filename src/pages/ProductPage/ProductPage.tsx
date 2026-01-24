@@ -1,4 +1,4 @@
-import {  useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router';
 import { useEffect } from 'react';
 import { Navigate } from 'react-router';
 //Components
@@ -13,9 +13,13 @@ import {
     FaRegStar
 } from 'react-icons/fa6';
 // Utils
-import { applyDiscount, scrollToTop } from '@/features/products/utils';
+
+import { scrollToTop } from '@/utils';
+import { applyDiscount,  } from '@/features/products/utils';
+
 // Custom Hooks
 import { useProduct } from '@/hooks';
+
 // Styles
 import style from './productPage.module.scss';
 
@@ -55,7 +59,7 @@ const ProductPage = () => {
             <main className={style['product-page']}>
                 <div className={style['product-page__container']} key={id}>
                     <div className={style['product-page__back-wrapper']}>
-                        <button onClick={()=> navigate(-1)} className={style['product-page__back-link']}>
+                        <button onClick={()=> navigate('/')} className={style['product-page__back-link']}>
                             <FaChevronLeft size={14} />
                             <span>Back to catalog</span>
                         </button>

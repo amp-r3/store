@@ -15,7 +15,8 @@ const updateTotals = (state) => {
 const initialState = {
     items: {},
     totalPrice: 109.95,
-    totalQuantity: 1
+    totalQuantity: 1,
+    isOpen: false
 }
 export const cartSlice = createSlice({
     name: 'cart',
@@ -49,8 +50,15 @@ export const cartSlice = createSlice({
             state.items = {}
             state.totalPrice = 0
             state.totalQuantity = 0
-        }
+        },
+        openCart: (state) => {
+            state.isOpen = true;
+        },
+        closeCart: (state) => {
+            state.isOpen = false;
+        },
+
     },
 })
-export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions
+export const { addToCart, removeFromCart, updateQuantity, clearCart, openCart, closeCart } = cartSlice.actions
 export default cartSlice.reducer
