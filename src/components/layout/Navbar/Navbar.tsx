@@ -10,13 +10,18 @@ import { SearchForm } from '@/components/ui';
 import style from './navbar.module.scss';
 import { useAppDispatch } from '@/store/hook';
 import { openCart } from '@/features/cart/store/cartSlice';
+import { useSelector } from 'react-redux';
+import { selectCartTotalQuantity } from '@/features/cart/store/cartSelectors';
 
 const Navbar = () => {
-  const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage  } = useSearch();
+  const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage } = useSearch();
   const navRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+  const totalQuantity = useSelector(selectCartTotalQuantity)
   useNavbarScroll(navRef);
   const [isActive, setIsSearchActive] = useState(false);
+
+  const isCartLoaded = totalQuantity >= 1
 
 
   const toggleSearch = () => {
@@ -46,7 +51,10 @@ const Navbar = () => {
               <NavLink to="/" className={style.nav__link} end><IoHome /></NavLink>
             </li>
           </ul>
-          <button onClick={()=>{ dispatch(openCart()) }} role='button' className={style.nav__cart}>
+          <button onClick={() => { dispatch(openCart()) }} type='button' className={style.nav__cart}>
+            {
+              isCartLoaded && <span className={style.nav__cart__count}>{totalQuantity}</span>
+            }
             <IoCartOutline />
           </button>
         </div>

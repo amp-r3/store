@@ -210,12 +210,16 @@
     //               RESPONSIVE
     // =============================================
 
-    // --- Small Mobile (<375px) ---
-    @media (max-width: 375px) {
+    // --- Mobile (<480px) ---
+    @media (max-width: 480px) {
 
         &__header,
-        &__footer {
+        &__footer{
             padding: $spacing-md;
+        }
+
+        &__body {
+            padding: $spacing-xxs;
         }
 
         &__title {
@@ -223,7 +227,7 @@
         }
 
         &__total {
-            font-size: $fs-xl;
+            font-size: $fs-lg;
         }
     }
 

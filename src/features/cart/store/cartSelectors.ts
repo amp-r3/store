@@ -1,3 +1,4 @@
+import { applyDiscount } from "@/features/products/utils";
 import { RootState } from "@/store";
 import { createSelector } from "reselect";
 
@@ -16,6 +17,11 @@ export const selectCartItems = createSelector(
 export const selectCartTotal = createSelector(
     [selectCartItemsMap],
     (itemsMap) => Object.values(itemsMap).reduce<number>(
-        (sum, item) => sum + item.price * item.quantity, 0
+        (sum, item) => sum + applyDiscount(item.discountPercentage, item.price) * item.quantity, 0
     )
+);
+
+export const selectCartTotalQuantity = createSelector(
+    [selectCartItems],
+    (items) => items.reduce((total, item) => total + item.quantity, 0)
 );

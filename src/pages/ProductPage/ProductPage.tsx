@@ -62,6 +62,14 @@ const ProductPage = () => {
         const { id, title, price, description, category, images, rating, reviews, discountPercentage, stock } = product;
         const discountedPrice = applyDiscount(discountPercentage, price);
 
+        const showPrice = () => {
+            if (discountedPrice < 100) {
+                return discountedPrice + ',00'
+            } else {
+                return discountedPrice
+            }
+        }
+
         return (
             <main className={style['product-page']}>
                 <div className={style['product-page__container']} key={id}>
@@ -97,7 +105,7 @@ const ProductPage = () => {
 
                             <div className={style['product-page__purchase-box']}>
                                 <p className={style['product-page__price']}>${price}</p>
-                                <p className={style['product-page__discount-price']}>${discountedPrice}</p>
+                                <p className={style['product-page__discount-price']}>${showPrice()}</p>
                                 <button onClick={handleAddToCart} className={style['product-page__add-to-cart-btn']}>
                                     <FaCartShopping size={20} />
                                     <span>Add to Cart</span>

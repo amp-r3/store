@@ -14,6 +14,7 @@
     }
 }
 
+
 .nav {
     display: flex;
     align-items: center;
@@ -106,6 +107,23 @@
             color: $text-inverse;
             border-color: transparent;
         }
+    }
+
+    &__cart__count {
+        position: absolute;
+        top: 8px;
+        right: 27px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: $primary-accent;
+        color: $text-inverse;
+        font-size: $fs-sm;
+        font-weight: $fw-bold;
+        height: 1rem;
+        min-width: 1rem;
+        padding: 0.2rem;
+        border-radius: $radius-pill;
     }
 
     &__main_actions {

@@ -5,11 +5,27 @@ import { applyDiscount } from '@/features/products/utils'
 import { Product } from '@/types/products';
 import { FC } from 'react';
 
-interface ProductCardProps extends Product { }
+interface ProductCardProps {
+    product: Product;
+    handleAddToCart: (Product) => void;
+}
 
-const ProductCard: FC<ProductCardProps> = ({ id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock }) => {
+const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
+
+    const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product
+
 
     const discountedPrice = applyDiscount(discountPercentage, price);
+
+    const showPrice = () => {
+        if (discountedPrice < 100) {
+            return discountedPrice + ',00'
+        } else {
+            return discountedPrice
+        }
+    }
+
+
     return (
         <div key={id} className={style.card}>
             <Link to={`/product/${id}`} className={style.card__imageWrapper}>
@@ -32,9 +48,9 @@ const ProductCard: FC<ProductCardProps> = ({ id, title, price, category, thumbna
             <div className={style.card__footer}>
                 <div className={style.card__price_wrapper}>
                     <p className={style.card__price}>${price}</p>
-                    <p className={style.card__discountPrice}>${discountedPrice}</p>
+                    <p className={style.card__discountPrice}>${showPrice()}</p>
                 </div>
-                <button className={style.card__button}>Add to Cart</button>
+                <button onClick={() => { handleAddToCart(product) }} className={style.card__button}>Add to Cart</button>
             </div>
         </div>
     );

@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 import { IoClose, IoArrowForward, IoBagHandleOutline } from 'react-icons/io5';
 import styles from './cart-drawer.module.scss';
-import { Dispatch } from '@reduxjs/toolkit';
+import { useSelector } from 'react-redux';
+import { selectCartItems, selectCartTotal, selectCartTotalQuantity } from '../../store/cartSelectors';
+import CartItem from './CartItem/CartItem';
+import { useAppDispatch } from '@/store/hook';
+import { addToCart, changeQuantity, removeFromCart } from '../../store/cartSlice';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -9,6 +13,32 @@ interface CartDrawerProps {
 }
 
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
+  const cartItems = useSelector(selectCartItems)
+  const totalQuantity = useSelector(selectCartTotalQuantity);
+  const totalCost = useSelector(selectCartTotal);
+  const dispatch = useAppDispatch();
+
+  const onIncrease = (id: number) => {
+    const type = 'inc'
+    dispatch(changeQuantity({ id, type }))
+  }
+
+  const onDecrease = (id: number) => {
+    const type = 'dec'
+    dispatch(changeQuantity({ id, type }))
+  }
+
+  const onRemove = (id: number) => {
+    dispatch(removeFromCart(id))
+  }
+
+  const showDiscountedPrice = () => {
+    if (totalCost < 100) {
+      return totalCost + ',00'
+    } else {
+      return totalCost
+    }
+  }
 
   // Block body scrolling when the cart is open
   useEffect(() => {
@@ -63,7 +93,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           <div className={styles.cart__headerContent}>
             <h2 className={styles.cart__title}>
               Your Cart
-              <span className={styles.cart__count}>0</span>
+              <span className={styles.cart__count}>{totalQuantity}</span>
             </h2>
 
             <button
@@ -78,11 +108,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
         {/* --- BODY (Scrollable area) --- */}
         <div className={styles.cart__body}>
-          {/* Product list or Empty State goes here */}
-          <div className={styles.cart__emptyState}>
-            <IoBagHandleOutline size={48} className={styles.cart__emptyIcon} />
-            <p>Your cart is currently empty</p>
-          </div>
+          {
+            cartItems.length ?
+              cartItems.map((item) => (<CartItem key={item.id} product={item} onIncrease={onIncrease} onDecrease={onDecrease} onRemove={onRemove} />))
+              :
+              <div className={styles.cart__emptyState}>
+                <IoBagHandleOutline size={48} className={styles.cart__emptyIcon} />
+                <p>Your cart is currently empty</p>
+              </div>
+          }
         </div>
 
         {/* --- FOOTER (Sticky bottom) --- */}
@@ -91,7 +125,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           <div className={styles.cart__summary}>
             <div className={styles.cart__row}>
               <span className={styles.cart__label}>Total:</span>
-              <span className={styles.cart__total}>$0.00</span>
+              <span className={styles.cart__total}>${showDiscountedPrice()}</span>
             </div>
             <p className={styles.cart__note}>Shipping calculated at checkout</p>
           </div>

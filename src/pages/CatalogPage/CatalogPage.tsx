@@ -15,9 +15,16 @@ import style from './catalogPage.module.scss'
 
 // Types
 import { Product } from '@/types/products'
+import { useAppDispatch } from '@/store/hook'
+import { addToCart } from '@/features/cart/store/cartSlice'
 
 const CatalogPage = () => {
   const { productsToDisplay, setPage, page, status, totalItems } = useProductCatalog();
+  const dispatch = useAppDispatch()
+
+  const handleAddToCart = (product: Product) => {
+    dispatch(addToCart(product))
+  }
 
 
   const onPageChange = (page) => {
@@ -44,7 +51,7 @@ const CatalogPage = () => {
         <div className={style.content}>
           {
             productsToDisplay.map((product: Product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard key={product.id} product={product} handleAddToCart={handleAddToCart} />
             ))
           }
         </div>
@@ -55,7 +62,7 @@ const CatalogPage = () => {
           onPageChange={onPageChange}
         />
         {
-           productsToDisplay.length === 0 && (
+          productsToDisplay.length === 0 && (
             <NoResults />
           )
         }
