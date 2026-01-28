@@ -1,0 +1,34 @@
+@use '@/styles/index'as *;
+
+.navbar {
+    position: fixed;
+    bottom: $spacing-md;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: $z-index-fixed;
+
+    width: calc(100% - #{$spacing-xl} * 2);
+    max-width: 420px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: $spacing-xs;
+
+    background: $glass-background-strong;
+    backdrop-filter: $glass-backdrop-blur;
+    -webkit-backdrop-filter: $glass-backdrop-blur;
+    border: 1px solid $glass-border;
+    border-radius: $radius-pill;
+    box-shadow: $shadow-default, $shadow-card;
+
+    transition: transform $transition-smooth $ease-out-expo, opacity $transition-smooth ease;
+    opacity: 1;
+
+    &--hidden {
+        transform: translate(-50%, calc(100% + #{$spacing-xl}));
+        opacity: 0;
+        pointer-events: none;
+    }
+}

@@ -30,7 +30,7 @@
         }
 
         &::placeholder {
-            color: $text-muted;
+            color: $text-secondary;
         }
     }
 
@@ -65,34 +65,37 @@
         display: grid;
         place-items: center;
         border-radius: $radius-circle;
-        border: 1px solid $border-color;
-        background: transparent;
+        border: 1px solid $glass-border;
+        backdrop-filter: $glass-backdrop-blur;
         color: $text-muted;
         transition: $transition-base;
         padding: $spacing-sm;
         font-size: $fs-icon-lg;
 
         &:hover {
-            background-color: $primary-accent;
             color: $text-inverse;
-            border-color: transparent;
+            background: rgba($primary-accent-dark, 0.5);
         }
 
         &:disabled {
-            background-color: transparent;
-            border-color: $border-color;
-            color: $text-muted;
+            cursor: not-allowed;
+
+            &:hover {
+                background: rgba($text-muted, 0.1);
+            }
         }
     }
 }
 
 @media (max-width: 550px) {
     .searchForm {
+        gap: $spacing-xxs;
+
         &__input {
-            width: 100px;
+            width: 115px;
 
             &:focus {
-                width: 115px;
+                width: 150px;
             }
         }
 
@@ -105,27 +108,96 @@
 
 @media (max-width: 460px) {
     .searchForm {
-        order: 1;
-        margin-left: auto;
+        width: 100%;
+        gap: 0;
+
+        &__wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
 
         &__input {
-            width: 0;
+            width: 100%;
+            background: rgba($background-body, 0.4);
+            border: 1px solid transparent;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: $radius-pill;
+            padding: 0 $spacing-xxl 0 $spacing-md;
+            height: $touch-target-comfortable;
+            font-size: $fs-sm;
+
+            color: $text-primary;
+
+            &::placeholder {
+                color: $text-muted;
+            }
+
+            &:focus {
+                width: 100%;
+                background: rgba($background-body, 0.8);
+                border-color: $border-color-strong;
+                transform: none;
+            }
+        }
+
+        &__clearBtn {
+            right: $spacing-xs;
+            top: 50%;
+            transform: translateY(-50%) scale(0.8);
+            width: 32px;
+            height: 32px;
+            background: rgba($text-muted, 0.15);
+            border-radius: $radius-circle;
+            color: $text-secondary;
+            font-size: $fs-icon-md;
             opacity: 0;
-            padding: $spacing-xs 0;
             pointer-events: none;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &--visible {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(-50%) scale(1);
+            }
+
+            &:active {
+                background: rgba($text-muted, 0.3);
+            }
         }
 
         &__submitBtn {
+            position: static;
+            width: $touch-target-comfortable;
+            height: $touch-target-comfortable;
+            flex-shrink: 0;
+            background: $primary-accent;
+            border-radius: $radius-circle;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: $text-inverse;
             font-size: $fs-icon-lg;
-            padding: $spacing-xs;
-        }
+            padding: 0;
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            box-shadow: $shadow-accent-sm;
 
-        &--active {
-            .searchForm__input {
-                width: 160px;
-                opacity: 1;
-                padding: $spacing-xs $spacing-md;
-                pointer-events: auto;
+            display: grid;
+            place-items: center;
+
+            &:disabled {
+                background: rgba($text-muted, 0.1);
+                color: $text-muted;
+                box-shadow: none;
+                cursor: default;
+            }
+
+            &:active:not(:disabled) {
+                transform: scale(0.95);
             }
         }
     }

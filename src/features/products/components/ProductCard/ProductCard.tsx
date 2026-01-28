@@ -40,7 +40,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
 
                 <div className={style.card__rating}>
                     <span>{rating}</span>
-                    <FaStar />
+                    <FaStar size={10} />
                     <span className={style.card__ratingCount}>({reviews.length} reviews)</span>
                 </div>
             </div>

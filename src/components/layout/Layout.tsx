@@ -13,12 +13,13 @@ import { closeCart } from '@/features/cart/store/cartSlice';
 // Style
 import style from './layout.module.scss';
 import { selectIsCartOpen } from '@/features/cart/store/cartSelectors';
+import MobileBar from './MobileBar/MobileBar';
 
 const Layout = () => {
     const navigation = useNavigation();
     const isLoading = navigation.state === 'loading';
     const dispatch = useAppDispatch();
-    const isOpen= useAppSelector(selectIsCartOpen);
+    const isOpen = useAppSelector(selectIsCartOpen);
 
     const handleClose = () => {
         dispatch(closeCart())
@@ -27,18 +28,19 @@ const Layout = () => {
     return (
         <div className={style.layout}>
             <Navbar />
-            <div className="container">
-                {
-                    isLoading && <Loader />
-                }
-                <Suspense fallback={<Loader />}>
-                    <Outlet />
-                    <CartDrawer
-                        isOpen={isOpen}
-                        onClose={handleClose}
-                    />
-                </Suspense>
-            </div>
+            {
+                isLoading && <Loader />
+            }
+            <Suspense fallback={<Loader />}>
+                <Outlet />
+                <CartDrawer
+                    isOpen={isOpen}
+                    onClose={handleClose}
+                />
+                <div className={style.mobileBar}>
+                    <MobileBar />
+                </div>
+            </Suspense>
         </div>
     );
 };

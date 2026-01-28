@@ -72,7 +72,7 @@ const ProductPage = () => {
 
         return (
             <main className={style['product-page']}>
-                <div className={style['product-page__container']} key={id}>
+                <div className='container' key={id}>
                     <div className={style['product-page__back-wrapper']}>
                         <button onClick={() => navigate('/')} className={style['product-page__back-link']}>
                             <FaChevronLeft size={14} />

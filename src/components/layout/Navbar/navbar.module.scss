@@ -85,13 +85,14 @@
         }
 
         &:hover {
-            background-color: $primary-accent;
+            background: rgba($primary-accent-dark, 0.5);
             color: $text-inverse;
             border-color: transparent;
         }
     }
 
     &__cart {
+        position: relative;
         display: grid;
         place-items: center;
         border-radius: $radius-circle;
@@ -103,7 +104,7 @@
         padding: $spacing-sm;
 
         &:hover {
-            background-color: $primary-accent;
+            background: rgba($primary-accent-dark, 0.5);
             color: $text-inverse;
             border-color: transparent;
         }
@@ -111,8 +112,8 @@
 
     &__cart__count {
         position: absolute;
-        top: 8px;
-        right: 27px;
+        top: 0;
+        right: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -138,28 +139,35 @@
 
 @media (max-width: 550px) {
     .nav {
+        gap: $spacing-md;
+
         &__cart {
             font-size: $fs-icon-md;
-            padding: $spacing-xs;
+            padding: $spacing-sm;
         }
 
         &__link {
             font-size: $fs-icon-md;
-            padding: $spacing-xs;
+            padding: $spacing-sm;
         }
     }
 }
 
 @media (max-width: 460px) {
     .nav {
-        top: unset;
-        bottom: $spacing-md;
-        justify-content: unset;
         max-width: 17rem;
-        background: $navbar-bg-scrolled;
+        background: $glass-background-subtle;
         backdrop-filter: $backdrop-blur;
         border: 2px solid $border-color;
         box-shadow: $shadow-default;
+
+        &:global(.scrolled) {
+            background: $glass-background-strong;
+        }
+
+        &__form {
+            display: none;
+        }
 
         &__cart {
             font-size: $fs-icon-lg;
@@ -169,19 +177,6 @@
         &__link {
             font-size: $fs-icon-lg;
             padding: $spacing-xs;
-        }
-
-        &__logo {
-            display: none;
-        }
-
-        &.searchActive {
-            .nav__main_actions {
-                transform: translateX(-100%);
-                display: none;
-                opacity: 0;
-                pointer-events: none;
-            }
         }
     }
 }

@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 // Icons
 import { IoCartOutline, IoHome } from "react-icons/io5";
 // Custom Hooks
@@ -19,32 +19,24 @@ const Navbar = () => {
   const dispatch = useAppDispatch();
   const totalQuantity = useSelector(selectCartTotalQuantity)
   useNavbarScroll(navRef);
-  const [isActive, setIsSearchActive] = useState(false);
 
   const isCartLoaded = totalQuantity >= 1
 
 
-  const toggleSearch = () => {
-    if (isActive && !inputValue) {
-      setIsSearchActive(false);
-    } else {
-      setIsSearchActive(true);
-    }
-  };
 
   return (
     <header className="container">
-      <nav ref={navRef} className={`${style.nav} ${isActive ? style.searchActive : ''}`}>
+      <nav ref={navRef} className={style.nav}>
         <Link to="/" className={style.nav__logo}>store</Link>
-        <SearchForm
-          inputValue={inputValue}
-          handleSearch={handleSearch}
-          handleInputChange={handleInputChange}
-          handleClear={handleClear}
-          toggleSearch={toggleSearch}
-          isActive={isActive}
-          isHomePage={isHomePage}
-        />
+        <div className={style.nav__form}>
+          <SearchForm
+            inputValue={inputValue}
+            handleSearch={handleSearch}
+            handleInputChange={handleInputChange}
+            handleClear={handleClear}
+            isHomePage={isHomePage}
+          />
+        </div>
         <div className={style.nav__main_actions}>
           <ul className={style.nav__menu}>
             <li>
