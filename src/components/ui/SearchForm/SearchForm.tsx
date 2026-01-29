@@ -8,6 +8,8 @@ interface SearchFormProps {
     handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handleClear: () => void;
     isHomePage: boolean;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
 const SearchForm: FC<SearchFormProps> = ({
@@ -15,7 +17,10 @@ const SearchForm: FC<SearchFormProps> = ({
     handleSearch,
     handleInputChange,
     handleClear,
-    isHomePage
+    isHomePage,
+    onFocus,
+    onBlur
+
 }) => {
 
     return (
@@ -32,6 +37,8 @@ const SearchForm: FC<SearchFormProps> = ({
                     value={inputValue}
                     onChange={handleInputChange}
                     disabled={!isHomePage}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                 />
                 <button
                     type="button"

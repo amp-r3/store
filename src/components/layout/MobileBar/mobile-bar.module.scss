@@ -22,12 +22,14 @@
     border: 1px solid $glass-border;
     border-radius: $radius-pill;
     box-shadow: $shadow-default, $shadow-card;
+    will-change: transform, opacity;
+    transition: transform 0.4s $ease-in-out-smooth,
+        opacity 0.3s ease;
 
-    transition: transform $transition-smooth $ease-out-expo, opacity $transition-smooth ease;
     opacity: 1;
 
     &--hidden {
-        transform: translate(-50%, calc(100% + #{$spacing-xl}));
+        transform: translate(-50%, calc(100% + #{$spacing-xl} + #{$spacing-md}));
         opacity: 0;
         pointer-events: none;
     }

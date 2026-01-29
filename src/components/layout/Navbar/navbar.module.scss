@@ -155,7 +155,8 @@
 
 @media (max-width: 460px) {
     .nav {
-        max-width: 17rem;
+        max-width: 420px;
+        width: calc(100% - #{$spacing-xl} * 2);
         background: $glass-background-subtle;
         backdrop-filter: $backdrop-blur;
         border: 2px solid $border-color;

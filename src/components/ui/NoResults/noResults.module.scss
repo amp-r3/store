@@ -1,4 +1,13 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 60vh;
+    padding: $spacing-md;
+}
 
 .noResults {
     display: flex;
@@ -6,30 +15,70 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: $spacing-xxl $spacing-lg;
-    margin: 10em auto auto;
+    width: 100%;
     max-width: 500px;
-    background-color: $background-component;
+    padding: $spacing-lg;
+    background-color: $glass-background;
+    backdrop-filter: $glass-backdrop-blur;
     border: 1px solid $border-color;
     border-radius: $radius-lg;
     color: $text-primary;
     box-shadow: $shadow-default;
 
+    @media (min-width: 768px) {
+        padding: $spacing-xxl $spacing-lg;
+    }
+
+    &__icon {
+        color: $text-secondary;
+        margin-bottom: $spacing-md;
+        opacity: 0.8;
+
+        &>svg {
+            width: 48px;
+            height: 48px;
+
+            @media (min-width: 768px) {
+                width: 64px;
+                height: 64px;
+            }
+        }
+    }
+
     &__title {
-        font-size: $fs-error-title;
+        font-size: $fs-lg;
         font-weight: $fw-semibold;
         margin: 0 0 $spacing-sm 0;
+
+        @media (min-width: 768px) {
+            font-size: $fs-error-title;
+        }
     }
 
     &__desc {
         font-size: $fs-base;
         color: $text-secondary;
         line-height: $lh-normal;
-        max-width: 350px;
+        max-width: 100%;
         margin-bottom: $spacing-lg;
+        word-wrap: break-word;
+
+        @media (min-width: 768px) {
+            max-width: 380px;
+        }
+    }
+
+    &__highlight {
+        color: $text-primary;
+        font-weight: $fw-semibold;
+        font-style: italic;
     }
 
     &__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: $touch-target-min;
         background-color: transparent;
         color: $primary-accent;
         border: 2px solid $primary-accent;
@@ -38,6 +87,7 @@
         font-size: $fs-base;
         font-weight: $fw-semibold;
         transition: $transition-base;
+        cursor: pointer;
 
         &:hover {
             background-color: $primary-accent;

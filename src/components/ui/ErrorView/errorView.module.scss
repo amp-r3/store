@@ -1,4 +1,13 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    width: 100%;
+    padding: $spacing-md;
+}
 
 .errorView {
     display: flex;
@@ -6,10 +15,18 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: $spacing-xxl $spacing-lg;
-    margin: 10em auto auto;
+
+    padding: $spacing-lg;
+
+    @media (min-width: 768px) {
+        padding: $spacing-xxl $spacing-lg;
+    }
+
+    width: 100%;
     max-width: 500px;
-    background-color: $background-component;
+
+    background-color: $glass-background;
+    backdrop-filter: $glass-backdrop-blur;
     border: 1px solid $border-color;
     border-radius: $radius-lg;
     color: $text-primary;
@@ -18,21 +35,45 @@
 
 .errorIcon {
     color: $error-color;
-    margin-bottom: $spacing-lg;
+    margin-bottom: $spacing-md;
+
+    &>svg {
+        width: 48px;
+        height: 48px;
+
+        @media (min-width: 768px) {
+            width: 72px;
+            height: 72px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        margin-bottom: $spacing-lg;
+    }
 }
 
 .errorTitle {
-    font-size: $fs-error-title;
+    font-size: $fs-xl;
     font-weight: $fw-semibold;
     margin: 0 0 $spacing-sm 0;
+    line-height: $lh-tight;
+
+    @media (max-width: 480px) {
+        font-size: $fs-lg;
+    }
 }
 
 .errorMessage {
     font-size: $fs-base;
     color: $text-secondary;
     line-height: $lh-normal;
-    max-width: 350px;
+    max-width: 100%;
+
     margin-bottom: $spacing-lg;
+
+    @media (min-width: 768px) {
+        max-width: 380px;
+    }
 }
 
 .errorButton {
@@ -44,6 +85,11 @@
     font-size: $fs-base;
     font-weight: $fw-semibold;
     transition: $transition-base;
+
+    min-height: $touch-target-min;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
         background-color: $primary-accent;

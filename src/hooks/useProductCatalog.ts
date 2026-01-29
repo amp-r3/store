@@ -35,5 +35,5 @@ export function useProductCatalog() {
 
     const totalItems = total
 
-    return { productsToDisplay, setPage, page, status, sortingOptions, totalItems }
+    return { productsToDisplay, setPage, page, status, sortingOptions, totalItems, query }
 }

@@ -19,7 +19,7 @@ import { useAppDispatch } from '@/store/hook'
 import { addToCart } from '@/features/cart/store/cartSlice'
 
 const CatalogPage = () => {
-  const { productsToDisplay, setPage, page, status, totalItems } = useProductCatalog();
+  const { productsToDisplay, setPage, page, status, totalItems, query } = useProductCatalog();
   const dispatch = useAppDispatch()
 
   const handleAddToCart = (product: Product) => {
@@ -63,7 +63,7 @@ const CatalogPage = () => {
         />
         {
           productsToDisplay.length === 0 && (
-            <NoResults />
+            <NoResults query={query} />
           )
         }
       </main>
