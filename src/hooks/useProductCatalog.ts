@@ -1,15 +1,15 @@
-import { getProducts } from "@/features/products/store/productsSlice";
-import { sortingOptions } from "@/features/products/utils";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { getProducts } from "@/store/slices/productsSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useSort } from "./useSort";
-import { selectAllProducts,} from "@/features/products/store/selectors";
+import { selectAllProducts, } from "@/store/selectors/productSelectors";
 import { useUrlPagination } from "./useUrlPagination";
+import { sortingOptions } from "@/utils";
 
 export function useProductCatalog() {
     const productsToDisplay = useAppSelector(selectAllProducts);
-    const {status, total} = useAppSelector((state) => state.products)
+    const { status, total, error } = useAppSelector((state) => state.products)
     const [searchParams] = useSearchParams();
     const { activeSortOption } = useSort()
     const dispatch = useAppDispatch()
@@ -35,5 +35,5 @@ export function useProductCatalog() {
 
     const totalItems = total
 
-    return { productsToDisplay, setPage, page, status, sortingOptions, totalItems, query }
+    return { productsToDisplay, setPage, page, status, sortingOptions, totalItems, query, error }
 }

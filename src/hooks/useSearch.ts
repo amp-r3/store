@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useSearchParams } from "react-router";
-import { clearSearch } from '@/features/products/store/productsSlice';
-import { useAppDispatch } from "@/store/hook";
+import { useAppDispatch } from "@/hooks/redux";
 
 export function useSearch() {
     const dispatch = useAppDispatch();

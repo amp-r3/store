@@ -4,20 +4,22 @@ import { useRef } from 'react';
 import { IoCartOutline, IoHome } from "react-icons/io5";
 // Custom Hooks
 import { useNavbarScroll, useSearch } from '@/hooks';
+// Redux Hooks
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 // Custom Components
-import { SearchForm } from '@/components/ui';
+import { SearchForm } from '@/components/common';
+// Functions and Selectors
+import { openCart } from '@/store/slices/cartSlice';
+import { selectCartTotalQuantity } from '@/store/selectors/cartSelectors';
+
 // Styles
 import style from './navbar.module.scss';
-import { useAppDispatch } from '@/store/hook';
-import { openCart } from '@/features/cart/store/cartSlice';
-import { useSelector } from 'react-redux';
-import { selectCartTotalQuantity } from '@/features/cart/store/cartSelectors';
 
-const Navbar = () => {
+export const Navbar = () => {
   const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage } = useSearch();
   const navRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const totalQuantity = useSelector(selectCartTotalQuantity)
+  const totalQuantity = useAppSelector(selectCartTotalQuantity)
   useNavbarScroll(navRef);
 
   const isCartLoaded = totalQuantity >= 1
@@ -54,5 +56,3 @@ const Navbar = () => {
     </header>
   );
 };
-
-export default Navbar;

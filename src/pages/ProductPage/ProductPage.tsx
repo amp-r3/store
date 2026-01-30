@@ -1,8 +1,7 @@
-import { useNavigate, useParams } from 'react-router';
 import { useEffect } from 'react';
-import { Navigate } from 'react-router';
+import { useNavigate, useParams, Navigate } from 'react-router';
 //Components
-import { Loader, ErrorView } from '@/components/ui';
+import { ErrorView, Loader } from '@/components/common';
 // Icons
 import {
     FaStar,
@@ -13,19 +12,17 @@ import {
     FaRegStar
 } from 'react-icons/fa6';
 // Utils
-
-import { scrollToTop } from '@/utils';
-import { applyDiscount, } from '@/features/products/utils';
-
+import { applyDiscount, scrollToTop } from '@/utils';
 // Custom Hooks
 import { useProduct } from '@/hooks';
-
+// Redux Hooks
+import { useAppDispatch } from '@/hooks/redux';
+// Redux Functions
+import { addToCart } from '@/store/slices/cartSlice';
 // Styles
 import style from './productPage.module.scss';
-import { useAppDispatch } from '@/store/hook';
-import { addToCart } from '@/features/cart/store/cartSlice';
 
-const ProductPage = () => {
+export const ProductPage = () => {
     const navigate = useNavigate()
     const { id } = useParams();
     const { product, status, isNotFound } = useProduct(id)
@@ -74,7 +71,7 @@ const ProductPage = () => {
             <main className={style['product-page']}>
                 <div className='container' key={id}>
                     <div className={style['product-page__back-wrapper']}>
-                        <button onClick={() => navigate('/')} className={style['product-page__back-link']}>
+                        <button onClick={() => navigate(-1)} className={style['product-page__back-link']}>
                             <FaChevronLeft size={14} />
                             <span>Back to catalog</span>
                         </button>
@@ -146,5 +143,3 @@ const ProductPage = () => {
 
     return <Loader />;
 };
-
-export default ProductPage;

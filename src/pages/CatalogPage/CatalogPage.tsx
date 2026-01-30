@@ -1,25 +1,23 @@
-// UI components
-import { Loader, Pagination, ErrorView, NoResults } from '@/components/ui'
-
-// Product Feature Components
-import { ProductCard, SortPanel } from '@/features/products/components'
-
+// Common components
+import { ErrorView, Loader, NoResults } from '@/components/common'
+// Custom Components
+import { Pagination, ProductCard, SortPanel } from '@/components/products'
 // Custom Hooks
-import { useProductCatalog } from '@/hooks'
-
+import { useProductCatalog, useSort } from '@/hooks'
 // Utils
 import { scrollToTop } from '@/utils'
-
+// Redux hooks
+import { useAppDispatch } from '@/hooks/redux'
+// Redux slice
+import { addToCart } from '@/store/slices/cartSlice'
 // Styles
 import style from './catalogPage.module.scss'
-
 // Types
 import { Product } from '@/types/products'
-import { useAppDispatch } from '@/store/hook'
-import { addToCart } from '@/features/cart/store/cartSlice'
 
-const CatalogPage = () => {
-  const { productsToDisplay, setPage, page, status, totalItems, query } = useProductCatalog();
+export const CatalogPage = () => {
+  const { productsToDisplay, setPage, page, status, totalItems, query, error } = useProductCatalog();
+  const { changeSort, sortingOptions, activeSortOption } = useSort()
   const dispatch = useAppDispatch()
 
   const handleAddToCart = (product: Product) => {
@@ -47,7 +45,11 @@ const CatalogPage = () => {
   if (status === 'succeeded') {
     return (
       <main className='container'>
-        <SortPanel />
+        <SortPanel
+          sortingOptions={sortingOptions}
+          changeSort={changeSort}
+          activeSortOption={activeSortOption}
+        />
         <div className={style.content}>
           {
             productsToDisplay.map((product: Product) => (
@@ -72,5 +74,3 @@ const CatalogPage = () => {
 
   return <Loader />;
 }
-
-export default CatalogPage

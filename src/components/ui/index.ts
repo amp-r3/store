@@ -1,5 +1,0 @@
-export { default as Loader } from './Loader'
-export { default as Pagination } from './Pagination'
-export { default as ErrorView } from './ErrorView'
-export { default as NoResults } from './NoResults'
-export { default as SearchForm } from './SearchForm'

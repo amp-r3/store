@@ -1,9 +1,9 @@
-import { SearchForm } from '@/components/ui'
+import { SearchForm } from '@/components/common';
 import style from './mobile-bar.module.scss'
 import { useSearch } from '@/hooks';
 import { useEffect, useState, useRef } from 'react';
 
-const MobileBar = () => {
+export const MobileBar = () => {
     const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage } = useSearch();
 
     const [isVisible, setIsVisible] = useState(true);
@@ -61,5 +61,3 @@ const MobileBar = () => {
         </nav>
     )
 }
-
-export default MobileBar

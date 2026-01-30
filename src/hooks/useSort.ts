@@ -1,4 +1,4 @@
-import { sortingOptions } from "@/features/products/utils";
+import { sortingOptions } from "@/utils";
 import { useSearchParams } from "react-router";
 
 export function useSort() {

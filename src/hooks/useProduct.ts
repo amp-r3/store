@@ -1,5 +1,5 @@
-import { getProductsById } from "@/features/products/store/productsSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { getProductsById } from "@/store/slices/productsSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useEffect } from "react";
 
 export function useProduct(id: string) {

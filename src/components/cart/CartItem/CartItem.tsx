@@ -1,0 +1,94 @@
+import { FC } from 'react';
+// Icons
+import { IoAdd, IoRemove, IoTrashOutline } from 'react-icons/io5';
+// Styles
+import styles from './cart-item.module.scss';
+// Types
+import { CartItem as CartItemType } from '@/types/products';
+
+// Using types derived from DummyJson structure
+interface CartItemProps {
+    product: CartItemType;
+    onIncrease: (id: number) => void;
+    onDecrease: (id: number) => void;
+    onRemove: (id: number) => void;
+}
+
+export const CartItem: FC<CartItemProps> = ({
+    product,
+    onIncrease,
+    onDecrease,
+    onRemove,
+}) => {
+    // Calculate final price if needed, or just display raw price.
+    // For this design, we will stick to the base price for clarity.
+    const { id, title, price, thumbnail, quantity, discountPercentage, } = product
+
+    return (
+        <article className={styles['cart-item']}>
+            {/* --- Media Section --- */}
+            <div className={styles['cart-item__media']}>
+                <img
+                    src={thumbnail}
+                    alt={title}
+                    className={styles['cart-item__image']}
+                    loading="lazy"
+                />
+            </div>
+
+            {/* --- Content Section --- */}
+            <div className={styles['cart-item__content']}>
+
+                {/* Header: Title & Price */}
+                <div className={styles['cart-item__header']}>
+                    <h3 className={styles['cart-item__title']}>{title}</h3>
+                    <div className={styles['cart-item__price-wrapper']}>
+                        <span className={styles['cart-item__price']}>
+                            ${price.toFixed(2)}
+                        </span>
+                        {/* Optional: Render discount badge if applicable */}
+                        {discountPercentage && discountPercentage > 0 && (
+                            <span className={styles['cart-item__discount']}>
+                                -{Math.round(discountPercentage)}%
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                {/* Actions: Quantity Controls & Remove */}
+                <div className={styles['cart-item__actions']}>
+
+                    {/* Quantity Controller */}
+                    <div className={styles['cart-item__quantity-ctrl']}>
+                        <button
+                            className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
+                            onClick={() => onDecrease(id)}
+                            aria-label="Decrease quantity"
+                        >
+                            <IoRemove size={18} />
+                        </button>
+
+                        <span className={styles['cart-item__quantity-value']}>{quantity}</span>
+
+                        <button
+                            className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
+                            onClick={() => onIncrease(id)}
+                            aria-label="Increase quantity"
+                        >
+                            <IoAdd size={18} />
+                        </button>
+                    </div>
+
+                    {/* Remove Button */}
+                    <button
+                        className={`${styles['cart-item__btn']} ${styles['cart-item__btn--remove']}`}
+                        onClick={() => onRemove(id)}
+                        aria-label="Remove item"
+                    >
+                        <IoTrashOutline size={22} />
+                    </button>
+                </div>
+            </div>
+        </article>
+    );
+};
