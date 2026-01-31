@@ -12,7 +12,7 @@ import {
     FaRegStar
 } from 'react-icons/fa6';
 // Utils
-import { applyDiscount, scrollToTop } from '@/utils';
+import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
 // Custom Hooks
 import { useProduct } from '@/hooks';
 // Redux Hooks
@@ -25,7 +25,7 @@ import style from './productPage.module.scss';
 export const ProductPage = () => {
     const navigate = useNavigate()
     const { id } = useParams();
-    const { product, status, isNotFound } = useProduct(id)
+    const { product, isLoading, error, isNotFound } = useProduct(id)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -39,33 +39,37 @@ export const ProductPage = () => {
     };
 
     const handleAddToCart = () => {
-        dispatch(addToCart(product))
+        if (product) {
+            dispatch(addToCart(product));
+        }
     }
 
 
-    if (status === 'loading') {
-        return <Loader />;
+    if (isLoading) {
+        return <Loader />
     }
 
-    if (status === 'failed') {
-        return <ErrorView />;
+    if (error) {
+        const errorMessage = getErrorMessage(error);
+        return <ErrorView error={errorMessage} />
     }
 
     if (isNotFound) {
         return <Navigate to="/404" replace />
     }
+    const formatPrice = (value: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+        }).format(value);
+    };
 
-    if (status === 'succeeded' && product) {
+    if (product) {
         const { id, title, price, description, category, images, rating, reviews, discountPercentage, stock } = product;
         const discountedPrice = applyDiscount(discountPercentage, price);
 
-        const showPrice = () => {
-            if (discountedPrice < 100) {
-                return discountedPrice + ',00'
-            } else {
-                return discountedPrice
-            }
-        }
+        const showPrice = formatPrice(discountedPrice)
 
         return (
             <main className={style['product-page']}>
@@ -102,7 +106,7 @@ export const ProductPage = () => {
 
                             <div className={style['product-page__purchase-box']}>
                                 <p className={style['product-page__price']}>${price}</p>
-                                <p className={style['product-page__discount-price']}>${showPrice()}</p>
+                                <p className={style['product-page__discount-price']}>{showPrice}</p>
                                 <button onClick={handleAddToCart} className={style['product-page__add-to-cart-btn']}>
                                     <FaCartShopping size={20} />
                                     <span>Add to Cart</span>

@@ -1,30 +1,15 @@
-import { getProductsById } from "@/store/slices/productsSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { useEffect } from "react";
+import { useGetProductByIdQuery } from "@/services/productsApi";
+import { skipToken } from "@reduxjs/toolkit/query/react";
 
-export function useProduct(id: string) {
-    const { products, status } = useAppSelector((state) => state.products);
-    const dispatch = useAppDispatch();
-    
+export function useProduct(id: string | undefined) {
+    const {
+        data: product,
+        isLoading,
+        isError,
+        error
+    } = useGetProductByIdQuery(id ?? skipToken);
 
-    const product = products[Number(id)]
-    console.log(product);
-    console.log(products);
+    const isNotFound = isError || (!isLoading && !product);
 
-
-    useEffect(() => {
-        if (product) {
-            console.log("product already exist");
-            return;
-        }
-        if (!product && status !== 'loading') {
-            dispatch(getProductsById(id));
-            console.log("dispatch product");
-        }
-    }, [product, status, dispatch, id]);
-    
-    const isNotFound = status === 'succeeded' && !product
-
-    return { product, status, isNotFound }
-
+    return { product, isLoading, isNotFound, error };
 }

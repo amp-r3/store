@@ -1,39 +1,37 @@
-import { getProducts } from "@/store/slices/productsSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { useSort } from "./useSort";
-import { selectAllProducts, } from "@/store/selectors/productSelectors";
 import { useUrlPagination } from "./useUrlPagination";
 import { sortingOptions } from "@/utils";
+import { useGetProductsQuery } from "@/services/productsApi";
 
 export function useProductCatalog() {
-    const productsToDisplay = useAppSelector(selectAllProducts);
-    const { status, total, error } = useAppSelector((state) => state.products)
     const [searchParams] = useSearchParams();
     const { activeSortOption } = useSort()
-    const dispatch = useAppDispatch()
+    const { page, setPage } = useUrlPagination()
 
     const query = searchParams.get('q')
 
-    const { page, setPage } = useUrlPagination()
+    const { data, isLoading, isFetching, error, } = useGetProductsQuery({
+        page,
+        search: query || null,
+        sortBy: activeSortOption.sortBy,
+        order: activeSortOption.order,
+    });
+
+    const totalItems = useMemo(() => {
+        if (!data?.total) return 0
+
+        return data.total
+    }, [data])
 
 
-    useEffect(() => {
 
-        const params = {
-            page: page,
-            sortBy: activeSortOption.sortBy,
-            order: activeSortOption.order,
-            search: query || undefined
-        };
+    const productsArray = useMemo(() => {
+        if (!data?.items) return [];
 
+        return Object.values(data.items);
+    }, [data])
 
-        dispatch(getProducts(params));
-
-    }, [dispatch, page, activeSortOption, query]);
-
-    const totalItems = total
-
-    return { productsToDisplay, setPage, page, status, sortingOptions, totalItems, query, error }
+    return { productsArray, setPage, page, isLoading, isFetching, sortingOptions, totalItems, query, error }
 }
