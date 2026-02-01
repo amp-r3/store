@@ -1,31 +1,5 @@
 @use '@/styles/index'as *;
 
-@keyframes pulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale($scale-up-md);
-    opacity: 0.8;
-  }
-}
-
-@keyframes slideInButton {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .sort_panel {
   background: $glass-background;
   backdrop-filter: $glass-backdrop-blur;
@@ -54,7 +28,6 @@
     font-size: $fs-icon-lg;
     color: $primary-accent;
     filter: drop-shadow($shadow-text-accent);
-    animation: pulse $animation-pulse-duration ease-in-out infinite;
   }
 
   &__label {
@@ -190,6 +163,7 @@
   .sort_panel {
     padding: 0;
     margin-top: 0;
+    overflow: hidden;
 
     &__header {
       cursor: pointer;
@@ -200,6 +174,9 @@
       transition: background-color $transition-fast $ease-in-out-smooth;
       position: relative;
       justify-content: space-between;
+      width: 100%;
+      z-index: 2;
+      background: inherit;
 
       &:hover {
         background-color: rgba($primary-accent, 0.05);
@@ -209,7 +186,7 @@
     &__chevron {
       font-size: $fs-icon-md;
       color: $text-secondary;
-      transition: all $transition-layout $ease-out-expo;
+      transition: transform $transition-layout $ease-spring;
 
       &.expanded {
         transform: rotate(180deg);
@@ -227,41 +204,51 @@
       font-size: $fs-icon-md;
     }
 
+    &__options_wrapper {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows $transition-layout $ease-in-out-smooth;
+
+      &.expanded {
+        grid-template-rows: 1fr;
+      }
+    }
+
     &__options {
-      max-height: 0;
-      opacity: 0;
       overflow: hidden;
-      pointer-events: none;
-      transition:
-        max-height $transition-layout $ease-in-out-smooth,
-        opacity $transition-fast $ease-in-out-smooth;
+      min-height: 0;
 
       >div {
         display: flex;
         flex-direction: column;
         width: 100%;
-        gap: $spacing-sm;
-        padding: $spacing-md;
-        padding-top: $spacing-sm;
-      }
-
-      &.expanded {
-        max-height: 40rem;
-        opacity: 1;
-        pointer-events: auto;
+        gap: $spacing-xs;
+        padding: $spacing-md $spacing-lg $spacing-lg;
       }
     }
 
     &__button {
       font-size: $fs-sm;
-      display: flex;
-      justify-content: center;
-      opacity: 0;
-      animation: slideInButton $transition-layout $ease-out-expo forwards;
+      justify-content: flex-start;
+      width: 100%;
 
-      @for $i from 1 through 10 {
-        &:nth-child(#{$i}) {
-          animation-delay: #{$i * 40}ms;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition:
+        opacity $transition-base ease,
+        transform $transition-base $ease-spring,
+        background-color $transition-fast ease;
+    }
+
+    &__options_wrapper.expanded {
+      .sort_panel__button {
+        opacity: 1;
+        transform: translateY(0);
+
+        @for $i from 1 through 8 {
+          &:nth-child(#{$i}) {
+            transition-delay: #{$i * 0.07s + 0.1s};
+          }
         }
       }
     }

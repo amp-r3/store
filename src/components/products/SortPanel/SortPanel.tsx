@@ -14,7 +14,6 @@ interface SortPanelProps {
   activeSortOption: SortingOption;
 }
 
-
 export const SortPanel: FC<SortPanelProps> = ({ changeSort, sortingOptions, activeSortOption }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobileAccordion = useMediaQuery('(max-width: 550px)');
@@ -45,6 +44,7 @@ export const SortPanel: FC<SortPanelProps> = ({ changeSort, sortingOptions, acti
           className={style.sort_panel__header}
           onClick={handleToggle}
           aria-expanded={isExpanded}
+          type="button" // Хорошая практика явно указывать type
         >
           {headerContent}
         </button>
@@ -54,23 +54,31 @@ export const SortPanel: FC<SortPanelProps> = ({ changeSort, sortingOptions, acti
         </div>
       )}
 
-      <div className={`${style.sort_panel__options} ${isMobileAccordion && isExpanded ? style.expanded : ''}`}>
-        <div>
-          {sortingOptions.map((option) => (
-            <button
-              key={option.id}
-              className={`${style.sort_panel__button} ${option.id === activeSortOption.id ? style.sort_panel__button__active : ''
-                }`}
-              onClick={() => changeSort(option.id)}
-            >
-              {option.icon && (
-                <span className={style.sort_panel__button_icon}>
-                  <option.icon />
-                </span>
-              )}
-              <span>{option.label}</span>
-            </button>
-          ))}
+      {/* Обертка для анимации Grid */}
+      <div
+        className={`${isMobileAccordion ? style.sort_panel__options_wrapper : ''} ${isMobileAccordion && isExpanded ? style.expanded : ''}`}
+        aria-hidden={isMobileAccordion && !isExpanded}
+      >
+        <div className={`${style.sort_panel__options} ${isMobileAccordion && isExpanded ? style.expanded : ''}`}>
+          <div>
+            {sortingOptions.map((option) => (
+              <button
+                key={option.id}
+                className={`${style.sort_panel__button} ${option.id === activeSortOption.id ? style.sort_panel__button__active : ''}`}
+                onClick={() => {
+                  changeSort(option.id);
+                  if (isMobileAccordion) setIsExpanded(false); // Закрываем при выборе на мобилке (опционально)
+                }}
+              >
+                {option.icon && (
+                  <span className={style.sort_panel__button_icon}>
+                    <option.icon />
+                  </span>
+                )}
+                <span>{option.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

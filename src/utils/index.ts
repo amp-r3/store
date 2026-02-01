@@ -1,6 +1,6 @@
 export { scrollToTop } from './scrollToTop'
-export { applyDiscount } from './applyDiscount'
+export { applyDiscount } from './priceHelper'
 export { sortingOptions } from './sortingOptions'
 export { getErrorMessage } from './getErrorMessage'
 export { calculateCartTotals } from './cartHelper'
-export { formatPrice } from './applyDiscount'
+export { formatPrice } from './priceHelper'

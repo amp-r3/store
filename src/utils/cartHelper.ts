@@ -1,5 +1,5 @@
 import { CartItem } from '@/types/products';
-import { applyDiscount } from './applyDiscount';
+import { applyDiscount } from './priceHelper';
 
 export const calculateCartTotals = (items: CartItem[]) => {
     const FREE_SHIPPING_THRESHOLD = 200;
