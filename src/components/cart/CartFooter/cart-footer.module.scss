@@ -1,0 +1,190 @@
+@use '@/styles/index'as *;
+
+// =============================================
+//          CART FOOTER COMPONENT
+// =============================================
+
+.footer {
+    // --- Layout ---
+    flex-shrink: 0;
+    padding: $spacing-lg;
+
+    // --- Visuals ---
+    background: rgba($background-body, 0.6);
+    border-top: 1px solid $border-color;
+    backdrop-filter: blur(20px);
+
+    // --- Structure ---
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+
+    // =============================================
+    //         SHIPPING PROGRESS SECTION
+    // =============================================
+
+    &__shipping {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+    }
+
+    &__shippingInfo {
+        font-size: $fs-sm;
+        color: $text-secondary;
+        display: flex;
+        justify-content: space-between;
+
+        b {
+            color: $text-primary;
+        }
+    }
+
+    &__shippingSuccess {
+        color: $primary-accent-light;
+        display: flex;
+        align-items: center;
+        gap: $spacing-xs;
+        font-weight: $fw-semibold;
+    }
+
+    &__progressBar {
+        height: 4px;
+        background: $border-color;
+        border-radius: $radius-pill;
+        overflow: hidden;
+    }
+
+    &__progressFill {
+        height: 100%;
+        background: linear-gradient(90deg, $primary-accent, $primary-accent-light);
+        border-radius: $radius-pill;
+        transition: width 0.5s $ease-out-expo;
+    }
+
+    // =============================================
+    //           SUMMARY SECTION
+    // =============================================
+
+    &__summary {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+    }
+
+    &__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: $fs-md;
+
+        // Discount Row Modifier
+        &--discount {
+
+            .footer__label,
+            .footer__value {
+                color: $primary-accent-light;
+            }
+        }
+
+        // Total Row Modifier
+        &--total {
+            margin-top: $spacing-xxs;
+
+            .footer__label {
+                font-size: $fs-lg;
+                font-weight: $fw-semibold;
+                color: $text-primary;
+            }
+        }
+    }
+
+    &__label {
+        color: $text-secondary;
+    }
+
+    &__value {
+        color: $text-primary;
+        font-feature-settings: "tnum";
+    }
+
+    &__divider {
+        height: 1px;
+        background: $border-color;
+        margin: $spacing-xs 0;
+    }
+
+    &__total {
+        color: $text-inverse;
+        font-size: $fs-xl;
+        font-weight: $fw-bold;
+        letter-spacing: $letter-spacing-tight;
+    }
+
+    &__note {
+        font-size: $fs-sm;
+        color: $text-muted;
+        text-align: center;
+        margin-top: $spacing-xs;
+    }
+
+    // =============================================
+    //           CHECKOUT BUTTON
+    // =============================================
+
+    &__checkoutBtn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: $spacing-sm;
+        padding: $spacing-md;
+
+        // --- Visuals ---
+        background: $primary-accent;
+        color: $text-inverse;
+        font-size: $fs-md;
+        font-weight: $fw-semibold;
+        border: none;
+        border-radius: $radius-md;
+        box-shadow: $shadow-accent-sm;
+
+        // --- Interaction ---
+        cursor: pointer;
+        transition: all $transition-base $ease-out-expo;
+
+        &:hover {
+            background: $primary-accent-dark;
+            box-shadow: $shadow-accent-hover;
+            transform: translateY(-2px);
+        }
+
+        &:active {
+            transform: scale($button-pressed-scale);
+        }
+    }
+
+    // =============================================
+    //              RESPONSIVE
+    // =============================================
+
+    // --- Mobile (<480px) ---
+    @media (max-width: 480px) {
+        padding: $spacing-md;
+    }
+
+    // --- Large Screens (>=1440px) ---
+    @media (min-width: 1440px) {
+        padding: $spacing-xl;
+    }
+
+    // --- Landscape Mobile ---
+    @media (max-height: 500px) and (orientation: landscape) {
+        padding: $spacing-sm $spacing-md;
+    }
+
+    // --- Safe Area Support ---
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+        padding-bottom: calc(#{$spacing-lg} + #{$safe-area-bottom});
+    }
+}

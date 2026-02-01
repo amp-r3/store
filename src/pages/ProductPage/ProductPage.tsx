@@ -67,7 +67,7 @@ export const ProductPage = () => {
 
     if (product) {
         const { id, title, price, description, category, images, rating, reviews, discountPercentage, stock } = product;
-        const discountedPrice = applyDiscount(discountPercentage, price);
+        const discountedPrice = applyDiscount({ price: price, discount: discountPercentage });
 
         const showPrice = formatPrice(discountedPrice)
 

@@ -7,34 +7,41 @@ import { applyDiscount } from '@/utils';
 
 interface ProductCardProps {
     product: Product;
-    handleAddToCart: (Product) => void;
+    handleAddToCart: (product: Product) => void;
 }
 
 export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
+    const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
 
-    const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product
+    const discountedPrice = applyDiscount({ price: price, discount: discountPercentage });
+    const hasDiscount = discountPercentage > 0;
 
-
-    const discountedPrice = applyDiscount(discountPercentage, price);
-
-    const showPrice = () => {
-        if (discountedPrice < 100) {
-            return discountedPrice + ',00'
-        } else {
-            return discountedPrice
-        }
-    }
-
+    const formatPrice = (value: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+        }).format(value);
+    };
 
     return (
-        <div key={id} className={style.card}>
-            <Link to={`/product/${id}`} className={style.card__imageWrapper}>
+        <div className={style.card}>
+            <Link
+                to={`/product/${id}`}
+                className={style.card__imageWrapper}
+                aria-label={`View details for ${title}`}
+            >
                 <img src={thumbnail} alt={title} className={style.card__image} loading="lazy" decoding="async" />
                 <span className={style.card__category}>{category}</span>
             </Link>
 
             <div className={style.card__body}>
-                <h3 className={style.card__title}>{title}</h3>
+                <Link
+                    to={`/product/${id}`}
+                    className={style.card__title}
+                >
+                    {title}
+                </Link>
 
                 <span className={style.card__stock}>{stock} in stock</span>
 
@@ -47,10 +54,21 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) 
 
             <div className={style.card__footer}>
                 <div className={style.card__price_wrapper}>
-                    <p className={style.card__price}>${price}</p>
-                    <p className={style.card__discountPrice}>${showPrice()}</p>
+                    {hasDiscount && (
+                        <span className={style.card__oldPrice}>{formatPrice(price)}</span>
+                    )}
+                    <span className={style.card__price}>{formatPrice(discountedPrice)}</span>
                 </div>
-                <button onClick={() => { handleAddToCart(product) }} className={style.card__button}>Add to Cart</button>
+
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                    }}
+                    className={style.card__button}
+                >
+                    Add to Cart
+                </button>
             </div>
         </div>
     );

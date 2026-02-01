@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .cart {
     // --- Layout & Positioning ---
@@ -138,74 +138,6 @@
         color: $text-secondary;
     }
 
-    // --- Footer Section ---
-    &__footer {
-        flex-shrink: 0;
-        padding: $spacing-xl $spacing-lg;
-        background: rgba($background-body, 0.4);
-        border-top: 1px solid $border-color;
-        backdrop-filter: blur(10px);
-    }
-
-    &__summary {
-        margin-bottom: $spacing-lg;
-    }
-
-    &__row {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: $spacing-xs;
-    }
-
-    &__label {
-        color: $text-secondary;
-        font-size: $fs-md;
-    }
-
-    &__total {
-        color: $text-primary;
-        font-size: $fs-xxl;
-        font-weight: $fw-bold;
-        letter-spacing: $letter-spacing-tight;
-    }
-
-    &__note {
-        font-size: $fs-sm;
-        color: $text-muted;
-        margin: 0;
-    }
-
-    &__checkoutBtn {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: $spacing-sm;
-        padding: $spacing-md;
-
-        background: $primary-accent;
-        color: $text-inverse;
-        font-size: $fs-md;
-        font-weight: $fw-semibold;
-        border: none;
-        border-radius: $radius-md;
-        cursor: pointer;
-
-        box-shadow: $shadow-accent-sm;
-        transition: all $transition-base $ease-out-expo;
-
-        &:hover {
-            background: $primary-accent-dark;
-            box-shadow: $shadow-accent-hover;
-            transform: translateY(-2px);
-        }
-
-        &:active {
-            transform: scale($button-pressed-scale);
-        }
-    }
-
     // =============================================
     //               RESPONSIVE
     // =============================================
@@ -213,8 +145,7 @@
     // --- Mobile (<480px) ---
     @media (max-width: 480px) {
 
-        &__header,
-        &__footer{
+        &__header {
             padding: $spacing-md;
         }
 
@@ -223,10 +154,6 @@
         }
 
         &__title {
-            font-size: $fs-lg;
-        }
-
-        &__total {
             font-size: $fs-lg;
         }
     }
@@ -245,8 +172,7 @@
     @media (min-width: 1440px) {
 
         &__header,
-        &__body,
-        &__footer {
+        &__body {
             padding: $spacing-xl;
         }
 
@@ -258,16 +184,8 @@
     // --- Landscape Mobile ---
     @media (max-height: 500px) and (orientation: landscape) {
 
-        &__header,
-        &__footer {
+        &__header {
             padding: $spacing-sm $spacing-md;
-        }
-    }
-
-    // --- Safe Area Support ---
-    @supports (padding-bottom: env(safe-area-inset-bottom)) {
-        &__footer {
-            padding-bottom: calc(#{$spacing-lg} + #{$safe-area-bottom});
         }
     }
 }

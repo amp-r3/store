@@ -5,8 +5,8 @@ import { IoAdd, IoRemove, IoTrashOutline } from 'react-icons/io5';
 import styles from './cart-item.module.scss';
 // Types
 import { CartItem as CartItemType } from '@/types/products';
+import { formatPrice } from '@/utils';
 
-// Using types derived from DummyJson structure
 interface CartItemProps {
     product: CartItemType;
     onIncrease: (id: number) => void;
@@ -20,8 +20,6 @@ export const CartItem: FC<CartItemProps> = ({
     onDecrease,
     onRemove,
 }) => {
-    // Calculate final price if needed, or just display raw price.
-    // For this design, we will stick to the base price for clarity.
     const { id, title, price, thumbnail, quantity, discountPercentage, } = product
 
     return (
@@ -44,10 +42,9 @@ export const CartItem: FC<CartItemProps> = ({
                     <h3 className={styles['cart-item__title']}>{title}</h3>
                     <div className={styles['cart-item__price-wrapper']}>
                         <span className={styles['cart-item__price']}>
-                            ${price.toFixed(2)}
+                            {formatPrice(price * quantity)}
                         </span>
-                        {/* Optional: Render discount badge if applicable */}
-                        {discountPercentage && discountPercentage > 0 && (
+                        {discountPercentage > 1 && (
                             <span className={styles['cart-item__discount']}>
                                 -{Math.round(discountPercentage)}%
                             </span>

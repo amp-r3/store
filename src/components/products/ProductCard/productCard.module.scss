@@ -1,6 +1,7 @@
 @use '@/styles/index'as *;
 
 .card {
+    position: relative;
     background: $glass-background;
     backdrop-filter: $glass-backdrop-blur;
     -webkit-backdrop-filter: $glass-backdrop-blur;
@@ -10,10 +11,22 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+
     border: 1px solid $glass-border;
-    transition: transform $transition-base, box-shadow $transition-base;
-    box-shadow: $shadow-card, $shadow-accent;
+    transition:
+        transform $transition-base $ease-out-expo,
+        box-shadow $transition-base $ease-out-expo,
+        border-color $transition-base;
+
+    box-shadow: $shadow-card;
     cursor: pointer;
+    container-type: inline-size;
+
+    &:hover {
+        transform: translateY(-6px);
+        box-shadow: $shadow-accent-hover;
+        border-color: rgba($primary-accent, 0.6);
+    }
 
     &__imageWrapper {
         position: relative;
@@ -23,15 +36,7 @@
         overflow: hidden;
         background: $background-image-holder;
 
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center,
-                    transparent 40%,
-                    rgba($primary-accent, 0.05) 100%);
-            pointer-events: none;
-        }
+        mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
     }
 
     &__image {
@@ -42,10 +47,12 @@
         height: 100%;
         object-fit: contain;
         padding: $spacing-lg;
-        transition: transform $transition-base $ease-out-expo;
+
+        transition: transform 0.6s $ease-out-expo;
+        will-change: transform;
 
         .card:hover & {
-            transform: scale($scale-up-sm);
+            transform: scale(1.08);
         }
     }
 
@@ -53,15 +60,17 @@
         position: absolute;
         top: $spacing-sm;
         left: $spacing-sm;
-        background-color: rgba($primary-accent-dark, 0.8);
+        background-color: rgba($background-body, 0.5); 
+        backdrop-filter: blur(4px);
         color: $text-primary;
         padding: $spacing-xxs $spacing-sm;
-        border-radius: $radius-input;
+        border-radius: $radius-pill;
         font-size: $fs-sm;
         font-weight: $fw-semibold;
         text-transform: capitalize;
         max-width: max-content;
-        width: 100%;
+        z-index: 2;
+        border: 1px solid $border-color-light;
     }
 
     &__body {
@@ -70,6 +79,7 @@
         gap: $spacing-xs;
         padding: $spacing-md;
         flex-grow: 1;
+        z-index: 1;
     }
 
     &__title {
@@ -82,6 +92,11 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        transition: color $transition-fast;
+
+        .card:hover & {
+            color: $primary-accent-light;
+        }
     }
 
     &__ratingCount {
@@ -93,63 +108,70 @@
         display: flex;
         align-items: center;
         gap: $spacing-xxs;
-        margin-top: $spacing-xs;
+        margin-top: auto; 
         font-size: $fs-base;
         color: $rating-color;
     }
 
     &__stock {
-        font-size: $fs-base;
+        font-size: $fs-sm;
         font-weight: $fw-normal;
-        color: $primary-accent-light;
+        color: $text-muted;
     }
 
     &__footer {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        flex-direction: column; 
+        align-items: stretch; 
         padding: $spacing-md;
         border-top: 1px solid $border-color;
-        margin-top: auto;
+        background: rgba($background-component, 0.3); 
         gap: $spacing-md;
     }
 
     &__price_wrapper {
         display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         justify-content: center;
-        align-items: center;
-        gap: $spacing-md;
-        width: 100%;
+        gap: 2px;
+    }
+
+    &__oldPrice {
+        font-size: $fs-sm;
+        color: $text-muted;
+        text-decoration: line-through;
+        line-height: 1.2;
     }
 
     &__price {
-        font-size: $fs-base;
-        font-weight: $fw-normal;
-        color: $text-secondary;
-    }
-
-    &__discountPrice {
-        font-size: $fs-lg;
-        font-weight: $fw-bold;
+        font-size: $fs-xl;
+        font-weight: $fw-black;
         color: $primary-accent;
+        line-height: 1;
+        letter-spacing: -0.02em;
     }
 
     &__button {
         background-color: $primary-accent-dark;
         color: $text-inverse;
         border-radius: $radius-sm;
-        padding: $spacing-sm $spacing-sm;
+        padding: $spacing-sm;
         font-size: $fs-sm;
         font-weight: $fw-semibold;
-        transition: background-color $transition-base, transform $transition-fast, box-shadow $transition-base;
+        transition: all $transition-fast;
         width: 100%;
         border: none;
         cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: $touch-target-min;
 
         &:hover {
-            transform: scale($scale-up-sm);
-            box-shadow: $shadow-accent-hover;
+            transform: translateY(-2px);
+            background-color: $primary-accent;
+            box-shadow: 0 4px 12px rgba($primary-accent, 0.4);
         }
 
         &:active {
@@ -209,31 +231,26 @@
         }
 
         &__footer {
-            padding: 10px;
-            gap: 10px;
+            padding: $spacing-sm;
+            gap: $spacing-sm;
         }
 
         &__price_wrapper {
-            gap: 6px;
-            align-items: baseline;
+            gap: 0;
         }
 
-        &__price {
+        &__oldPrice {
             font-size: 0.75rem;
         }
 
-        &__discountPrice {
-            font-size: $fs-md;
+        &__price {
+            font-size: $fs-lg;
         }
 
         &__button {
-            padding: 0;
             height: 36px;
+            min-height: 36px;
             font-size: $fs-sm;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
     }
 }

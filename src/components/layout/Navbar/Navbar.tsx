@@ -29,7 +29,7 @@ export const Navbar = () => {
   return (
     <header className="container">
       <nav ref={navRef} className={style.nav}>
-        <Link to="/" className={style.nav__logo}>store</Link>
+        <span className={style.nav__logo} aria-label="">store</span>
         <div className={style.nav__form}>
           <SearchForm
             inputValue={inputValue}
@@ -42,10 +42,10 @@ export const Navbar = () => {
         <div className={style.nav__main_actions}>
           <ul className={style.nav__menu}>
             <li>
-              <NavLink to="/" className={style.nav__link} end><IoHome /></NavLink>
+              <NavLink to="/" className={style.nav__link} end  aria-label='Back to catalog'><IoHome /></NavLink>
             </li>
           </ul>
-          <button onClick={() => { dispatch(openCart()) }} type='button' className={style.nav__cart}>
+          <button onClick={() => { dispatch(openCart()) }} type='button' aria-label='open cart' className={style.nav__cart}>
             {
               isCartLoaded && <span className={style.nav__cart__count}>{totalQuantity}</span>
             }
