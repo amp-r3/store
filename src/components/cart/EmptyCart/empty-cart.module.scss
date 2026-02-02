@@ -1,0 +1,250 @@
+@use '@/styles/index'as *;
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(5deg);
+    }
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.emptyCart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    padding: $spacing-xl;
+
+    animation: slide-up 0.5s $ease-out-expo forwards;
+
+    // --- 1. Visual Centerpiece ---
+    &__visual {
+        position: relative;
+        margin-bottom: $spacing-xl;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, rgba($primary-accent, 0.2) 0%, transparent 70%);
+            filter: blur(20px);
+            z-index: 0;
+        }
+    }
+
+    &__circle {
+        position: relative;
+        z-index: 1;
+        width: 8rem; // ~128px
+        height: 8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $radius-circle;
+
+        background: $glass-background;
+        backdrop-filter: $glass-backdrop-blur;
+        border: 1px solid $glass-border;
+        box-shadow: $shadow-card;
+    }
+
+    &__mainIcon {
+        font-size: 3.5rem;
+        color: $text-primary;
+        filter: drop-shadow(0 0 10px rgba($primary-accent, 0.3));
+    }
+
+    &__deco {
+        position: absolute;
+        color: $primary-accent-light;
+
+        &--top {
+            top: 0;
+            right: 0;
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        &--blur {
+            bottom: 10%;
+            left: 10%;
+            width: 12px;
+            height: 12px;
+            background: $primary-accent;
+            border-radius: $radius-circle;
+            filter: blur(4px);
+            animation: pulse-glow 2s ease-in-out infinite reverse;
+        }
+    }
+
+    // --- 2. Text Content ---
+    &__content {
+        margin-bottom: $spacing-xl;
+        max-width: 320px;
+    }
+
+    &__title {
+        font-family: $font-primary;
+        font-size: $fs-xl;
+        font-weight: $fw-bold;
+        color: $text-primary;
+        margin-bottom: $spacing-sm;
+        letter-spacing: $letter-spacing-tight;
+    }
+
+    &__description {
+        font-size: $fs-base;
+        color: $text-muted;
+        line-height: $lh-relaxed;
+    }
+
+    // --- 3. Primary Action (CTA) ---
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: $spacing-sm;
+
+        padding: $spacing-md $spacing-xl;
+        min-height: $touch-target-comfortable;
+
+        background: $primary-accent;
+        color: $text-inverse;
+
+        font-family: $font-primary;
+        font-weight: $fw-semibold;
+        font-size: $fs-base;
+
+        border: none;
+        border-radius: $radius-pill;
+        cursor: pointer;
+        box-shadow: $shadow-accent;
+
+        transition: all $transition-base $ease-spring;
+
+        &:hover {
+            background: $primary-accent-dark;
+            transform: translateY(-2px);
+            box-shadow: $shadow-accent-hover;
+
+            .emptyCart__ctaIcon {
+                transform: translateX(4px);
+            }
+        }
+
+        &:active {
+            transform: scale($button-pressed-scale);
+        }
+    }
+
+    &__ctaIcon {
+        font-size: $icon-size-md;
+        transition: transform $transition-fast ease;
+    }
+
+    // --- 4. Discovery Chips ---
+    &__discovery {
+        margin-top: $spacing-xxl;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $spacing-sm;
+    }
+
+    &__discoveryLabel {
+        font-size: $fs-sm;
+        color: $text-secondary;
+        text-transform: uppercase;
+        letter-spacing: $letter-spacing-wider;
+        font-weight: $fw-semibold;
+    }
+
+    &__chips {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: $spacing-sm;
+    }
+
+    &__chip {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xs;
+
+        padding: $spacing-xs $spacing-md;
+
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid $border-color;
+        border-radius: $radius-md;
+
+        color: $text-secondary;
+        font-size: $fs-sm;
+        font-weight: $fw-normal;
+        cursor: pointer;
+
+        transition: all $transition-fast ease;
+
+        &:hover {
+            background: rgba($primary-accent, 0.1);
+            border-color: rgba($primary-accent, 0.3);
+            color: $text-primary;
+            transform: translateY(-1px);
+        }
+    }
+
+    &__chipIcon {
+        display: flex;
+        align-items: center;
+        color: $primary-accent-light;
+    }
+
+    // --- Responsive Tweaks ---
+    @media (max-width: 480px) {
+        &__circle {
+            width: 6rem;
+            height: 6rem;
+        }
+
+        &__mainIcon {
+            font-size: 2.5rem;
+        }
+
+        &__title {
+            font-size: $fs-lg;
+        }
+    }
+}

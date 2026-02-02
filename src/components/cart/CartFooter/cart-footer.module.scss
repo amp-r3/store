@@ -5,16 +5,18 @@
 // =============================================
 
 .footer {
-    // --- Layout ---
+    position: sticky;
+    bottom: 0;
+    z-index: $z-index-fixed;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+
     flex-shrink: 0;
     padding: $spacing-lg;
 
-    // --- Visuals ---
     background: rgba($background-body, 0.6);
     border-top: 1px solid $border-color;
     backdrop-filter: blur(20px);
 
-    // --- Structure ---
     display: flex;
     flex-direction: column;
     gap: $spacing-lg;
@@ -78,7 +80,6 @@
         align-items: center;
         font-size: $fs-md;
 
-        // Discount Row Modifier
         &--discount {
 
             .footer__label,
@@ -87,7 +88,6 @@
             }
         }
 
-        // Total Row Modifier
         &--total {
             margin-top: $spacing-xxs;
 
@@ -140,7 +140,6 @@
         gap: $spacing-sm;
         padding: $spacing-md;
 
-        // --- Visuals ---
         background: $primary-accent;
         color: $text-inverse;
         font-size: $fs-md;
@@ -149,7 +148,6 @@
         border-radius: $radius-md;
         box-shadow: $shadow-accent-sm;
 
-        // --- Interaction ---
         cursor: pointer;
         transition: all $transition-base $ease-out-expo;
 
@@ -170,21 +168,85 @@
 
     // --- Mobile (<480px) ---
     @media (max-width: 480px) {
-        padding: $spacing-md;
-    }
+        padding: $spacing-md $spacing-md calc(#{$spacing-md} + #{$safe-area-bottom});
 
-    // --- Large Screens (>=1440px) ---
-    @media (min-width: 1440px) {
-        padding: $spacing-xl;
+        backdrop-filter: blur(25px);
+        background: rgba($background-body, 0.85);
+        border-top-color: $border-color-strong;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+
+        gap: $spacing-sm;
+
+        // --- Shipping Section ---
+        &__shipping {
+            gap: $spacing-xxs;
+        }
+
+        &__shippingInfo {
+            font-size: calc($fs-sm * 0.9);
+        }
+
+        &__progressBar {
+            height: 3px;
+        }
+
+        // --- Summary Section ---
+        &__summary {
+            gap: 0; 
+        }
+
+        &__row {
+            font-size: $fs-sm; 
+            margin-bottom: $spacing-xxs;
+
+            &--total {
+                margin-top: $spacing-xs;
+                padding-top: $spacing-xs;
+                border-top: 1px solid $border-color-subtle;
+
+                .footer__label {
+                    font-size: $fs-md;
+                }
+            }
+        }
+
+        &__total {
+            font-size: $fs-lg; 
+        }
+
+        &__note {
+            display: none;
+        }
+
+        &__divider {
+            display: none; 
+        }
+
+        // --- Button ---
+        &__checkoutBtn {
+            padding: $spacing-sm;
+            font-size: $fs-sm;
+            height: $touch-target-comfortable;
+        }
     }
 
     // --- Landscape Mobile ---
     @media (max-height: 500px) and (orientation: landscape) {
-        padding: $spacing-sm $spacing-md;
-    }
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-md;
+        padding: $spacing-sm $spacing-lg;
 
-    // --- Safe Area Support ---
-    @supports (padding-bottom: env(safe-area-inset-bottom)) {
-        padding-bottom: calc(#{$spacing-lg} + #{$safe-area-bottom});
+        &__shipping {
+            grid-column: 1 / -1;
+        }
+
+        &__summary {
+            justify-content: center;
+        }
+
+        &__note {
+            display: none;
+        }
     }
 }

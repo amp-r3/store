@@ -15,6 +15,8 @@ import { CartItem } from '../CartItem/CartItem';
 import { CartFooter } from '../CartFooter/CartFooter';
 // Utils
 import { calculateCartTotals } from '@/utils';
+import { EmptyCart } from '../EmptyCart/EmptyCart';
+import { useNavigate } from 'react-router';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -25,6 +27,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const cartItems = useAppSelector(selectCartItems);
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate()
 
   const {
     subtotal,
@@ -42,6 +45,11 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const handleCheckout = () => {
     console.log('Proceed to checkout');
   };
+
+  const onStartShopping = () => {
+    navigate('/', { replace: true })
+    onClose()
+  }
 
 
   // Block body scrolling when the cart is open
@@ -103,10 +111,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
               />
             ))
           ) : (
-            <div className={styles.cart__emptyState}>
-              <IoBagHandleOutline size={48} className={styles.cart__emptyIcon} />
-              <p>Your cart is currently empty</p>
-            </div>
+            <EmptyCart onStartShopping={onStartShopping}/>
           )}
         </div>
 

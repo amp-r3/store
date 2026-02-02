@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 // Icons
 import { IoAdd, IoRemove, IoTrashOutline } from 'react-icons/io5';
 // Styles
@@ -21,6 +21,7 @@ export const CartItem: FC<CartItemProps> = ({
     onRemove,
 }) => {
     const { id, title, price, thumbnail, quantity, discountPercentage, } = product
+    const totalPrice = useMemo(() => price * quantity, [price, quantity]);
 
     return (
         <article className={styles['cart-item']}>
@@ -42,8 +43,15 @@ export const CartItem: FC<CartItemProps> = ({
                     <h3 className={styles['cart-item__title']}>{title}</h3>
                     <div className={styles['cart-item__price-wrapper']}>
                         <span className={styles['cart-item__price']}>
-                            {formatPrice(price * quantity)}
+                            {formatPrice(totalPrice)}
                         </span>
+
+                        {quantity > 1 && (
+                            <span className={styles['cart-item__unit-price']}>
+                                {formatPrice(price)} / pcs.
+                            </span>
+                        )}
+
                         {discountPercentage > 1 && (
                             <span className={styles['cart-item__discount']}>
                                 -{Math.round(discountPercentage)}%
@@ -62,7 +70,7 @@ export const CartItem: FC<CartItemProps> = ({
                             onClick={() => onDecrease(id)}
                             aria-label="Decrease quantity"
                         >
-                            <IoRemove size={18} />
+                            {quantity === 1 ? <IoTrashOutline size={18} /> : <IoRemove size={18} />}
                         </button>
 
                         <span className={styles['cart-item__quantity-value']}>{quantity}</span>

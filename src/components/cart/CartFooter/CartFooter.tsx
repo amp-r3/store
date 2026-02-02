@@ -25,6 +25,7 @@ export const CartFooter: FC<CartFooterProps> = ({
     remainingForFreeShipping,
     onCheckout,
 }) => {
+    const safeProgress = Math.min(100, Math.max(0, shippingProgress));
     return (
         <footer className={style.footer}>
             {/* Shipping Progress */}
@@ -40,10 +41,17 @@ export const CartFooter: FC<CartFooterProps> = ({
                         </span>
                     )}
                 </div>
-                <div className={style.footer__progressBar}>
+                <div
+                    className={style.footer__progressBar}
+                    role="progressbar"
+                    aria-valuenow={shippingProgress}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label="Shipping for free delivery"
+                >
                     <div
                         className={style.footer__progressFill}
-                        style={{ width: `${shippingProgress}%` }}
+                        style={{ width: `${safeProgress}%` }}
                     />
                 </div>
             </div>

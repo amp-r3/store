@@ -30,7 +30,7 @@
     // =============================================
     &__media {
         flex-shrink: 0;
-        width: 110px; 
+        width: 110px;
         height: 110px;
         border-radius: $radius-md;
         overflow: hidden;
@@ -110,6 +110,15 @@
         line-height: 1;
     }
 
+    &__unit-price {
+        font-family: $font-primary;
+        font-size: $fs-sm;
+        color: $text-muted; 
+        font-weight: $fw-normal;
+        line-height: 1;
+        margin-top: -2px; 
+    }
+
     &__discount {
         font-size: 0.75rem;
         font-weight: $fw-bold;
@@ -145,6 +154,7 @@
         border-radius: $radius-pill;
         border: 1px solid $border-color;
         box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        user-select: none;
     }
 
     &__quantity-value {
@@ -203,7 +213,8 @@
                 opacity: 0;
                 transform: translateX(-10px);
 
-                .cart-item:hover & {
+                .cart-item:hover &,
+                &:focus-visible {
                     opacity: 1;
                     transform: translateX(0);
                 }
@@ -237,6 +248,12 @@
             opacity: 1 !important;
             transform: none !important;
             background: transparent;
+        }
+
+        &__btn--qty,
+        &__btn--remove {
+            width: 44px;
+            height: 44px;
         }
 
         &:hover {
