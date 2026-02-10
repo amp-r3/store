@@ -10,6 +10,7 @@ export interface ProductParams {
 
 export interface ProductsResponse {
     items: Record<string, Product>;
+    ids: number[];
     total: number;
 }
 
@@ -19,7 +20,7 @@ export const productsApi = createApi({
     endpoints: (builder) => ({
         getProducts: builder.query<ProductsResponse, ProductParams>({
             query: (params) => {
-                const { page = 1, sortBy, order, search } = params;
+                const { page = 1, search, sortBy, order } = params;
                 const limit = 12;
                 const skip = (page - 1) * limit;
 
@@ -45,12 +46,16 @@ export const productsApi = createApi({
             },
 
             transformResponse: (response: { products: Product[], total: number }) => {
+                const items = response.products.reduce((acc, curr) => {
+                    acc[curr.id] = curr;
+                    return acc;
+                }, {} as Record<string, Product>);
+
+                const ids = response.products.map((product) => product.id);
+
                 return {
-                    items: response.products.reduce((acc, curr) => {
-                        const map: Record<string, Product> = acc;
-                        map[curr.id] = curr;
-                        return map;
-                    }, {} as Record<string, Product>),
+                    items,
+                    ids,
                     total: response.total
                 };
             },

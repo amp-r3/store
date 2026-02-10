@@ -28,10 +28,10 @@ export function useProductCatalog() {
 
 
     const productsArray = useMemo(() => {
-        if (!data?.items) return [];
+        if (!data?.items || !data?.ids) return [];
+        return data.ids.map((id) => data.items[id]);
 
-        return Object.values(data.items);
-    }, [data])
+    }, [data]);
 
     return { productsArray, setPage, page, isLoading, isFetching, sortingOptions, totalItems, query, error }
 }
