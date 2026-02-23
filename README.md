@@ -48,12 +48,6 @@
 
 > A fully responsive, dark-themed e-commerce UI with glassmorphism aesthetics, real-time search, smart pagination, and a Redux-powered shopping cart — built as a portfolio project to demonstrate modern React architecture.
 
-<br/>
-
-<img src="https://placehold.co/900x480/0a0a0f/7c6dff?text=Store+Preview&font=raleway" alt="Store Preview" width="100%" />
-
-<br/>
-
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,20,24&height=60&section=footer" width="100%" />
 
 </div>
