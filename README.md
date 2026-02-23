@@ -4,7 +4,7 @@
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=42&duration=2000&pause=1200&color=7C6DFF&center=true&vCenter=true&width=600&lines=🛍️+Store" alt="Store" />
+<h1>🛍️ Store</h1>
 
 <p align="center">
   <em>A modern, feature-rich e-commerce storefront</em>
@@ -38,7 +38,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/🎨_Glassmorphism_UI-1a1a2e?style=flat-square&color=7c6dff" />
-  <img src="https://img.shields.io/badge/🔍_Instant_Search-1a1a2e?style=flat-square&color=6d7cff" />
+  <img src="https://img.shields.io/badge/🔍_Real--time_Search-1a1a2e?style=flat-square&color=6d7cff" />
   <img src="https://img.shields.io/badge/📦_Redux_Cart-1a1a2e?style=flat-square&color=764abc" />
   <img src="https://img.shields.io/badge/📱_Responsive-1a1a2e?style=flat-square&color=5c6dff" />
   <img src="https://img.shields.io/badge/🌙_Dark_Theme-1a1a2e?style=flat-square&color=3d4fff" />
@@ -50,7 +50,7 @@
 
 <br/>
 
-![Store Preview](https://via.placeholder.com/900x480/0a0a0f/7c6dff?text=Store+Preview)
+<img src="https://placehold.co/900x480/0a0a0f/7c6dff?text=Store+Preview&font=raleway" alt="Store Preview" width="100%" />
 
 <br/>
 
