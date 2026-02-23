@@ -22,10 +22,16 @@
     cursor: pointer;
     container-type: inline-size;
 
-    &:hover {
-        transform: translateY(-6px);
-        box-shadow: $shadow-accent-hover;
-        border-color: rgba($primary-accent, 0.6);
+    @media (width < 400px) {
+        height: 100%;
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            transform: translateY(-6px);
+            box-shadow: $shadow-accent-hover;
+            border-color: rgba($primary-accent, 0.6);
+        }
     }
 
     &__imageWrapper {
@@ -35,8 +41,11 @@
         border-radius: $radius-lg $radius-lg 0 0;
         overflow: hidden;
         background: $background-image-holder;
-
         mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+
+        @media (width < 400px) {
+            padding-top: 140%;
+        }
     }
 
     &__image {
@@ -51,8 +60,14 @@
         transition: transform 0.6s $ease-out-expo;
         will-change: transform;
 
-        .card:hover & {
-            transform: scale(1.08);
+        @media (hover: hover) {
+            .card:hover & {
+                transform: scale(1.08);
+            }
+        }
+
+        @media (width < 400px) {
+            padding: $spacing-md;
         }
     }
 
@@ -60,7 +75,7 @@
         position: absolute;
         top: $spacing-sm;
         left: $spacing-sm;
-        background-color: rgba($background-body, 0.5); 
+        background-color: rgba($background-body, 0.5);
         backdrop-filter: blur(4px);
         color: $text-primary;
         padding: $spacing-xxs $spacing-sm;
@@ -71,6 +86,12 @@
         max-width: max-content;
         z-index: 2;
         border: 1px solid $border-color-light;
+
+        @media (width < 400px) {
+            top: $spacing-xs;
+            left: $spacing-xs;
+            padding: $spacing-xxs $spacing-xs;
+        }
     }
 
     &__body {
@@ -80,6 +101,11 @@
         padding: $spacing-md;
         flex-grow: 1;
         z-index: 1;
+
+        @media (width < 400px) {
+            gap: 0;
+            padding: $spacing-xs;
+        }
     }
 
     &__title {
@@ -94,39 +120,67 @@
         text-overflow: ellipsis;
         transition: color $transition-fast;
 
-        .card:hover & {
-            color: $primary-accent-light;
+        @media (hover: hover) {
+            .card:hover & {
+                color: $primary-accent-light;
+            }
+        }
+
+        @media (width < 400px) {
+            font-size: 0.85rem;
+            line-height: $lh-normal;
+            min-height: 2.6em;
+            margin-bottom: 2px;
         }
     }
 
     &__ratingCount {
         color: $text-secondary;
         font-size: $fs-sm;
+
+        @media (width < 400px) {
+            font-size: 0.7rem;
+            margin-left: 2px;
+        }
     }
 
     &__rating {
         display: flex;
         align-items: center;
         gap: $spacing-xxs;
-        margin-top: auto; 
+        margin-top: auto;
         font-size: $fs-base;
         color: $rating-color;
+
+        @media (width < 400px) {
+            font-size: $fs-sm;
+            flex-wrap: wrap;
+        }
     }
 
     &__stock {
         font-size: $fs-sm;
         font-weight: $fw-normal;
         color: $text-muted;
+
+        @media (width < 400px) {
+            font-size: $fs-sm;
+        }
     }
 
     &__footer {
         display: flex;
-        flex-direction: column; 
-        align-items: stretch; 
+        flex-direction: column;
+        align-items: stretch;
         padding: $spacing-md;
         border-top: 1px solid $border-color;
-        background: rgba($background-component, 0.3); 
+        background: rgba($background-component, 0.3);
         gap: $spacing-md;
+
+        @media (width < 400px) {
+            padding: $spacing-sm;
+            gap: $spacing-sm;
+        }
     }
 
     &__price_wrapper {
@@ -135,6 +189,10 @@
         align-items: flex-start;
         justify-content: center;
         gap: 2px;
+
+        @media (width < 400px) {
+            gap: 0;
+        }
     }
 
     &__oldPrice {
@@ -142,6 +200,10 @@
         color: $text-muted;
         text-decoration: line-through;
         line-height: 1.2;
+
+        @media (width < 400px) {
+            font-size: 0.75rem;
+        }
     }
 
     &__price {
@@ -150,6 +212,10 @@
         color: $primary-accent;
         line-height: 1;
         letter-spacing: -0.02em;
+
+        @media (width < 400px) {
+            font-size: $fs-lg;
+        }
     }
 
     &__button {
@@ -168,86 +234,19 @@
         align-items: center;
         min-height: $touch-target-min;
 
-        &:hover {
-            transform: translateY(-2px);
-            background-color: $primary-accent;
-            box-shadow: 0 4px 12px rgba($primary-accent, 0.4);
+        @media (hover: hover) {
+            &:hover {
+                transform: translateY(-2px);
+                background-color: $primary-accent;
+                box-shadow: 0 4px 12px rgba($primary-accent, 0.4);
+            }
         }
 
         &:active {
             transform: scale($button-pressed-scale);
         }
-    }
-}
 
-// ==========================================
-// ADAPTABILITY
-// ==========================================
-
-@media (max-width: 400px) {
-    .card {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-
-        &__imageWrapper {
-            padding-top: 140%;
-        }
-
-        &__image {
-            padding: $spacing-md;
-        }
-
-        &__category {
-            top: $spacing-xs;
-            left: $spacing-xs;
-            padding: $spacing-xxs $spacing-xs;
-        }
-
-        &__body {
-            gap: 0;
-            padding: $spacing-xs;
-        }
-
-        &__title {
-            font-size: 0.85rem;
-            line-height: $lh-normal;
-            min-height: 2.6em;
-            margin-bottom: 2px;
-        }
-
-        &__stock {
-            font-size: $fs-sm;
-        }
-
-        &__rating {
-            font-size: $fs-sm;
-            flex-wrap: wrap;
-        }
-
-        &__ratingCount {
-            font-size: 0.7rem;
-            margin-left: 2px;
-        }
-
-        &__footer {
-            padding: $spacing-sm;
-            gap: $spacing-sm;
-        }
-
-        &__price_wrapper {
-            gap: 0;
-        }
-
-        &__oldPrice {
-            font-size: 0.75rem;
-        }
-
-        &__price {
-            font-size: $fs-lg;
-        }
-
-        &__button {
+        @media (width < 400px) {
             height: 36px;
             min-height: 36px;
             font-size: $fs-sm;

@@ -19,6 +19,11 @@
     transform: translateX(-50%);
     z-index: $z-index-sticky;
 
+    @media (width < 600px) {
+        padding: $spacing-xs $spacing-sm;
+        gap: $spacing-xxs;
+    }
+
     &__item {
         display: flex;
         align-items: center;
@@ -33,11 +38,19 @@
         font-weight: $fw-semibold;
         transition: $transition-base;
 
-        &:hover {
-            background-color: $primary-accent;
-            color: $text-inverse;
-            border-color: transparent;
-            transform: scale($scale-up-md);
+        @media (width < 600px) {
+            width: 40px;
+            height: 40px;
+            font-size: $fs-sm;
+        }
+
+        @media (hover: hover) {
+            &:hover {
+                background-color: $primary-accent;
+                color: $text-inverse;
+                border-color: transparent;
+                transform: scale($scale-up-md);
+            }
         }
 
         &--active {
@@ -52,11 +65,13 @@
             cursor: not-allowed;
             pointer-events: none;
 
-            &:hover {
-                background: transparent;
-                color: $text-muted;
-                border-color: $border-color;
-                transform: none;
+            @media (hover: hover) {
+                &:hover {
+                    background: transparent;
+                    color: $text-muted;
+                    border-color: $border-color;
+                    transform: none;
+                }
             }
         }
     }
@@ -69,29 +84,11 @@
         height: $touch-target-min;
         color: $text-muted;
         font-size: $fs-base;
-    }
-}
 
-// =============================================
-//               MOBILE ADAPTATION
-// =============================================
-
-@media (max-width: 600px) {
-    .pagination {
-        padding: $spacing-xs $spacing-sm;
-        gap: $spacing-xxs;
-
-        &__item,
-        &__dots {
+        @media (width < 600px) {
             width: 40px;
             height: 40px;
             font-size: $fs-sm;
-        }
-
-        &__item {
-            &:hover {
-                transform: none;
-            }
         }
     }
 }
