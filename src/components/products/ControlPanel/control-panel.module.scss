@@ -1,0 +1,92 @@
+@use '@/styles/index'as *;
+
+.sort_panel {
+  background: $glass-background;
+  backdrop-filter: $glass-backdrop-blur;
+  border: 1px solid $glass-border;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-top: $spacing-xl;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-default;
+  transition: all $transition-base $ease-in-out-smooth;
+
+  @media (width < 768px) {
+    padding: $spacing-md;
+  }
+
+  @media (width < 550px) {
+    padding: 0;
+    margin-top: 0;
+    overflow: hidden;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+
+    @media (width < 550px) {
+      cursor: pointer;
+      user-select: none;
+      padding: $spacing-md $spacing-lg;
+      margin-bottom: 0;
+      border-radius: $radius-lg;
+      transition: background-color $transition-fast $ease-in-out-smooth;
+      position: relative;
+      justify-content: space-between;
+      width: 100%;
+      z-index: 2;
+      background: inherit;
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: rgba($primary-accent, 0.05);
+        }
+      }
+    }
+  }
+
+  &__chevron {
+    @media (width < 550px) {
+      font-size: $fs-icon-md;
+      color: $text-secondary;
+      transition: transform $transition-layout $ease-spring;
+
+      &.expanded {
+        transform: rotate(180deg);
+        color: $primary-accent;
+      }
+    }
+  }
+
+  &__icon {
+    font-size: $fs-icon-lg;
+    color: $primary-accent;
+    filter: drop-shadow($shadow-text-accent);
+
+    @media (width < 550px) {
+      animation: none;
+      font-size: $fs-icon-md;
+    }
+  }
+
+  &__label {
+    font-size: $fs-md;
+    font-weight: $fw-semibold;
+    color: $text-primary;
+    letter-spacing: $letter-spacing-wide;
+
+    @media (width < 550px) {
+      flex: 1;
+      font-size: $fs-base;
+    }
+  }
+}

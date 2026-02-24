@@ -1,7 +1,7 @@
 // Common components
 import { ErrorView, Loader, NoResults } from '@/components/common'
 // Custom Components
-import { Pagination, ProductCard, SortPanel } from '@/components/products'
+import { Pagination, ProductCard, ControlPanel } from '@/components/products'
 // Custom Hooks
 import { useProductCatalog, useSort } from '@/hooks'
 // Utils
@@ -49,7 +49,7 @@ export const CatalogPage = () => {
 
   return (
     <main className='container'>
-      <SortPanel
+      <ControlPanel
         sortingOptions={sortingOptions}
         changeSort={changeSort}
         activeSortOption={activeSortOption}
