@@ -119,6 +119,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         transition: color $transition-fast;
+;
 
         @media (hover: hover) {
             .card:hover & {
@@ -148,7 +149,6 @@
         display: flex;
         align-items: center;
         gap: $spacing-xxs;
-        margin-top: auto;
         font-size: $fs-base;
         color: $rating-color;
 
@@ -162,6 +162,7 @@
         font-size: $fs-sm;
         font-weight: $fw-normal;
         color: $text-muted;
+        margin-top: auto;
 
         @media (width < 400px) {
             font-size: $fs-sm;

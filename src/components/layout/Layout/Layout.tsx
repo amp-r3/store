@@ -15,6 +15,7 @@ import { selectIsCartOpen } from '@/store/selectors/cartSelectors';
 
 // Style
 import style from './layout.module.scss';
+import { Footer } from '../Footer/Footer';
 
 export const Layout = () => {
     const navigation = useNavigation();
@@ -27,21 +28,24 @@ export const Layout = () => {
     }
 
     return (
-        <div className={style.layout}>
-            <Navbar />
-            {
-                isLoading && <Loader />
-            }
-            <Suspense fallback={<Loader />}>
-                <Outlet />
-                <CartDrawer
-                    isOpen={isOpen}
-                    onClose={handleClose}
-                />
-                <div className={style.mobileBar}>
-                    <MobileBar />
-                </div>
-            </Suspense>
-        </div>
+        <>
+            <div className={style.layout}>
+                <Navbar />
+                {
+                    isLoading && <Loader />
+                }
+                <Suspense fallback={<Loader />}>
+                    <Outlet />
+                    <CartDrawer
+                        isOpen={isOpen}
+                        onClose={handleClose}
+                    />
+                    <div className={style.mobileBar}>
+                        <MobileBar />
+                    </div>
+                </Suspense>
+            </div>
+            <Footer />
+        </>
     );
 };
