@@ -11,6 +11,7 @@
 
     display: flex;
     flex-direction: column;
+    outline: none;
 
     // --- Visuals (Glassmorphism) ---
     background: $glass-background-strong;
@@ -44,69 +45,12 @@
         }
     }
 
-    // --- Header Section ---
-    &__header {
-        flex-shrink: 0;
-        padding: $spacing-lg;
-        border-bottom: 1px solid $border-color;
-        background: rgba($background-body, 0.4);
-    }
-
-    &__headerContent {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    &__title {
-        font-family: $font-primary;
-        font-size: $fs-xl;
-        font-weight: $fw-bold;
-        color: $text-primary;
-        display: flex;
-        align-items: center;
-        gap: $spacing-sm;
-        margin: 0;
-    }
-
-    &__count {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: $primary-accent;
-        color: $text-inverse;
-        font-size: $fs-sm;
-        font-weight: $fw-bold;
-        height: 1.5rem;
-        min-width: 1.5rem;
-        padding: 0 0.4rem;
-        border-radius: $radius-pill;
-    }
-
-    &__closeBtn {
-        background: transparent;
-        border: none;
-        color: $text-secondary;
-        padding: $spacing-xs;
-        border-radius: $radius-circle;
-        cursor: pointer;
-        transition: all $transition-fast ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &:hover {
-            background: $border-color;
-            color: $text-primary;
-            transform: rotate(90deg);
-        }
-    }
-
-    // --- Body Section (Scrollable) ---
-    &__body {
+    // --- Scrollable Area (Header + Body) ---
+    &__scrollArea {
         flex: 1;
         overflow-y: auto;
-        padding: $spacing-lg;
+        display: flex;
+        flex-direction: column;
 
         &::-webkit-scrollbar {
             width: 6px;
@@ -118,6 +62,15 @@
         }
     }
 
+    // --- Body Section ---
+    &__body {
+        flex: 1;
+        padding: $spacing-lg;
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+    }
+
     &__emptyState {
         height: 100%;
         display: flex;
@@ -127,6 +80,8 @@
         color: $text-muted;
         text-align: center;
         gap: $spacing-md;
+        margin-top: auto;
+        margin-bottom: auto;
 
         p {
             font-size: $fs-md;
@@ -144,17 +99,8 @@
 
     // --- Mobile (<480px) ---
     @media (max-width: 480px) {
-
-        &__header {
-            padding: $spacing-md;
-        }
-
         &__body {
-            padding: $spacing-xxs;
-        }
-
-        &__title {
-            font-size: $fs-lg;
+            padding: $spacing-sm;
         }
     }
 
@@ -170,22 +116,8 @@
 
     // --- Large Screens (>=1440px) ---
     @media (min-width: 1440px) {
-
-        &__header,
         &__body {
             padding: $spacing-xl;
-        }
-
-        &__title {
-            font-size: $fs-xxl;
-        }
-    }
-
-    // --- Landscape Mobile ---
-    @media (max-height: 500px) and (orientation: landscape) {
-
-        &__header {
-            padding: $spacing-sm $spacing-md;
         }
     }
 }

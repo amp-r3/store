@@ -1,22 +1,25 @@
-// React
-import { FC, useEffect, useMemo } from 'react';
-// Icons
-import { IoClose, IoBagHandleOutline } from 'react-icons/io5';
+import { FC, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router';
+
 // Styles
 import styles from './cart-drawer.module.scss';
+
 // Redux Typed Hooks
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+
 // Selectors
 import { selectCartItems, selectCartTotalQuantity } from '@/store';
+
 // Functions
 import { changeQuantity, removeFromCart } from '@/store/slices/cartSlice';
+import { calculateCartTotals } from '@/utils';
+
 // Custom components
 import { CartItem } from '../CartItem/CartItem';
 import { CartFooter } from '../CartFooter/CartFooter';
-// Utils
-import { calculateCartTotals } from '@/utils';
+import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
-import { useNavigate } from 'react-router';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -27,7 +30,9 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const cartItems = useAppSelector(selectCartItems);
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const drawerRef = useRef<HTMLElement>(null);
 
   const {
     subtotal,
@@ -47,17 +52,18 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   };
 
   const onStartShopping = () => {
-    navigate('/', { replace: true })
-    onClose()
-  }
+    navigate('/', { replace: true });
+    onClose();
+  };
 
-
-  // Block body scrolling when the cart is open
+  // Block body scrolling & Manage Focus Trap
   useEffect(() => {
     if (isOpen) {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
       document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+      drawerRef.current?.focus();
     } else {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
@@ -80,39 +86,38 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const drawerClasses = `${styles.cart} ${isOpen ? styles['cart--open'] : ''}`;
   const backdropClasses = `${styles.cart__backdrop} ${isOpen ? styles['cart__backdrop--visible'] : ''}`;
 
-  return (
+  return createPortal(
     <>
       <div className={backdropClasses} onClick={onClose} aria-hidden="true" />
 
-      <aside onClick={(e) => e.stopPropagation()} className={drawerClasses} aria-modal="true" role="dialog">
+      <aside
+        ref={drawerRef}
+        onClick={(e) => e.stopPropagation()}
+        className={drawerClasses}
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="cart-title"
+        tabIndex={-1}
+      >
+        {/* --- SCROLLABLE AREA (Header + Body) --- */}
+        <div className={styles.cart__scrollArea}>
+          <CartHeader totalQuantity={totalQuantity} onClose={onClose} />
 
-        {/* --- HEADER --- */}
-        <header className={styles.cart__header}>
-          <div className={styles.cart__headerContent}>
-            <h2 className={styles.cart__title}>
-              Cart <span className={styles.cart__count}>{totalQuantity}</span>
-            </h2>
-            <button className={styles.cart__closeBtn} onClick={onClose} aria-label="Close">
-              <IoClose size={24} />
-            </button>
+          <div className={styles.cart__body}>
+            {cartItems.length ? (
+              cartItems.map((item) => (
+                <CartItem
+                  key={item.id}
+                  product={item}
+                  onIncrease={onIncrease}
+                  onDecrease={onDecrease}
+                  onRemove={onRemove}
+                />
+              ))
+            ) : (
+              <EmptyCart onStartShopping={onStartShopping} />
+            )}
           </div>
-        </header>
-
-        {/* --- BODY --- */}
-        <div className={styles.cart__body}>
-          {cartItems.length ? (
-            cartItems.map((item) => (
-              <CartItem
-                key={item.id}
-                product={item}
-                onIncrease={onIncrease}
-                onDecrease={onDecrease}
-                onRemove={onRemove}
-              />
-            ))
-          ) : (
-            <EmptyCart onStartShopping={onStartShopping}/>
-          )}
         </div>
 
         {/* --- FOOTER --- */}
@@ -128,6 +133,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           />
         )}
       </aside>
-    </>
+    </>,
+    document.body
   );
 };
