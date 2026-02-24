@@ -4,7 +4,7 @@
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=42&duration=2000&pause=1200&color=7C6DFF&center=true&vCenter=true&width=600&lines=🛍️+Store" alt="Store" />
+<h1>🛍️ Store</h1>
 
 <p align="center">
   <em>A modern, feature-rich e-commerce storefront</em>
@@ -14,21 +14,17 @@
 
 <p align="center">
   <a href="https://react.dev/">
-    <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black&labelColor=0d0d1a" />
+    <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&labelColor=0d0d1a" />
   </a>
-  <img src="https://img.shields.io/badge/-·-555?style=flat-square" />
   <a href="https://www.typescriptlang.org/">
     <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white&labelColor=0d0d1a" />
   </a>
-  <img src="https://img.shields.io/badge/-·-555?style=flat-square" />
   <a href="https://redux-toolkit.js.org/">
     <img src="https://img.shields.io/badge/Redux_Toolkit-2.9-764ABC?style=flat-square&logo=redux&logoColor=white&labelColor=0d0d1a" />
   </a>
-  <img src="https://img.shields.io/badge/-·-555?style=flat-square" />
   <a href="https://vitejs.dev/">
     <img src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white&labelColor=0d0d1a" />
   </a>
-  <img src="https://img.shields.io/badge/-·-555?style=flat-square" />
   <a href="https://sass-lang.com/">
     <img src="https://img.shields.io/badge/SASS-Modules-CC6699?style=flat-square&logo=sass&logoColor=white&labelColor=0d0d1a" />
   </a>
@@ -48,13 +44,7 @@
 
 > A fully responsive, dark-themed e-commerce UI with glassmorphism aesthetics, real-time search, smart pagination, and a Redux-powered shopping cart — built as a portfolio project to demonstrate modern React architecture.
 
-<br/>
-
-![Store Preview](https://via.placeholder.com/900x480/0a0a0f/7c6dff?text=Store+Preview)
-
-<br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,20,24&height=60&section=footer" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,20,24&height=80&section=footer" width="100%" />
 
 </div>
 
@@ -171,7 +161,7 @@ src/
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/store.git
+git clone https://github.com/amp-r3/store.git
 cd store
 
 # Install dependencies
