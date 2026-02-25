@@ -3,7 +3,7 @@ import { ErrorView, Loader, NoResults } from '@/components/common'
 // Custom Components
 import { Pagination, ProductCard, ControlPanel } from '@/components/products'
 // Custom Hooks
-import { useProductCatalog, useSort } from '@/hooks'
+import { useCategory, useProductCatalog, useSort } from '@/hooks'
 // Utils
 import { getErrorMessage, scrollToTop } from '@/utils'
 // Redux hooks
@@ -23,10 +23,11 @@ export const CatalogPage = () => {
     isFetching,
     totalItems,
     query,
-    error
+    error,
   } = useProductCatalog();
 
   const { changeSort, sortingOptions, activeSortOption } = useSort()
+  const { changeCategory, categoryOptions, activeCategoryOption } = useCategory()
   const dispatch = useAppDispatch()
 
   const handleAddToCart = (product: Product) => {
@@ -53,9 +54,11 @@ export const CatalogPage = () => {
         sortingOptions={sortingOptions}
         changeSort={changeSort}
         activeSortOption={activeSortOption}
+        categoryOptions={categoryOptions}
+        changeCategory={changeCategory}
+        activeCategoryOption={activeCategoryOption}
       />
 
-      {/* Ux Fix*/}
       <div
         className={style.content}
         style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}

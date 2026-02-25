@@ -89,4 +89,13 @@
       font-size: $fs-base;
     }
   }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    @media (width < 550px) {
+      gap: 0;
+    }
+  }
 }

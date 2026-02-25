@@ -9,14 +9,19 @@ import { SortControl } from './SortControl/SortControl';
 import style from './control-panel.module.scss';
 // Types
 import { SortingOption } from '@/utils/sortingOptions';
+import { CategoryOption } from '@/utils/categoryOptions';
+import { CategoryControl } from './CategoryControl/CategoryControl';
 
 interface ControlPanelProps {
   changeSort: (newSortBy: string) => void;
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
+  changeCategory: (category: string) => void;
+  categoryOptions: CategoryOption[];
+  activeCategoryOption: CategoryOption;
 }
 
-export const ControlPanel: FC<ControlPanelProps> = ({ changeSort, sortingOptions, activeSortOption }) => {
+export const ControlPanel: FC<ControlPanelProps> = ({ changeSort, sortingOptions, activeSortOption, changeCategory, categoryOptions, activeCategoryOption }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobileAccordion = useMediaQuery('(max-width: 550px)');
 
@@ -55,15 +60,24 @@ export const ControlPanel: FC<ControlPanelProps> = ({ changeSort, sortingOptions
           {headerContent}
         </div>
       )}
-
-      <SortControl
-        sortingOptions={sortingOptions}
-        activeSortOption={activeSortOption}
-        changeSort={changeSort}
-        isMobileAccordion={isMobileAccordion}
-        isExpanded={isExpanded}
-        onClose={() => setIsExpanded(false)}
-      />
+      <div className={style.sort_panel__wrapper}>
+        <SortControl
+          sortingOptions={sortingOptions}
+          activeSortOption={activeSortOption}
+          changeSort={changeSort}
+          isMobileAccordion={isMobileAccordion}
+          isExpanded={isExpanded}
+          onClose={() => setIsExpanded(false)}
+        />
+        <CategoryControl
+          categoryOptions={categoryOptions}
+          activeCategoryOption={activeCategoryOption}
+          changeCategory={changeCategory}
+          isMobileAccordion={isMobileAccordion}
+          isExpanded={isExpanded}
+          onClose={() => setIsExpanded(false)}
+        />
+      </div>
     </div>
   );
 };

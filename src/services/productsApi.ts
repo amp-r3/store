@@ -6,6 +6,7 @@ export interface ProductParams {
     sortBy?: string | null;
     order?: string | null;
     search?: string | null;
+    category?: string | null;
 }
 
 export interface ProductsResponse {
@@ -20,18 +21,24 @@ export const productsApi = createApi({
     endpoints: (builder) => ({
         getProducts: builder.query<ProductsResponse, ProductParams>({
             query: (params) => {
-                const { page = 1, search, sortBy, order } = params;
+                const { page = 1, search, sortBy, order, category } = params;
                 const limit = 12;
                 const skip = (page - 1) * limit;
 
-                const url = search ? 'products/search' : 'products';
+                let url = 'products';
+                if (search) {
+                    url = 'products/search';
+                } else if (category) {
+                    url = `products/category/${category}`;
+                }
+
                 const queryParams: Record<string, any> = {
                     limit,
                     skip,
                 };
 
                 if (search) {
-                    queryParams.q = search
+                    queryParams.q = search;
                 }
 
                 if (sortBy && order) {
@@ -67,4 +74,4 @@ export const productsApi = createApi({
     }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery } = productsApi
+export const { useGetProductsQuery, useGetProductByIdQuery } = productsApi;
