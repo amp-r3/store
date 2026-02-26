@@ -1,168 +1,271 @@
 @use '@/styles/index' as *;
 
+// ─── Desktop: Dropdown | Mobile: Bottom Sheet ───────────────────────────────
+
 .sort-control {
-  &__wrapper {
-    @media (width < 550px) {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows $transition-layout $ease-in-out-smooth;
+  // ── Shared base ────────────────────────────────────────────────────────────
+  background: $glass-background-strong;
+  backdrop-filter: $glass-backdrop-blur;
+  border: 1px solid $glass-border;
+  overflow: hidden;
 
-      &--expanded {
-        grid-template-rows: 1fr;
+  // ── Desktop dropdown ───────────────────────────────────────────────────────
+  position: fixed;
+  z-index: $z-index-popover;
+  border-radius: $radius-md;
+  box-shadow:
+    $shadow-default,
+    0 0 0 1px $glass-border-subtle,
+    $shadow-accent-sm;
 
-        .sort-control__button {
-          opacity: 1;
-          transform: translateY(0);
+  animation: dropdown-in $transition-base $ease-out-expo both;
 
-          @for $i from 1 through 8 {
-            &:nth-child(#{$i}) {
-              transition-delay: #{$i * 0.07s + 0.1s};
-            }
-          }
-        }
-      }
-    }
-  }
+  @media (width < 550px) {
+    // ── Mobile bottom sheet ────────────────────────────────────────────────
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    min-width: unset !important;
+    z-index: $z-index-modal;
+    border-radius: $radius-xl $radius-xl 0 0;
+    border-bottom: none;
+    padding-bottom: calc($spacing-md + $safe-area-bottom);
+    box-shadow:
+      0 -8px 40px rgba(0, 0, 0, 0.5),
+      0 0 0 1px $glass-border-subtle;
 
-  &__container {
-    @media (width < 768px) {
-      gap: $spacing-xs;
-    }
+    // Entrance animation (mobile)
+    animation: sheet-in $transition-layout $ease-out-expo both;
 
-    @media (width < 550px) {
-      overflow: hidden;
-      min-height: 0;
-    }
-  }
-
-  &__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $spacing-sm;
-    transition: all $transition-layout $ease-in-out-smooth;
-
-    @media (width < 550px) {
-      flex-direction: column;
-      width: 100%;
-      gap: $spacing-xs;
-      padding: $spacing-md $spacing-lg $spacing-lg;
-    }
-  }
-
-  &__button {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xs;
-    padding: $spacing-sm $spacing-lg;
-    background: $background-component;
-    border: 1px solid $border-color;
-    border-radius: $radius-pill;
-    color: $text-secondary;
-    font-size: $fs-base;
-    font-weight: $fw-normal;
-    font-family: $font-primary;
-    cursor: pointer;
-    transition: all $transition-fast $ease-in-out-smooth;
-    position: relative;
-    overflow: hidden;
-
-    @media (width < 768px) {
-      padding: $spacing-xs $spacing-md;
-      font-size: $fs-sm;
-    }
-
-    @media (width < 550px) {
-      font-size: $fs-sm;
-      justify-content: flex-start;
-      width: 100%;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition:
-        opacity $transition-base ease,
-        transform $transition-base $ease-spring,
-        background-color $transition-fast ease;
-    }
-
+    // Drag handle
     &::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg,
-          rgba($primary-accent, 0.05),
-          rgba($primary-accent-light, 0.02));
-      opacity: 0;
-      transition: opacity $transition-fast $ease-in-out-smooth;
+      display: block;
+      width: 36px;
+      height: 4px;
+      background: $border-color-strong;
+      border-radius: $radius-pill;
+      margin: $spacing-sm auto $spacing-xs;
+    }
+  }
+
+  // ── Header (label + close) ─────────────────────────────────────────────────
+  &__header {
+    display: none;
+
+    @media (width < 550px) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-xs $spacing-lg $spacing-sm;
+    }
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: $text-muted;
+    letter-spacing: $letter-spacing-wider;
+    text-transform: uppercase;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: $border-color-light;
+    border: none;
+    border-radius: $radius-circle;
+    color: $text-muted;
+    font-size: $fs-sm;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color $transition-fast $ease-in-out-smooth,
+      color $transition-fast $ease-in-out-smooth;
+
+    @media (hover: hover) {
+      &:hover {
+        background: rgba($primary-accent, 0.15);
+        color: $text-primary;
+      }
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid $focus-ring-color;
+      outline-offset: $focus-ring-offset;
+    }
+  }
+
+  // ── Options list ───────────────────────────────────────────────────────────
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: $spacing-xxs;
+
+    @media (width < 550px) {
+      padding: $spacing-xs $spacing-sm $spacing-sm;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xxs;
+    }
+  }
+
+  // ── Option item ────────────────────────────────────────────────────────────
+  &__item {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: $spacing-xs $spacing-sm;
+    background: transparent;
+    border: none;
+    border-radius: $radius-sm;
+    color: $text-secondary;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-normal;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color $transition-fast $ease-in-out-smooth,
+      color $transition-fast $ease-in-out-smooth,
+      box-shadow $transition-fast $ease-in-out-smooth;
+
+    @media (width < 550px) {
+      padding: $spacing-sm $spacing-md;
+      font-size: $fs-base;
+      min-height: $touch-target-comfortable;
+      border-radius: $radius-md;
+      border: 1px solid transparent;
     }
 
     @media (hover: hover) {
       &:hover {
-        border-color: rgba($primary-accent, 0.4);
+        background: rgba($primary-accent, 0.08);
         color: $text-primary;
-        transform: $hover-lift;
-        box-shadow: $shadow-accent-hover;
-
-        &::before {
-          opacity: 1;
-        }
-
-        .sort-control__icon {
-          transform: scale(1.1);
-        }
       }
     }
 
     &:active {
-      transform: translateY(0);
-      scale: $button-pressed-scale;
-      transition: transform $transition-pressed, scale $transition-pressed;
+      background: rgba($primary-accent, 0.14);
+      transform: scale($button-pressed-scale);
     }
 
-    &--active {
-      background: linear-gradient(135deg,
-          rgba($primary-accent, 0.2),
-          rgba($primary-accent-dark, 0.15));
-      border-color: $primary-accent;
-      color: $text-inverse;
-      font-weight: $fw-semibold;
-      box-shadow: $shadow-accent-sm;
+    &:focus-visible {
+      outline: $focus-ring-width solid $focus-ring-color;
+      outline-offset: -1px;
+    }
 
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: $radius-pill;
-        padding: 1px;
-        background: linear-gradient(135deg,
-            $primary-accent,
-            $primary-accent-light);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0.6;
+    // ── Active / selected state ───────────────────────────────────────────
+    &--active {
+      background: rgba($primary-accent, 0.12);
+      color: $primary-accent-light;
+      font-weight: $fw-semibold;
+      box-shadow: inset 0 0 0 1px rgba($primary-accent, 0.25);
+
+      @media (width < 550px) {
+        border-color: rgba($primary-accent, 0.3);
+        background: rgba($primary-accent, 0.1);
       }
 
       @media (hover: hover) {
         &:hover {
-          background: linear-gradient(135deg,
-              rgba($primary-accent, 0.3),
-              rgba($primary-accent-dark, 0.25));
-          box-shadow: $shadow-accent;
-          transform: $hover-lift;
+          background: rgba($primary-accent, 0.18);
+          color: $text-inverse;
         }
-      }
-
-      .sort-control__icon {
-        color: $primary-accent-light;
-        filter: drop-shadow(0 0 8px rgba($primary-accent, 0.6));
       }
     }
   }
 
-  &__icon {
+  &__item-icon {
     font-size: $fs-icon-md;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform $transition-fast $ease-out-expo;
+    color: $text-muted;
+    flex-shrink: 0;
+    transition: color $transition-fast $ease-in-out-smooth;
+  }
+
+  // Active icon — targeted via sibling selector on the button wrapper
+  &__item--active &__item-icon {
+    color: $primary-accent;
+    filter: drop-shadow($shadow-text-accent);
+  }
+
+  &__item-label {
+    flex: 1;
+    line-height: $lh-ui;
+    letter-spacing: $letter-spacing-wide;
+  }
+
+  &__item-check {
+    font-size: $fs-icon-md;
+    color: $primary-accent;
+    filter: drop-shadow($shadow-text-accent);
+    flex-shrink: 0;
+    margin-left: $spacing-xs;
+  }
+
+  // ── Backdrop ───────────────────────────────────────────────────────────────
+  // Desktop: transparent but covers the page to catch outside clicks
+  // Mobile: dims the screen
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: $z-index-modal-backdrop;
+    background: transparent;
+
+    @media (width < 550px) {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: $backdrop-blur-sm;
+      animation: fade-in $transition-base $ease-in-out-smooth both;
+    }
+  }
+}
+
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ─── Reduced motion ───────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .sort-control,
+  .sort-control__backdrop {
+    animation-duration: $transition-reduced;
   }
 }

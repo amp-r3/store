@@ -1,4 +1,5 @@
 export type CategoryId =
+  | 'all' 
   | 'beauty'
   | 'fragrances'
   | 'furniture'
@@ -30,6 +31,7 @@ export interface CategoryOption {
 }
 
 export const categoryOptions: CategoryOption[] = [
+    { id: 'all', label: 'All' },
     { id: 'beauty', label: 'Beauty' },
     { id: 'fragrances', label: 'Fragrances' },
     { id: 'furniture', label: 'Furniture' },

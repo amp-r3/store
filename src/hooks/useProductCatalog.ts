@@ -23,10 +23,12 @@ export function useProductCatalog() {
             p.order = activeSortOption.order;
         }
 
-        if (categoryId) p.category = categoryId;
+        if (categoryId && categoryId !== 'all') {
+            p.category = categoryId;
+        }
+
         return p;
     }, [page, query, activeSortOption, categoryId]);
-
 
     const { data, isLoading, isFetching, error, } = useGetProductsQuery(params);
 
@@ -35,8 +37,6 @@ export function useProductCatalog() {
 
         return data.total
     }, [data])
-
-
 
     const productsArray = useMemo(() => {
         if (!data?.items || !data?.ids) return [];

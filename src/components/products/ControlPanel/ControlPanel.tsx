@@ -1,83 +1,121 @@
-import { FC, useState } from 'react';
-// Icons
-import { IoSwapVertical, IoChevronDown } from 'react-icons/io5';
-// Custom hooks
-import { useMediaQuery } from '@/hooks';
-// Components
-import { SortControl } from './SortControl/SortControl';
-// Style
+import { FC, useState, useRef, useEffect } from 'react';
+import { IoSwapVertical, IoGrid } from 'react-icons/io5';
 import style from './control-panel.module.scss';
-// Types
 import { SortingOption } from '@/utils/sortingOptions';
 import { CategoryOption } from '@/utils/categoryOptions';
-import { CategoryControl } from './CategoryControl/CategoryControl';
+import { SortControl } from './SortControl/SortControl';
 
 interface ControlPanelProps {
   changeSort: (newSortBy: string) => void;
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
-  changeCategory: (category: string) => void;
+  changeCategory: (category: string | null) => void;
   categoryOptions: CategoryOption[];
-  activeCategoryOption: CategoryOption;
+  activeCategoryOption: CategoryOption | null;
 }
 
-export const ControlPanel: FC<ControlPanelProps> = ({ changeSort, sortingOptions, activeSortOption, changeCategory, categoryOptions, activeCategoryOption }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const isMobileAccordion = useMediaQuery('(max-width: 550px)');
+export const ControlPanel: FC<ControlPanelProps> = ({
+  changeSort,
+  sortingOptions,
+  activeSortOption,
+  changeCategory,
+  categoryOptions,
+  activeCategoryOption,
+}) => {
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
-  const handleToggle = () => {
-    setIsExpanded(!isExpanded);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sortBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+
+      // Игнорируем клик, если он произошел внутри портала/модалки.
+      // Backdrop портала сам разберется с закрытием.
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(target) &&
+        !target.closest('[role="dialog"]')
+      ) {
+        setIsSortOpen(false);
+        setIsCategoryOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleToggleSort = () => {
+    setIsSortOpen((prev) => !prev);
+    setIsCategoryOpen(false);
   };
 
-  const headerContent = (
-    <>
-      <IoSwapVertical className={style.sort_panel__icon} />
-      <span className={style.sort_panel__label}>
-        Sort: {activeSortOption.label}
-      </span>
-      {isMobileAccordion && (
-        <IoChevronDown
-          className={`${style.sort_panel__chevron} ${isExpanded ? style.expanded : ''}`}
-          aria-hidden="true"
-        />
-      )}
-    </>
-  );
+  const handleToggleCategory = () => {
+    setIsCategoryOpen((prev) => !prev);
+    setIsSortOpen(false);
+  };
+
+  const handleSortChange = (newSortBy: string) => {
+    changeSort(newSortBy);
+    setIsSortOpen(false);
+  };
+
+  const handleCategoryChange = (newCategory: string | null) => {
+    changeCategory(newCategory);
+    setIsCategoryOpen(false);
+  };
 
   return (
-    <div className={style.sort_panel}>
-      {isMobileAccordion ? (
+    <div className={style['control-panel']} ref={panelRef}>
+      <div className={style['control-panel__group']}>
         <button
-          className={style.sort_panel__header}
-          onClick={handleToggle}
-          aria-expanded={isExpanded}
+          ref={sortBtnRef}
+          className={style['control-panel__btn']}
           type="button"
+          onClick={handleToggleSort}
+          aria-expanded={isSortOpen}
+          aria-label={`Sort by: ${activeSortOption?.label}`}
         >
-          {headerContent}
+          <IoSwapVertical className={style['control-panel__btn-icon']} aria-hidden="true" />
+          <span className={style['control-panel__btn-label']}>Sort</span>
+          <span className={style['control-panel__btn-value']}>{activeSortOption?.label}</span>
         </button>
-      ) : (
-        <div className={style.sort_panel__header}>
-          {headerContent}
-        </div>
-      )}
-      <div className={style.sort_panel__wrapper}>
+
+        <button
+          className={style['control-panel__btn']}
+          type="button"
+          onClick={handleToggleCategory}
+          aria-expanded={isCategoryOpen}
+          aria-label={`Category: ${activeCategoryOption?.label || 'All'}`}
+        >
+          <IoGrid className={style['control-panel__btn-icon']} aria-hidden="true" />
+          <span className={style['control-panel__btn-label']}>Category</span>
+          <span className={style['control-panel__btn-value']}>
+            {activeCategoryOption?.label || 'All'}
+          </span>
+        </button>
+      </div>
+
+      {isSortOpen && (
         <SortControl
           sortingOptions={sortingOptions}
           activeSortOption={activeSortOption}
-          changeSort={changeSort}
-          isMobileAccordion={isMobileAccordion}
-          isExpanded={isExpanded}
-          onClose={() => setIsExpanded(false)}
+          triggerRef={sortBtnRef}
+          changeSort={handleSortChange}
+          onClose={() => setIsSortOpen(false)}
         />
-        <CategoryControl
+      )}
+      {/* {isCategoryOpen && (
+        <CategoryControl 
           categoryOptions={categoryOptions}
           activeCategoryOption={activeCategoryOption}
-          changeCategory={changeCategory}
-          isMobileAccordion={isMobileAccordion}
-          isExpanded={isExpanded}
-          onClose={() => setIsExpanded(false)}
+          changeCategory={handleCategoryChange}
+          onClose={() => setIsCategoryOpen(false)}
         />
-      </div>
+      )} */}
     </div>
   );
 };
