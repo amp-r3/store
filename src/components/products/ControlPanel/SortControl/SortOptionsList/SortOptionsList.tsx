@@ -37,21 +37,22 @@ export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps
           return (
             <li key={option.id} role="option" aria-selected={isActive}>
               <button
-                className={`${style['sort-options-list__item']} ${
-                  isActive ? style['sort-options-list__item--active'] : ''
-                }`}
+                className={`${style['sort-options-list__item']} ${isActive ? style['sort-options-list__item--active'] : ''
+                  }`}
                 type="button"
                 onClick={() => handleSelect(option.id)}
               >
-                {Icon && (
-                  <Icon
-                    className={style['sort-options-list__item-icon']}
-                    aria-hidden="true"
-                  />
-                )}
-                <span className={style['sort-options-list__item-label']}>
-                  {option.label}
-                </span>
+                <div className={style['sort-options-list__item-content']}>
+                  {Icon && (
+                    <Icon
+                      className={style['sort-options-list__item-icon']}
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span className={style['sort-options-list__item-label']}>
+                    {option.label}
+                  </span>
+                </div>
                 {isActive && (
                   <IoCheckmark
                     className={style['sort-options-list__item-check']}

@@ -11,9 +11,6 @@ importers:
       '@reduxjs/toolkit':
         specifier: ^2.9.0
         version: 2.9.0(react-redux@9.2.0(@types/react@19.2.2)(react@19.2.0)(redux@5.0.1))(react@19.2.0)
-      axios:
-        specifier: ^1.11.0
-        version: 1.12.2
       react:
         specifier: ^19.1.1
         version: 19.2.0

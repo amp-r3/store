@@ -1,18 +1,23 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .sort-dropdown {
-  background: $glass-background-strong;
-  backdrop-filter: $glass-backdrop-blur;
+  background: $glass-background-fallback;
+
+  @supports (backdrop-filter: blur(1px)) {
+    background: $glass-background-strong;
+    backdrop-filter: $glass-backdrop-blur;
+  }
+
   border: 1px solid $glass-border;
-  overflow: hidden;
   position: fixed;
   z-index: $z-index-popover;
-  border-radius: $radius-md;
-  box-shadow:
-    $shadow-default,
-    0 0 0 1px $glass-border-subtle,
-    $shadow-accent-sm;
-  animation: dropdown-in $transition-base $ease-out-expo both;
+  border-radius: $radius-lg;
+  padding: $spacing-xs;
+  box-shadow: $shadow-default,
+  0 12px 40px rgba(0, 0, 0, 0.4),
+  0 0 0 1px $glass-border-subtle;
+  animation: dropdown-in $transition-fast $ease-out-expo both;
+  transform-origin: top right;
 
   &__backdrop {
     position: fixed;
@@ -20,22 +25,26 @@
     z-index: $z-index-modal-backdrop;
     background: transparent;
   }
+
+  &>ul {
+    padding-bottom: 0 !important;
+  }
 }
 
 @keyframes dropdown-in {
   from {
     opacity: 0;
-    transform: translateY(-6px) scale(0.97);
+    transform: scale(0.96) translateY(-8px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sort-dropdown {
-    animation-duration: $transition-reduced;
+    animation: none;
   }
 }

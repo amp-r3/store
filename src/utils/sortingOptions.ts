@@ -30,35 +30,35 @@ export interface SortingOption {
 export const sortingOptions: SortingOption[] = [
     {
         id: 'default',
-        label: 'by Popular',
+        label: 'Trending',
         sortBy: null,
         order: null,
         icon: IoFlame
     },
     {
         id: 'price-asc',
-        label: 'Cheap first',
+        label: 'Lowest Price',
         sortBy: 'price',
         order: 'asc',
         icon: IoArrowDown
     },
     {
         id: 'price-desc',
-        label: 'Expensive first',
+        label: 'Highest Price',
         sortBy: 'price',
         order: 'desc',
         icon: IoArrowUp
     },
     {
         id: 'title-asc',
-        label: 'By name (A-Z)',
+        label: 'Alphabetical',
         sortBy: 'title',
         order: 'asc',
         icon: IoText
     },
     {
         id: 'stock-desc',
-        label: 'By stock',
+        label: 'Availability',
         sortBy: 'stock',
         order: 'desc',
         icon: IoCheckmarkCircle

@@ -63,6 +63,12 @@ button {
     cursor: pointer;
 }
 
+*,
+*::before,
+*::after {
+    -webkit-tap-highlight-color: transparent;
+}
+
 ::-webkit-scrollbar {
     width: $spacing-sm;
     height: $spacing-sm;

@@ -29,7 +29,7 @@ export const Footer: React.FC = () => {
 
                     {/* About Section */}
                     <div className={styles.footer__about}>
-                        <h3 className={styles.footer__title}>Electro Store</h3>
+                        <h3 className={styles.footer__title}>Store</h3>
                         <p className={styles.footer__description}>
                             A fully responsive, dark-themed e-commerce UI with glassmorphism
                             aesthetics, real-time search, smart pagination, and a Redux-powered
@@ -133,7 +133,7 @@ export const Footer: React.FC = () => {
                 <div className={styles.footer__bottom}>
                     <p className={styles.footer__copy}>
                         &copy; {new Date().getFullYear()}{' '}
-                        <span>E-Store</span>. Developed by Amir (amp3re).
+                        <span>Store</span>. Developed by Amir (amp-r3).
                     </p>
                     <p className={styles.footer__madeWith}>
                         Made with <FaHeart /> and React
