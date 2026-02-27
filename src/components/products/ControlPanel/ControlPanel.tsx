@@ -4,9 +4,10 @@ import style from './control-panel.module.scss';
 import { SortingOption } from '@/utils/sortingOptions';
 import { CategoryOption } from '@/utils/categoryOptions';
 import { SortControl } from './SortControl/SortControl';
+import { CategoryControl } from './CategoryControl/CategoryControl';
 
 interface ControlPanelProps {
-  changeSort: (newSortBy: string) => void;
+  changeSort: (newSortBy: string, newOrder: string) => void;
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
   changeCategory: (category: string | null) => void;
@@ -56,8 +57,8 @@ export const ControlPanel: FC<ControlPanelProps> = ({
     setIsSortOpen(false);
   };
 
-  const handleSortChange = (newSortBy: string) => {
-    changeSort(newSortBy);
+  const handleSortChange = (newSortBy: string, newOrder: string) => {
+    changeSort(newSortBy, newOrder);
     setIsSortOpen(false);
   };
 
@@ -105,14 +106,13 @@ export const ControlPanel: FC<ControlPanelProps> = ({
         changeSort={handleSortChange}
         onClose={() => setIsSortOpen(false)}
       />
-      {/* {isCategoryOpen && (
-        <CategoryControl 
-          categoryOptions={categoryOptions}
-          activeCategoryOption={activeCategoryOption}
-          changeCategory={handleCategoryChange}
-          onClose={() => setIsCategoryOpen(false)}
-        />
-      )} */}
+      <CategoryControl
+        categoryOptions={categoryOptions}
+        activeCategoryOption={activeCategoryOption}
+        changeCategory={handleCategoryChange}
+        isOpen={isCategoryOpen}
+        onClose={() => setIsCategoryOpen(false)}
+      />
     </div>
   );
 };

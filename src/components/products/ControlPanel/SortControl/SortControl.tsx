@@ -8,7 +8,7 @@ export interface SortControlProps {
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
   triggerRef: React.RefObject<HTMLButtonElement>;
-  changeSort: (newSortBy: string) => void;
+  changeSort: (newSortBy: string, newOrder: string) => void;
   onClose: () => void;
   isOpen: boolean;
 }

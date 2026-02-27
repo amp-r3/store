@@ -1,0 +1,117 @@
+@use '@/styles/index' as *;
+
+.category-popup {
+    position: fixed;
+    inset: 0;
+    z-index: $z-index-modal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: $backdrop-blur-sm;
+        -webkit-backdrop-filter: $backdrop-blur-sm;
+        animation: backdrop-in $transition-base $ease-in-out-smooth both;
+    }
+
+    &__window {
+        position: relative;
+        z-index: 1;
+        width: min(400px, 90vw);
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+
+        background: $glass-background-fallback;
+        @supports (backdrop-filter: blur(1px)) {
+            background: $glass-background-strong;
+            backdrop-filter: $glass-backdrop-blur;
+        }
+        border: 1px solid $glass-border;
+        border-radius: $radius-lg;
+        box-shadow: $shadow-default,
+                    0 12px 40px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px $glass-border-subtle;
+        overflow: hidden;
+        animation: window-in $transition-base $ease-out-expo both;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: $spacing-md;
+        border-bottom: 1px solid $border-color-subtle;
+    }
+
+    &__title {
+        font-family: $font-primary;
+        font-size: $fs-md;
+        font-weight: $fw-bold;
+        color: $text-primary;
+        letter-spacing: $letter-spacing-tight;
+        margin: 0;
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: transparent;
+        border: none;
+        border-radius: $radius-circle;
+        color: $text-muted;
+        font-size: $fs-md;
+        cursor: pointer;
+        transition: all $transition-fast $ease-in-out-smooth;
+
+        &:hover {
+            background: rgba($text-primary, 0.05);
+            color: $text-primary;
+        }
+
+        &:active {
+            transform: scale($button-pressed-scale);
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid $focus-ring-color;
+            outline-offset: $focus-ring-offset;
+        }
+    }
+
+    &__body {
+        padding: $spacing-xs;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        
+        & > ul {
+            padding-bottom: 0 !important;
+        }
+    }
+}
+
+@keyframes backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes window-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}

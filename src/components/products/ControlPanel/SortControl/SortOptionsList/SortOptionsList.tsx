@@ -6,7 +6,7 @@ import style from './sort-options-list.module.scss';
 interface SortOptionsListProps {
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
-  changeSort: (newSortBy: string) => void;
+  changeSort: (newSortBy: string, newOrder: string) => void;
 }
 
 export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps>(
@@ -14,10 +14,10 @@ export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const handleSelect = useCallback(
-      (id: string) => {
+      (newSortBy: string, newOrder: string) => {
         if (timerRef.current) clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
-          changeSort(id);
+          changeSort(newSortBy, newOrder);
         }, 150);
       },
       [changeSort]
@@ -40,7 +40,7 @@ export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps
                 className={`${style['sort-options-list__item']} ${isActive ? style['sort-options-list__item--active'] : ''
                   }`}
                 type="button"
-                onClick={() => handleSelect(option.id)}
+                onClick={() => handleSelect(option.sortBy, option.order)}
               >
                 <div className={style['sort-options-list__item-content']}>
                   {Icon && (

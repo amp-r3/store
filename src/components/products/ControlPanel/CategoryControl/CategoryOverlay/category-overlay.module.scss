@@ -1,0 +1,85 @@
+@use '@/styles/index'as *;
+
+.category-overlay {
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: $z-index-modal-backdrop;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: $backdrop-blur-sm;
+        -webkit-backdrop-filter: $backdrop-blur-sm;
+    }
+
+    &__content {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: $z-index-modal;
+        display: flex;
+        flex-direction: column;
+        background: $background-component;
+        border-top-left-radius: $radius-lg;
+        border-top-right-radius: $radius-lg;
+        border: 1px solid $glass-border;
+        border-bottom: none;
+        max-height: 60vh;
+        outline: none;
+    }
+
+    &__handle {
+        width: 36px;
+        height: 5px;
+        background: $border-color-strong;
+        border-radius: $radius-pill;
+        margin: $spacing-sm auto 0;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: $spacing-md;
+        border-bottom: 1px solid $border-color-subtle;
+        flex-shrink: 0;
+    }
+
+    &__title {
+        font-size: $fs-md;
+        font-weight: $fw-semibold;
+        color: $text-primary;
+        letter-spacing: $letter-spacing-tight;
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: $touch-target-min;
+        height: $touch-target-min;
+        border-radius: $radius-circle;
+        color: $text-muted;
+        font-size: $fs-icon-lg;
+        transition:
+            background $transition-fast $ease-in-out-smooth,
+            color $transition-fast $ease-in-out-smooth;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: $text-primary;
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid $focus-ring-color;
+            outline-offset: $focus-ring-offset;
+        }
+    }
+
+    &__body {
+        flex: 1;
+        overflow-y: auto;
+        padding: $spacing-xs $spacing-sm;
+        padding-bottom: calc($spacing-md + env(safe-area-inset-bottom));
+        overscroll-behavior: contain;
+    }
+}
