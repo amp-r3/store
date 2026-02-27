@@ -1,0 +1,87 @@
+@use '@/styles/index' as *;
+
+.sort-options-list {
+  padding: $spacing-xxs;
+
+  &__item {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-sm;
+    color: $text-secondary;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-normal;
+    text-align: left;
+    transition:
+      background-color $transition-fast $ease-in-out-smooth,
+      color $transition-fast $ease-in-out-smooth,
+      box-shadow $transition-fast $ease-in-out-smooth;
+
+    @media (hover: hover) {
+      &:hover {
+        background: rgba($primary-accent, 0.08);
+        color: $text-primary;
+      }
+    }
+
+    &:active {
+      background: rgba($primary-accent, 0.14);
+      transform: scale($button-pressed-scale);
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid $focus-ring-color;
+      outline-offset: -1px;
+    }
+
+    &--active {
+      background: rgba($primary-accent, 0.12);
+      color: $primary-accent-light;
+      font-weight: $fw-semibold;
+      box-shadow: inset 0 0 0 1px rgba($primary-accent, 0.25);
+
+      @media (hover: hover) {
+        &:hover {
+          background: rgba($primary-accent, 0.18);
+          color: $text-inverse;
+        }
+      }
+    }
+  }
+
+  &__item-icon {
+    font-size: $fs-icon-md;
+    color: $text-muted;
+    flex-shrink: 0;
+    transition: color $transition-fast $ease-in-out-smooth;
+  }
+
+  &__item--active &__item-icon {
+    color: $primary-accent;
+    filter: drop-shadow($shadow-text-accent);
+  }
+
+  &__item-label {
+    flex: 1;
+    line-height: $lh-ui;
+    letter-spacing: $letter-spacing-wide;
+  }
+
+  &__item-check {
+    font-size: $fs-icon-md;
+    color: $primary-accent;
+    filter: drop-shadow($shadow-text-accent);
+    flex-shrink: 0;
+    margin-left: $spacing-xs;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sort-options-list__item {
+    transition-duration: $transition-reduced;
+  }
+}

@@ -1,0 +1,89 @@
+@use '@/styles/index'as *;
+
+.sort-bottom-sheet {
+    background: $glass-background-strong;
+    backdrop-filter: $glass-backdrop-blur;
+    border: 1px solid $glass-border;
+    position: fixed;
+    z-index: $z-index-modal;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: $radius-xl $radius-xl 0 0;
+    border-bottom: none;
+    padding-bottom: calc($spacing-md + $safe-area-bottom);
+    box-shadow:
+        0 -8px 40px rgba(0, 0, 0, 0.5),
+        0 0 0 1px $glass-border-subtle;
+
+    // Vaul добавляет свои стили, мы просто задаем внешний вид
+    outline: none;
+
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: $z-index-modal-backdrop;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: $backdrop-blur-sm;
+    }
+
+    &__drag-handle {
+        width: 36px;
+        height: 4px;
+        background: $border-color-strong;
+        border-radius: $radius-pill;
+        margin: $spacing-sm auto $spacing-xs;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: $spacing-xs $spacing-lg $spacing-sm;
+    }
+
+    &__title {
+        font-family: $font-primary;
+        font-size: $fs-sm;
+        font-weight: $fw-semibold;
+        color: $text-muted;
+        letter-spacing: $letter-spacing-wider;
+        text-transform: uppercase;
+        margin: 0;
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: $border-color-light;
+        border-radius: $radius-circle;
+        color: $text-muted;
+        font-size: $fs-sm;
+        line-height: 1;
+        cursor: pointer;
+        transition:
+            background-color $transition-fast $ease-in-out-smooth,
+            color $transition-fast $ease-in-out-smooth;
+        border: none;
+
+        @media (hover: hover) {
+            &:hover {
+                background: rgba($primary-accent, 0.15);
+                color: $text-primary;
+            }
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid $focus-ring-color;
+            outline-offset: $focus-ring-offset;
+        }
+    }
+
+    &__content {
+        // Контент больше не нуждается в блокировке событий
+        padding-bottom: $spacing-md;
+    }
+}

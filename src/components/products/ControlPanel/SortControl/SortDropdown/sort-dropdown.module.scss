@@ -1,0 +1,41 @@
+@use '@/styles/index' as *;
+
+.sort-dropdown {
+  background: $glass-background-strong;
+  backdrop-filter: $glass-backdrop-blur;
+  border: 1px solid $glass-border;
+  overflow: hidden;
+  position: fixed;
+  z-index: $z-index-popover;
+  border-radius: $radius-md;
+  box-shadow:
+    $shadow-default,
+    0 0 0 1px $glass-border-subtle,
+    $shadow-accent-sm;
+  animation: dropdown-in $transition-base $ease-out-expo both;
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: $z-index-modal-backdrop;
+    background: transparent;
+  }
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sort-dropdown {
+    animation-duration: $transition-reduced;
+  }
+}

@@ -32,8 +32,6 @@ export const ControlPanel: FC<ControlPanelProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
 
-      // Игнорируем клик, если он произошел внутри портала/модалки.
-      // Backdrop портала сам разберется с закрытием.
       if (
         panelRef.current &&
         !panelRef.current.contains(target) &&
@@ -99,15 +97,14 @@ export const ControlPanel: FC<ControlPanelProps> = ({
         </button>
       </div>
 
-      {isSortOpen && (
-        <SortControl
-          sortingOptions={sortingOptions}
-          activeSortOption={activeSortOption}
-          triggerRef={sortBtnRef}
-          changeSort={handleSortChange}
-          onClose={() => setIsSortOpen(false)}
-        />
-      )}
+      <SortControl
+        isOpen={isSortOpen}
+        sortingOptions={sortingOptions}
+        activeSortOption={activeSortOption}
+        triggerRef={sortBtnRef}
+        changeSort={handleSortChange}
+        onClose={() => setIsSortOpen(false)}
+      />
       {/* {isCategoryOpen && (
         <CategoryControl 
           categoryOptions={categoryOptions}
