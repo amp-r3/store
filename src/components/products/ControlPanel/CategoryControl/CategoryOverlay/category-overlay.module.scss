@@ -5,12 +5,26 @@
         position: fixed;
         inset: 0;
         z-index: $z-index-modal-backdrop;
-        background: rgba(0, 0, 0, 0.55);
+        background: rgba(0, 0, 0, 0.4);
         backdrop-filter: $backdrop-blur-sm;
         -webkit-backdrop-filter: $backdrop-blur-sm;
+        transition: opacity $transition-base $ease-in-out-smooth;
     }
 
     &__content {
+        background: $glass-background-fallback;
+
+        @supports (backdrop-filter: blur(1px)) {
+            background: $glass-background-strong;
+            backdrop-filter: $glass-backdrop-blur;
+        }
+
+        border-radius: $radius-lg $radius-lg 0 0;
+        border-bottom: none;
+        border: 1px solid $glass-border;
+        padding-bottom: $safe-area-bottom;
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5),
+        0 0 0 1px $glass-border-subtle;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -18,67 +32,68 @@
         z-index: $z-index-modal;
         display: flex;
         flex-direction: column;
-        background: $background-component;
-        border-top-left-radius: $radius-lg;
-        border-top-right-radius: $radius-lg;
-        border: 1px solid $glass-border;
-        border-bottom: none;
-        max-height: 60vh;
+
+        max-height: 55vh;
         outline: none;
     }
 
     &__handle {
-        width: 36px;
+        width: 42px;
         height: 5px;
         background: $border-color-strong;
         border-radius: $radius-pill;
-        margin: $spacing-sm auto 0;
+        margin: $spacing-xs auto;
+        flex-shrink: 0;
     }
 
     &__header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: $spacing-md;
+        padding: 0 $spacing-md $spacing-sm;
         border-bottom: 1px solid $border-color-subtle;
-        flex-shrink: 0;
+        margin-bottom: $spacing-xs;
     }
 
     &__title {
+        font-family: $font-primary;
         font-size: $fs-md;
-        font-weight: $fw-semibold;
+        font-weight: $fw-bold;
         color: $text-primary;
         letter-spacing: $letter-spacing-tight;
+        margin: 0;
     }
 
     &__close {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: $touch-target-min;
-        height: $touch-target-min;
+        width: 36px;
+        height: 36px;
+        background: $background-component;
+        border: 1px solid $border-color-light;
         border-radius: $radius-circle;
         color: $text-muted;
-        font-size: $fs-icon-lg;
-        transition:
-            background $transition-fast $ease-in-out-smooth,
-            color $transition-fast $ease-in-out-smooth;
+        font-size: $fs-md;
+        transition: all $transition-fast $ease-in-out-smooth;
 
-        &:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: $text-primary;
+        @media (hover: hover) {
+            &:hover {
+                background: rgba($text-primary, 0.05);
+                color: $text-primary;
+                border-color: $border-color;
+            }
         }
 
-        &:focus-visible {
-            outline: $focus-ring-width solid $focus-ring-color;
-            outline-offset: $focus-ring-offset;
+        &:active {
+            transform: scale($button-pressed-scale);
         }
     }
 
     &__body {
         flex: 1;
         overflow-y: auto;
-        padding: $spacing-xs $spacing-sm;
+        padding: 0 $spacing-sm;
         padding-bottom: calc($spacing-md + env(safe-area-inset-bottom));
         overscroll-behavior: contain;
     }

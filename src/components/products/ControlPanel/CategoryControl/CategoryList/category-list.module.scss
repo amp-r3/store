@@ -4,50 +4,84 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: $spacing-xxs;
+    padding: 0 0 $spacing-sm 0;
+    margin: 0;
+    list-style: none;
 
     @media (min-width: 550px) {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: $spacing-xs;
     }
 
     &__item {
-        width: 100%;
-    }
-
-    &__btn {
-        width: 100%;
-        height: 100%;
         display: flex;
         align-items: center;
-        padding: $spacing-xs $spacing-sm;
-        border-radius: $radius-sm;
-        font-size: $fs-sm;
-        font-weight: $fw-normal;
+        justify-content: space-between;
+        width: 100%;
+        padding: $spacing-sm $spacing-md;
+        background: rgba($background-component, 0.4);
+        border: 1px solid $border-color-subtle;
+        border-radius: $radius-md;
         color: $text-secondary;
+        font-family: $font-primary;
+        font-size: $fs-sm;
+        font-weight: $fw-semibold;
         text-align: left;
-        transition:
-            background $transition-fast $ease-in-out-smooth,
-            color $transition-fast $ease-in-out-smooth;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all $transition-fast $ease-in-out-smooth;
 
-        &:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: $text-primary;
+        @media (hover: hover) {
+
+            // Исправлено: используем aria-атрибут вместо захардкоженного класса из другого файла
+            &:hover:not([aria-pressed="true"]) {
+                background: rgba($border-color-light, 0.1);
+                border-color: $border-color-light;
+                color: $text-primary;
+            }
+        }
+
+        &:active {
+            transform: scale($button-pressed-scale);
         }
 
         &:focus-visible {
-            outline: $focus-ring-width solid $focus-ring-color;
-            outline-offset: $focus-ring-offset;
+            outline: none;
+            box-shadow: inset 0 0 0 $focus-ring-width $focus-ring-color;
         }
 
         &--active {
-            background: rgba($primary-accent, 0.15);
-            color: $primary-accent-light;
+            background: linear-gradient(135deg,
+                    rgba($primary-accent, 0.12),
+                    rgba($primary-accent, 0.03));
+            border-color: rgba($primary-accent, 0.3);
+            color: $text-primary;
             font-weight: $fw-semibold;
+            box-shadow: $shadow-accent-sm;
 
-            &:hover {
-                background: rgba($primary-accent, 0.2);
-                color: $primary-accent-light;
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 50%;
+                width: 3px;
+                background: $primary-accent;
+                border-radius: 0 $radius-pill $radius-pill 0;
+                box-shadow: $shadow-text-accent;
             }
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .category-list__item {
+        transition: none;
+
+        &:hover {
+            transform: none;
         }
     }
 }

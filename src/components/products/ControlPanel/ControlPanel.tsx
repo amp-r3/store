@@ -64,7 +64,6 @@ export const ControlPanel: FC<ControlPanelProps> = ({
 
   const handleCategoryChange = (newCategory: string | null) => {
     changeCategory(newCategory);
-    setIsCategoryOpen(false);
   };
 
   return (

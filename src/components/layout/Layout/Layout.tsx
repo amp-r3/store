@@ -30,7 +30,9 @@ export const Layout = () => {
     return (
         <>
             <div className={style.layout}>
+                <header className={style.header}>
                 <Navbar />
+                </header>
                 {
                     isLoading && <Loader />
                 }

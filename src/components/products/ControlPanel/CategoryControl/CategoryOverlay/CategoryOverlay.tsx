@@ -17,15 +17,17 @@ export const CategoryOverlay: FC<ICategoryProps> = ({
             <Drawer.Portal>
                 <Drawer.Overlay className={style['category-overlay__backdrop']} />
                 <Drawer.Content className={style['category-overlay__content']}>
-                    <div className={style['category-overlay__handle']} aria-hidden="true" />
+                    <div className={style['category-overlay__handle']} />
 
                     <div className={style['category-overlay__header']}>
-                        <span className={style['category-overlay__title']}>Category</span>
+                        <Drawer.Title className={style['category-overlay__title']}>
+                            Category
+                        </Drawer.Title>
                         <button
                             type="button"
                             className={style['category-overlay__close']}
                             onClick={onClose}
-                            aria-label="Close"
+                            aria-label="Close category options"
                         >
                             <IoClose aria-hidden="true" />
                         </button>
@@ -36,6 +38,7 @@ export const CategoryOverlay: FC<ICategoryProps> = ({
                             categoryOptions={categoryOptions}
                             activeCategoryOption={activeCategoryOption}
                             changeCategory={changeCategory}
+                            onClose={onClose}
                         />
                     </div>
                 </Drawer.Content>

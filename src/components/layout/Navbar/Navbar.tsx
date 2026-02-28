@@ -27,7 +27,6 @@ export const Navbar = () => {
 
 
   return (
-    <header className="container">
       <nav ref={navRef} className={style.nav}>
         <span className={style.nav__logo} aria-label="">store</span>
         <div className={style.nav__form}>
@@ -53,6 +52,5 @@ export const Navbar = () => {
           </button>
         </div>
       </nav>
-    </header>
   );
 };
