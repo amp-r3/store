@@ -3,7 +3,6 @@ import { useLocation, useSearchParams } from "react-router";
 import { useAppDispatch } from "@/hooks/redux";
 
 export function useSearch() {
-    const dispatch = useAppDispatch();
     const location = useLocation()
 
     const isHomePage = location.pathname === '/';
@@ -31,7 +30,7 @@ export function useSearch() {
         } else {
             setSearchParams({});
         }
-    }, [inputValue, setSearchParams, dispatch]);
+    }, [inputValue, setSearchParams]);
 
     const handleClear = useCallback(() => {
         setInputValue('');

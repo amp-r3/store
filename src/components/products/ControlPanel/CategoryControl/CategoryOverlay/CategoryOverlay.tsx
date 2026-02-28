@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { Drawer } from 'vaul';
-import { IoClose } from 'react-icons/io5';
 import { ICategoryProps } from '../CategoryControl';
 import { CategoryList } from '../CategoryList/CategoryList';
 import style from './category-overlay.module.scss';
@@ -23,14 +22,6 @@ export const CategoryOverlay: FC<ICategoryProps> = ({
                         <Drawer.Title className={style['category-overlay__title']}>
                             Category
                         </Drawer.Title>
-                        <button
-                            type="button"
-                            className={style['category-overlay__close']}
-                            onClick={onClose}
-                            aria-label="Close category options"
-                        >
-                            <IoClose aria-hidden="true" />
-                        </button>
                     </div>
 
                     <div className={style['category-overlay__body']}>
@@ -40,6 +31,16 @@ export const CategoryOverlay: FC<ICategoryProps> = ({
                             changeCategory={changeCategory}
                             onClose={onClose}
                         />
+                    </div>
+
+                    <div className={style['category-overlay__footer']}>
+                        <button
+                            type="button"
+                            className={style['category-overlay__submit-btn']}
+                            onClick={onClose}
+                        >
+                            Done
+                        </button>
                     </div>
                 </Drawer.Content>
             </Drawer.Portal>

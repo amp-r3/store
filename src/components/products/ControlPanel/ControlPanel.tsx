@@ -13,6 +13,7 @@ interface ControlPanelProps {
   changeCategory: (category: string | null) => void;
   categoryOptions: CategoryOption[];
   activeCategoryOption: CategoryOption | null;
+  searchQuery: string | null;
 }
 
 export const ControlPanel: FC<ControlPanelProps> = ({
@@ -22,6 +23,7 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   changeCategory,
   categoryOptions,
   activeCategoryOption,
+  searchQuery
 }) => {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
@@ -88,6 +90,7 @@ export const ControlPanel: FC<ControlPanelProps> = ({
           onClick={handleToggleCategory}
           aria-expanded={isCategoryOpen}
           aria-label={`Category: ${activeCategoryOption?.label || 'All'}`}
+          disabled={searchQuery ? true : false}
         >
           <IoGrid className={style['control-panel__btn-icon']} aria-hidden="true" />
           <span className={style['control-panel__btn-label']}>Category</span>

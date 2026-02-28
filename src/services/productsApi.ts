@@ -29,6 +29,7 @@ export const productsApi = createApi({
                 if (search) {
                     url = 'products/search';
                 } else if (category) {
+                    console.log(category);
                     url = `products/category/${category}`;
                 }
 
@@ -38,6 +39,7 @@ export const productsApi = createApi({
                 };
 
                 if (search) {
+                    console.log(search);
                     queryParams.q = search;
                 }
 

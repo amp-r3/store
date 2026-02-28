@@ -17,7 +17,7 @@ export function useProductCatalog() {
 
     const params = useMemo(() => {
         const p: Record<string, any> = { page };
-        if (query) p.q = query;
+        if (query) p.search = query;
         if (activeSortOption) {
             p.sortBy = activeSortOption.sortBy;
             p.order = activeSortOption.order;

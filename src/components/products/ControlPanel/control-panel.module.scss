@@ -29,8 +29,8 @@
 
   &__dropdown-wrapper {
     position: absolute;
-    top: calc(100% + $spacing-xs); 
-    right: 0; 
+    top: calc(100% + $spacing-xs);
+    right: 0;
     z-index: $z-index-dropdown;
     min-width: 220px;
 
@@ -81,6 +81,8 @@
 
     @media (width < 550px) {
       flex: 1;
+      min-width: 0;
+      padding: $spacing-xs;
     }
 
     @media (hover: hover) {
@@ -95,6 +97,10 @@
       opacity: 0;
     }
 
+    &:hover:not(:disabled)::after {
+      opacity: 0;
+    }
+
     &:active {
       background: rgba($primary-accent, 0.15);
     }
@@ -103,6 +109,24 @@
       outline: $focus-ring-width solid $focus-ring-color;
       outline-offset: -1px;
       z-index: 2;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      color: $text-muted;
+
+      &:hover,
+      &:active {
+        background: transparent;
+        box-shadow: none;
+        z-index: auto;
+      }
+
+      .control-panel__btn-icon {
+        color: $text-muted;
+        filter: none;
+      }
     }
   }
 
@@ -118,7 +142,7 @@
     font-weight: $fw-normal;
     white-space: nowrap;
 
-    @media (width < 400px) {
+    @media (width < 550px) {
       display: none;
     }
 
@@ -137,7 +161,8 @@
     max-width: 120px;
 
     @media (width < 550px) {
-      max-width: 80px;
+      max-width: none;
+      min-width: 0;
     }
   }
 }

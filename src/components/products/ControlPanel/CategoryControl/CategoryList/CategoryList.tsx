@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef } from 'react';
+import { FC, useCallback, useEffect, useRef, useMemo } from 'react';
 import { CategoryOption } from '@/utils/categoryOptions';
 import style from './category-list.module.scss';
 
@@ -6,7 +6,7 @@ interface CategoryListProps {
     categoryOptions: CategoryOption[];
     activeCategoryOption: CategoryOption | null;
     changeCategory: (newCategory: string | null) => void;
-    onClose?: ()=> void;
+    onClose?: () => void;
 }
 
 export const CategoryList: FC<CategoryListProps> = ({
@@ -21,13 +21,13 @@ export const CategoryList: FC<CategoryListProps> = ({
         (newCategory: string) => {
             if (timerRef.current) clearTimeout(timerRef.current);
             timerRef.current = setTimeout(() => {
-                if(onClose) {
-                    onClose()
+                if (onClose) {
+                    onClose();
                 }
                 changeCategory(newCategory);
             }, 150);
         },
-        [changeCategory]
+        [changeCategory, onClose]
     );
 
     useEffect(() => {
@@ -36,9 +36,23 @@ export const CategoryList: FC<CategoryListProps> = ({
         };
     }, []);
 
+    const sortedOptions = useMemo(() => {
+        const DEFAULT_CATEGORY_ID = 'all';
+
+        return [...categoryOptions].sort((a, b) => {
+            if (a.id === DEFAULT_CATEGORY_ID) return -1;
+            if (b.id === DEFAULT_CATEGORY_ID) return 1;
+            if (activeCategoryOption) {
+                if (a.id === activeCategoryOption.id) return -1;
+                if (b.id === activeCategoryOption.id) return 1;
+            }
+            return 0;
+        });
+    }, [categoryOptions, activeCategoryOption]);
+
     return (
         <ul className={style['category-list']}>
-            {categoryOptions.map((option) => {
+            {sortedOptions.map((option) => {
                 const isActive = option.id === activeCategoryOption?.id;
 
                 return (

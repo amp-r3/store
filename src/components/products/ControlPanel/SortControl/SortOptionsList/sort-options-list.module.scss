@@ -14,15 +14,14 @@
     justify-content: space-between;
     width: 100%;
     padding: $spacing-sm $spacing-md;
-    background: rgba($background-component, 0.4); 
-    border: 1px solid $border-color-subtle; 
+    background: rgba($background-glass-base, 0.4);
+    border: 1px solid $border-color;
     border-radius: $radius-md;
     color: $text-secondary;
     font-family: $font-primary;
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     text-align: left;
-    cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: all $transition-fast $ease-in-out-smooth;
@@ -33,6 +32,14 @@
         border-color: $border-color-light;
         color: $text-primary;
       }
+    }
+
+    @media (min-width: 550px) and (max-width: 600px) {
+      font-size: clamp(0.7rem, 2.16vw, $fs-sm);
+    }
+
+    @media (width < 549) {
+      font-size: $fs-base;
     }
 
     &:active {

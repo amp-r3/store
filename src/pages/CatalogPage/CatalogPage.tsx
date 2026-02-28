@@ -45,12 +45,13 @@ export const CatalogPage = () => {
 
   if (error) {
     const errorMessage = getErrorMessage(error);
-    return <ErrorView error={errorMessage}/>
+    return <ErrorView error={errorMessage} />
   }
 
   return (
     <main className='container'>
       <ControlPanel
+        searchQuery={query}
         sortingOptions={sortingOptions}
         changeSort={changeSort}
         activeSortOption={activeSortOption}
