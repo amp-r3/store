@@ -87,7 +87,7 @@
         transition: color $transition-fast;
 
         .cart-item:hover & {
-            color: $text-inverse;
+            color: $primary-accent;
         }
     }
 
@@ -104,7 +104,7 @@
         font-family: $font-primary;
         font-size: $fs-lg;
         font-weight: $fw-bold;
-        color: $text-inverse;
+        color: $text-primary;
         white-space: nowrap;
         letter-spacing: $letter-spacing-tight;
         line-height: 1;
@@ -113,16 +113,16 @@
     &__unit-price {
         font-family: $font-primary;
         font-size: $fs-sm;
-        color: $text-muted; 
+        color: $text-muted;
         font-weight: $fw-normal;
         line-height: 1;
-        margin-top: -2px; 
+        margin-top: -2px;
     }
 
     &__discount {
         font-size: 0.75rem;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: $text-inverse;
         background: rgba($primary-accent-light, 0.6);
         padding: 4px 8px;
         border-radius: $radius-pill;
@@ -161,7 +161,7 @@
         font-family: $font-primary;
         font-size: $fs-base;
         font-weight: $fw-bold;
-        color: $text-inverse;
+        color: $text-primary;
         width: 2rem;
         text-align: center;
         font-variant-numeric: tabular-nums;
@@ -186,7 +186,7 @@
 
             &:hover {
                 background: $background-component;
-                color: $text-inverse;
+                color: $primary-accent;
                 box-shadow: $shadow-xs;
             }
 

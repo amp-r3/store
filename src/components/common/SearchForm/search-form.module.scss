@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .searchForm {
     display: flex;
@@ -18,7 +18,7 @@
         width: 160px;
         padding: $spacing-xs $spacing-xl $spacing-xs $spacing-md;
         font-size: $fs-sm;
-        color: $text-inverse;
+        color: $text-primary;
         transition: $transition-base;
         font-family: $font-primary;
 
@@ -51,7 +51,7 @@
         transition: opacity $transition-fast ease, transform $transition-fast ease, color $transition-fast ease;
 
         &:hover {
-            color: $text-inverse;
+            color: $text-primary;
         }
 
         &--visible {
@@ -73,7 +73,7 @@
         font-size: $fs-icon-lg;
 
         &:hover {
-            color: $text-inverse;
+            color: $text-primary;
             background: rgba($primary-accent-dark, 0.5);
         }
 

@@ -7,57 +7,58 @@
 // ---------------------------------------------
 
 // --- Brand & Accent Colors ---
-$primary-accent: #7c6dff !default;
-$primary-accent-dark: #6456e8 !default;
-$primary-accent-light: #9d8fff !default;
+// Gold luxury accent — warm, premium, timeless
+$primary-accent: #cca94b !default; // Чуть более чистый золотой
+$primary-accent-dark: #9e8031 !default; // Углублен для лучшего контраста при hover/active
+$primary-accent-light: #e8cca0 !default; // Смягченный оттенок шампанского для бликов
 
 // --- Text Colors ---
 // Note: All text colors meet WCAG AA contrast requirements (4.5:1 minimum)
-$text-primary: #f5f6f7 !default;   // contrast ~18:1 on #0a0a0f ✓
-$text-inverse: #ffffff !default;   // contrast ~21:1 on #0a0a0f ✓
-$text-secondary: #c7c7cc !default; // contrast ~10.5:1 on #0a0a0f ✓
-$text-muted: #a0a0a8 !default;     // contrast ~5.1:1 on #0a0a0f ✓ (was #8e8e93 ~3.5:1 ✗)
+$text-primary: #f4f0e6 !default; // Более чистый кремовый для лучшей читаемости
+$text-inverse: #0a0a09 !default; // Усиленный черный для максимального контраста на золотом
+$text-secondary: #c2bba8 !default; // Более плавный переход от основного текста
+$text-muted: #857e75 !default; // Скорректирован под новые фоны компонентов
 
 // --- Background Colors ---
-$background-body: #0a0a0f !default;
-$background-component: #1c1c23 !default;
-$background-glass-base: #16161f !default;
+$background-body: #0d0d0b !default;
+$background-component: #1c1a17 !default; // Чуть светлее тела для более явного разделения карточек
+$background-glass-base: #141311 !default;
 $background-image-holder: linear-gradient(135deg,
-    rgba(124, 109, 255, 0.06),
-    rgba(157, 143, 255, 0.03)) !default;
+    rgba(204, 169, 75, 0.06),
+    rgba(232, 204, 160, 0.02)) !default;
 
 // --- Body Gradients ---
-$gradient-body-start: #2d1b52 !default;
-$gradient-body-end: #1a3a5c !default;
+$gradient-body-start: #18140c !default; // Более теплый глубокий старт
+$gradient-body-end: #0c0e0b !default; // Холодная глубокая тень для баланса
 
 // --- Border Colors ---
-// Hierarchical border opacity system for consistent visual weight
-$border-color-subtle: rgba(255, 255, 255, 0.04) !default;
-$border-color-light: rgba(255, 255, 255, 0.06) !default;
-$border-color: rgba(255, 255, 255, 0.12) !default;
-$border-color-strong: rgba(255, 255, 255, 0.18) !default;
+// Пересчитана прозрачность с учетом обновленного золотого цвета
+$border-color-subtle: rgba(204, 169, 75, 0.06) !default;
+$border-color-light: rgba(204, 169, 75, 0.12) !default;
+$border-color: rgba(204, 169, 75, 0.20) !default;
+$border-color-strong: rgba(204, 169, 75, 0.32) !default;
 
 // --- Semantic Colors ---
-$rating-color: #ffcc00 !default;
-$error-color: #ff453a !default;
+$rating-color: #cca94b !default;
+$error-color: #c45b4d !default; // Более элегантный, приглушенный красный (чтобы не спорил с золотом)
 
 // --- Gradient Colors (Logo & Decorative) ---
-// Optimized for light content on dark backgrounds
-$gradient-logo-start: #a78bfa !default;
-$gradient-logo-mid-1: #c4b5fd !default;
-$gradient-logo-mid-2: #7dd3fc !default;
-$gradient-logo-end: #6366f1 !default;
-$gradient-opacity: 0.9 !default;
+// Precious metal gradient: gold → champagne → platinum
+$gradient-logo-start: #cca94b !default;
+$gradient-logo-mid-1: #e8cca0 !default;
+$gradient-logo-mid-2: #d6d1c8 !default;
+$gradient-logo-end: #9e8031 !default;
+$gradient-opacity: 0.95 !default;
 
 // --- Glass Effect ---
-// Multiple levels for different contexts (subtle, default, strong)
-$glass-background-subtle: rgba(22, 22, 31, 0.35) !default;
-$glass-background: rgba(22, 22, 31, 0.5) !default;
-$glass-background-strong: rgba(22, 22, 31, 0.85) !default;
-$glass-background-fallback: rgba(22, 22, 31, 0.98) !default;
-$glass-border-subtle: rgba(255, 255, 255, 0.06) !default;
-$glass-border: rgba(255, 255, 255, 0.12) !default;
-$glass-backdrop-blur: blur(16px) !default;
+// Оптимизирована прозрачность для лучшего эффекта стекла на темном
+$glass-background-subtle: rgba(20, 19, 17, 0.40) !default;
+$glass-background: rgba(20, 19, 17, 0.65) !default;
+$glass-background-strong: rgba(20, 19, 17, 0.90) !default;
+$glass-background-fallback: #141311 !default; // Заменено на solid HEX, так как fallback не должен иметь rgba
+$glass-border-subtle: rgba(204, 169, 75, 0.08) !default;
+$glass-border: rgba(204, 169, 75, 0.16) !default;
+$glass-backdrop-blur: blur(20px) !default;
 
 // --- Navbar Specific Backgrounds ---
 $navbar-bg-default: $glass-background-subtle !default;
@@ -187,10 +188,10 @@ $shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.12) !default;
 $shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.18) !default;
 $shadow-default: 0 8px 32px rgba(0, 0, 0, 0.24) !default;
 $shadow-card: 0 4px 15px rgba(0, 0, 0, 0.22) !default;
-$shadow-accent: 0 10px 30px rgba($primary-accent, 0.25) !default;
-$shadow-accent-sm: 0 4px 15px rgba($primary-accent, 0.2) !default;
-$shadow-accent-hover: 0 6px 24px rgba($primary-accent, 0.35) !default;
-$shadow-text-accent: 0 0 12px rgba($primary-accent, 0.6) !default;
+$shadow-accent: 0 10px 40px rgba($primary-accent, 0.2) !default;
+$shadow-accent-sm: 0 4px 16px rgba($primary-accent, 0.15) !default;
+$shadow-accent-hover: 0 8px 32px rgba($primary-accent, 0.30) !default;
+$shadow-text-accent: 0 0 16px rgba($primary-accent, 0.5) !default;
 
 // --- Focus Styles ---
 // Accessible focus indicators for keyboard navigation

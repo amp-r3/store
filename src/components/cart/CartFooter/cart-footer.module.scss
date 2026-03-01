@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 // =============================================
 //          CART FOOTER COMPONENT
@@ -115,7 +115,7 @@
     }
 
     &__total {
-        color: $text-inverse;
+        color: $text-primary;
         font-size: $fs-xl;
         font-weight: $fw-bold;
         letter-spacing: $letter-spacing-tight;
