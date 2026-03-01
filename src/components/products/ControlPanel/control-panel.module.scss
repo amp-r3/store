@@ -114,7 +114,6 @@
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      color: var(--text-muted);
 
       &:hover,
       &:active {
@@ -124,7 +123,6 @@
       }
 
       .control-panel__btn-icon {
-        color: var(--text-muted);
         filter: none;
       }
     }

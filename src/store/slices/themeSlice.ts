@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type ThemeType = 'theme-dark' | 'theme-gold';
+export type ThemeType = 'theme-dark' | 'theme-light';
 
 export interface ThemeState {
   theme: ThemeType;
@@ -18,7 +18,7 @@ export const themeSlice = createSlice({
       state.theme = action.payload;
     },
     toggleTheme: (state) => {
-      state.theme = state.theme === 'theme-dark' ? 'theme-gold' : 'theme-dark';
+      state.theme = state.theme === 'theme-dark' ? 'theme-light' : 'theme-dark';
     },
   },
 });

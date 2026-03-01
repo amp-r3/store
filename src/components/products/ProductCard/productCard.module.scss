@@ -123,7 +123,7 @@
 
         @media (hover: hover) {
             .card:hover & {
-                color: var(--primary-accent-light);
+                color: var(--primary-accent);
             }
         }
 
@@ -161,7 +161,7 @@
     &__stock {
         font-size: $fs-sm;
         font-weight: $fw-normal;
-        color: var(--text-muted);
+        color: var(--text-secondary);
         margin-top: auto;
 
         @media (width < 400px) {
@@ -239,6 +239,7 @@
             &:hover {
                 transform: translateY(-2px);
                 background-color: var(--primary-accent);
+                color: var(--text-inverse);
                 box-shadow: 0 4px 12px rgba(var(--primary-accent-rgb), 0.4);
             }
         }

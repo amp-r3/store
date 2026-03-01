@@ -17,7 +17,7 @@
         transition: color $transition-base;
 
         &:hover {
-            color: var(--text-inverse);
+            color: var(--text-primary);
         }
     }
 
@@ -114,9 +114,8 @@
 
     &__description {
         font-size: $fs-base;
-        color: var(--text-muted);
+        color: var(--text-secondary);
         line-height: $lh-relaxed;
-        flex-grow: 1;
     }
 
     &__purchase-box {
@@ -157,6 +156,7 @@
         transition: transform $transition-pressed, background-color $transition-base, box-shadow $transition-base;
 
         &:hover {
+            background-color: var(--primary-accent);
             transform: scale($scale-up-sm);
             box-shadow: var(--shadow-accent-hover);
         }
@@ -179,7 +179,7 @@
         font-size: $fs-xl;
         font-weight: $fw-bold;
         margin-bottom: $spacing-lg;
-        color: var(--text-inverse);
+        color: var(--text-primary);
     }
 
     &__reviews-list {

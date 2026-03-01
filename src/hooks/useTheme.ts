@@ -10,7 +10,7 @@ export const useTheme = () => {
   useEffect(() => {
     const root = document.documentElement;
 
-    root.classList.remove('theme-dark', 'theme-gold');
+    root.classList.remove('theme-dark', 'theme-light');
     
     root.classList.add(theme);
 

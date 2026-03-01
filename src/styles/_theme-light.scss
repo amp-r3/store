@@ -1,0 +1,77 @@
+// =============================================
+//               LIGHT THEME TOKENS
+// =============================================
+
+:root.theme-light {
+  // --- Brand & Accent Colors ---
+  --primary-accent: #7c6dff;
+  --primary-accent-rgb: 124, 109, 255;
+  
+  --primary-accent-dark: #6456e8;
+  --primary-accent-dark-rgb: 100, 86, 232;
+  
+  --primary-accent-light: #9d8fff;
+  --primary-accent-light-rgb: 157, 143, 255;
+
+  // --- Text Colors (с глубоким фиолетовым подтоном) ---
+  --text-primary: #121026;
+  --text-inverse: #ffffff;
+  --text-secondary: #4a456e;
+  --text-muted: #5e5882;
+
+  // --- Background Colors (светлые с легким фиолетовым отливом) ---
+  --background-body: #f5f4fa;
+  --background-component: #ffffff;
+  --background-glass-base: #fbfaff;
+  --background-image-holder: linear-gradient(135deg, rgba(124, 109, 255, 0.08), rgba(157, 143, 255, 0.04));
+
+  // --- Body Gradients ---
+  --gradient-body-start: #e8e6f5;
+  --gradient-body-end: #dddaf2;
+
+  // --- Border Colors (основаны на акцентном цвете для идеального сочетания) ---
+  --border-color-subtle: rgba(124, 109, 255, 0.08);
+  --border-color-light: rgba(124, 109, 255, 0.15);
+  --border-color: rgba(124, 109, 255, 0.25);
+  --border-color-strong: rgba(124, 109, 255, 0.40);
+
+  // --- Semantic Colors ---
+  --rating-color: #f59e0b;
+  --error-color: #dc2626;
+
+  // --- Gradient Colors (Logo & Decorative) ---
+  --gradient-logo-start: #a78bfa;
+  --gradient-logo-mid-1: #c4b5fd;
+  --gradient-logo-mid-2: #7dd3fc;
+  --gradient-logo-end: #6366f1;
+  --gradient-opacity: 0.9;
+
+  // --- Glass Effect (границы стекла также используют акцент) ---
+  --glass-background-subtle: rgba(255, 255, 255, 0.50);
+  --glass-background: rgba(255, 255, 255, 0.75);
+  --glass-background-strong: rgba(255, 255, 255, 0.90);
+  --glass-background-fallback: rgba(255, 255, 255, 0.98);
+  --glass-border-subtle: rgba(124, 109, 255, 0.10);
+  --glass-border: rgba(124, 109, 255, 0.20);
+  --glass-backdrop-blur: blur(16px);
+
+  // --- Navbar Specific Backgrounds ---
+  --navbar-bg-default: rgba(255, 255, 255, 0.70);
+  --navbar-bg-scrolled: rgba(255, 255, 255, 0.95);
+  --navbar-bg-fallback: rgba(255, 255, 255, 0.98);
+
+  // --- Box Shadows (базовые тени подкрашены акцентом для мягкого hover-эффекта) ---
+  --shadow-xs: 0 2px 8px rgba(124, 109, 255, 0.06);
+  --shadow-sm: 0 4px 16px rgba(124, 109, 255, 0.08);
+  --shadow-default: 0 8px 32px rgba(124, 109, 255, 0.12);
+  --shadow-card: 0 4px 15px rgba(124, 109, 255, 0.08);
+  --shadow-accent: 0 10px 30px rgba(var(--primary-accent-rgb), 0.25);
+  --shadow-accent-sm: 0 4px 15px rgba(var(--primary-accent-rgb), 0.15);
+  --shadow-accent-hover: 0 6px 24px rgba(var(--primary-accent-rgb), 0.35);
+  --shadow-text-accent: 0 0 12px rgba(var(--primary-accent-rgb), 0.4);
+
+  // --- Focus Styles ---
+  --focus-ring-color: rgba(var(--primary-accent-rgb), 0.5);
+  --shadow-focus-input: 0 0 16px rgba(var(--primary-accent-rgb), 0.15);
+  --shadow-focus-button: 0 0 0 3px rgba(var(--primary-accent-rgb), 0.3);
+}

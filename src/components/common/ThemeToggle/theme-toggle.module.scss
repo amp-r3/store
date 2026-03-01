@@ -32,13 +32,12 @@
             transform: rotate(0deg) scale(1);
         }
         
-        &[data-theme='theme-gold'] {
+        &[data-theme='theme-light'] {
             transform: rotate(360deg) scale(1.1);
         }
     }
 }
 
-// Адаптив для синхронизации с navbar.module.scss
 @media (max-width: 600px) {
     .toggle {
         font-size: $fs-icon-md;

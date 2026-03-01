@@ -114,7 +114,7 @@
 .footer__about {
     display: flex;
     flex-direction: column;
-    gap: $spacing-md;
+    gap: $spacing-xxs;
 
     // На широком экране ограничиваем description
     .footer__description {
@@ -426,7 +426,6 @@
     gap: $spacing-md;
     flex-wrap: wrap;
 
-    // На планшете и ниже — центрируем
     @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;

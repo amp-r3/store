@@ -1,5 +1,5 @@
 // =============================================
-//               DARK THEME TOKENS
+//               DEEP DARK PURPLE THEME TOKENS
 // =============================================
 
 :root.theme-dark {
@@ -13,62 +13,62 @@
   --primary-accent-light: #9d8fff;
   --primary-accent-light-rgb: 157, 143, 255;
 
-  // --- Text Colors ---
-  --text-primary: #f5f6f7;
-  --text-inverse: #ffffff;
-  --text-secondary: #c7c7cc;
-  --text-muted: #a0a0a8;
+  // --- Text Colors  ---
+  --text-primary: #e8e6f5;
+  --text-inverse: #121026;
+  --text-secondary: #b5b0d6;
+  --text-muted: #8e89b3;
 
-  // --- Background Colors ---
-  --background-body: #0a0a0f;
-  --background-component: #1c1c23;
-  --background-glass-base: #16161f;
-  --background-image-holder: linear-gradient(135deg, rgba(124, 109, 255, 0.06), rgba(157, 143, 255, 0.03));
+  // --- Background Colors  ---
+  --background-body: #0b0914;
+  --background-component: #121026;
+  --background-glass-base: #15122b;
+  --background-image-holder: linear-gradient(135deg, rgba(124, 109, 255, 0.15), rgba(157, 143, 255, 0.08));
 
   // --- Body Gradients ---
-  --gradient-body-start: #2d1b52;
-  --gradient-body-end: #1a3a5c;
+  --gradient-body-start: #15122e;
+  --gradient-body-end: #0b0914;
 
-  // --- Border Colors ---
-  --border-color-subtle: rgba(255, 255, 255, 0.04);
-  --border-color-light: rgba(255, 255, 255, 0.06);
-  --border-color: rgba(255, 255, 255, 0.12);
-  --border-color-strong: rgba(255, 255, 255, 0.18);
+  // --- Border Colors  ---
+  --border-color-subtle: rgba(124, 109, 255, 0.12);
+  --border-color-light: rgba(124, 109, 255, 0.22);
+  --border-color: rgba(124, 109, 255, 0.35);
+  --border-color-strong: rgba(124, 109, 255, 0.50);
 
   // --- Semantic Colors ---
-  --rating-color: #ffcc00;
-  --error-color: #ff453a;
+  --rating-color: #f59e0b;
+  --error-color: #ef4444;
 
-  // --- Gradient Colors (Logo & Decorative) ---
+  // --- Gradient Colors  ---
   --gradient-logo-start: #a78bfa;
   --gradient-logo-mid-1: #c4b5fd;
   --gradient-logo-mid-2: #7dd3fc;
   --gradient-logo-end: #6366f1;
   --gradient-opacity: 0.9;
 
-  // --- Glass Effect ---
-  --glass-background-subtle: rgba(22, 22, 31, 0.35);
-  --glass-background: rgba(22, 22, 31, 0.5);
-  --glass-background-strong: rgba(22, 22, 31, 0.85);
-  --glass-background-fallback: rgba(22, 22, 31, 0.98);
-  --glass-border-subtle: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.12);
+  // --- Glass Effect  ---
+  --glass-background-subtle: rgba(18, 16, 38, 0.45);
+  --glass-background: rgba(18, 16, 38, 0.70);
+  --glass-background-strong: rgba(18, 16, 38, 0.85);
+  --glass-background-fallback: rgba(18, 16, 38, 0.98);
+  --glass-border-subtle: rgba(124, 109, 255, 0.15);
+  --glass-border: rgba(124, 109, 255, 0.25);
   --glass-backdrop-blur: blur(16px);
 
   // --- Navbar Specific Backgrounds ---
-  --navbar-bg-default: rgba(22, 22, 31, 0.35);
-  --navbar-bg-scrolled: rgba(22, 22, 31, 0.85);
-  --navbar-bg-fallback: rgba(22, 22, 31, 0.98);
+  --navbar-bg-default: rgba(18, 16, 38, 0.65);
+  --navbar-bg-scrolled: rgba(18, 16, 38, 0.90);
+  --navbar-bg-fallback: rgba(18, 16, 38, 0.98);
 
-  // --- Box Shadows ---
-  --shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.12);
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.18);
-  --shadow-default: 0 8px 32px rgba(0, 0, 0, 0.24);
-  --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.22);
+  // --- Box Shadows  ---
+  --shadow-xs: 0 2px 8px rgba(124, 109, 255, 0.08);
+  --shadow-sm: 0 4px 16px rgba(124, 109, 255, 0.12);
+  --shadow-default: 0 8px 32px rgba(124, 109, 255, 0.16);
+  --shadow-card: 0 4px 15px rgba(124, 109, 255, 0.10);
   --shadow-accent: 0 10px 30px rgba(var(--primary-accent-rgb), 0.25);
-  --shadow-accent-sm: 0 4px 15px rgba(var(--primary-accent-rgb), 0.2);
+  --shadow-accent-sm: 0 4px 15px rgba(var(--primary-accent-rgb), 0.15);
   --shadow-accent-hover: 0 6px 24px rgba(var(--primary-accent-rgb), 0.35);
-  --shadow-text-accent: 0 0 12px rgba(var(--primary-accent-rgb), 0.6);
+  --shadow-text-accent: 0 0 12px rgba(var(--primary-accent-rgb), 0.45);
 
   // --- Focus Styles ---
   --focus-ring-color: rgba(var(--primary-accent-rgb), 0.5);

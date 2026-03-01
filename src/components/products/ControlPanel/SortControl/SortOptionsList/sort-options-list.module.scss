@@ -85,13 +85,13 @@
 
   &__item-icon {
     font-size: $fs-icon-md;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     flex-shrink: 0;
     transition: all $transition-fast $ease-in-out-smooth;
   }
 
   &__item--active &__item-icon {
-    color: var(--primary-accent-light);
+    color: var(--primary-accent);
     filter: drop-shadow(0 0 8px rgba(var(--primary-accent-rgb), 0.4));
   }
 
