@@ -13,8 +13,8 @@
     flex-shrink: 0;
     padding: $spacing-lg;
 
-    background: rgba($background-body, 0.6);
-    border-top: 1px solid $border-color;
+    background: rgba(var(--background-body-rgb), 0.6);
+    border-top: 1px solid var(--border-color);
     backdrop-filter: blur(20px);
 
     display: flex;
@@ -33,17 +33,17 @@
 
     &__shippingInfo {
         font-size: $fs-sm;
-        color: $text-secondary;
+        color: var(--text-secondary);
         display: flex;
         justify-content: space-between;
 
         b {
-            color: $text-primary;
+            color: var(--text-primary);
         }
     }
 
     &__shippingSuccess {
-        color: $primary-accent-light;
+        color: var(--primary-accent-light);
         display: flex;
         align-items: center;
         gap: $spacing-xs;
@@ -52,14 +52,14 @@
 
     &__progressBar {
         height: 4px;
-        background: $border-color;
+        background: var(--border-color);
         border-radius: $radius-pill;
         overflow: hidden;
     }
 
     &__progressFill {
         height: 100%;
-        background: linear-gradient(90deg, $primary-accent, $primary-accent-light);
+        background: linear-gradient(90deg, var(--primary-accent), var(--primary-accent-light));
         border-radius: $radius-pill;
         transition: width 0.5s $ease-out-expo;
     }
@@ -84,7 +84,7 @@
 
             .footer__label,
             .footer__value {
-                color: $primary-accent-light;
+                color: var(--primary-accent-light);
             }
         }
 
@@ -94,28 +94,28 @@
             .footer__label {
                 font-size: $fs-lg;
                 font-weight: $fw-semibold;
-                color: $text-primary;
+                color: var(--text-primary);
             }
         }
     }
 
     &__label {
-        color: $text-secondary;
+        color: var(--text-secondary);
     }
 
     &__value {
-        color: $text-primary;
+        color: var(--text-primary);
         font-feature-settings: "tnum";
     }
 
     &__divider {
         height: 1px;
-        background: $border-color;
+        background: var(--border-color);
         margin: $spacing-xs 0;
     }
 
     &__total {
-        color: $text-primary;
+        color: var(--text-primary);
         font-size: $fs-xl;
         font-weight: $fw-bold;
         letter-spacing: $letter-spacing-tight;
@@ -123,7 +123,7 @@
 
     &__note {
         font-size: $fs-sm;
-        color: $text-muted;
+        color: var(--text-muted);
         text-align: center;
         margin-top: $spacing-xs;
     }
@@ -140,20 +140,20 @@
         gap: $spacing-sm;
         padding: $spacing-md;
 
-        background: $primary-accent;
-        color: $text-inverse;
+        background: var(--primary-accent);
+        color: var(--text-inverse);
         font-size: $fs-md;
         font-weight: $fw-semibold;
         border: none;
         border-radius: $radius-md;
-        box-shadow: $shadow-accent-sm;
+        box-shadow: var(--shadow-accent-sm);
 
         cursor: pointer;
         transition: all $transition-base $ease-out-expo;
 
         &:hover {
-            background: $primary-accent-dark;
-            box-shadow: $shadow-accent-hover;
+            background: var(--primary-accent-dark);
+            box-shadow: var(--shadow-accent-hover);
             transform: translateY(-2px);
         }
 
@@ -171,8 +171,8 @@
         padding: $spacing-md $spacing-md calc(#{$spacing-md} + #{$safe-area-bottom});
 
         backdrop-filter: blur(25px);
-        background: rgba($background-body, 0.85);
-        border-top-color: $border-color-strong;
+        background: rgba(var(--background-body-rgb), 0.85);
+        border-top-color: var(--border-color-strong);
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
 
         gap: $spacing-sm;
@@ -202,7 +202,7 @@
             &--total {
                 margin-top: $spacing-xs;
                 padding-top: $spacing-xs;
-                border-top: 1px solid $border-color-subtle;
+                border-top: 1px solid var(--border-color-subtle);
 
                 .footer__label {
                     font-size: $fs-md;

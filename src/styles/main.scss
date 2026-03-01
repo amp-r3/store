@@ -21,8 +21,8 @@ ul {
 
 body {
     font-family: $font-primary;
-    color: $text-primary;
-    background-color: $background-body;
+    color: var(--text-primary);
+    background-color: var(--background-body);
 
     &::before {
         content: '';
@@ -33,9 +33,9 @@ body {
         height: 100vh;
         z-index: -1;
         background-image:
-            radial-gradient(ellipse at top, $gradient-body-start, transparent),
-            radial-gradient(ellipse at bottom, $gradient-body-end, transparent);
-        background-color: $background-body;
+            radial-gradient(ellipse at top, var(--gradient-body-start), transparent),
+            radial-gradient(ellipse at bottom, var(--gradient-body-end), transparent);
+        background-color: var(--background-body);
         opacity: 0.7;
     }
 }
@@ -75,32 +75,32 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-    background: $background-component;
+    background: var(--background-component);
     border-radius: $radius-pill;
     margin: $spacing-xs;
 }
 
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg,
-            $primary-accent-light,
-            $primary-accent);
+            var(--primary-accent-light),
+            var(--primary-accent));
     border-radius: $radius-pill;
-    border: $loader-border-width-xs solid $background-component;
+    border: $loader-border-width-xs solid var(--background-component);
     transition: background $transition-base $ease-in-out-smooth;
 
     &:hover {
         background: linear-gradient(180deg,
-                $primary-accent,
-                $primary-accent-dark);
-        box-shadow: $shadow-accent-sm;
+                var(--primary-accent),
+                var(--primary-accent-dark));
+        box-shadow: var(--shadow-accent-sm);
     }
 
     &:active {
-        background: $primary-accent-dark;
+        background: var(--primary-accent-dark);
     }
 }
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: $primary-accent $background-component;
+    scrollbar-color: var(--primary-accent) var(--background-component);
 }

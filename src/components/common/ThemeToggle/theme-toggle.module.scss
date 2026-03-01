@@ -1,0 +1,54 @@
+@use '@/styles/index' as *;
+
+.toggle {
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    padding: $spacing-sm;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    transition: $transition-base;
+    font-size: $fs-icon-lg;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover {
+        background: rgba(var(--primary-accent-dark-rgb), 0.5);
+        color: var(--text-primary);
+        border-color: transparent;
+    }
+
+    &:active {
+        transform: scale($button-pressed-scale);
+    }
+
+    &__icon {
+        display: flex;
+        transition: transform $transition-smooth $ease-in-out-smooth;
+        
+        &[data-theme='theme-dark'] {
+            transform: rotate(0deg) scale(1);
+        }
+        
+        &[data-theme='theme-gold'] {
+            transform: rotate(360deg) scale(1.1);
+        }
+    }
+}
+
+// Адаптив для синхронизации с navbar.module.scss
+@media (max-width: 600px) {
+    .toggle {
+        font-size: $fs-icon-md;
+        padding: $spacing-sm;
+    }
+}
+
+@media (max-width: 525px) {
+    .toggle {
+        font-size: $fs-icon-lg;
+        padding: $spacing-xs;
+    }
+}

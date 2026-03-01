@@ -15,8 +15,8 @@
 
 .footer {
     position: relative;
-    background: $background-glass-base;
-    border-top: 1px solid $border-color;
+    background: var(--background-glass-base);
+    border-top: 1px solid var(--border-color);
     overflow: hidden;
 
     // Decorative top glow line
@@ -30,9 +30,9 @@
         height: 1px;
         background: linear-gradient(90deg,
                 transparent,
-                $primary-accent-light,
-                $primary-accent,
-                $primary-accent-light,
+                var(--primary-accent-light),
+                var(--primary-accent),
+                var(--primary-accent-light),
                 transparent);
         opacity: 0.6;
     }
@@ -46,7 +46,7 @@
         transform: translateX(-50%);
         width: 500px;
         height: 200px;
-        background: radial-gradient(ellipse, rgba($primary-accent, 0.07) 0%, transparent 70%);
+        background: radial-gradient(ellipse, rgba(var(--primary-accent-rgb), 0.07) 0%, transparent 70%);
         pointer-events: none;
     }
 }
@@ -75,7 +75,7 @@
 .footer__content {
     display: grid;
     padding-bottom: $spacing-xxl;
-    border-bottom: 1px solid $border-color-light;
+    border-bottom: 1px solid var(--border-color-light);
 
     // Desktop: 4 колонки, About немного шире
     grid-template-columns: 1.6fr 1.2fr 1fr 1fr;
@@ -151,7 +151,7 @@
     font-weight: $fw-bold;
     letter-spacing: $letter-spacing-tight;
     margin: 0 0 $spacing-md;
-    background: linear-gradient(135deg, $gradient-logo-start, $gradient-logo-mid-2);
+    background: linear-gradient(135deg, var(--gradient-logo-start), var(--gradient-logo-mid-2));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -165,7 +165,7 @@
     font-family: $font-primary;
     font-size: $fs-sm;
     font-weight: $fw-normal;
-    color: $text-muted;
+    color: var(--text-muted);
     line-height: $lh-relaxed;
     margin: 0;
 }
@@ -195,17 +195,17 @@
 }
 
 .footer__badge {
-    background: rgba($primary-accent, 0.08);
-    border: 1px solid rgba($primary-accent, 0.18);
-    color: $primary-accent-light;
+    background: rgba(var(--primary-accent-rgb), 0.08);
+    border: 1px solid rgba(var(--primary-accent-rgb), 0.18);
+    color: var(--primary-accent-light);
 
     &::before {
         content: '';
         width: 6px;
         height: 6px;
         border-radius: $radius-circle;
-        background: $primary-accent-light;
-        box-shadow: 0 0 6px $primary-accent-light;
+        background: var(--primary-accent-light);
+        box-shadow: 0 0 6px var(--primary-accent-light);
         animation: pulse $animation-pulse-duration ease-in-out infinite;
         flex-shrink: 0;
     }
@@ -213,8 +213,8 @@
 
 .footer__badgeMit {
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid $border-color;
-    color: $text-muted;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
 }
 
 // =============================================
@@ -242,7 +242,7 @@
     width: 100%; // важно для margin-left: auto на .footer__version
     font-family: $font-primary;
     font-size: $fs-sm;
-    color: $text-secondary;
+    color: var(--text-secondary);
     line-height: $lh-normal;
     transition: color $transition-fast $ease-in-out-smooth;
 
@@ -252,7 +252,7 @@
         width: 3px;
         height: 3px;
         border-radius: $radius-circle;
-        background: $primary-accent;
+        background: var(--primary-accent);
         flex-shrink: 0;
         opacity: 0.7;
         transition:
@@ -261,7 +261,7 @@
     }
 
     &:hover {
-        color: $text-primary;
+        color: var(--text-primary);
 
         &::before {
             opacity: 1;
@@ -280,11 +280,11 @@
     margin-left: auto;
     padding: 1px $spacing-xs;
     border-radius: $radius-pill;
-    background: rgba($primary-accent, 0.08);
-    border: 1px solid rgba($primary-accent, 0.15);
+    background: rgba(var(--primary-accen-rgbt), 0.08);
+    border: 1px solid rgba(var(--primary-accent-rgb), 0.15);
     font-size: 0.7rem;
     font-weight: $fw-semibold;
-    color: $primary-accent-light;
+    color: var(--primary-accent-light);
     letter-spacing: $letter-spacing-wide;
     line-height: 1.4;
     flex-shrink: 0;
@@ -302,17 +302,17 @@
 }
 
 .footer__projectLink {
-    display: flex; // flex вместо inline-flex — растягивается на ширину колонки
+    display: flex; 
     align-items: center;
     gap: $spacing-xs;
     padding: $spacing-xs $spacing-sm;
     border-radius: $radius-sm;
-    background: rgba($primary-accent, 0.06);
-    border: 1px solid $border-color;
+    background: rgba(var(--primary-accent-rgb), 0.06);
+    border: 1px solid var(--border-color);
     font-family: $font-primary;
     font-size: $fs-sm;
     font-weight: $fw-semibold;
-    color: $text-secondary;
+    color: var(--text-secondary);
     text-decoration: none;
     transition:
         background $transition-fast $ease-in-out-smooth,
@@ -323,15 +323,15 @@
     svg {
         font-size: $fs-icon-sm;
         flex-shrink: 0;
-        color: $primary-accent-light;
+        color: var(--primary-accent-light);
         opacity: 0.8;
         transition: opacity $transition-fast $ease-in-out-smooth;
     }
 
     &:hover {
-        background: rgba($primary-accent, 0.13);
-        border-color: rgba($primary-accent, 0.3);
-        color: $text-primary;
+        background: rgba(var(--primary-accent-rgb), 0.13);
+        border-color: rgba(var(--primary-accent-rgb), 0.3);
+        color: var(--text-primary);
         transform: $hover-lift;
 
         svg {
@@ -344,7 +344,7 @@
     }
 
     &:focus-visible {
-        outline: $focus-ring-width solid $focus-ring-color;
+        outline: $focus-ring-width solid var(--focus-ring-color);
         outline-offset: $focus-ring-offset;
     }
 
@@ -377,9 +377,9 @@
     width: 40px;
     height: 40px;
     border-radius: $radius-md;
-    background: rgba($primary-accent, 0.06);
-    border: 1px solid $border-color;
-    color: $text-muted;
+    background: rgba(var(--primary-accent-rgb), 0.06);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
     font-size: $fs-icon-md;
     text-decoration: none;
     flex-shrink: 0;
@@ -397,11 +397,11 @@
     }
 
     &:hover {
-        background: rgba($primary-accent, 0.15);
-        border-color: rgba($primary-accent, 0.35);
-        color: $primary-accent-light;
+        background: rgba(var(--primary-accent-rgb), 0.15);
+        border-color: rgba(var(--primary-accent-rgb), 0.35);
+        color: var(--primary-accent-light);
         transform: $hover-lift scale($scale-up-sm);
-        box-shadow: $shadow-accent-sm;
+        box-shadow: var(--shadow-accent-sm);
     }
 
     &:active {
@@ -409,7 +409,7 @@
     }
 
     &:focus-visible {
-        outline: $focus-ring-width solid $focus-ring-color;
+        outline: $focus-ring-width solid var(--focus-ring-color);
         outline-offset: $focus-ring-offset;
     }
 }
@@ -439,12 +439,12 @@
 .footer__copy {
     font-family: $font-primary;
     font-size: $fs-sm;
-    color: $text-muted;
+    color: var(--text-muted);
     margin: 0;
     letter-spacing: $letter-spacing-wide;
 
     span {
-        color: $primary-accent-light;
+        color: var(--primary-accent-light);
         font-weight: $fw-semibold;
     }
 }
@@ -455,11 +455,11 @@
     gap: $spacing-xxs;
     font-family: $font-primary;
     font-size: $fs-sm;
-    color: $text-muted;
+    color: var(--text-muted);
     flex-shrink: 0;
 
     svg {
-        color: $error-color;
+        color: var(--error-color);
         font-size: $fs-icon-sm;
         animation: heartbeat $animation-pulse-duration ease-in-out infinite;
     }

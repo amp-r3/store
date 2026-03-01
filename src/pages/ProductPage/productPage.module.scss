@@ -11,13 +11,13 @@
         display: inline-flex;
         align-items: center;
         gap: $spacing-xs;
-        color: $text-muted;
+        color: var(--text-muted);
         text-decoration: none;
         font-weight: $fw-semibold;
         transition: color $transition-base;
 
         &:hover {
-            color: $text-inverse;
+            color: var(--text-inverse);
         }
     }
 
@@ -38,12 +38,12 @@
         padding: $spacing-xl;
         overflow: hidden;
         border-radius: $radius-xl;
-        border: 1px solid $border-color-light;
+        border: 1px solid var(--border-color-light);
         display: flex;
         align-items: center;
         justify-content: center;
         aspect-ratio: 1 / 1;
-        background: $background-image-holder;
+        background: var(--background-image-holder);
     }
 
     &__image {
@@ -59,8 +59,8 @@
 
     &__category {
         display: inline-block;
-        background-color: rgba($primary-accent, 0.1);
-        color: $primary-accent-light;
+        background-color: rgba(var(--primary-accent-rgb), 0.1);
+        color: var(--primary-accent-light);
         padding: $spacing-xs $spacing-sm;
         border-radius: $radius-input;
         font-size: $fs-sm;
@@ -74,7 +74,7 @@
     &__title {
         font-size: $fs-xxl;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: var(--text-primary);
         margin: 0 0 $spacing-sm 0;
         line-height: $lh-tight;
     }
@@ -82,7 +82,7 @@
     &__stock {
         font-size: $fs-md;
         font-weight: $fw-semibold;
-        color: $primary-accent-light;
+        color: var(--primary-accent-light);
     }
 
     &__rating {
@@ -90,31 +90,31 @@
         align-items: center;
         gap: $spacing-xs;
         margin: $spacing-md 0 $spacing-lg 0;
-        color: $rating-color;
+        color: var(--rating-color);
     }
 
     &__rating-value {
         font-size: $fs-md;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: var(--text-primary);
     }
 
     &__rating-count {
         font-size: $fs-base;
-        color: $text-secondary;
+        color: var(--text-secondary);
         text-decoration: none;
         border-bottom: 1px solid transparent;
         transition: $transition-base;
 
         &:hover {
-            color: $text-primary;
-            border-bottom-color: $text-primary;
+            color: var(--text-primary);
+            border-bottom-color: var(--text-primary);
         }
     }
 
     &__description {
         font-size: $fs-base;
-        color: $text-muted;
+        color: var(--text-muted);
         line-height: $lh-relaxed;
         flex-grow: 1;
     }
@@ -126,13 +126,13 @@
         gap: $spacing-lg;
         margin-top: $spacing-xl;
         padding-top: $spacing-lg;
-        border-top: 1px solid $border-color;
+        border-top: 1px solid var(--border-color);
     }
 
     &__price {
         font-size: $fs-lg;
         font-weight: $fw-normal;
-        color: $text-secondary;
+        color: var(--text-secondary);
         text-decoration: line-through;
         margin-right: $spacing-xxs;
     }
@@ -140,15 +140,15 @@
     &__discount-price {
         font-size: $fs-xxl;
         font-weight: $fw-bold;
-        color: $primary-accent;
+        color: var(--primary-accent);
     }
 
     &__add-to-cart-btn {
         display: inline-flex;
         align-items: center;
         gap: $spacing-sm;
-        background-color: $primary-accent-dark;
-        color: $text-inverse;
+        background-color: var(--primary-accent-dark);
+        color: var(--text-inverse);
         border: none;
         border-radius: $radius-md;
         padding: $spacing-md $spacing-xl;
@@ -158,7 +158,7 @@
 
         &:hover {
             transform: scale($scale-up-sm);
-            box-shadow: $shadow-accent-hover;
+            box-shadow: var(--shadow-accent-hover);
         }
 
         &:active {
@@ -169,7 +169,7 @@
     &__reviews {
         margin-top: $spacing-xxl;
         padding-top: $spacing-xl;
-        border-top: 1px solid $border-color;
+        border-top: 1px solid var(--border-color);
     }
 
     &__reviews-title {
@@ -179,7 +179,7 @@
         font-size: $fs-xl;
         font-weight: $fw-bold;
         margin-bottom: $spacing-lg;
-        color: $text-inverse;
+        color: var(--text-inverse);
     }
 
     &__reviews-list {
@@ -189,9 +189,9 @@
     }
 
     &__review-card {
-        background: $glass-background;
-        border: 1px solid $glass-border;
-        backdrop-filter: $glass-backdrop-blur;
+        background: var(--glass-background);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: var(--glass-backdrop-blur);
         padding: $spacing-lg;
         border-radius: $radius-lg;
         display: flex;
@@ -209,13 +209,13 @@
     &__review-author {
         font-size: $fs-md;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: var(--text-primary);
     }
 
     &__review-rating {
         display: flex;
         gap: $spacing-xxs;
-        color: $rating-color;
+        color: var(--rating-color);
     }
 
     &__review-meta {
@@ -223,11 +223,11 @@
         align-items: center;
         gap: $spacing-xs;
         font-size: $fs-sm;
-        color: $text-muted;
+        color: var(--text-muted);
     }
 
     &__review-comment {
-        color: $text-secondary;
+        color: var(--text-secondary);
         line-height: $lh-normal;
         margin: 0;
         padding-top: $spacing-sm;

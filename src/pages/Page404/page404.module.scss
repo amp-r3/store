@@ -12,14 +12,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background: $glass-background;
-  backdrop-filter: $glass-backdrop-blur;
-  border: 1px solid $border-color;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-blur);
+  border: 1px solid var(--border-color);
   border-radius: $radius-xl;
   padding: $spacing-xxl;
   max-width: 600px;
   width: 100%;
-  box-shadow: $shadow-default;
+  box-shadow: var(--shadow-default);
 }
 
 .errorCode {
@@ -27,7 +27,7 @@
   font-weight: $fw-black;
   margin: 0;
   line-height: $lh-ui;
-  background: linear-gradient(130deg, $gradient-logo-start, $gradient-logo-mid-1, $gradient-logo-mid-2, $gradient-logo-end);
+  background: linear-gradient(130deg, var(--gradient-logo-start), var(--gradient-logo-mid-1), var(--gradient-logo-mid-2), var(--gradient-logo-end));
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -37,14 +37,14 @@
 .title {
   font-size: $fs-xl;
   font-weight: $fw-semibold;
-  color: $text-primary;
+  color: var(--text-primary);
   margin-top: $spacing-md;
   margin-bottom: $spacing-xs;
 }
 
 .description {
   font-size: $fs-base;
-  color: $text-muted;
+  color: var(--text-muted);
   max-width: 350px;
   margin-bottom: $spacing-xl;
   line-height: $lh-normal;
@@ -54,8 +54,8 @@
   display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
-  background-color: $primary-accent;
-  color: $text-inverse;
+  background-color: var(--primary-accent);
+  color: var(--text-inverse);
   border: none;
   border-radius: $radius-sm;
   padding: $spacing-sm $spacing-lg;
@@ -67,9 +67,9 @@
     box-shadow $transition-base $ease-in-out-smooth;
 
   &:hover {
-    background-color: $primary-accent-dark;
+    background-color: var(--primary-accent-dark);
     transform: $hover-lift;
-    box-shadow: $shadow-accent-sm;
+    box-shadow: var(--shadow-accent-sm);
   }
 
   &:active {

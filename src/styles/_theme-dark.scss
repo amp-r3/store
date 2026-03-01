@@ -1,0 +1,77 @@
+// =============================================
+//               DARK THEME TOKENS
+// =============================================
+
+:root.theme-dark {
+  // --- Brand & Accent Colors ---
+  --primary-accent: #7c6dff;
+  --primary-accent-rgb: 124, 109, 255;
+  
+  --primary-accent-dark: #6456e8;
+  --primary-accent-dark-rgb: 100, 86, 232;
+  
+  --primary-accent-light: #9d8fff;
+  --primary-accent-light-rgb: 157, 143, 255;
+
+  // --- Text Colors ---
+  --text-primary: #f5f6f7;
+  --text-inverse: #ffffff;
+  --text-secondary: #c7c7cc;
+  --text-muted: #a0a0a8;
+
+  // --- Background Colors ---
+  --background-body: #0a0a0f;
+  --background-component: #1c1c23;
+  --background-glass-base: #16161f;
+  --background-image-holder: linear-gradient(135deg, rgba(124, 109, 255, 0.06), rgba(157, 143, 255, 0.03));
+
+  // --- Body Gradients ---
+  --gradient-body-start: #2d1b52;
+  --gradient-body-end: #1a3a5c;
+
+  // --- Border Colors ---
+  --border-color-subtle: rgba(255, 255, 255, 0.04);
+  --border-color-light: rgba(255, 255, 255, 0.06);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-color-strong: rgba(255, 255, 255, 0.18);
+
+  // --- Semantic Colors ---
+  --rating-color: #ffcc00;
+  --error-color: #ff453a;
+
+  // --- Gradient Colors (Logo & Decorative) ---
+  --gradient-logo-start: #a78bfa;
+  --gradient-logo-mid-1: #c4b5fd;
+  --gradient-logo-mid-2: #7dd3fc;
+  --gradient-logo-end: #6366f1;
+  --gradient-opacity: 0.9;
+
+  // --- Glass Effect ---
+  --glass-background-subtle: rgba(22, 22, 31, 0.35);
+  --glass-background: rgba(22, 22, 31, 0.5);
+  --glass-background-strong: rgba(22, 22, 31, 0.85);
+  --glass-background-fallback: rgba(22, 22, 31, 0.98);
+  --glass-border-subtle: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-backdrop-blur: blur(16px);
+
+  // --- Navbar Specific Backgrounds ---
+  --navbar-bg-default: rgba(22, 22, 31, 0.35);
+  --navbar-bg-scrolled: rgba(22, 22, 31, 0.85);
+  --navbar-bg-fallback: rgba(22, 22, 31, 0.98);
+
+  // --- Box Shadows ---
+  --shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.18);
+  --shadow-default: 0 8px 32px rgba(0, 0, 0, 0.24);
+  --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.22);
+  --shadow-accent: 0 10px 30px rgba(var(--primary-accent-rgb), 0.25);
+  --shadow-accent-sm: 0 4px 15px rgba(var(--primary-accent-rgb), 0.2);
+  --shadow-accent-hover: 0 6px 24px rgba(var(--primary-accent-rgb), 0.35);
+  --shadow-text-accent: 0 0 12px rgba(var(--primary-accent-rgb), 0.6);
+
+  // --- Focus Styles ---
+  --focus-ring-color: rgba(var(--primary-accent-rgb), 0.5);
+  --shadow-focus-input: 0 0 16px rgba(var(--primary-accent-rgb), 0.25);
+  --shadow-focus-button: 0 0 0 3px rgba(var(--primary-accent-rgb), 0.35);
+}

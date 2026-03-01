@@ -1,0 +1,79 @@
+// =============================================
+//               GOLD THEME TOKENS
+// =============================================
+
+:root.theme-gold {
+    // --- Brand & Accent Colors ---
+    --primary-accent: #cca94b;
+    --primary-accent-rgb: 204, 169, 75;
+
+    --primary-accent-dark: #9e8031;
+    --primary-accent-dark-rgb: 158, 128, 49;
+
+    --primary-accent-light: #e8cca0;
+    --primary-accent-light-rgb: 232, 204, 160;
+
+    // --- Text Colors ---
+    --text-primary: #f4f0e6;
+    --text-inverse: #0a0a09;
+    --text-secondary: #c2bba8;
+    --text-muted: #857e75;
+
+    // --- Background Colors ---
+    --background-body: #0d0d0b;
+    --background-component: #1c1a17;
+    --background-glass-base: #141311;
+    --background-image-holder: linear-gradient(135deg, rgba(204, 169, 75, 0.06), rgba(232, 204, 160, 0.02));
+
+    // --- Body Gradients ---
+    --gradient-body-start: #18140c;
+    --gradient-body-end: #0c0e0b;
+
+    // --- Border Colors ---
+    --border-color-subtle: rgba(204, 169, 75, 0.06);
+    --border-color-light: rgba(204, 169, 75, 0.12);
+    --border-color: rgba(204, 169, 75, 0.20);
+    --border-color-strong: rgba(204, 169, 75, 0.32);
+
+    // --- Semantic Colors ---
+    --rating-color: #cca94b;
+    --error-color: #c45b4d;
+
+    // --- Gradient Colors (Logo & Decorative) ---
+    --gradient-logo-start: #cca94b;
+    --gradient-logo-mid-1: #e8cca0;
+    --gradient-logo-mid-2: #d6d1c8;
+    --gradient-logo-end: #9e8031;
+    --gradient-opacity: 0.95;
+
+    // --- Glass Effect ---
+    --glass-background-subtle: rgba(20, 19, 17, 0.40);
+    --glass-background: rgba(20, 19, 17, 0.65);
+    --glass-background-strong: rgba(20, 19, 17, 0.90);
+    --glass-background-fallback: #141311;
+    --glass-border-subtle: rgba(204, 169, 75, 0.08);
+    --glass-border: rgba(204, 169, 75, 0.16);
+    --glass-backdrop-blur: blur(20px);
+
+    // --- Navbar Specific Backgrounds ---
+    --navbar-bg-default: rgba(20, 19, 17, 0.40);
+    --navbar-bg-scrolled: rgba(20, 19, 17, 0.90);
+    --navbar-bg-fallback: #141311;
+
+    // --- Box Shadows ---
+    --shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.12);
+    --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.18);
+    --shadow-default: 0 8px 32px rgba(0, 0, 0, 0.24);
+    --shadow-card: 0 4px 15px rgba(0, 0, 0, 0.22);
+    --shadow-accent: 0 10px 40px rgba(var(--primary-accent-rgb), 0.2);
+    --shadow-accent-sm: 0 4px 16px rgba(var(--primary-accent-rgb), 0.15);
+    --shadow-accent-hover: 0 8px 32px rgba(var(--primary-accent-rgb), 0.30);
+    --shadow-text-accent: 0 0 16px rgba(var(--primary-accent-rgb), 0.5);
+
+    // --- Focus Styles ---
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+    --focus-ring-color: rgba(var(--primary-accent-rgb), 0.5);
+    --shadow-focus-input: 0 0 16px rgba(var(--primary-accent-rgb), 0.25);
+    --shadow-focus-button: 0 0 0 3px rgba(var(--primary-accent-rgb), 0.35);
+}

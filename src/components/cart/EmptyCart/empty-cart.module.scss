@@ -59,7 +59,7 @@
             content: '';
             position: absolute;
             inset: -20px;
-            background: radial-gradient(circle, rgba($primary-accent, 0.2) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(var(--primary-accent-rgb), 0.2) 0%, transparent 70%);
             filter: blur(20px);
             z-index: 0;
         }
@@ -75,21 +75,21 @@
         justify-content: center;
         border-radius: $radius-circle;
 
-        background: $glass-background;
-        backdrop-filter: $glass-backdrop-blur;
-        border: 1px solid $glass-border;
-        box-shadow: $shadow-card;
+        background: var(--glass-background);
+        backdrop-filter: var(--glass-backdrop-blur);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-card);
     }
 
     &__mainIcon {
         font-size: 3.5rem;
-        color: $text-primary;
-        filter: drop-shadow(0 0 10px rgba($primary-accent, 0.3));
+        color: var(--text-primary);
+        filter: drop-shadow(0 0 10px rgba(var(--primary-accent-rgb), 0.3));
     }
 
     &__deco {
         position: absolute;
-        color: $primary-accent-light;
+        color: var(--primary-accent-light);
 
         &--top {
             top: 0;
@@ -103,7 +103,7 @@
             left: 10%;
             width: 12px;
             height: 12px;
-            background: $primary-accent;
+            background: var(--primary-accent);
             border-radius: $radius-circle;
             filter: blur(4px);
             animation: pulse-glow 2s ease-in-out infinite reverse;
@@ -120,14 +120,14 @@
         font-family: $font-primary;
         font-size: $fs-xl;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: var(--text-primary);
         margin-bottom: $spacing-sm;
         letter-spacing: $letter-spacing-tight;
     }
 
     &__description {
         font-size: $fs-base;
-        color: $text-muted;
+        color: var(--text-muted);
         line-height: $lh-relaxed;
     }
 
@@ -141,8 +141,8 @@
         padding: $spacing-md $spacing-xl;
         min-height: $touch-target-comfortable;
 
-        background: $primary-accent;
-        color: $text-inverse;
+        background: var(--primary-accent);
+        color: var(--text-inverse);
 
         font-family: $font-primary;
         font-weight: $fw-semibold;
@@ -151,14 +151,14 @@
         border: none;
         border-radius: $radius-pill;
         cursor: pointer;
-        box-shadow: $shadow-accent;
+        box-shadow: var(--shadow-accent);
 
         transition: all $transition-base $ease-spring;
 
         &:hover {
-            background: $primary-accent-dark;
+            background: var(--primary-accent-dark);
             transform: translateY(-2px);
-            box-shadow: $shadow-accent-hover;
+            box-shadow: var(--shadow-accent-hover);
 
             .emptyCart__ctaIcon {
                 transform: translateX(4px);
@@ -187,7 +187,7 @@
 
     &__discoveryLabel {
         font-size: $fs-sm;
-        color: $text-secondary;
+        color: var(--text-secondary);
         text-transform: uppercase;
         letter-spacing: $letter-spacing-wider;
         font-weight: $fw-semibold;
@@ -208,10 +208,10 @@
         padding: $spacing-xs $spacing-md;
 
         background: rgba(255, 255, 255, 0.03);
-        border: 1px solid $border-color;
+        border: 1px solid var(--border-color);
         border-radius: $radius-md;
 
-        color: $text-secondary;
+        color: var(--text-secondary);
         font-size: $fs-sm;
         font-weight: $fw-normal;
         cursor: pointer;
@@ -219,9 +219,9 @@
         transition: all $transition-fast ease;
 
         &:hover {
-            background: rgba($primary-accent, 0.1);
-            border-color: rgba($primary-accent, 0.3);
-            color: $text-primary;
+            background: rgba(var(--primary-accent-rgb), 0.1);
+            border-color: rgba(var(--primary-accent-rgb), 0.3);
+            color: var(--text-primary);
             transform: translateY(-1px);
         }
     }
@@ -229,7 +229,7 @@
     &__chipIcon {
         display: flex;
         align-items: center;
-        color: $primary-accent-light;
+        color: var(--primary-accent-light);
     }
 
     // --- Responsive Tweaks ---

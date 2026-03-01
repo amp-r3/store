@@ -12,18 +12,18 @@
     }
 
     &__content {
-        background: $glass-background-fallback;
+        background: var(--glass-background-fallback);
 
         @supports (backdrop-filter: blur(1px)) {
-            background: $glass-background-strong;
-            backdrop-filter: $glass-backdrop-blur;
+            background: var(--glass-background-strong);
+            backdrop-filter: var(--glass-backdrop-blur);
         }
 
         border-radius: $radius-xl $radius-xl 0 0;
         border-bottom: none;
-        border: 1px solid $glass-border;
+        border: 1px solid var(--glass-border);
         box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5),
-        0 0 0 1px $glass-border-subtle;
+        0 0 0 1px var(--glass-border-subtle);
         position: fixed;
         bottom: 0;
         left: 0;
@@ -39,7 +39,7 @@
     &__handle {
         width: 42px;
         height: 5px;
-        background: $border-color-strong;
+        background: var(--border-color-strong);
         border-radius: $radius-pill;
         margin: $spacing-xs auto;
         flex-shrink: 0;
@@ -50,14 +50,14 @@
         align-items: center;
         justify-content: center;
         padding: $spacing-xs $spacing-md $spacing-sm;
-        border-bottom: 1px solid $border-color-subtle;
+        border-bottom: 1px solid var(--border-color-subtle);
     }
 
     &__title {
         font-family: $font-primary;
         font-size: $fs-md;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: var(--text-primary);
         letter-spacing: $letter-spacing-tight;
         margin: 0;
     }
@@ -74,8 +74,8 @@
         flex-shrink: 0;
         padding: $spacing-md;
         padding-bottom: calc($spacing-md + env(safe-area-inset-bottom));
-        background: $background-component;
-        border-top: 1px solid $border-color-strong;
+        background: var(--background-component);
+        border-top: 1px solid var(--border-color-strong);
         box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
         z-index: 2;
     }
@@ -86,21 +86,21 @@
         align-items: center;
         justify-content: center;
         min-height: $touch-target-comfortable;
-        background: $primary-accent;
-        color: $text-inverse;
+        background: var(--primary-accent);
+        color: var(--text-inverse);
         border: none;
         border-radius: $radius-md;
         font-family: $font-primary;
         font-size: $fs-md;
         font-weight: $fw-semibold;
-        box-shadow: $shadow-accent-sm;
+        box-shadow: var(--shadow-accent-sm);
         transition: all $transition-fast $ease-in-out-smooth;
         cursor: pointer;
 
         @media (hover: hover) {
             &:hover {
-                background: $primary-accent-dark;
-                box-shadow: $shadow-accent-hover;
+                background: var(--primary-accent-dark);
+                box-shadow: var(--shadow-accent-hover);
             }
         }
 

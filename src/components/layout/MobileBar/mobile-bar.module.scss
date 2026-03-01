@@ -16,12 +16,12 @@
 
     padding: $spacing-xs;
 
-    background: $glass-background-strong;
-    backdrop-filter: $glass-backdrop-blur;
-    -webkit-backdrop-filter: $glass-backdrop-blur;
-    border: 1px solid $glass-border;
+    background: var(--glass-background-strong);
+    backdrop-filter: var(--glass-backdrop-blur);
+    -webkit-backdrop-filter: var(--glass-backdrop-blur);
+    border: 1px solid var(--glass-border);
     border-radius: $radius-pill;
-    box-shadow: $shadow-default, $shadow-card;
+    box-shadow: var(--shadow-default), var(--shadow-card);
     will-change: transform, opacity;
     transition: transform 0.4s $ease-in-out-smooth,
         opacity 0.3s ease;

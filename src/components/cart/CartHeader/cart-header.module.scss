@@ -3,14 +3,14 @@
 .header {
     flex-shrink: 0;
     padding: $spacing-lg;
-    border-bottom: 1px solid $glass-border;
+    border-bottom: 1px solid var(--glass-border);
 
     position: sticky;
     top: 0;
     z-index: $z-index-sticky;
-    background: $glass-background-strong;
-    backdrop-filter: $glass-backdrop-blur;
-    -webkit-backdrop-filter: $glass-backdrop-blur;
+    background: var(--glass-background-strong);
+    backdrop-filter: var(--glass-backdrop-blur);
+    -webkit-backdrop-filter: var(--glass-backdrop-blur);
 }
 
 .headerContent {
@@ -28,14 +28,14 @@
     font-family: $font-primary;
     font-size: $fs-xl;
     font-weight: $fw-bold;
-    color: $text-primary;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: $spacing-sm;
     margin: 0;
 
     svg {
-        color: $primary-accent;
+        color: var(--primary-accent);
     }
 }
 
@@ -43,8 +43,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: $primary-accent;
-    color: $text-inverse;
+    background: var(--primary-accent);
+    color: var(--text-inverse);
     font-size: $fs-sm;
     font-weight: $fw-bold;
     height: 1.5rem;
@@ -54,8 +54,8 @@
     transition: background-color $transition-fast ease, color $transition-fast ease;
 
     &.empty {
-        background: $background-component;
-        color: $text-muted;
+        background: var(--background-component);
+        color: var(--text-muted);
     }
 
     &.bump {
@@ -75,7 +75,7 @@
     gap: $spacing-xxs;
     background: transparent;
     border: none;
-    color: $text-muted;
+    color: var(--text-muted);
     font-size: $fs-sm;
     font-family: $font-primary;
     padding: $spacing-xs $spacing-sm;
@@ -84,15 +84,15 @@
     transition: all $transition-fast ease;
 
     &:hover {
-        color: $error-color;
-        background: rgba($error-color, 0.1);
+        color: var(--error-color);
+        background: rgba(var(--error-color-rgb), 0.1);
     }
 }
 
 .closeBtn {
     background: transparent;
     border: none;
-    color: $text-secondary;
+    color: var(--text-secondary);
     padding: $spacing-xs;
     border-radius: $radius-circle;
     cursor: pointer;
@@ -102,8 +102,8 @@
     justify-content: center;
 
     &:hover {
-        background: $border-color-subtle;
-        color: $text-primary;
+        background: var(--border-color-subtle);
+        color: var(--text-primary);
         transform: rotate(90deg);
     }
 }

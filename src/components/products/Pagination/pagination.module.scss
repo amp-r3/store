@@ -8,11 +8,11 @@
     padding: $spacing-sm $spacing-md;
     border-radius: $radius-pill;
     margin-top: $spacing-xl;
-    background: $glass-background;
-    backdrop-filter: $glass-backdrop-blur;
-    -webkit-backdrop-filter: $glass-backdrop-blur;
-    border: 2px solid $border-color;
-    box-shadow: $shadow-default;
+    background: var(--glass-background);
+    backdrop-filter: var(--glass-backdrop-blur);
+    -webkit-backdrop-filter: var(--glass-backdrop-blur);
+    border: 2px solid var(--border-color);
+    box-shadow: var(--shadow-default);
     position: relative;
     bottom: 20px;
     left: 50%;
@@ -31,9 +31,9 @@
         width: $touch-target-min;
         height: $touch-target-min;
         border-radius: $radius-circle;
-        border: 1px solid $border-color;
+        border: 1px solid var(--border-color);
         background: transparent;
-        color: $text-muted;
+        color: var(--text-muted);
         font-size: $fs-base;
         font-weight: $fw-semibold;
         transition: $transition-base;
@@ -46,18 +46,18 @@
 
         @media (hover: hover) {
             &:hover {
-                background-color: $primary-accent;
-                color: $text-inverse;
+                background-color: var(--primary-accent);
+                color: var(--text-inverse);
                 border-color: transparent;
                 transform: scale($scale-up-md);
             }
         }
 
         &--active {
-            background-color: $primary-accent;
-            color: $text-inverse;
+            background-color: var(--primary-accent);
+            color: var(--text-inverse);
             border-color: transparent;
-            text-shadow: $shadow-text-accent;
+            text-shadow: var(--shadow-text-accent);
         }
 
         &--disabled {
@@ -68,8 +68,8 @@
             @media (hover: hover) {
                 &:hover {
                     background: transparent;
-                    color: $text-muted;
-                    border-color: $border-color;
+                    color: var(--text-muted);
+                    border-color: var(--border-color);
                     transform: none;
                 }
             }
@@ -82,7 +82,7 @@
         justify-content: center;
         width: $touch-target-min;
         height: $touch-target-min;
-        color: $text-muted;
+        color: var(--text-muted);
         font-size: $fs-base;
 
         @media (width < 600px) {

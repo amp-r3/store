@@ -1,79 +1,15 @@
 // =============================================
-//               DESIGN TOKENS
+//               GLOBAL DESIGN TOKENS
 // =============================================
-
-// ---------------------------------------------
-// # COLORS
-// ---------------------------------------------
-
-// --- Brand & Accent Colors ---
-$primary-accent: #7c6dff !default;
-$primary-accent-dark: #6456e8 !default;
-$primary-accent-light: #9d8fff !default;
-
-// --- Text Colors ---
-// Note: All text colors meet WCAG AA contrast requirements (4.5:1 minimum)
-$text-primary: #f5f6f7 !default;   // contrast ~18:1 on #0a0a0f ✓
-$text-inverse: #ffffff !default;   // contrast ~21:1 on #0a0a0f ✓
-$text-secondary: #c7c7cc !default; // contrast ~10.5:1 on #0a0a0f ✓
-$text-muted: #a0a0a8 !default;     // contrast ~5.1:1 on #0a0a0f ✓ (was #8e8e93 ~3.5:1 ✗)
-
-// --- Background Colors ---
-$background-body: #0a0a0f !default;
-$background-component: #1c1c23 !default;
-$background-glass-base: #16161f !default;
-$background-image-holder: linear-gradient(135deg,
-    rgba(124, 109, 255, 0.06),
-    rgba(157, 143, 255, 0.03)) !default;
-
-// --- Body Gradients ---
-$gradient-body-start: #2d1b52 !default;
-$gradient-body-end: #1a3a5c !default;
-
-// --- Border Colors ---
-// Hierarchical border opacity system for consistent visual weight
-$border-color-subtle: rgba(255, 255, 255, 0.04) !default;
-$border-color-light: rgba(255, 255, 255, 0.06) !default;
-$border-color: rgba(255, 255, 255, 0.12) !default;
-$border-color-strong: rgba(255, 255, 255, 0.18) !default;
-
-// --- Semantic Colors ---
-$rating-color: #ffcc00 !default;
-$error-color: #ff453a !default;
-
-// --- Gradient Colors (Logo & Decorative) ---
-// Optimized for light content on dark backgrounds
-$gradient-logo-start: #a78bfa !default;
-$gradient-logo-mid-1: #c4b5fd !default;
-$gradient-logo-mid-2: #7dd3fc !default;
-$gradient-logo-end: #6366f1 !default;
-$gradient-opacity: 0.9 !default;
-
-// --- Glass Effect ---
-// Multiple levels for different contexts (subtle, default, strong)
-$glass-background-subtle: rgba(22, 22, 31, 0.35) !default;
-$glass-background: rgba(22, 22, 31, 0.5) !default;
-$glass-background-strong: rgba(22, 22, 31, 0.85) !default;
-$glass-background-fallback: rgba(22, 22, 31, 0.98) !default;
-$glass-border-subtle: rgba(255, 255, 255, 0.06) !default;
-$glass-border: rgba(255, 255, 255, 0.12) !default;
-$glass-backdrop-blur: blur(16px) !default;
-
-// --- Navbar Specific Backgrounds ---
-$navbar-bg-default: $glass-background-subtle !default;
-$navbar-bg-scrolled: $glass-background-strong !default;
-$navbar-bg-fallback: $glass-background-fallback !default;
 
 // ---------------------------------------------
 // # TYPOGRAPHY
 // ---------------------------------------------
 
 // --- Font Family ---
-$font-primary: 'Inter',
-sans-serif !default;
+$font-primary: 'Inter', sans-serif !default;
 
 // --- Font Sizes (fs) ---
-// Responsive sizes use clamp() for fluid typography across viewports
 $fs-sm: 0.8125rem !default;
 $fs-base: 1rem !default;
 $fs-md: 1.125rem !default;
@@ -112,8 +48,7 @@ $letter-spacing-wider: 0.05em !default;
 // # SIZING & SPACING
 // ---------------------------------------------
 
-// --- Spacing Scale (Use for padding, margin, gap) ---
-
+// --- Spacing Scale ---
 $spacing-xxs: 0.25rem !default;
 $spacing-xs: 0.5rem !default;
 $spacing-sm: 0.75rem !default;
@@ -123,7 +58,6 @@ $spacing-xl: 2rem !default;
 $spacing-xxl: 3rem !default;
 
 // --- Touch Target Sizes ---
-// Ensuring interactive elements meet accessibility guidelines
 $touch-target-min: 44px !default;
 $touch-target-comfortable: 48px !default;
 
@@ -136,7 +70,6 @@ $loader-border-width-sm: 0.1875rem !default;
 $loader-border-width: 0.4375rem !default;
 
 // --- Border Radius ---
-// Consistent radius scale for different UI elements
 $radius-sm: 8px !default;
 $radius-md: 12px !default;
 $radius-lg: 18px !default;
@@ -146,7 +79,6 @@ $radius-pill: 999px !default;
 $radius-circle: 50% !default;
 
 // --- Icon Sizes ---
-// Standardized icon sizing system
 $icon-size-sm: 1rem !default;
 $icon-size-md: 1.25rem !default;
 $icon-size-lg: 1.5rem !default;
@@ -160,14 +92,12 @@ $container-width-fluid: min(1100px, 95vw) !default;
 $container-padding: 1rem !default;
 
 // --- Safe Area Insets ---
-// For devices with notches and rounded corners
 $safe-area-top: env(safe-area-inset-top, 0px) !default;
 $safe-area-bottom: env(safe-area-inset-bottom, 0px) !default;
 $safe-area-left: env(safe-area-inset-left, 0px) !default;
 $safe-area-right: env(safe-area-inset-right, 0px) !default;
 
 // --- Z-Index System ---
-// Hierarchical layering for predictable stacking contexts
 $z-index-base: 0 !default;
 $z-index-dropdown: 100 !default;
 $z-index-sticky: 200 !default;
@@ -178,30 +108,10 @@ $z-index-popover: 600 !default;
 $z-index-toast: 700 !default;
 
 // ---------------------------------------------
-// # EFFECTS
+// # EFFECTS (NON-COLOR)
 // ---------------------------------------------
 
-// --- Box Shadows ---
-// Progressive shadow system from subtle to dramatic
-$shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.12) !default;
-$shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.18) !default;
-$shadow-default: 0 8px 32px rgba(0, 0, 0, 0.24) !default;
-$shadow-card: 0 4px 15px rgba(0, 0, 0, 0.22) !default;
-$shadow-accent: 0 10px 30px rgba($primary-accent, 0.25) !default;
-$shadow-accent-sm: 0 4px 15px rgba($primary-accent, 0.2) !default;
-$shadow-accent-hover: 0 6px 24px rgba($primary-accent, 0.35) !default;
-$shadow-text-accent: 0 0 12px rgba($primary-accent, 0.6) !default;
-
-// --- Focus Styles ---
-// Accessible focus indicators for keyboard navigation
-$focus-ring-width: 2px !default;
-$focus-ring-offset: 2px !default;
-$focus-ring-color: rgba($primary-accent, 0.5) !default;
-$shadow-focus-input: 0 0 16px rgba($primary-accent, 0.25) !default;
-$shadow-focus-button: 0 0 0 3px rgba($primary-accent, 0.35) !default;
-
 // --- Transitions ---
-// Specialized timing for different interaction types
 $transition-micro: 150ms !default;
 $transition-fast: 200ms !default;
 $transition-base: 280ms !default;
@@ -210,13 +120,11 @@ $transition-smooth: 600ms !default;
 $transition-reduced: 0.01ms !default;
 
 // --- Timing Functions ---
-// Custom easing curves for natural motion
 $ease-in-out-smooth: cubic-bezier(0.4, 0, 0.2, 1) !default;
 $ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1) !default;
 $ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1) !default;
 
 // --- Animation Durations ---
-// Standardized durations for various animations
 $animation-gradient-duration: 4s !default;
 $animation-pulse-duration: 2.5s !default;
 $animation-spin-duration: 1s !default;
@@ -227,20 +135,21 @@ $backdrop-blur: blur(10px) !default;
 $backdrop-blur-sm: blur(6px) !default;
 
 // --- Hover & Active States ---
-// Standardized interaction effects
 $hover-brightness: 1.1 !default;
 $hover-opacity: 0.9 !default;
 $hover-lift: translateY(-2px) !default;
 
 // --- Transform Scales ---
-// Consistent scale values for press and hover effects
 $scale-down-sm: 0.96 !default;
 $scale-down-md: 0.92 !default;
 $scale-up-sm: 1.04 !default;
 $scale-up-md: 1.08 !default;
 
 // --- Button States ---
-// Specific values for button interactions
 $button-pressed-scale: 0.96 !default;
 $button-pressed-opacity: 0.9 !default;
 $transition-pressed: 100ms !default;
+
+// --- Focus Styles ---
+$focus-ring-width: 2px !default;
+$focus-ring-offset: 2px !default;

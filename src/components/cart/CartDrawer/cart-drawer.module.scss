@@ -14,10 +14,10 @@
     outline: none;
 
     // --- Visuals (Glassmorphism) ---
-    background: $glass-background-strong;
-    backdrop-filter: $glass-backdrop-blur;
-    border-left: 1px solid $glass-border;
-    box-shadow: $shadow-default;
+    background: var(--glass-background-strong);
+    backdrop-filter: var(--glass-backdrop-blur);
+    border-left: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-default);
 
     // --- Animation & State ---
     transform: translateX(100%);
@@ -57,7 +57,7 @@
         }
 
         &::-webkit-scrollbar-thumb {
-            background: $border-color-strong;
+            background: var(--border-color-strong);
             border-radius: $radius-pill;
         }
     }
@@ -77,7 +77,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        color: $text-muted;
+        color: var(--text-muted);
         text-align: center;
         gap: $spacing-md;
         margin-top: auto;
@@ -90,7 +90,7 @@
 
     &__emptyIcon {
         opacity: 0.5;
-        color: $text-secondary;
+        color: var(--text-secondary);
     }
 
     // =============================================
@@ -111,7 +111,7 @@
 
         border-top-left-radius: $radius-lg;
         border-bottom-left-radius: $radius-lg;
-        box-shadow: $shadow-accent;
+        box-shadow: var(--shadow-accent);
     }
 
     // --- Large Screens (>=1440px) ---

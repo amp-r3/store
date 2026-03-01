@@ -14,10 +14,10 @@
     justify-content: space-between;
     width: 100%;
     padding: $spacing-sm $spacing-md;
-    background: rgba($background-glass-base, 0.4);
-    border: 1px solid $border-color;
+    background: rgba(var(--background-glass-base-rgb), 0.4);
+    border: 1px solid var(--border-color);
     border-radius: $radius-md;
-    color: $text-secondary;
+    color: var(--text-secondary);
     font-family: $font-primary;
     font-size: $fs-sm;
     font-weight: $fw-semibold;
@@ -28,9 +28,9 @@
 
     @media (hover: hover) {
       &:hover:not(.sort-options-list__item--active) {
-        background: rgba($border-color-light, 0.1);
-        border-color: $border-color-light;
-        color: $text-primary;
+        background: rgba(var(--border-color-light-rgb), 0.1);
+        border-color: var(--border-color-light);
+        color: var(--text-primary);
       }
     }
 
@@ -48,17 +48,17 @@
 
     &:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 $focus-ring-width $focus-ring-color;
+      box-shadow: inset 0 0 0 $focus-ring-width var(--focus-ring-color);
     }
 
     &--active {
       background: linear-gradient(135deg,
-          rgba($primary-accent, 0.12),
-          rgba($primary-accent, 0.03));
-      border-color: rgba($primary-accent, 0.3);
-      color: $text-primary;
+          rgba(var(--primary-accent-rgb), 0.12),
+          rgba(var(--primary-accent-rgb), 0.03));
+      border-color: rgba(var(--primary-accent-rgb), 0.3);
+      color: var(--text-primary);
       font-weight: $fw-semibold;
-      box-shadow: $shadow-accent-sm;
+      box-shadow: var(--shadow-accent-sm);
 
       &::before {
         content: '';
@@ -68,9 +68,9 @@
         transform: translateY(-50%);
         height: 50%;
         width: 3px;
-        background: $primary-accent;
+        background: var(--primary-accent);
         border-radius: 0 $radius-pill $radius-pill 0;
-        box-shadow: $shadow-text-accent;
+        box-shadow: var(--shadow-text-accent);
       }
     }
   }
@@ -85,14 +85,14 @@
 
   &__item-icon {
     font-size: $fs-icon-md;
-    color: $text-muted;
+    color: var(--text-muted);
     flex-shrink: 0;
     transition: all $transition-fast $ease-in-out-smooth;
   }
 
   &__item--active &__item-icon {
-    color: $primary-accent-light;
-    filter: drop-shadow(0 0 8px rgba($primary-accent, 0.4));
+    color: var(--primary-accent-light);
+    filter: drop-shadow(0 0 8px rgba(var(--primary-accent-rgb), 0.4));
   }
 
   &__item-label {
@@ -103,9 +103,9 @@
 
   &__item-check {
     font-size: $fs-icon-md;
-    color: $primary-accent;
+    color: var(--primary-accent);
     flex-shrink: 0;
-    filter: drop-shadow($shadow-text-accent);
+    filter: drop-shadow(var(--shadow-text-accent));
     animation: scale-in $transition-micro $ease-spring both;
   }
 }

@@ -33,7 +33,7 @@
 
 .spinner {
   border-radius: $radius-circle;
-  background: conic-gradient($primary-accent, $gradient-logo-mid-1, $primary-accent);
+  background: conic-gradient(var(--primary-accent), var(--gradient-logo-mid-1), var(--primary-accent));
   animation: spin $animation-spin-duration linear infinite;
 }
 

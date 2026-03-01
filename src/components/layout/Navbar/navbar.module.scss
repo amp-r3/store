@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 @keyframes gradient-flow {
     0% {
@@ -28,25 +28,25 @@
     width: calc(100% - #{$spacing-xl} * 2);
     inset-inline: 0;
     margin-inline: auto;
-    background: $navbar-bg-default;
-    border: 2px solid $border-color-subtle;
+    background: var(--navbar-bg-default);
+    border: 2px solid var(--border-color-subtle);
     backdrop-filter: $backdrop-blur-sm;
     box-shadow: none;
     transition: $transition-base;
 
     &:global(.scrolled) {
-        background: $navbar-bg-scrolled;
+        background: var(--navbar-bg-scrolled);
         backdrop-filter: $backdrop-blur;
-        border: 2px solid $border-color;
-        box-shadow: $shadow-default;
+        border: 2px solid var(--border-color);
+        box-shadow: var(--shadow-default);
     }
 
     &__logo {
         background: linear-gradient(130deg,
-                $gradient-logo-start,
-                $gradient-logo-mid-1,
-                $gradient-logo-mid-2,
-                $gradient-logo-end);
+                var(--gradient-logo-start),
+                var(--gradient-logo-mid-1),
+                var(--gradient-logo-mid-2),
+                var(--gradient-logo-end));
         background-size: 300% 300%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -72,20 +72,20 @@
         place-items: center;
         border-radius: $radius-circle;
         padding: $spacing-sm;
-        border: 1px solid $border-color;
+        border: 1px solid var(--border-color);
         background: transparent;
-        color: $text-secondary;
+        color: var(--text-secondary);
         transition: $transition-base;
         font-size: $fs-icon-lg;
 
         &:global(.active) {
-            color: $primary-accent;
-            text-shadow: $shadow-text-accent;
+            color: var(--primary-accent);
+            text-shadow: var(--shadow-text-accent);
         }
 
         &:hover {
-            background: rgba($primary-accent-dark, 0.5);
-            color: $text-primary;
+            background: rgba(var(--primary-accent-dark-rgb-rgb), 0.5);
+            color: var(--text-primary);
             border-color: transparent;
         }
     }
@@ -95,16 +95,16 @@
         display: grid;
         place-items: center;
         border-radius: $radius-circle;
-        border: 1px solid $border-color;
+        border: 1px solid var(--border-color);
         background: transparent;
-        color: $text-secondary;
+        color: var(--text-secondary);
         transition: $transition-base;
         font-size: $fs-icon-lg;
         padding: $spacing-sm;
 
         &:hover {
-            background: rgba($primary-accent-dark, 0.5);
-            color: $text-primary;
+            background: rgba(var(--primary-accent-dark-rgb), 0.5);
+            color: var(--text-primary);
             border-color: transparent;
         }
     }
@@ -116,8 +116,8 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: $primary-accent;
-        color: $text-inverse;
+        background: var(--primary-accent);
+        color: var(--text-inverse);
         font-size: $fs-sm;
         font-weight: $fw-bold;
         height: 1rem;
@@ -155,13 +155,13 @@
 @media (max-width: 525px) {
     .nav {
         max-width: 420px;
-        background: $glass-background-subtle;
+        background: var(--glass-background-subtle);
         backdrop-filter: $backdrop-blur;
-        border: 2px solid $border-color;
-        box-shadow: $shadow-default;
+        border: 2px solid var(--border-color);
+        box-shadow: var(--shadow-default);
 
         &:global(.scrolled) {
-            background: $glass-background-strong;
+            background: var(--glass-background-strong);
         }
 
         &__form {

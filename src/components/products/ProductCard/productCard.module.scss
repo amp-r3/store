@@ -2,23 +2,23 @@
 
 .card {
     position: relative;
-    background: $glass-background;
-    backdrop-filter: $glass-backdrop-blur;
-    -webkit-backdrop-filter: $glass-backdrop-blur;
+    background: var(--glass-background);
+    backdrop-filter: var(--glass-backdrop-blur);
+    -webkit-backdrop-filter: var(--glass-backdrop-blur);
     border-radius: $radius-lg;
     overflow: hidden;
-    color: $text-primary;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     width: 100%;
 
-    border: 1px solid $glass-border;
+    border: 1px solid var(--glass-border);
     transition:
         transform $transition-base $ease-out-expo,
         box-shadow $transition-base $ease-out-expo,
         border-color $transition-base;
 
-    box-shadow: $shadow-card;
+    box-shadow: var(--shadow-card);
     cursor: pointer;
     container-type: inline-size;
 
@@ -29,8 +29,8 @@
     @media (hover: hover) {
         &:hover {
             transform: translateY(-6px);
-            box-shadow: $shadow-accent-hover;
-            border-color: rgba($primary-accent, 0.6);
+            box-shadow: var(--shadow-accent-hover);
+            border-color: rgba(var(--primary-accent-rgb), 0.6);
         }
     }
 
@@ -40,7 +40,7 @@
         padding-top: 125%;
         border-radius: $radius-lg $radius-lg 0 0;
         overflow: hidden;
-        background: $background-image-holder;
+        background: var(--background-image-holder);
         mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
 
         @media (width < 400px) {
@@ -75,9 +75,9 @@
         position: absolute;
         top: $spacing-sm;
         left: $spacing-sm;
-        background-color: rgba($background-body, 0.5);
+        background-color: rgba(var(--background-body-rgb), 0.5);
         backdrop-filter: blur(4px);
-        color: $text-primary;
+        color: var(--text-primary);
         padding: $spacing-xxs $spacing-sm;
         border-radius: $radius-pill;
         font-size: $fs-sm;
@@ -85,7 +85,7 @@
         text-transform: capitalize;
         max-width: max-content;
         z-index: 2;
-        border: 1px solid $border-color-light;
+        border: 1px solid var(--border-color-light);
 
         @media (width < 400px) {
             top: $spacing-xs;
@@ -123,7 +123,7 @@
 
         @media (hover: hover) {
             .card:hover & {
-                color: $primary-accent-light;
+                color: var(--primary-accent-light);
             }
         }
 
@@ -136,7 +136,7 @@
     }
 
     &__ratingCount {
-        color: $text-secondary;
+        color: var(--text-secondary);
         font-size: $fs-sm;
 
         @media (width < 400px) {
@@ -150,7 +150,7 @@
         align-items: center;
         gap: $spacing-xxs;
         font-size: $fs-base;
-        color: $rating-color;
+        color: var(--rating-color);
 
         @media (width < 400px) {
             font-size: $fs-sm;
@@ -161,7 +161,7 @@
     &__stock {
         font-size: $fs-sm;
         font-weight: $fw-normal;
-        color: $text-muted;
+        color: var(--text-muted);
         margin-top: auto;
 
         @media (width < 400px) {
@@ -174,8 +174,8 @@
         flex-direction: column;
         align-items: stretch;
         padding: $spacing-md;
-        border-top: 1px solid $border-color;
-        background: rgba($background-component, 0.3);
+        border-top: 1px solid var(--border-color);
+        background: rgba(var(--background-component-rgb), 0.3);
         gap: $spacing-md;
 
         @media (width < 400px) {
@@ -198,7 +198,7 @@
 
     &__oldPrice {
         font-size: $fs-sm;
-        color: $text-muted;
+        color: var(--text-muted);
         text-decoration: line-through;
         line-height: 1.2;
 
@@ -210,7 +210,7 @@
     &__price {
         font-size: $fs-xl;
         font-weight: $fw-black;
-        color: $primary-accent;
+        color: var(--primary-accent);
         line-height: 1;
         letter-spacing: -0.02em;
 
@@ -220,8 +220,8 @@
     }
 
     &__button {
-        background-color: $primary-accent-dark;
-        color: $text-inverse;
+        background-color: var(--primary-accent-dark);
+        color: var(--text-inverse);
         border-radius: $radius-sm;
         padding: $spacing-sm;
         font-size: $fs-sm;
@@ -238,8 +238,8 @@
         @media (hover: hover) {
             &:hover {
                 transform: translateY(-2px);
-                background-color: $primary-accent;
-                box-shadow: 0 4px 12px rgba($primary-accent, 0.4);
+                background-color: var(--primary-accent);
+                box-shadow: 0 4px 12px rgba(var(--primary-accent-rgb), 0.4);
             }
         }
 

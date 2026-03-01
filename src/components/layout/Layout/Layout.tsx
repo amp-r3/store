@@ -16,8 +16,10 @@ import { selectIsCartOpen } from '@/store/selectors/cartSelectors';
 // Style
 import style from './layout.module.scss';
 import { Footer } from '../Footer/Footer';
+import { useTheme } from '@/hooks';
 
 export const Layout = () => {
+    useTheme();
     const navigation = useNavigation();
     const isLoading = navigation.state === 'loading';
     const dispatch = useAppDispatch();

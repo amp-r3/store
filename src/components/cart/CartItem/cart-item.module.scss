@@ -8,8 +8,8 @@
     width: 100%;
     position: relative;
 
-    background: rgba($background-component, 0.4);
-    border-bottom: 1px solid $border-color-subtle;
+    background: rgba(var(--background-component-rgb), 0.4);
+    border-bottom: 1px solid var(--border-color-subtle);
     border-radius: $radius-lg;
     transition: all $transition-base $ease-in-out-smooth;
 
@@ -19,10 +19,10 @@
     }
 
     &:hover {
-        background: $background-component;
+        background: var(--background-component);
         border-color: transparent;
         transform: translateY(-2px);
-        box-shadow: $shadow-sm;
+        box-shadow: var(--shadow-sm);
     }
 
     // =============================================
@@ -34,8 +34,8 @@
         height: 110px;
         border-radius: $radius-md;
         overflow: hidden;
-        background: $background-component;
-        box-shadow: $shadow-xs;
+        background: var(--background-component);
+        box-shadow: var(--shadow-xs);
         position: relative;
     }
 
@@ -74,7 +74,7 @@
         font-family: $font-primary;
         font-size: $fs-base;
         font-weight: $fw-semibold;
-        color: $text-primary;
+        color: var(--text-primary);
         line-height: $lh-tight;
         margin: 0;
         margin-right: $spacing-sm;
@@ -87,7 +87,7 @@
         transition: color $transition-fast;
 
         .cart-item:hover & {
-            color: $primary-accent;
+            color: var(--primary-accent);
         }
     }
 
@@ -104,7 +104,7 @@
         font-family: $font-primary;
         font-size: $fs-lg;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: var(--text-primary);
         white-space: nowrap;
         letter-spacing: $letter-spacing-tight;
         line-height: 1;
@@ -113,7 +113,7 @@
     &__unit-price {
         font-family: $font-primary;
         font-size: $fs-sm;
-        color: $text-muted;
+        color: var(--text-muted);
         font-weight: $fw-normal;
         line-height: 1;
         margin-top: -2px;
@@ -122,12 +122,12 @@
     &__discount {
         font-size: 0.75rem;
         font-weight: $fw-bold;
-        color: $text-inverse;
-        background: rgba($primary-accent-light, 0.6);
+        color: var(--text-inverse);
+        background: rgba(var(--primary-accent-light-rgb), 0.6);
         padding: 4px 8px;
         border-radius: $radius-pill;
         line-height: 1;
-        border: 1px solid rgba($rating-color, 0.2);
+        border: 1px solid rgba(var(--rating-color-rgb), 0.2);
 
         display: inline-flex;
         align-items: center;
@@ -149,10 +149,10 @@
         display: flex;
         align-items: center;
         gap: $spacing-xs;
-        background: rgba($background-body, 0.6);
+        background: rgba(var(--background-body-rgb), 0.6);
         padding: 4px;
         border-radius: $radius-pill;
-        border: 1px solid $border-color;
+        border: 1px solid var(--border-color);
         box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         user-select: none;
     }
@@ -161,7 +161,7 @@
         font-family: $font-primary;
         font-size: $fs-base;
         font-weight: $fw-bold;
-        color: $text-primary;
+        color: var(--text-primary);
         width: 2rem;
         text-align: center;
         font-variant-numeric: tabular-nums;
@@ -175,7 +175,7 @@
         background: transparent;
         border: none;
         cursor: pointer;
-        color: $text-secondary;
+        color: var(--text-secondary);
         transition: all $transition-fast $ease-out-expo;
         border-radius: $radius-circle;
 
@@ -185,9 +185,9 @@
             height: 32px;
 
             &:hover {
-                background: $background-component;
-                color: $primary-accent;
-                box-shadow: $shadow-xs;
+                background: var(--background-component);
+                color: var(--primary-accent);
+                box-shadow: var(--shadow-xs);
             }
 
             &:active {
@@ -199,14 +199,14 @@
         &--remove {
             width: 36px;
             height: 36px;
-            color: $text-muted;
-            background: rgba($background-body, 0.3);
+            color: var(--text-muted);
+            background: rgba(var(--background-body-rgb), 0.3);
             border: 1px solid transparent;
 
             &:hover {
-                color: $error-color;
-                background: rgba($error-color, 0.1);
-                border-color: rgba($error-color, 0.2);
+                color: var(--error-color);
+                background: rgba(var(--error-color-rgb), 0.1);
+                border-color: rgba(var(--error-color-rgb), 0.2);
             }
 
             @media (min-width: 1024px) {

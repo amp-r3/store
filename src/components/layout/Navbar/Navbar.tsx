@@ -1,4 +1,4 @@
-import { NavLink, Link } from 'react-router';
+import { NavLink } from 'react-router'; // убрал неиспользуемый Link
 import { useRef } from 'react';
 // Icons
 import { IoCartOutline, IoHome } from "react-icons/io5";
@@ -8,6 +8,7 @@ import { useNavbarScroll, useSearch } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 // Custom Components
 import { SearchForm } from '@/components/common';
+import { ThemeToggle } from '@/components/common/ThemeToggle/ThemeToggle';
 // Functions and Selectors
 import { openCart } from '@/store/slices/cartSlice';
 import { selectCartTotalQuantity } from '@/store/selectors/cartSelectors';
@@ -24,11 +25,10 @@ export const Navbar = () => {
 
   const isCartLoaded = totalQuantity >= 1
 
-
-
   return (
       <nav ref={navRef} className={style.nav}>
         <span className={style.nav__logo} aria-label="">store</span>
+        
         <div className={style.nav__form}>
           <SearchForm
             inputValue={inputValue}
@@ -38,12 +38,15 @@ export const Navbar = () => {
             isHomePage={isHomePage}
           />
         </div>
+        
         <div className={style.nav__main_actions}>
           <ul className={style.nav__menu}>
             <li>
-              <NavLink to="/" className={style.nav__link} end  aria-label='Back to catalog'><IoHome /></NavLink>
+              <NavLink to="/" className={style.nav__link} end aria-label='Back to catalog'><IoHome /></NavLink>
             </li>
           </ul>
+          <ThemeToggle />
+          
           <button onClick={() => { dispatch(openCart()) }} type='button' aria-label='open cart' className={style.nav__cart}>
             {
               isCartLoaded && <span className={style.nav__cart__count}>{totalQuantity}</span>

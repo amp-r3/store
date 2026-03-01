@@ -18,19 +18,19 @@
         width: 160px;
         padding: $spacing-xs $spacing-xl $spacing-xs $spacing-md;
         font-size: $fs-sm;
-        color: $text-primary;
+        color: var(--text-primary);
         transition: $transition-base;
         font-family: $font-primary;
 
         &:focus {
             outline: none;
-            border-color: $border-color;
+            border-color: var(--border-color);
             width: 200px;
-            box-shadow: $shadow-focus-input;
+            box-shadow: var(--shadow-focus-input);
         }
 
         &::placeholder {
-            color: $text-secondary;
+            color: var(--text-secondary);
         }
     }
 
@@ -40,7 +40,7 @@
         top: 50%;
         background: transparent;
         border: none;
-        color: $text-muted;
+        color: var(--text-muted);
         display: grid;
         place-items: center;
         padding: $spacing-xxs;
@@ -51,7 +51,7 @@
         transition: opacity $transition-fast ease, transform $transition-fast ease, color $transition-fast ease;
 
         &:hover {
-            color: $text-primary;
+            color: var(--text-primary);
         }
 
         &--visible {
@@ -65,23 +65,23 @@
         display: grid;
         place-items: center;
         border-radius: $radius-circle;
-        border: 1px solid $glass-border;
-        backdrop-filter: $glass-backdrop-blur;
-        color: $text-muted;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: var(--glass-backdrop-blur);
+        color: var(--text-muted);
         transition: $transition-base;
         padding: $spacing-sm;
         font-size: $fs-icon-lg;
 
         &:hover {
-            color: $text-primary;
-            background: rgba($primary-accent-dark, 0.5);
+            color: var(--text-primary);
+            background: rgba(var(--primary-accent-dark-rgb), 0.5);
         }
 
         &:disabled {
             cursor: not-allowed;
 
             &:hover {
-                background: rgba($text-muted, 0.1);
+                background: rgba(var(--text-muted-rgb), 0.1);
             }
         }
     }
@@ -120,7 +120,7 @@
 
         &__input {
             width: 100%;
-            background: rgba($background-body, 0.4);
+            background: rgba(var(--background-body-rgb), 0.4);
             border: 1px solid transparent;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
             border-radius: $radius-pill;
@@ -128,16 +128,16 @@
             height: $touch-target-comfortable;
             font-size: $fs-sm;
 
-            color: $text-primary;
+            color: var(--text-primary);
 
             &::placeholder {
-                color: $text-muted;
+                color: var(--text-muted);
             }
 
             &:focus {
                 width: 100%;
-                background: rgba($background-body, 0.8);
-                border-color: $border-color-strong;
+                background: rgba(var(--background-body-rgb), 0.8);
+                border-color: var(--border-color-strong);
                 transform: none;
             }
         }
@@ -148,9 +148,9 @@
             transform: translateY(-50%) scale(0.8);
             width: 32px;
             height: 32px;
-            background: rgba($text-muted, 0.15);
+            background: rgba(var(--text-muted-rgb), 0.15);
             border-radius: $radius-circle;
-            color: $text-secondary;
+            color: var(--text-secondary);
             font-size: $fs-icon-md;
             opacity: 0;
             pointer-events: none;
@@ -166,7 +166,7 @@
             }
 
             &:active {
-                background: rgba($text-muted, 0.3);
+                background: rgba(var(--text-muted-rgb), 0.3);
             }
         }
 
@@ -175,23 +175,23 @@
             width: $touch-target-comfortable;
             height: $touch-target-comfortable;
             flex-shrink: 0;
-            background: $primary-accent;
+            background: var(--primary-accent);
             border-radius: $radius-circle;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            color: $text-inverse;
+            color: var(--text-inverse);
             font-size: $fs-icon-lg;
             padding: 0;
             opacity: 1;
             transform: scale(1);
             pointer-events: auto;
-            box-shadow: $shadow-accent-sm;
+            box-shadow: var(--shadow-accent-sm);
 
             display: grid;
             place-items: center;
 
             &:disabled {
-                background: rgba($text-muted, 0.1);
-                color: $text-muted;
+                background: rgba(var(--text-muted-rgb), 0.1);
+                color: var(--text-muted);
                 box-shadow: none;
                 cursor: default;
             }

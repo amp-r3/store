@@ -25,16 +25,16 @@
     width: 100%;
     max-width: 500px;
 
-    background-color: $glass-background;
-    backdrop-filter: $glass-backdrop-blur;
-    border: 1px solid $border-color;
+    background-color: var(--glass-background);
+    backdrop-filter: var(--glass-backdrop-blur);
+    border: 1px solid var(--border-color);
     border-radius: $radius-lg;
-    color: $text-primary;
-    box-shadow: $shadow-default;
+    color: var(--text-primary);
+    box-shadow: var(--shadow-default);
 }
 
 .errorIcon {
-    color: $error-color;
+    color: var(--error-color);
     margin-bottom: $spacing-md;
 
     &>svg {
@@ -65,7 +65,7 @@
 
 .errorMessage {
     font-size: $fs-base;
-    color: $text-secondary;
+    color: var(--text-secondary);
     line-height: $lh-normal;
     max-width: 100%;
 
@@ -78,8 +78,8 @@
 
 .errorButton {
     background-color: transparent;
-    color: $primary-accent;
-    border: 2px solid $primary-accent;
+    color: var(--primary-accent);
+    border: 2px solid var(--primary-accent);
     border-radius: $radius-sm;
     padding: $spacing-sm $spacing-lg;
     font-size: $fs-base;
@@ -92,10 +92,10 @@
     justify-content: center;
 
     &:hover {
-        background-color: $primary-accent;
-        color: $text-inverse;
+        background-color: var(--primary-accent);
+        color: var(--text-inverse);
         transform: $hover-lift;
-        box-shadow: $shadow-accent-hover;
+        box-shadow: var(--shadow-accent-hover);
     }
 
     &:active {

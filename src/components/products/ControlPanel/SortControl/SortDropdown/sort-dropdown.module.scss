@@ -1,21 +1,21 @@
 @use '@/styles/index'as *;
 
 .sort-dropdown {
-  background: $glass-background-fallback;
+  background: var(--glass-background-fallback);
 
   @supports (backdrop-filter: blur(1px)) {
-    background: $glass-background-strong;
-    backdrop-filter: $glass-backdrop-blur;
+    background: var(--glass-background-strong);
+    backdrop-filter: var(--glass-backdrop-blur);
   }
 
-  border: 1px solid $glass-border;
+  border: 1px solid var(--glass-border);
   position: fixed;
   z-index: $z-index-popover;
   border-radius: $radius-lg;
   padding: $spacing-xs;
-  box-shadow: $shadow-default,
+  box-shadow: var(--shadow-default),
   0 12px 40px rgba(0, 0, 0, 0.4),
-  0 0 0 1px $glass-border-subtle;
+  0 0 0 1px var(--glass-border-subtle);
   animation: dropdown-in $transition-fast $ease-out-expo both;
   transform-origin: top right;
 
