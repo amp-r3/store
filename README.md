@@ -37,12 +37,13 @@
   <img src="https://img.shields.io/badge/🔍_Instant_Search-1a1a2e?style=flat-square&color=6d7cff" />
   <img src="https://img.shields.io/badge/📦_Redux_Cart-1a1a2e?style=flat-square&color=764abc" />
   <img src="https://img.shields.io/badge/📱_Responsive-1a1a2e?style=flat-square&color=5c6dff" />
-  <img src="https://img.shields.io/badge/🌙_Dark_Theme-1a1a2e?style=flat-square&color=3d4fff" />
+  <img src="https://img.shields.io/badge/🌙_Dark_&_Light_Theme-1a1a2e?style=flat-square&color=3d4fff" />
+  <img src="https://img.shields.io/badge/🗂️_Category_Filter-1a1a2e?style=flat-square&color=4d5fff" />
 </p>
 
 <br/>
 
-> A fully responsive, dark-themed e-commerce UI with glassmorphism aesthetics, real-time search, smart pagination, and a Redux-powered shopping cart — built as a portfolio project to demonstrate modern React architecture.
+> A fully responsive, dual-themed e-commerce UI with glassmorphism aesthetics, real-time search, category filtering, smart pagination, and a Redux-powered shopping cart with persistent storage — built as a portfolio project to demonstrate modern React architecture.
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,20,24&height=80&section=footer" width="100%" />
 
@@ -57,10 +58,13 @@
 | 🔍 | **Instant Product Search** | Instant URL-synced search powered by query params — results are always shareable and bookmarkable |
 | 🗂️ | **Dynamic Product Catalog** | Paginated grid fetched from [DummyJSON](https://dummyjson.com) with normalized state via RTK Query |
 | ↕️ | **Advanced Sorting** | Sort by popularity, price, name, or stock level — persisted in the URL |
+| 🏷️ | **Category Filtering** | Filter products by 24 categories via an adaptive control — bottom sheet on mobile, popup on desktop — disabled during active search |
 | 📄 | **Detailed Product Pages** | Routed pages (`/product/:id`) with full description, image, stock status, ratings, and reviews |
 | 🛒 | **Redux Shopping Cart** | Client-side cart with add/remove, quantity controls, discount calculation, and free-shipping progress bar |
+| 💾 | **Persistent Cart & Theme** | Cart items and selected theme are saved to `localStorage` via `redux-persist` — survive page refreshes |
+| 🌙 | **Dark / Light Theme** | Toggle between deep dark-purple and clean light themes, persisted across sessions |
 | 📱 | **Responsive & Mobile-First** | Adaptive layout for all screen sizes; mobile gets a floating search bar with hide-on-scroll behavior |
-| 💎 | **Glassmorphism UI** | Dark theme built on a custom SCSS design token system with consistent spacing, shadows, and blur effects |
+| 💎 | **Glassmorphism UI** | Dark & light themes built on a custom SCSS design token system with consistent spacing, shadows, and blur effects |
 | ⚡ | **Performance Optimizations** | Lazy routes, memoized selectors via Reselect, normalized API cache, and image lazy loading |
 
 <br/>
@@ -74,6 +78,7 @@
 | **UI Library** | React 19 |
 | **Language** | TypeScript 5.9 |
 | **State Management** | Redux Toolkit 2.9 + RTK Query |
+| **Persistence** | redux-persist |
 | **Routing** | React Router v7 |
 | **Styling** | SCSS Modules + custom design tokens |
 | **HTTP Client** | RTK Query base query |
@@ -92,19 +97,24 @@ The project follows a **feature-based architecture** with clean separation of co
 src/
 ├── app/
 │   ├── router.ts          # React Router v7 configuration with lazy routes
-│   └── store.ts           # Redux store setup
+│   └── store.ts           # Redux store setup with redux-persist
 │
 ├── components/
-│   ├── cart/              # CartDrawer, CartItem, CartFooter, EmptyCart
-│   ├── common/            # Loader, ErrorView, NoResults, SearchForm
-│   ├── layout/            # Layout, Navbar, MobileBar
-│   └── products/          # ProductCard, SortPanel, Pagination
+│   ├── cart/              # CartDrawer, CartItem, CartFooter, CartHeader, EmptyCart
+│   ├── common/            # Loader, ErrorView, NoResults, SearchForm, ThemeToggle
+│   ├── layout/            # Layout, Navbar, MobileBar, Footer
+│   └── products/          # ProductCard, ControlPanel, Pagination
+│                          #   └── ControlPanel/
+│                          #       ├── SortControl/      # SortDropdown (desktop), SortBottomSheet (mobile)
+│                          #       └── CategoryControl/  # CategoryPopup (desktop), CategoryOverlay (mobile)
 │
 ├── hooks/                 # Custom hooks encapsulating business logic
-│   ├── useProductCatalog  # Orchestrates fetching, sorting, pagination
+│   ├── useProductCatalog  # Orchestrates fetching, sorting, pagination, category
 │   ├── useProduct         # Single product fetch with RTK Query
 │   ├── useSearch          # URL-synced search state
 │   ├── useSort            # URL-synced sort state
+│   ├── useCategory        # URL-synced category filter state
+│   ├── useTheme           # Redux-powered theme toggle with DOM class sync
 │   ├── useUrlPagination   # URL-synced pagination
 │   ├── usePagination      # Smart pagination range with ellipsis logic
 │   ├── useNavbarScroll    # Scroll-aware navbar class toggling
@@ -119,11 +129,15 @@ src/
 │   └── productsApi.ts     # RTK Query API slice (getProducts, getProductById)
 │
 ├── store/
-│   ├── slices/cartSlice   # Cart state: items, open/close, quantity
+│   ├── slices/
+│   │   ├── cartSlice      # Cart state: items, open/close, quantity — persisted
+│   │   └── themeSlice     # Theme state: 'theme-dark' | 'theme-light' — persisted
 │   └── selectors/         # Memoized cart selectors (total, quantity, items)
 │
 ├── styles/
 │   ├── _variables.scss    # Full design token system
+│   ├── _theme-dark.scss   # Deep dark-purple CSS custom properties
+│   ├── _theme-light.scss  # Clean light CSS custom properties
 │   ├── index.scss         # SCSS barrel file
 │   └── main.scss          # Global resets & base styles
 │
@@ -134,17 +148,22 @@ src/
     ├── priceHelper        # applyDiscount, formatPrice
     ├── cartHelper         # calculateCartTotals (subtotal, discount, shipping)
     ├── sortingOptions     # Typed sorting config array
+    ├── categoryOptions    # Typed category config array (24 categories + 'all')
     ├── getErrorMessage    # RTK Query error normalizer
     └── scrollToTop        # Scroll utility
 ```
 
 ### Key Architectural Decisions
 
-**🔗 URL as the single source of truth for UI state** — search query (`?q=`), sort (`?sortBy=`, `?order=`), and page (`?page=`) are all URL params. Makes the app fully shareable and back/forward navigation works correctly out of the box.
+**🔗 URL as the single source of truth for UI state** — search query (`?q=`), sort (`?sortBy=`, `?order=`), category (`?category=`), and page (`?page=`) are all URL params. Makes the app fully shareable and back/forward navigation works correctly out of the box.
 
 **⚡ Normalized API cache** — RTK Query responses are transformed into `{ ids: number[], items: Record<id, Product> }` for O(1) lookups and clean re-renders.
 
 **🧩 Custom hooks as the logic layer** — Components stay declarative and thin; all data fetching, URL manipulation, and derived state live in dedicated hooks.
+
+**💾 Selective persistence via redux-persist** — Only `cart.items` and `theme.theme` are whitelisted for `localStorage` storage. RTK Query cache and transient UI state (e.g. `isOpen`) are intentionally excluded.
+
+**🌗 CSS-class-based theming** — The active theme class (`theme-dark` / `theme-light`) is applied to `<html>` by `useTheme`, which keeps theme switching decoupled from component tree re-renders. All visual tokens are defined as CSS custom properties per theme in dedicated SCSS files.
 
 **🎨 SCSS design token system** — All colors, spacing, radius, shadows, transitions, and z-indexes are defined in `_variables.scss`, ensuring consistency and making visual changes a one-line update.
 
@@ -204,6 +223,8 @@ The UI is built on a custom SCSS token system covering every visual dimension:
 
 </div>
 
+Both `theme-dark` and `theme-light` override the same set of CSS custom properties (`--primary-accent`, `--text-primary`, `--glass-background`, etc.), so every component automatically adapts to the active theme without conditional logic.
+
 <br/>
 
 ## 🔌 API Integration
@@ -216,11 +237,12 @@ All data is sourced from the **[DummyJSON API](https://dummyjson.com)** — a fr
 |:---|:---|
 | `GET /products` | Paginated catalog with sort support |
 | `GET /products/search?q=` | Real-time search results |
+| `GET /products/category/:slug` | Category-filtered product listing |
 | `GET /products/:id` | Product detail page |
 
 </div>
 
-RTK Query handles caching, loading states, and deduplication automatically. Responses are normalized in `transformResponse` before hitting the Redux store.
+RTK Query handles caching, loading states, and deduplication automatically. Responses are normalized in `transformResponse` before hitting the Redux store. Category filtering and search are mutually exclusive at the API level — the `ControlPanel` disables the category button while a search query is active.
 
 <br/>
 
@@ -246,9 +268,10 @@ RTK Query handles caching, loading states, and deduplication automatically. Resp
 
 ## 🗺️ Roadmap
 
-- [ ] Product category filtering
+- [x] Dark / Light theme toggle with persistence
+- [x] Product category filtering
+- [x] Persistent cart via `localStorage`
 - [ ] Wishlist / saved items feature
-- [ ] Persistent cart via `localStorage`
 - [ ] Checkout flow (UI-only)
 - [ ] Unit tests with Vitest + React Testing Library
 
