@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import {
   persistStore,
-  persistReducer,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -9,24 +8,17 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 
 import { productsApi } from '@/services/productsApi';
-import cartSlice from '@/store/slices/cartSlice';
+import cartReducer from '@/store/slices/cartSlice';
 import themeSlice from '@/store/slices/themeSlice'; 
 
-const themePersistConfig = {
-  key: 'theme',
-  storage,
-};
-
-const persistedThemeReducer = persistReducer(themePersistConfig, themeSlice);
 
 export const store = configureStore({
   reducer: {
     [productsApi.reducerPath]: productsApi.reducer,
-    cart: cartSlice,
-    theme: persistedThemeReducer, 
+    cart: cartReducer,
+    theme: themeSlice, 
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

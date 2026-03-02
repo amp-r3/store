@@ -1,5 +1,7 @@
 import { CartItem, Product } from "@/types/products";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { persistReducer } from "redux-persist";
+import storage from 'redux-persist/lib/storage';
 
 
 export interface CartState {
@@ -11,6 +13,13 @@ const initialState: CartState = {
     items: {},
     isOpen: false
 }
+
+const cartPersistConfig = {
+    key: 'cart',
+    storage,
+    whitelist: ['items']
+}
+
 export const cartSlice = createSlice({
     name: 'cart',
     initialState,
@@ -60,5 +69,8 @@ export const cartSlice = createSlice({
 
     },
 })
+
+const persistedCartReducer = persistReducer(cartPersistConfig, cartSlice.reducer)
+
 export const { addToCart, removeFromCart, changeQuantity, clearCart, openCart, closeCart } = cartSlice.actions
-export default cartSlice.reducer
+export default persistedCartReducer
