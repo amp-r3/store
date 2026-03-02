@@ -1,32 +1,63 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .review-card {
+    position: relative;
     background: var(--glass-background);
     border: 1px solid var(--glass-border);
     backdrop-filter: var(--glass-backdrop-blur);
-    padding: $spacing-lg;
+    -webkit-backdrop-filter: var(--glass-backdrop-blur);
     border-radius: $radius-lg;
+    padding: $spacing-lg;
     display: flex;
     flex-direction: column;
     gap: $spacing-sm;
+    overflow: hidden;
+    transition:
+        transform $transition-base $ease-out-expo,
+        box-shadow $transition-base $ease-in-out-smooth,
+        border-color $transition-base $ease-in-out-smooth;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset-block: $spacing-lg;
+        left: 0;
+        width: 3px;
+        border-radius: 0 $radius-pill $radius-pill 0;
+        background: var(--primary-accent);
+        opacity: 0;
+        transition: opacity $transition-base $ease-in-out-smooth;
+    }
+
+    &:hover {
+        transform: $hover-lift;
+        box-shadow: var(--shadow-default);
+        border-color: var(--border-color);
+
+        &::before {
+            opacity: 1;
+        }
+    }
 }
 
 .review-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: $spacing-xs;
 }
 
 .review-author {
     font-size: $fs-md;
     font-weight: $fw-bold;
+    letter-spacing: $letter-spacing-tight;
     color: var(--text-primary);
 }
 
 .review-rating {
     display: flex;
-    gap: $spacing-xxs;
+    align-items: center;
+    gap: 2px;
+    font-size: $fs-icon-sm;
     color: var(--rating-color);
 }
 
@@ -34,13 +65,15 @@
     display: flex;
     align-items: center;
     gap: $spacing-xs;
+    padding-bottom: $spacing-sm;
+    border-bottom: 1px solid var(--border-color-subtle);
     font-size: $fs-sm;
     color: var(--text-muted);
 }
 
 .review-comment {
-    color: var(--text-secondary);
-    line-height: $lh-normal;
     margin: 0;
-    padding-top: $spacing-sm;
+    color: var(--text-secondary);
+    font-size: $fs-sm;
+    line-height: $lh-relaxed;
 }

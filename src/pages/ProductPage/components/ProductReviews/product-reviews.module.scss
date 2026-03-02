@@ -3,7 +3,15 @@
 .reviews {
     margin-top: $spacing-xxl;
     padding-top: $spacing-xl;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color-subtle);
+}
+
+// ── Заголовок секции ───────────────────────────────────
+.reviews-header {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-xl;
 }
 
 .reviews-title {
@@ -11,17 +19,70 @@
     align-items: center;
     gap: $spacing-sm;
     font-size: $fs-xl;
-    font-weight: $fw-bold;
-    margin-bottom: $spacing-lg;
+    font-weight: $fw-black;
+    letter-spacing: $letter-spacing-tight;
     color: var(--text-primary);
+    margin: 0;
+
+    // Иконка тонирована акцентом
+    svg {
+        color: var(--primary-accent);
+        opacity: 0.85;
+        flex-shrink: 0;
+    }
 }
 
+// Счётчик отзывов — таблетка
+.reviews-count-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px $spacing-sm;
+    border-radius: $radius-pill;
+    border: 1px solid var(--border-color-light);
+    background: rgba(var(--primary-accent-rgb), 0.07);
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-muted);
+    line-height: $lh-ui;
+}
+
+// ── Список отзывов ────────────────────────────────────
 .reviews-list {
     display: grid;
     gap: $spacing-lg;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr));
 
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
         grid-template-columns: 1fr;
+    }
+}
+
+// Карточки появляются с задержкой (stagger)
+// ReviewCard уже имеет hover-lift — это только entry-анимация
+.reviews-list > * {
+    animation: review-fade-in $transition-layout $ease-out-expo both;
+}
+
+@for $i from 1 through 10 {
+    .reviews-list > *:nth-child(#{$i}) {
+        animation-delay: #{$i * 60}ms;
+    }
+}
+
+@keyframes review-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Уважаем prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+    .reviews-list > * {
+        animation: none;
     }
 }

@@ -9,7 +9,7 @@ export const ProductBackButton = ({ onClick }: ProductBackButtonProps) => {
     return (
         <div className={style['back-wrapper']}>
             <button onClick={onClick} className={style['back-link']}>
-                <FaChevronLeft size={14} />
+                <FaChevronLeft size={12} className={style['back-icon']} />
                 <span>Back to catalog</span>
             </button>
         </div>

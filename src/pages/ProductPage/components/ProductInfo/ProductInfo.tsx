@@ -1,6 +1,5 @@
 import { FaStar } from 'react-icons/fa6';
-import style from './product-info.module.scss'
-
+import style from './product-info.module.scss';
 
 interface ProductInfoProps {
     category: string;
@@ -17,22 +16,22 @@ export const ProductInfo = ({
     stock,
     rating,
     reviewsCount,
-    description
+    description,
 }: ProductInfoProps) => {
     return (
         <div className={style['info-container']}>
             <span className={style['category']}>{category}</span>
             <h1 className={style['title']}>{title}</h1>
 
-            <span className={style['stock']}>{stock} in stock</span>
-
             <div className={style['rating']}>
                 <span className={style['rating-value']}>{rating}</span>
-                <FaStar />
+                <FaStar className={style['rating-star']} />
                 <a href="#reviews" className={style['rating-count']}>
-                    ({reviewsCount} reviews)
+                    {reviewsCount} reviews
                 </a>
             </div>
+
+            <span className={style['stock']}>{stock} in stock</span>
 
             <p className={style['description']}>{description}</p>
         </div>

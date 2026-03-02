@@ -1,4 +1,4 @@
-@use '@/styles/index' as *;
+@use '@/styles/index'as *;
 
 .purchase-box {
     display: flex;
@@ -7,25 +7,36 @@
     gap: $spacing-lg;
     margin-top: $spacing-xl;
     padding-top: $spacing-lg;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color-subtle);
 
     @media (max-width: 1024px) {
         flex-wrap: wrap;
     }
 }
 
+.price-block {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xxs;
+}
+
 .price {
-    font-size: $fs-lg;
+    font-size: $fs-sm;
     font-weight: $fw-normal;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     text-decoration: line-through;
-    margin-right: $spacing-xxs;
+    letter-spacing: $letter-spacing-normal;
+    margin: 0;
+    line-height: $lh-ui;
 }
 
 .discount-price {
     font-size: $fs-xxl;
-    font-weight: $fw-bold;
-    color: var(--primary-accent);
+    font-weight: $fw-black;
+    color: var(--text-primary);
+    letter-spacing: $letter-spacing-tight;
+    line-height: $lh-ui;
+    margin: 0;
 
     @media (max-width: 768px) {
         font-size: $fs-xl;
@@ -33,30 +44,67 @@
 }
 
 .add-to-cart-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: $spacing-sm;
-    background-color: var(--primary-accent-dark);
-    color: var(--text-inverse);
-    border: none;
-    border-radius: $radius-md;
+    overflow: hidden;
     padding: $spacing-md $spacing-xl;
+    border: none;
+    border-radius: $radius-lg;
+    background: linear-gradient(135deg,
+            var(--primary-accent-dark) 0%,
+            var(--primary-accent) 60%,
+            var(--primary-accent-light) 100%);
+    color: #ffffff;
     font-size: $fs-md;
     font-weight: $fw-semibold;
-    transition: transform $transition-pressed, background-color $transition-base, box-shadow $transition-base;
+    letter-spacing: $letter-spacing-wide;
+    cursor: pointer;
+    transition:
+        transform $transition-base $ease-out-expo,
+        box-shadow $transition-base $ease-in-out-smooth,
+        filter $transition-base $ease-in-out-smooth;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -75%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.22) 50%,
+                transparent 100%);
+        transform: skewX(-20deg);
+        transition: left $transition-smooth $ease-out-expo;
+        pointer-events: none;
+    }
 
     &:hover {
-        background-color: var(--primary-accent);
-        transform: scale($scale-up-sm);
+        transform: $hover-lift;
         box-shadow: var(--shadow-accent-hover);
+        filter: brightness($hover-brightness);
+
+        &::after {
+            left: 130%;
+        }
     }
 
     &:active {
         transform: scale($button-pressed-scale);
+        box-shadow: var(--shadow-accent-sm);
+        transition-duration: $transition-pressed;
+    }
+
+    &:focus-visible {
+        outline: $focus-ring-width solid var(--focus-ring-color);
+        outline-offset: $focus-ring-offset;
     }
 
     @media (max-width: 1024px) {
         width: 100%;
-        justify-content: center;
     }
 }

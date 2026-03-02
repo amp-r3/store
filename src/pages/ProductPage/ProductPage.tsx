@@ -1,10 +1,8 @@
-
 import { useEffect } from 'react';
 import { useNavigate, useParams, Navigate } from 'react-router';
 
 // Components
 import { ErrorView, Loader } from '@/components/common';
-
 
 // Utils
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
@@ -42,67 +40,53 @@ export const ProductPage = () => {
         }
     };
 
-    const formatPrice = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
+    const formatPrice = (value: number) =>
+        new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 2,
         }).format(value);
-    };
 
-    if (isLoading) {
-        return <Loader />;
-    }
+    if (isLoading) return <Loader />;
+    if (error) return <ErrorView error={getErrorMessage(error)} />;
+    if (isNotFound) return <Navigate to="/404" replace />;
+    if (!product) return <Loader />;
 
-    if (error) {
-        const errorMessage = getErrorMessage(error);
-        return <ErrorView error={errorMessage} />;
-    }
+    const { id: productId, title, price, description, category, images,
+            rating, reviews, discountPercentage, stock } = product;
 
-    if (isNotFound) {
-        return <Navigate to="/404" replace />;
-    }
+    const discountedPrice = applyDiscount({ price, discount: discountPercentage });
+    const showPrice = formatPrice(discountedPrice);
 
-    if (product) {
-        const { 
-            id, title, price, description, category, images, 
-            rating, reviews, discountPercentage, stock 
-        } = product;
-        
-        const discountedPrice = applyDiscount({ price, discount: discountPercentage });
-        const showPrice = formatPrice(discountedPrice);
+    return (
+        <main className={style['product-page']}>
+            <div className="container" key={productId}>
+                <ProductBackButton onClick={() => navigate(-1)} />
 
-        return (
-            <main className={style['product-page']}>
-                <div className="container" key={id}>
-                    <ProductBackButton onClick={() => navigate(-1)} />
-
-                    <div className={style['layout']}>
+                <div className={style['layout']}>
+                    <div className={style['gallery-column']}>
                         <ProductGallery imageUrl={images[0]} title={title} />
-
-                        <div className={style['details-column']}>
-                            <ProductInfo
-                                category={category}
-                                title={title}
-                                stock={stock}
-                                rating={rating}
-                                reviewsCount={reviews.length}
-                                description={description}
-                            />
-
-                            <ProductPurchaseBox 
-                                originalPrice={price}
-                                discountedPriceFormatted={showPrice}
-                                onAddToCart={handleAddToCart}
-                            />
-                        </div>
                     </div>
 
-                    <ProductReviews reviews={reviews} />
+                    <div className={style['details-column']}>
+                        <ProductInfo
+                            category={category}
+                            title={title}
+                            stock={stock}
+                            rating={rating}
+                            reviewsCount={reviews.length}
+                            description={description}
+                        />
+                        <ProductPurchaseBox
+                            originalPrice={price}
+                            discountedPriceFormatted={showPrice}
+                            onAddToCart={handleAddToCart}
+                        />
+                    </div>
                 </div>
-            </main>
-        );
-    }
 
-    return <Loader />;
+                <ProductReviews reviews={reviews} />
+            </div>
+        </main>
+    );
 };
