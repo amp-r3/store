@@ -13,7 +13,7 @@ export const ThemeToggle = () => {
       className={style.toggle}
       onClick={toggleTheme}
       aria-label="Toggle theme"
-      title={isDark ? 'Включить золотую тему' : 'Включить темную тему'}
+      title={isDark ? 'toggle light theme' : 'toggle dark theme'}
     >
       <span className={style.toggle__icon} data-theme={theme}>
         {isDark ? <IoMoon /> : <IoSunny />}

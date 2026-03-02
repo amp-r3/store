@@ -1,0 +1,62 @@
+@use '@/styles/index' as *;
+
+.purchase-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    margin-top: $spacing-xl;
+    padding-top: $spacing-lg;
+    border-top: 1px solid var(--border-color);
+
+    @media (max-width: 1024px) {
+        flex-wrap: wrap;
+    }
+}
+
+.price {
+    font-size: $fs-lg;
+    font-weight: $fw-normal;
+    color: var(--text-secondary);
+    text-decoration: line-through;
+    margin-right: $spacing-xxs;
+}
+
+.discount-price {
+    font-size: $fs-xxl;
+    font-weight: $fw-bold;
+    color: var(--primary-accent);
+
+    @media (max-width: 768px) {
+        font-size: $fs-xl;
+    }
+}
+
+.add-to-cart-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    background-color: var(--primary-accent-dark);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: $radius-md;
+    padding: $spacing-md $spacing-xl;
+    font-size: $fs-md;
+    font-weight: $fw-semibold;
+    transition: transform $transition-pressed, background-color $transition-base, box-shadow $transition-base;
+
+    &:hover {
+        background-color: var(--primary-accent);
+        transform: scale($scale-up-sm);
+        box-shadow: var(--shadow-accent-hover);
+    }
+
+    &:active {
+        transform: scale($button-pressed-scale);
+    }
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,19 @@
+@use '@/styles/index' as *;
+
+.back-wrapper {
+    margin-bottom: $spacing-lg;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: $fw-semibold;
+    transition: color $transition-base;
+
+    &:hover {
+        color: var(--text-primary);
+    }
+}

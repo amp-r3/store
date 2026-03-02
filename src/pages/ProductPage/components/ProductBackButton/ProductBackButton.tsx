@@ -1,0 +1,17 @@
+import { FaChevronLeft } from 'react-icons/fa';
+import style from './product-back-button.module.scss';
+
+interface ProductBackButtonProps {
+    onClick: () => void;
+}
+
+export const ProductBackButton = ({ onClick }: ProductBackButtonProps) => {
+    return (
+        <div className={style['back-wrapper']}>
+            <button onClick={onClick} className={style['back-link']}>
+                <FaChevronLeft size={14} />
+                <span>Back to catalog</span>
+            </button>
+        </div>
+    );
+};

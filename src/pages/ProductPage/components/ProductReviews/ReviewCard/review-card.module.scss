@@ -1,0 +1,46 @@
+@use '@/styles/index' as *;
+
+.review-card {
+    background: var(--glass-background);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-backdrop-blur);
+    padding: $spacing-lg;
+    border-radius: $radius-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-xs;
+}
+
+.review-author {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+}
+
+.review-rating {
+    display: flex;
+    gap: $spacing-xxs;
+    color: var(--rating-color);
+}
+
+.review-meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $fs-sm;
+    color: var(--text-muted);
+}
+
+.review-comment {
+    color: var(--text-secondary);
+    line-height: $lh-normal;
+    margin: 0;
+    padding-top: $spacing-sm;
+}

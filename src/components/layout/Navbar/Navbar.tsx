@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router'; // убрал неиспользуемый Link
+import { Link, NavLink } from 'react-router';
 import { useRef } from 'react';
 // Icons
 import { IoCartOutline, IoHome } from "react-icons/io5";
@@ -26,34 +26,29 @@ export const Navbar = () => {
   const isCartLoaded = totalQuantity >= 1
 
   return (
-      <nav ref={navRef} className={style.nav}>
-        <span className={style.nav__logo} aria-label="">store</span>
-        
-        <div className={style.nav__form}>
-          <SearchForm
-            inputValue={inputValue}
-            handleSearch={handleSearch}
-            handleInputChange={handleInputChange}
-            handleClear={handleClear}
-            isHomePage={isHomePage}
-          />
-        </div>
-        
-        <div className={style.nav__main_actions}>
-          <ul className={style.nav__menu}>
-            <li>
-              <NavLink to="/" className={style.nav__link} end aria-label='Back to catalog'><IoHome /></NavLink>
-            </li>
-          </ul>
-          <ThemeToggle />
-          
-          <button onClick={() => { dispatch(openCart()) }} type='button' aria-label='open cart' className={style.nav__cart}>
-            {
-              isCartLoaded && <span className={style.nav__cart__count}>{totalQuantity}</span>
-            }
-            <IoCartOutline />
-          </button>
-        </div>
-      </nav>
+    <nav ref={navRef} className={style.nav}>
+      <Link to={'/'} className={style.nav__logo} aria-label="Store">store</Link>
+
+      <div className={style.nav__form}>
+        <SearchForm
+          inputValue={inputValue}
+          handleSearch={handleSearch}
+          handleInputChange={handleInputChange}
+          handleClear={handleClear}
+          isHomePage={isHomePage}
+        />
+      </div>
+
+      <div className={style.nav__main_actions}>
+        <ThemeToggle />
+
+        <button onClick={() => { dispatch(openCart()) }} type='button' aria-label='open cart' className={style.nav__cart}>
+          {
+            isCartLoaded && <span className={style.nav__cart__count}>{totalQuantity}</span>
+          }
+          <IoCartOutline />
+        </button>
+      </div>
+    </nav>
   );
 };
