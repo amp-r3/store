@@ -104,6 +104,29 @@
         outline-offset: $focus-ring-offset;
     }
 
+
+    &:disabled {
+        background: linear-gradient(135deg,
+                var(--background-glass-elevated) 0%,
+                var(--background-glass-base) 100%);
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        filter: none;
+
+        &::after {
+            display: none;
+        }
+
+        &:hover {
+            transform: none;
+            box-shadow: none;
+            filter: none;
+        }
+    }
+
     @media (max-width: 1024px) {
         width: 100%;
     }

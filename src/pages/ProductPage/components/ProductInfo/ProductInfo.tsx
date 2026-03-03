@@ -8,6 +8,7 @@ interface ProductInfoProps {
     rating: number;
     reviewsCount: number;
     description: string;
+    inStock: boolean;
 }
 
 export const ProductInfo = ({
@@ -17,6 +18,7 @@ export const ProductInfo = ({
     rating,
     reviewsCount,
     description,
+    inStock,
 }: ProductInfoProps) => {
     return (
         <div className={style['info-container']}>
@@ -31,7 +33,7 @@ export const ProductInfo = ({
                 </a>
             </div>
 
-            <span className={style['stock']}>{stock} in stock</span>
+            <span className={style['stock']} data-stock={inStock ? 'in stock' : 'emty'}>{stock} in stock</span>
 
             <p className={style['description']}>{description}</p>
         </div>

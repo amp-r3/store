@@ -3,6 +3,11 @@ import { useNavigate, useParams, Navigate } from 'react-router';
 
 // Components
 import { ErrorView, Loader } from '@/components/common';
+import { ProductBackButton } from './components/ProductBackButton/ProductBackButton';
+import { ProductGallery } from './components/ProductGallery/ProductGallery';
+import { ProductInfo } from './components/ProductInfo/ProductInfo';
+import { ProductPurchaseBox } from './components/ProductPurchaseBox/ProductPurchaseBox';
+import { ProductReviews } from './components/ProductReviews/ProductReviews';
 
 // Utils
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
@@ -18,11 +23,6 @@ import { addToCart } from '@/store/slices/cartSlice';
 
 // Styles
 import style from './productPage.module.scss';
-import { ProductBackButton } from './components/ProductBackButton/ProductBackButton';
-import { ProductGallery } from './components/ProductGallery/ProductGallery';
-import { ProductInfo } from './components/ProductInfo/ProductInfo';
-import { ProductPurchaseBox } from './components/ProductPurchaseBox/ProductPurchaseBox';
-import { ProductReviews } from './components/ProductReviews/ProductReviews';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
@@ -47,14 +47,16 @@ export const ProductPage = () => {
             minimumFractionDigits: 2,
         }).format(value);
 
+        
     if (isLoading) return <Loader />;
     if (error) return <ErrorView error={getErrorMessage(error)} />;
     if (isNotFound) return <Navigate to="/404" replace />;
     if (!product) return <Loader />;
 
     const { id: productId, title, price, description, category, images,
-            rating, reviews, discountPercentage, stock } = product;
-
+        rating, reviews, discountPercentage, stock } = product;
+        
+    const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const showPrice = formatPrice(discountedPrice);
 
@@ -76,11 +78,13 @@ export const ProductPage = () => {
                             rating={rating}
                             reviewsCount={reviews.length}
                             description={description}
+                            inStock={inStock}
                         />
                         <ProductPurchaseBox
                             originalPrice={price}
                             discountedPriceFormatted={showPrice}
                             onAddToCart={handleAddToCart}
+                            inStock={inStock}
                         />
                     </div>
                 </div>

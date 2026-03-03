@@ -1,4 +1,4 @@
-import { IoMoon, IoSunny } from 'react-icons/io5';
+import { RiMoonLine, RiSunLine } from "react-icons/ri";
 import { useTheme } from '@/hooks/useTheme';
 import style from './theme-toggle.module.scss';
 
@@ -16,7 +16,7 @@ export const ThemeToggle = () => {
       title={isDark ? 'toggle light theme' : 'toggle dark theme'}
     >
       <span className={style.toggle__icon} data-theme={theme}>
-        {isDark ? <IoMoon /> : <IoSunny />}
+        {isDark ? <RiMoonLine /> : <RiSunLine />}
       </span>
     </button>
   );
