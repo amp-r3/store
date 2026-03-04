@@ -226,6 +226,7 @@
             box-shadow: var(--shadow-accent-hover);
             filter: brightness($hover-brightness);
         }
+    }
 
         &:active {
             transform: scale($button-pressed-scale);
@@ -257,7 +258,6 @@
                 filter: none;
             }
         }
-    }
 }
 
 .card__button:focus-visible {
@@ -378,14 +378,6 @@
         min-height: 36px;
         font-size: 0.6875rem;
         padding: $spacing-xxs $spacing-xs;
-    }
-}
-
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    @media (max-width: 480px) {
-        .card__footer {
-            padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom, 0px));
-        }
     }
 }
 
