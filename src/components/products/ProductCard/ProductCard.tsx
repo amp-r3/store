@@ -1,9 +1,11 @@
-import style from './productCard.module.scss'
-import { FaStar } from 'react-icons/fa';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '@/types/products';
-import { FC } from 'react';
 import { applyDiscount } from '@/utils';
+import style from './productCard.module.scss';
+import { ProductCardImage } from './components/ProductCardImage';
+import { ProductCardBody } from './components/ProductCardBody';
+import { ProductCardFooter } from './components/ProductCardFooter';
 
 interface ProductCardProps {
     product: Product;
@@ -12,64 +14,33 @@ interface ProductCardProps {
 
 export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
-
-    const discountedPrice = applyDiscount({ price: price, discount: discountPercentage });
+    const inStock = (stock ?? 0) > 0;
+    const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const hasDiscount = discountPercentage > 0;
 
-    const formatPrice = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2,
-        }).format(value);
-    };
-
     return (
-        <div className={style.card}>
-            <Link
-                to={`/product/${id}`}
-                className={style.card__imageWrapper}
-                aria-label={`View details for ${title}`}
-            >
-                <img src={thumbnail} alt={title} className={style.card__image} loading="lazy" decoding="async" />
-                <span className={style.card__category}>{category}</span>
-            </Link>
+        <Link to={`/product/${id}`} className={style.card} aria-label={`View details for ${title}`}>
+            <ProductCardImage
+                title={title}
+                thumbnail={thumbnail}
+                category={category}
+            />
 
-            <div className={style.card__body}>
-                <Link
-                    to={`/product/${id}`}
-                    className={style.card__title}
-                >
-                    {title}
-                </Link>
+            <ProductCardBody
+                title={title}
+                stock={stock}
+                rating={rating}
+                reviews={reviews}
+            />
 
-                <span className={style.card__stock}>{stock} in stock</span>
-
-                <div className={style.card__rating}>
-                    <span>{rating}</span>
-                    <FaStar size={10} />
-                    <span className={style.card__ratingCount}>({reviews.length} reviews)</span>
-                </div>
-            </div>
-
-            <div className={style.card__footer}>
-                <div className={style.card__price_wrapper}>
-                    {hasDiscount && (
-                        <span className={style.card__oldPrice}>{formatPrice(price)}</span>
-                    )}
-                    <span className={style.card__price}>{formatPrice(discountedPrice)}</span>
-                </div>
-
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(product);
-                    }}
-                    className={style.card__button}
-                >
-                    Add to Cart
-                </button>
-            </div>
-        </div>
+            <ProductCardFooter
+                product={product}
+                price={price}
+                discountedPrice={discountedPrice}
+                hasDiscount={hasDiscount}
+                handleAddToCart={handleAddToCart}
+                inStock={inStock}
+            />
+        </Link>
     );
 };

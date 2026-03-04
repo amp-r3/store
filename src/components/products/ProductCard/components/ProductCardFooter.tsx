@@ -1,0 +1,52 @@
+import { FC } from 'react';
+import { Product } from '@/types/products';
+import style from '../productCard.module.scss';
+
+interface ProductCardFooterProps {
+    product: Product;
+    price: number;
+    discountedPrice: number;
+    hasDiscount: boolean;
+    handleAddToCart: (product: Product) => void;
+    inStock: boolean;
+}
+
+const formatPrice = (value: number): string => {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+    }).format(value);
+};
+
+export const ProductCardFooter: FC<ProductCardFooterProps> = ({
+    product,
+    price,
+    discountedPrice,
+    hasDiscount,
+    handleAddToCart,
+    inStock,
+}) => {
+    return (
+        <div className={style.card__footer}>
+            <div className={style.card__price_wrapper}>
+                {hasDiscount && (
+                    <span className={style.card__oldPrice}>{formatPrice(price)}</span>
+                )}
+                <span className={style.card__price}>{formatPrice(discountedPrice)}</span>
+            </div>
+
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleAddToCart(product);
+                }}
+                className={style.card__button}
+                disabled={!inStock}
+            >
+                Add to Cart
+            </button>
+        </div>
+    );
+};

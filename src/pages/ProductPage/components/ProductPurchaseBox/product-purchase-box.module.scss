@@ -57,7 +57,7 @@
             var(--primary-accent-dark) 0%,
             var(--primary-accent) 60%,
             var(--primary-accent-light) 100%);
-    color: #ffffff;
+    color: #fff;
     font-size: $fs-md;
     font-weight: $fw-semibold;
     letter-spacing: $letter-spacing-wide;
@@ -83,13 +83,14 @@
         pointer-events: none;
     }
 
-    &:hover {
-        transform: $hover-lift;
-        box-shadow: var(--shadow-accent-hover);
-        filter: brightness($hover-brightness);
-
-        &::after {
-            left: 130%;
+    @media(hover: hover) {
+        &:hover {
+            transform: $hover-lift;
+            box-shadow: var(--shadow-accent-hover);
+            filter: brightness($hover-brightness);
+            &::after {
+                left: 130%;
+            }
         }
     }
 
