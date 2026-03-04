@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { Product } from '@/types/products';
+import { FaCartShopping } from 'react-icons/fa6';
 import style from '../productCard.module.scss';
 
 interface ProductCardFooterProps {
@@ -39,13 +40,13 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
             <button
                 onClick={(e) => {
                     e.preventDefault();
-                    e.stopPropagation();
                     handleAddToCart(product);
                 }}
                 className={style.card__button}
                 disabled={!inStock}
             >
-                Add to Cart
+                <FaCartShopping size={18} />
+                <span>Add to Cart</span>
             </button>
         </div>
     );

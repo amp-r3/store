@@ -2,21 +2,19 @@
 
 .content {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: $spacing-xl;
     padding: $spacing-xl 0;
     justify-items: center;
 }
 
-// Tablets
-@media (max-width: 720px) {
+@media (max-width: 768px) {
     .content {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr)); 
         gap: $spacing-md;
     }
 }
 
-// Mobile devices 
 @media (max-width: 500px) {
     .content {
         grid-template-columns: repeat(2, minmax(0, 1fr)); 

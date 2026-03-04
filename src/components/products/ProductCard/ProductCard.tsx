@@ -19,11 +19,14 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) 
     const hasDiscount = discountPercentage > 0;
 
     return (
-        <Link to={`/product/${id}`} className={style.card} aria-label={`View details for ${title}`}>
+        <article className={style.card}>
+            <Link to={`/product/${id}`} className={style.card__link} aria-label={`View details for ${title}`} />
+
             <ProductCardImage
                 title={title}
                 thumbnail={thumbnail}
                 category={category}
+                discountPercentage={discountPercentage}
             />
 
             <ProductCardBody
@@ -41,6 +44,6 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) 
                 handleAddToCart={handleAddToCart}
                 inStock={inStock}
             />
-        </Link>
+        </article>
     );
 };

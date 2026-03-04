@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { FC } from 'react';
 import { FaStar } from 'react-icons/fa';
 import { Review } from '@/types/products';
@@ -12,6 +11,15 @@ interface ProductCardBodyProps {
 }
 
 export const ProductCardBody: FC<ProductCardBodyProps> = ({ title, stock, rating, reviews }) => {
+    const isLowStock = stock > 0 && stock < 5;
+    const isOutOfStock = stock === 0;
+
+    let stockClass = style.card__stock;
+    if (isLowStock) stockClass += ` ${style['card__stock--low']}`;
+    if (isOutOfStock) stockClass += ` ${style['card__stock--out']}`;
+
+    const stockText = isOutOfStock ? 'Out of stock' : isLowStock ? `Only ${stock} left!` : `${stock} in stock`;
+
     return (
         <div className={style.card__body}>
             <span className={style.card__title}>{title}</span>
@@ -23,7 +31,7 @@ export const ProductCardBody: FC<ProductCardBodyProps> = ({ title, stock, rating
                     <span className={style.card__ratingCount}>({reviews.length})</span>
                 </div>
 
-                <span className={style.card__stock}>{stock} in stock</span>
+                <span className={stockClass}>{stockText}</span>
             </div>
         </div>
     );
