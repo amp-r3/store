@@ -13,7 +13,7 @@ import { ProductReviews } from './components/ProductReviews/ProductReviews';
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
-import { useProduct } from '@/hooks';
+import { useHaptics, useProduct } from '@/hooks';
 
 // Redux Hooks
 import { useAppDispatch } from '@/hooks/redux';
@@ -25,6 +25,7 @@ import { addToCart } from '@/store/slices/cartSlice';
 import style from './productPage.module.scss';
 
 export const ProductPage = () => {
+    const { light } = useHaptics()
     const navigate = useNavigate();
     const { id } = useParams();
     const { product, isLoading, error, isNotFound } = useProduct(id);
@@ -36,6 +37,7 @@ export const ProductPage = () => {
 
     const handleAddToCart = () => {
         if (product) {
+            light()
             dispatch(addToCart(product));
         }
     };

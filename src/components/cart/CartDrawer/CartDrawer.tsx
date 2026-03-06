@@ -20,6 +20,7 @@ import { CartItem } from '../CartItem/CartItem';
 import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
+import { useHaptics } from '@/hooks';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { soft, medium, nudge } = useHaptics()
 
   const drawerRef = useRef<HTMLElement>(null);
 
@@ -43,15 +45,17 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     remainingForFreeShipping
   } = useMemo(() => calculateCartTotals(cartItems), [cartItems]);
 
-  const onIncrease = (id: number) => dispatch(changeQuantity({ id, type: 'inc' }));
-  const onDecrease = (id: number) => dispatch(changeQuantity({ id, type: 'dec' }));
-  const onRemove = (id: number) => dispatch(removeFromCart(id));
+  const onIncrease = (id: number) => {dispatch(changeQuantity({ id, type: 'inc' })); soft()};
+  const onDecrease = (id: number) => {dispatch(changeQuantity({ id, type: 'dec' })); soft()};
+  const onRemove = (id: number) => {dispatch(removeFromCart(id)); medium()};
 
   const handleCheckout = () => {
+    nudge()
     console.log('Proceed to checkout');
   };
 
   const onStartShopping = () => {
+    soft()
     navigate('/', { replace: true });
     onClose();
   };

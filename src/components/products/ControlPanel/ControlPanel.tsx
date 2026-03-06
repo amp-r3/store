@@ -5,6 +5,7 @@ import { SortingOption } from '@/utils/sortingOptions';
 import { CategoryOption } from '@/utils/categoryOptions';
 import { SortControl } from './SortControl/SortControl';
 import { CategoryControl } from './CategoryControl/CategoryControl';
+import { useHaptics } from '@/hooks';
 
 interface ControlPanelProps {
   changeSort: (newSortBy: string, newOrder: string) => void;
@@ -30,6 +31,7 @@ export const ControlPanel: FC<ControlPanelProps> = ({
 
   const panelRef = useRef<HTMLDivElement>(null);
   const sortBtnRef = useRef<HTMLButtonElement>(null);
+  const { light, soft } = useHaptics();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,21 +52,25 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   }, []);
 
   const handleToggleSort = () => {
+    soft()
     setIsSortOpen((prev) => !prev);
     setIsCategoryOpen(false);
   };
 
   const handleToggleCategory = () => {
+    soft()
     setIsCategoryOpen((prev) => !prev);
     setIsSortOpen(false);
   };
 
   const handleSortChange = (newSortBy: string, newOrder: string) => {
+    light()
     changeSort(newSortBy, newOrder);
     setIsSortOpen(false);
   };
 
   const handleCategoryChange = (newCategory: string | null) => {
+    light()
     changeCategory(newCategory);
   };
 

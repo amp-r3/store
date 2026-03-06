@@ -1,6 +1,7 @@
 import { FC, FormEvent, ChangeEvent } from 'react';
 import { IoSearchSharp, IoClose } from "react-icons/io5";
 import styles from './search-form.module.scss';
+import { useHaptics } from '@/hooks';
 
 interface SearchFormProps {
     inputValue: string;
@@ -22,6 +23,7 @@ export const SearchForm: FC<SearchFormProps> = ({
     onBlur
 
 }) => {
+    const { soft } = useHaptics()
 
     return (
         <form
@@ -43,7 +45,7 @@ export const SearchForm: FC<SearchFormProps> = ({
                 <button
                     type="button"
                     className={`${styles.searchForm__clearBtn} ${inputValue ? styles['searchForm__clearBtn--visible'] : ''}`}
-                    onClick={handleClear}
+                    onClick={()=>{handleClear(); soft()}}
                     aria-label="Clear search"
                 >
                     <IoClose />
@@ -54,6 +56,7 @@ export const SearchForm: FC<SearchFormProps> = ({
                 className={styles.searchForm__submitBtn}
                 aria-label="Search"
                 disabled={!isHomePage || !inputValue}
+                onClick={soft}
             >
                 <IoSearchSharp />
             </button>

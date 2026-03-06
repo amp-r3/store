@@ -2,6 +2,7 @@ import style from './errorView.module.scss';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { useNavigate } from 'react-router';
 import { FC } from 'react';
+import { useHaptics } from '@/hooks';
 
 interface ErrorViewProps {
     error?: string
@@ -9,8 +10,10 @@ interface ErrorViewProps {
 
 export const ErrorView: FC<ErrorViewProps> = ({ error }) => {
     const navigate = useNavigate();
+    const { light } = useHaptics()
 
     const onRetry = () => {
+        light()
         navigate(0);
     }
 

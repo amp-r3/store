@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router'
 import { TbSearchOff } from 'react-icons/tb'
 import style from './noResults.module.scss'
+import { useHaptics } from '@/hooks';
 
 interface NoResultsProps {
   query?: string;
@@ -8,8 +9,10 @@ interface NoResultsProps {
 
 export const NoResults = ({ query }: NoResultsProps) => {
   const navigate = useNavigate()
+  const { light } = useHaptics()
 
   const handleReset = () => {
+    light()
     navigate('/', { replace: true })
   }
 

@@ -20,7 +20,8 @@
     "react-router-dom": "^7.8.2",
     "redux-persist": "^6.0.0",
     "reselect": "^5.1.1",
-    "vaul": "^1.1.2"
+    "vaul": "^1.1.2",
+    "web-haptics": "^0.0.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

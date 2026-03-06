@@ -3,7 +3,7 @@ import { useRef } from 'react';
 // Icons
 import { IoCartOutline, IoHome } from "react-icons/io5";
 // Custom Hooks
-import { useNavbarScroll, useSearch } from '@/hooks';
+import { useHaptics, useNavbarScroll, useSearch } from '@/hooks';
 // Redux Hooks
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 // Custom Components
@@ -18,6 +18,7 @@ import style from './navbar.module.scss';
 
 export const Navbar = () => {
   const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage } = useSearch();
+  const { soft } = useHaptics()
   const navRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const totalQuantity = useAppSelector(selectCartTotalQuantity)
@@ -42,7 +43,7 @@ export const Navbar = () => {
       <div className={style.nav__main_actions}>
         <ThemeToggle />
 
-        <button onClick={() => { dispatch(openCart()) }} type='button' aria-label='open cart' className={style.nav__cart}>
+        <button onClick={() => { dispatch(openCart()); soft() }} type='button' aria-label='open cart' className={style.nav__cart}>
           {
             isCartLoaded && <span className={style.nav__cart__count}>{totalQuantity}</span>
           }

@@ -6,6 +6,7 @@ import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
 import { ProductCardBody } from './components/ProductCardBody';
 import { ProductCardFooter } from './components/ProductCardFooter';
+import { useHaptics } from '@/hooks';
 
 interface ProductCardProps {
     product: Product;
@@ -13,6 +14,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
+    const { soft, light } = useHaptics()
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
@@ -20,7 +22,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) 
 
     return (
         <article className={style.card}>
-            <Link to={`/product/${id}`} className={style.card__link} aria-label={`View details for ${title}`} />
+            <Link to={`/product/${id}`} className={style.card__link} aria-label={`View details for ${title}`} onClick={soft} />
 
             <ProductCardImage
                 title={title}
@@ -43,6 +45,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) 
                 hasDiscount={hasDiscount}
                 handleAddToCart={handleAddToCart}
                 inStock={inStock}
+                lightHaptic={light}
             />
         </article>
     );

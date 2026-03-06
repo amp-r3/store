@@ -1,10 +1,12 @@
 import style from './pagination.module.scss';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { usePagination, DOTS } from '@/hooks/usePagination';
-import { useMediaQuery } from '@/hooks';
+import { useHaptics, useMediaQuery } from '@/hooks';
 
 
 export const Pagination = ({ totalItems, currentPage, itemsPerPage, onPageChange }) => {
+
+    const { soft } = useHaptics()
 
     const isMobile = useMediaQuery('(max-width: 640px)')
 
@@ -21,12 +23,14 @@ export const Pagination = ({ totalItems, currentPage, itemsPerPage, onPageChange
 
     const onNext = () => {
         if (currentPage < totalPages) {
+            soft()
             onPageChange(currentPage + 1);
         }
     };
 
     const onPrevious = () => {
         if (currentPage > 1) {
+            soft()
             onPageChange(currentPage - 1);
         }
     };
@@ -59,7 +63,7 @@ export const Pagination = ({ totalItems, currentPage, itemsPerPage, onPageChange
                     <button
                         key={pageNumber}
                         className={`${style.pagination__item} ${pageNumber === currentPage ? style['pagination__item--active'] : ''}`}
-                        onClick={() => onPageChange(pageNumber)}
+                        onClick={() => {onPageChange(pageNumber); soft()} }
                         aria-current={pageNumber === currentPage ? 'page' : undefined}
                     >
                         {pageNumber}
