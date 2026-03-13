@@ -32,7 +32,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { soft, medium, nudge } = useHaptics()
+  const { soft, medium, success } = useHaptics()
 
   const drawerRef = useRef<HTMLElement>(null);
 
@@ -50,7 +50,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const onRemove = (id: number) => {dispatch(removeFromCart(id)); medium()};
 
   const handleCheckout = () => {
-    nudge()
+    success()
     console.log('Proceed to checkout');
   };
 
@@ -109,15 +109,19 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
           <div className={styles.cart__body}>
             {cartItems.length ? (
-              cartItems.map((item) => (
-                <CartItem
-                  key={item.id}
-                  product={item}
-                  onIncrease={onIncrease}
-                  onDecrease={onDecrease}
-                  onRemove={onRemove}
-                />
-              ))
+              cartItems.map((item) => {
+                const isMaxValue = item.quantity >= item.stock
+                return (
+                  <CartItem
+                    key={item.id}
+                    product={item}
+                    onIncrease={onIncrease}
+                    onDecrease={onDecrease}
+                    onRemove={onRemove}
+                    isMaxValue={isMaxValue}
+                  />   
+                )
+              })
             ) : (
               <EmptyCart onStartShopping={onStartShopping} />
             )}

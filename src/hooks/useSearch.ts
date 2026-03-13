@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useSearchParams } from "react-router";
-import { useAppDispatch } from "@/hooks/redux";
 
 export function useSearch() {
     const location = useLocation()

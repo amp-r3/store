@@ -66,6 +66,7 @@
 | 📱 | **Responsive & Mobile-First** | Adaptive layout for all screen sizes; mobile gets a floating search bar with hide-on-scroll behavior |
 | 💎 | **Glassmorphism UI** | Dark & light themes built on a custom SCSS design token system with consistent spacing, shadows, and blur effects |
 | ⚡ | **Performance Optimizations** | Lazy routes, memoized selectors via Reselect, normalized API cache, and image lazy loading |
+| 📳 | **Haptic Feedback** | Vibration on key interactions powered by the `web-haptics` library for immersive tactile experience |
 
 <br/>
 
@@ -112,10 +113,8 @@ src/
 │   ├── useProductCatalog  # Orchestrates fetching, sorting, pagination, category
 │   ├── useProduct         # Single product fetch with RTK Query
 │   ├── useSearch          # URL-synced search state
-│   ├── useSort            # URL-synced sort state
-│   ├── useCategory        # URL-synced category filter state
+│   ├── useSort            # URL-synced sort, category. pagination state
 │   ├── useTheme           # Redux-powered theme toggle with DOM class sync
-│   ├── useUrlPagination   # URL-synced pagination
 │   ├── usePagination      # Smart pagination range with ellipsis logic
 │   ├── useNavbarScroll    # Scroll-aware navbar class toggling
 │   └── useMediaQuery      # Responsive breakpoint detection
@@ -149,6 +148,7 @@ src/
     ├── cartHelper         # calculateCartTotals (subtotal, discount, shipping)
     ├── sortingOptions     # Typed sorting config array
     ├── categoryOptions    # Typed category config array (24 categories + 'all')
+    ├── hapticPresets      # Typed haptic presets object (11 different vibration presets)
     ├── getErrorMessage    # RTK Query error normalizer
     └── scrollToTop        # Scroll utility
 ```

@@ -1,15 +1,11 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { useSort } from "./useSort";
-import { useUrlPagination } from "./useUrlPagination";
 import { useGetProductsQuery } from "@/services/productsApi";
-import { useCategory } from "./useCategory";
 import { useFilters } from "./useFilters";
 
 export function useProductCatalog() {
     const [searchParams] = useSearchParams();
-    const { activeSortOption, activeCategoryOption } = useFilters()
-    const { page, setPage } = useUrlPagination()
+    const { activeSortOption, activeCategoryOption, page, setPage } = useFilters()
 
     const categoryId = activeCategoryOption?.id;
 

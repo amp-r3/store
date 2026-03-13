@@ -16,13 +16,14 @@ import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
 import { useHaptics, useProduct } from '@/hooks';
 
 // Redux Hooks
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 // Redux Functions
 import { addToCart } from '@/store/slices/cartSlice';
 
 // Styles
 import style from './productPage.module.scss';
+import { selectCartItems } from '@/store';
 
 export const ProductPage = () => {
     const { light } = useHaptics()
@@ -30,6 +31,7 @@ export const ProductPage = () => {
     const { id } = useParams();
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const dispatch = useAppDispatch();
+    const cartItems = useAppSelector(selectCartItems);
 
     useEffect(() => {
         scrollToTop();
@@ -61,6 +63,7 @@ export const ProductPage = () => {
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const showPrice = formatPrice(discountedPrice);
+    const isMaxValue = cartItems.some(item =>  item.quantity >= stock)
 
     return (
         <main className={style['product-page']}>
@@ -87,6 +90,7 @@ export const ProductPage = () => {
                             discountedPriceFormatted={showPrice}
                             onAddToCart={handleAddToCart}
                             inStock={inStock}
+                            isMaxValue={isMaxValue}
                         />
                     </div>
                 </div>

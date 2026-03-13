@@ -1,12 +1,13 @@
 import { useSearchParams } from "react-router";
 import { sortingOptions, categoryOptions, CategoryId } from "@/utils";
 
-export function useFilters() {
+export function useFilters(defaultPage = 1) {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const currentSortBy = searchParams.get('sortBy');
     const currentOrder = searchParams.get('order');
     const currentCategory = (searchParams.get('category') as CategoryId) || 'all';
+    const page = Number(searchParams.get('page')) || defaultPage;
 
     const activeSortOption = sortingOptions.find(
         (opt) => opt.sortBy === currentSortBy && opt.order === currentOrder
@@ -16,7 +17,7 @@ export function useFilters() {
         (opt) => opt.id === currentCategory
     ) || categoryOptions[0];
 
-    const updateParams = (updates: Record<string, string | null>) => {
+    const updateParams = (updates: Record<string, string | number | null>) => {
         setSearchParams((prev) => {
             const newParams = new URLSearchParams(prev);
             
@@ -24,16 +25,19 @@ export function useFilters() {
                 if (value === null || value === 'all') {
                     newParams.delete(key);
                 } else {
-                    newParams.set(key, value);
+                    newParams.set(key, String(value));
                 }
             });
-            newParams.delete('page');
+
+            if (!('page' in updates)) {
+                newParams.delete('page');
+            }
             
             return newParams;
         }, { replace: true });
     };
 
-    const changeSort = (newSortBy: string, newOrder: string) => {
+    const changeSort = (newSortBy?: string, newOrder?: string) => {
         if (newSortBy && newOrder) {
             updateParams({ sortBy: newSortBy, order: newOrder });
         } else {
@@ -45,15 +49,21 @@ export function useFilters() {
         updateParams({ category: newCategory });
     };
 
+    const setPage = (newPage: number) => {
+        updateParams({ page: newPage });
+    };
+
     const clearAllFilters = () => {
         updateParams({
             sortBy: null,
             order: null,
-            category: null
+            category: null,
+            page: null
         });
     };
 
     return {
+        page,
         currentSortBy,
         currentOrder,
         currentCategory,
@@ -63,6 +73,7 @@ export function useFilters() {
         categoryOptions,
         changeSort,
         changeCategory,
+        setPage,
         clearAllFilters
     };
 }

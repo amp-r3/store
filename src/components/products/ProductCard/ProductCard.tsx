@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { Product } from '@/types/products';
+import { CartItem, Product } from '@/types/products';
 import { applyDiscount } from '@/utils';
 import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
@@ -10,15 +10,17 @@ import { useHaptics } from '@/hooks';
 
 interface ProductCardProps {
     product: Product;
+    itemInCart: CartItem[];
     handleAddToCart: (product: Product) => void;
 }
 
-export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
-    const { soft, light } = useHaptics()
+export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, itemInCart }) => {
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
+    const { soft } = useHaptics()
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const hasDiscount = discountPercentage > 0;
+    const isMaxValue = itemInCart.some(item =>  item.quantity >= stock )
 
     return (
         <article className={style.card}>
@@ -45,7 +47,8 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) 
                 hasDiscount={hasDiscount}
                 handleAddToCart={handleAddToCart}
                 inStock={inStock}
-                lightHaptic={light}
+                isMaxValue={isMaxValue}
+                haptic={soft}
             />
         </article>
     );

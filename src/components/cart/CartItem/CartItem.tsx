@@ -12,6 +12,7 @@ interface CartItemProps {
     onIncrease: (id: number) => void;
     onDecrease: (id: number) => void;
     onRemove: (id: number) => void;
+    isMaxValue: boolean;
 }
 
 export const CartItem: FC<CartItemProps> = ({
@@ -19,6 +20,7 @@ export const CartItem: FC<CartItemProps> = ({
     onIncrease,
     onDecrease,
     onRemove,
+    isMaxValue
 }) => {
     const { id, title, price, thumbnail, quantity, discountPercentage, } = product
     const totalPrice = useMemo(() => price * quantity, [price, quantity]);
@@ -79,6 +81,7 @@ export const CartItem: FC<CartItemProps> = ({
                             className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
                             onClick={() => onIncrease(id)}
                             aria-label="Increase quantity"
+                            disabled={isMaxValue}
                         >
                             <IoAdd size={18} />
                         </button>

@@ -10,7 +10,8 @@ interface ProductCardFooterProps {
     hasDiscount: boolean;
     handleAddToCart: (product: Product) => void;
     inStock: boolean;
-    lightHaptic: ()=> void
+    isMaxValue: boolean;
+    haptic: ()=> void
 }
 
 const formatPrice = (value: number): string => {
@@ -28,7 +29,8 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
     hasDiscount,
     handleAddToCart,
     inStock,
-    lightHaptic
+    isMaxValue,
+    haptic
 }) => {
     return (
         <div className={style.card__footer}>
@@ -43,10 +45,10 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
                 onClick={(e) => {
                     e.preventDefault();
                     handleAddToCart(product);
-                    lightHaptic()
+                    haptic()
                 }}
                 className={style.card__button}
-                disabled={!inStock}
+                disabled={!inStock || isMaxValue}
             >
                 <FaCartShopping size={18} />
                 <span>Add to Cart</span>
