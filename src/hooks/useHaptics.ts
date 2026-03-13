@@ -1,4 +1,4 @@
-import { HAPTIC_PRESETS, HapticOptions, HapticPresetName, HapticStep } from "@/utils/hapticsPresets";
+import { HAPTIC_PRESETS, HapticOptions, HapticPresetName, HapticStep } from "@/utils/hapticPresets";
 import { useWebHaptics } from "web-haptics/react";
 
 type PresetTriggers = Record<HapticPresetName, () => void>;
