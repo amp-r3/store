@@ -13,7 +13,7 @@ export const ThemeToggle = () => {
     <button
       type="button"
       className={style.toggle}
-      onClick={() => { toggleTheme; soft() }}
+      onClick={() => { toggleTheme(); soft() }}
       aria-label="Toggle theme"
       title={isDark ? 'toggle light theme' : 'toggle dark theme'}
     >

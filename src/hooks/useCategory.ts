@@ -1,5 +1,6 @@
 import { useSearchParams } from "react-router";
 import { categoryOptions, CategoryId } from "@/utils";
+// import { URLSearchParams } from "node:url";
 
 export function useCategory() {
     const [searchParams, setSearchParams] = useSearchParams();

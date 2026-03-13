@@ -8,6 +8,7 @@ import { CategoryControl } from './CategoryControl/CategoryControl';
 import { useHaptics } from '@/hooks';
 
 interface ControlPanelProps {
+  clearAll: ()=> void
   changeSort: (newSortBy: string, newOrder: string) => void;
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
@@ -24,10 +25,13 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   changeCategory,
   categoryOptions,
   activeCategoryOption,
-  searchQuery
+  searchQuery,
+  clearAll
 }) => {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  
+  const isFilter = activeSortOption.id !== 'default' || activeCategoryOption?.id !== 'all'
 
   const panelRef = useRef<HTMLDivElement>(null);
   const sortBtnRef = useRef<HTMLButtonElement>(null);
@@ -64,14 +68,14 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   };
 
   const handleSortChange = (newSortBy: string, newOrder: string) => {
-    light()
-    changeSort(newSortBy, newOrder);
-    setIsSortOpen(false);
+      light()
+      changeSort(newSortBy, newOrder);
+      setIsSortOpen(false);
   };
 
   const handleCategoryChange = (newCategory: string | null) => {
-    light()
-    changeCategory(newCategory);
+      light()
+      changeCategory(newCategory);  
   };
 
   return (
@@ -104,6 +108,17 @@ export const ControlPanel: FC<ControlPanelProps> = ({
             {activeCategoryOption?.label || 'All'}
           </span>
         </button>
+
+        {isFilter && (
+          <button
+            className={`${style['control-panel__btn']} ${style['control-panel__btn--reset']}`}
+            type="button"
+            aria-label="Reset all filters"
+            onClick={()=>{clearAll(); light();}}
+          >
+            Reset
+          </button>
+        )}
       </div>
 
       <SortControl

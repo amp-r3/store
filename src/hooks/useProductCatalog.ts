@@ -4,11 +4,11 @@ import { useSort } from "./useSort";
 import { useUrlPagination } from "./useUrlPagination";
 import { useGetProductsQuery } from "@/services/productsApi";
 import { useCategory } from "./useCategory";
+import { useFilters } from "./useFilters";
 
 export function useProductCatalog() {
     const [searchParams] = useSearchParams();
-    const { activeSortOption } = useSort()
-    const { activeCategoryOption } = useCategory()
+    const { activeSortOption, activeCategoryOption } = useFilters()
     const { page, setPage } = useUrlPagination()
 
     const categoryId = activeCategoryOption?.id;

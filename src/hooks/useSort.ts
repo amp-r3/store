@@ -11,20 +11,21 @@ export function useSort() {
         (opt) => opt.sortBy === currentSortBy && opt.order === currentOrder
     ) || sortingOptions[0];
 
-    const changeSort = (newSortBy: string | null, newOrder: string | null) => {
+    const changeSort = (newSortBy?: string, newOrder?: string) => {
         setSearchParams((prevParams) => {
+            const newParams = new URLSearchParams(prevParams);
             if (newSortBy && newOrder) {
-                prevParams.set('sortBy', newSortBy);
-                prevParams.set('order', newOrder);
+                newParams.set('sortBy', newSortBy);
+                newParams.set('order', newOrder);
             } else {
-                prevParams.delete('sortBy');
-                prevParams.delete('order');
+                newParams.delete('sortBy');
+                newParams.delete('order');
             }
 
-            prevParams.delete('page');
+            newParams.delete('page');
 
-            return prevParams;
-        });
+            return newParams;
+        }, { replace: true });
     };
 
     return {

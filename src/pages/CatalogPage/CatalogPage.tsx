@@ -3,7 +3,7 @@ import { ErrorView, Loader, NoResults } from '@/components/common'
 // Custom Components
 import { Pagination, ProductCard, ControlPanel } from '@/components/products'
 // Custom Hooks
-import { useCategory, useProductCatalog, useSort } from '@/hooks'
+import { useFilters, useProductCatalog } from '@/hooks'
 // Utils
 import { getErrorMessage, scrollToTop } from '@/utils'
 // Redux hooks
@@ -26,8 +26,7 @@ export const CatalogPage = () => {
     error,
   } = useProductCatalog();
 
-  const { changeSort, sortingOptions, activeSortOption } = useSort()
-  const { changeCategory, categoryOptions, activeCategoryOption } = useCategory()
+  const { changeSort, sortingOptions, activeSortOption, changeCategory, categoryOptions, activeCategoryOption, clearAllFilters } = useFilters()
   const dispatch = useAppDispatch()
 
   const handleAddToCart = (product: Product) => {
@@ -51,6 +50,7 @@ export const CatalogPage = () => {
   return (
     <main className='container'>
       <ControlPanel
+        clearAll={clearAllFilters}
         searchQuery={query}
         sortingOptions={sortingOptions}
         changeSort={changeSort}

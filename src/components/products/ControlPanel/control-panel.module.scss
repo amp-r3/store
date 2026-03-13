@@ -53,8 +53,10 @@
     font-size: $fs-sm;
     font-weight: $fw-normal;
     line-height: $lh-ui;
+    border-radius: 4px;
     cursor: pointer;
     transition:
+      color $transition-fast $ease-in-out-smooth,
       background-color $transition-fast $ease-in-out-smooth,
       box-shadow $transition-fast $ease-in-out-smooth;
 
@@ -125,6 +127,48 @@
       .control-panel__btn-icon {
         filter: none;
       }
+    }
+  }
+
+  // Модификатор кнопки сброса — переопределяет hover __btn по каскаду
+  &__btn--reset {
+    position: relative;
+    color: var(--text-muted);
+
+    // левый разделитель, симметричный ::after у первой кнопки
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: var(--border-color);
+      transition: opacity $transition-fast;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--error-color);
+        background: rgba(var(--error-color-rgb, 220, 38, 38), 0.06);
+        box-shadow: inset 0 0 0 1px rgba(var(--error-color-rgb, 220, 38, 38), 0.2);
+
+        &::before {
+          opacity: 0;
+        }
+      }
+    }
+
+    &:active {
+      background: rgba(var(--error-color-rgb, 220, 38, 38), 0.12);
+    }
+
+    // На узких экранах кнопка не растягивается — только нужное пространство
+    @media (width < 550px) {
+      flex: 0 0 auto;
+      padding: $spacing-xs $spacing-sm;
+      font-size: $fs-sm;
     }
   }
 
