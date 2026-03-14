@@ -5,11 +5,11 @@ import { CategoryPopup } from './CategoryPopup/CategoryPopup';
 // Hooks
 import { useMediaQuery } from '@/hooks';
 // Types
-import { CategoryOption } from '@/utils/categoryOptions';
+import { Categories, Category } from '@/services/productsApi';
 
 export interface ICategoryProps {
-    categoryOptions: CategoryOption[];
-    activeCategoryOption: CategoryOption | null;
+    categoryOptions: Categories;
+    activeCategoryOption: Category | null;
     changeCategory: (newCategory: string) => void;
     isOpen: boolean;
     onClose: () => void

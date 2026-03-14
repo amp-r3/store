@@ -1,13 +1,20 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { useGetProductsQuery } from "@/services/productsApi";
+import { useGetCategoriesQuery, useGetProductsQuery } from "@/services/productsApi";
 import { useFilters } from "./useFilters";
 
 export function useProductCatalog() {
     const [searchParams] = useSearchParams();
-    const { activeSortOption, activeCategoryOption, page, setPage } = useFilters()
-
-    const categoryId = activeCategoryOption?.id;
+    const { activeSortOption, page, setPage, activeCategoryOption } = useFilters()
+    
+    const {
+        data: categories = [],  
+        isLoading: categoriesLoading,
+        error: categoriesError
+    } = useGetCategoriesQuery();
+    
+    const categoryId = activeCategoryOption?.slug
+    
 
     const query = searchParams.get('q')
 
@@ -19,26 +26,32 @@ export function useProductCatalog() {
             p.order = activeSortOption.order;
         }
 
-        if (categoryId && categoryId !== 'all') {
+        if (categoryId !== 'all') {
             p.category = categoryId;
         }
 
         return p;
-    }, [page, query, activeSortOption, categoryId]);
+    }, [page, query, activeSortOption, activeCategoryOption]);
 
-    const { data, isLoading, isFetching, error, } = useGetProductsQuery(params);
+    const {
+        data: productsResponse,
+        isFetching: productsFetching,
+        isLoading: productsLoading,
+        error: productsError
+    } = useGetProductsQuery(params);
+    
 
     const totalItems = useMemo(() => {
-        if (!data?.total) return 0
+        if (!productsResponse?.total) return 0
 
-        return data.total
-    }, [data])
+        return productsResponse.total
+    }, [productsResponse])
 
     const productsArray = useMemo(() => {
-        if (!data?.items || !data?.ids) return [];
-        return data.ids.map((id) => data.items[id]);
+        if (!productsResponse?.items || !productsResponse?.ids) return [];
+        return productsResponse.ids.map((id) => productsResponse.items[id]);
 
-    }, [data]);
+    }, [productsResponse]);
 
-    return { productsArray, setPage, page, isLoading, isFetching, totalItems, query, error, }
+    return { productsArray, setPage, page, productsLoading, productsFetching, totalItems, query, productsError, categories }
 }

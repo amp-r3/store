@@ -20,11 +20,12 @@ export const CatalogPage = () => {
     productsArray,
     setPage,
     page,
-    isLoading,
-    isFetching,
+    productsLoading,
+    productsFetching,
     totalItems,
     query,
-    error,
+    productsError,
+    categories,
   } = useProductCatalog();
 
   const { 
@@ -32,7 +33,6 @@ export const CatalogPage = () => {
     sortingOptions,
     activeSortOption,
     changeCategory,
-    categoryOptions,
     activeCategoryOption,
     clearAllFilters 
   } = useFilters();
@@ -48,12 +48,12 @@ export const CatalogPage = () => {
     scrollToTop()
   }
 
-  if (isLoading) {
+  if (productsLoading) {
     return <Loader />
   }
 
-  if (error) {
-    const errorMessage = getErrorMessage(error);
+  if (productsError) {
+    const errorMessage = getErrorMessage(productsError);
     return <ErrorView error={errorMessage} />
   }
 
@@ -65,14 +65,14 @@ export const CatalogPage = () => {
         sortingOptions={sortingOptions}
         changeSort={changeSort}
         activeSortOption={activeSortOption}
-        categoryOptions={categoryOptions}
+        categoryOptions={categories}
         changeCategory={changeCategory}
         activeCategoryOption={activeCategoryOption}
       />
 
       <div
         className={style.content}
-        style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
+        style={{ opacity: productsFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
       >
         {productsArray.map((product: Product) => {
           const itemInCart = cartItems.filter(item => item.id === product.id);
@@ -97,7 +97,7 @@ export const CatalogPage = () => {
         />
       )}
 
-      {productsArray.length === 0 && !isFetching && (
+      {productsArray.length === 0 && !productsFetching && (
         <NoResults query={query} />
       )}
     </main>

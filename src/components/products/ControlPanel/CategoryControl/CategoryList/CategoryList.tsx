@@ -1,10 +1,10 @@
 import { FC, useCallback, useEffect, useRef, useMemo } from 'react';
-import { CategoryOption } from '@/utils/categoryOptions';
 import style from './category-list.module.scss';
+import { Categories, Category } from '@/services/productsApi';
 
 interface CategoryListProps {
-    categoryOptions: CategoryOption[];
-    activeCategoryOption: CategoryOption | null;
+    categoryOptions: Categories;
+    activeCategoryOption: Category | null;
     changeCategory: (newCategory: string | null) => void;
     onClose?: () => void;
 }
@@ -40,11 +40,11 @@ export const CategoryList: FC<CategoryListProps> = ({
         const DEFAULT_CATEGORY_ID = 'all';
 
         return [...categoryOptions].sort((a, b) => {
-            if (a.id === DEFAULT_CATEGORY_ID) return -1;
-            if (b.id === DEFAULT_CATEGORY_ID) return 1;
+            if (a.slug === DEFAULT_CATEGORY_ID) return -1;
+            if (b.slug === DEFAULT_CATEGORY_ID) return 1;
             if (activeCategoryOption) {
-                if (a.id === activeCategoryOption.id) return -1;
-                if (b.id === activeCategoryOption.id) return 1;
+                if (a.slug === activeCategoryOption.slug) return -1;
+                if (b.slug === activeCategoryOption.slug) return 1;
             }
             return 0;
         });
@@ -53,17 +53,17 @@ export const CategoryList: FC<CategoryListProps> = ({
     return (
         <ul className={style['category-list']}>
             {sortedOptions.map((option) => {
-                const isActive = option.id === activeCategoryOption?.id;
+                const isActive = option.slug === activeCategoryOption?.slug;
 
                 return (
-                    <li key={option.id}>
+                    <li key={option.slug}>
                         <button
                             type="button"
                             className={`${style['category-list__item']} ${isActive ? style['category-list__item--active'] : ''}`}
-                            onClick={() => handleSelect(option.id)}
+                            onClick={() => handleSelect(option.slug)}
                             aria-pressed={isActive}
                         >
-                            {option.label}
+                            {option.name}
                         </button>
                     </li>
                 );

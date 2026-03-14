@@ -1,21 +1,27 @@
 import { useSearchParams } from "react-router";
-import { sortingOptions, categoryOptions, CategoryId } from "@/utils";
+import { sortingOptions, } from "@/utils";
+import { useGetCategoriesQuery } from "@/services/productsApi";
 
 export function useFilters(defaultPage = 1) {
     const [searchParams, setSearchParams] = useSearchParams();
+    const {
+        data: categories = [],  
+        isLoading: categoriesLoading,
+        error: categoriesError
+    } = useGetCategoriesQuery();
 
     const currentSortBy = searchParams.get('sortBy');
     const currentOrder = searchParams.get('order');
-    const currentCategory = (searchParams.get('category') as CategoryId) || 'all';
+    const currentCategory = (searchParams.get('category')) || 'all';
     const page = Number(searchParams.get('page')) || defaultPage;
 
     const activeSortOption = sortingOptions.find(
         (opt) => opt.sortBy === currentSortBy && opt.order === currentOrder
     ) || sortingOptions[0];
 
-    const activeCategoryOption = categoryOptions.find(
-        (opt) => opt.id === currentCategory
-    ) || categoryOptions[0];
+    const activeCategoryOption = categories.find(
+        (opt) => opt.slug === currentCategory
+    );
 
     const updateParams = (updates: Record<string, string | number | null>) => {
         setSearchParams((prev) => {
@@ -45,7 +51,7 @@ export function useFilters(defaultPage = 1) {
         }
     };
 
-    const changeCategory = (newCategory: CategoryId | null) => {
+    const changeCategory = (newCategory: string | null) => {
         updateParams({ category: newCategory });
     };
 
@@ -70,7 +76,6 @@ export function useFilters(defaultPage = 1) {
         activeSortOption,
         activeCategoryOption,
         sortingOptions,
-        categoryOptions,
         changeSort,
         changeCategory,
         setPage,

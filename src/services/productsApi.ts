@@ -1,6 +1,13 @@
 import { Product } from "@/types/products";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+export interface Category {
+    slug: string;
+    name: string;
+    url: string;
+}
+export type Categories = Category[]
+
 export interface ProductParams {
     page?: number;
     sortBy?: string | null;
@@ -51,7 +58,6 @@ export const productsApi = createApi({
                     params: queryParams,
                 };
             },
-
             transformResponse: (response: { products: Product[], total: number }) => {
                 const items = response.products.reduce((acc, curr) => {
                     acc[curr.id] = curr;
@@ -67,6 +73,19 @@ export const productsApi = createApi({
                 };
             },
         }),
+        
+        getCategories: builder.query<Categories, void>({
+            query: () => 'products/categories',
+            
+            transformResponse: (response: Categories) => {
+                const defaultCategory: Category = {
+                    slug: 'all',
+                    name: 'All Products',
+                    url: '',
+                };
+                return [defaultCategory, ...response];
+            },
+        }),
 
         getProductById: builder.query<Product, string>({
             query: (id) => `products/${id}`,
@@ -74,4 +93,4 @@ export const productsApi = createApi({
     }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery } = productsApi;
+export const { useGetProductsQuery, useGetProductByIdQuery, useGetCategoriesQuery } = productsApi;

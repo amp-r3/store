@@ -2,10 +2,10 @@ import { FC, useState, useRef, useEffect } from 'react';
 import { IoSwapVertical, IoGrid } from 'react-icons/io5';
 import style from './control-panel.module.scss';
 import { SortingOption } from '@/utils/sortingOptions';
-import { CategoryOption } from '@/utils/categoryOptions';
 import { SortControl } from './SortControl/SortControl';
 import { CategoryControl } from './CategoryControl/CategoryControl';
 import { useHaptics } from '@/hooks';
+import { Categories, Category } from '@/services/productsApi';
 
 interface ControlPanelProps {
   clearAll: ()=> void
@@ -13,8 +13,8 @@ interface ControlPanelProps {
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
   changeCategory: (category: string | null) => void;
-  categoryOptions: CategoryOption[];
-  activeCategoryOption: CategoryOption | null;
+  categoryOptions: Categories;
+  activeCategoryOption: Category | null;
   searchQuery: string | null;
 }
 
@@ -31,7 +31,7 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   
-  const isFilter = activeSortOption.id !== 'default' || activeCategoryOption?.id !== 'all'
+  const isFilter = activeCategoryOption?.slug !== 'all'
 
   const panelRef = useRef<HTMLDivElement>(null);
   const sortBtnRef = useRef<HTMLButtonElement>(null);
@@ -99,13 +99,13 @@ export const ControlPanel: FC<ControlPanelProps> = ({
           type="button"
           onClick={handleToggleCategory}
           aria-expanded={isCategoryOpen}
-          aria-label={`Category: ${activeCategoryOption?.label || 'All'}`}
+          aria-label={`Category: ${activeCategoryOption?.name || 'All'}`}
           disabled={searchQuery ? true : false}
         >
           <IoGrid className={style['control-panel__btn-icon']} aria-hidden="true" />
           <span className={style['control-panel__btn-label']}>Category</span>
           <span className={style['control-panel__btn-value']}>
-            {activeCategoryOption?.label || 'All'}
+            {activeCategoryOption?.name || 'All'}
           </span>
         </button>
 
