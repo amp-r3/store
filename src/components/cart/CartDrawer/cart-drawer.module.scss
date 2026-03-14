@@ -6,101 +6,68 @@
     top: 0;
     right: 0;
     height: 100%;
+    
     width: 100%;
-    z-index: $z-index-modal;
+    
+    @media (min-width: 480px) {
+        width: clamp(380px, 60vw, 440px);
+    }
 
+    @media (min-width: 1024px) {
+        width: clamp(420px, 35vw, 500px);
+    }
+
+    z-index: $z-index-modal;
     display: flex;
     flex-direction: column;
     outline: none;
-
-    // --- Visuals (Glassmorphism) ---
+    
+    // --- Visuals ---
     background: var(--glass-background-strong);
     backdrop-filter: var(--glass-backdrop-blur);
     border-left: 1px solid var(--glass-border);
     box-shadow: var(--shadow-default);
-
-    // --- Backdrop Overlay ---
-    &__backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
-        z-index: $z-index-modal-backdrop;
+    
+    border-radius: 0;
+    
+    @media (min-width: 480px) {
+        border-radius: $radius-xl 0 0 $radius-xl;
     }
 
-    // --- Scrollable Area (Header + Body) ---
+    // --- Scrollable Area ---
     &__scrollArea {
         flex: 1;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-
+        
         &::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
 
         &::-webkit-scrollbar-thumb {
-            background: var(--border-color-strong);
+            background: var(--border-color-subtle);
             border-radius: $radius-pill;
+            &:hover {
+                background: var(--primary-accent-light);
+            }
         }
     }
 
-    // --- Body Section ---
     &__body {
         flex: 1;
-        padding: $spacing-lg;
+        padding: clamp($spacing-md, 3vw, $spacing-lg);
         display: flex;
         flex-direction: column;
         gap: $spacing-md;
     }
 
-    &__emptyState {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        text-align: center;
-        gap: $spacing-md;
-        margin-top: auto;
-        margin-bottom: auto;
-
-        p {
-            font-size: $fs-md;
-        }
-    }
-
-    &__emptyIcon {
-        opacity: 0.5;
-        color: var(--text-secondary);
-    }
-
-    // =============================================
-    //               RESPONSIVE
-    // =============================================
-
-    // --- Mobile (<480px) ---
-    @media (max-width: 480px) {
-        &__body {
-            padding: $spacing-sm;
-        }
-    }
-
-    // --- Tablet & Desktop (>=768px) ---
-    @media (min-width: 768px) {
-        width: 50vw;
-        max-width: 600px;
-
-        border-top-left-radius: $radius-lg;
-        border-bottom-left-radius: $radius-lg;
-        box-shadow: var(--shadow-accent);
-    }
-
-    // --- Large Screens (>=1440px) ---
-    @media (min-width: 1440px) {
-        &__body {
-            padding: $spacing-xl;
-        }
+    // --- Backdrop ---
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: calc(#{$z-index-modal} - 1);
     }
 }

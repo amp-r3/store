@@ -20,6 +20,7 @@ import { CartItem } from '../CartItem/CartItem';
 import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
+
 // Custom Hooks
 import { useHaptics } from '@/hooks';
 
@@ -73,6 +74,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         <Drawer.Content
           className={styles.cart}
           aria-labelledby="cart-title"
+          style={{ height: '100%', right: 0, top: 0 }}
         >
           {/* --- SCROLLABLE AREA (Header + Body) --- */}
           <div className={styles.cart__scrollArea}>
