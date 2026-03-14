@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .cart {
     // --- Layout & Positioning ---
@@ -19,15 +19,6 @@
     border-left: 1px solid var(--glass-border);
     box-shadow: var(--shadow-default);
 
-    // --- Animation & State ---
-    transform: translateX(100%);
-    transition: transform $transition-layout $ease-spring;
-    will-change: transform;
-
-    &--open {
-        transform: translateX(0);
-    }
-
     // --- Backdrop Overlay ---
     &__backdrop {
         position: fixed;
@@ -35,14 +26,6 @@
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(4px);
         z-index: $z-index-modal-backdrop;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity $transition-base ease;
-
-        &--visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
     }
 
     // --- Scrollable Area (Header + Body) ---

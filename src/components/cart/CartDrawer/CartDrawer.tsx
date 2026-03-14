@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { FC, useMemo } from 'react';
+import { Drawer } from 'vaul';
 import { useNavigate } from 'react-router';
 
 // Styles
@@ -20,6 +20,7 @@ import { CartItem } from '../CartItem/CartItem';
 import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
+// Custom Hooks
 import { useHaptics } from '@/hooks';
 
 interface CartDrawerProps {
@@ -32,9 +33,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { soft, medium, success } = useHaptics()
-
-  const drawerRef = useRef<HTMLElement>(null);
+  const { soft, medium, success } = useHaptics();
 
   const {
     subtotal,
@@ -42,106 +41,78 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     discountAmount,
     discountPercent,
     shippingProgress,
-    remainingForFreeShipping
+    remainingForFreeShipping,
   } = useMemo(() => calculateCartTotals(cartItems), [cartItems]);
 
-  const onIncrease = (id: number) => {dispatch(changeQuantity({ id, type: 'inc' })); soft()};
-  const onDecrease = (id: number) => {dispatch(changeQuantity({ id, type: 'dec' })); soft()};
-  const onRemove = (id: number) => {dispatch(removeFromCart(id)); medium()};
+  const onIncrease = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); };
+  const onDecrease = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); };
+  const onRemove   = (id: number) => { dispatch(removeFromCart(id)); medium(); };
 
   const handleCheckout = () => {
-    success()
+    success();
     console.log('Proceed to checkout');
   };
 
   const onStartShopping = () => {
-    soft()
+    soft();
     navigate('/', { replace: true });
     onClose();
   };
 
-  // Block body scrolling & Manage Focus Trap
-  useEffect(() => {
-    if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+  return (
+    <Drawer.Root
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      direction="right"
+    >
+      <Drawer.Portal>
+        {/* Backdrop */}
+        <Drawer.Overlay className={styles.cart__backdrop} />
 
-      drawerRef.current?.focus();
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    };
-  }, [isOpen]);
+        {/* Drawer panel */}
+        <Drawer.Content
+          className={styles.cart}
+          aria-labelledby="cart-title"
+        >
+          {/* --- SCROLLABLE AREA (Header + Body) --- */}
+          <div className={styles.cart__scrollArea}>
+            <CartHeader totalQuantity={totalQuantity} onClose={onClose} />
 
-  // Escape Closing
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) onClose();
-    };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [isOpen]);
-
-  const drawerClasses = `${styles.cart} ${isOpen ? styles['cart--open'] : ''}`;
-  const backdropClasses = `${styles.cart__backdrop} ${isOpen ? styles['cart__backdrop--visible'] : ''}`;
-
-  return createPortal(
-    <>
-      <div className={backdropClasses} onClick={onClose} aria-hidden="true" />
-
-      <aside
-        ref={drawerRef}
-        onClick={(e) => e.stopPropagation()}
-        className={drawerClasses}
-        aria-modal="true"
-        role="dialog"
-        aria-labelledby="cart-title"
-        tabIndex={-1}
-      >
-        {/* --- SCROLLABLE AREA (Header + Body) --- */}
-        <div className={styles.cart__scrollArea}>
-          <CartHeader totalQuantity={totalQuantity} onClose={onClose} />
-
-          <div className={styles.cart__body}>
-            {cartItems.length ? (
-              cartItems.map((item) => {
-                const isMaxValue = item.quantity >= item.stock
-                return (
-                  <CartItem
-                    key={item.id}
-                    product={item}
-                    onIncrease={onIncrease}
-                    onDecrease={onDecrease}
-                    onRemove={onRemove}
-                    isMaxValue={isMaxValue}
-                  />   
-                )
-              })
-            ) : (
-              <EmptyCart onStartShopping={onStartShopping} />
-            )}
+            <div className={styles.cart__body}>
+              {cartItems.length ? (
+                cartItems.map((item) => {
+                  const isMaxValue = item.quantity >= item.stock;
+                  return (
+                    <CartItem
+                      key={item.id}
+                      product={item}
+                      onIncrease={onIncrease}
+                      onDecrease={onDecrease}
+                      onRemove={onRemove}
+                      isMaxValue={isMaxValue}
+                    />
+                  );
+                })
+              ) : (
+                <EmptyCart onStartShopping={onStartShopping} />
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* --- FOOTER --- */}
-        {cartItems.length > 0 && (
-          <CartFooter
-            subtotal={subtotal}
-            total={total}
-            discountAmount={discountAmount}
-            discountPercent={discountPercent}
-            shippingProgress={shippingProgress}
-            remainingForFreeShipping={remainingForFreeShipping}
-            onCheckout={handleCheckout}
-          />
-        )}
-      </aside>
-    </>,
-    document.body
+          {/* --- FOOTER --- */}
+          {cartItems.length > 0 && (
+            <CartFooter
+              subtotal={subtotal}
+              total={total}
+              discountAmount={discountAmount}
+              discountPercent={discountPercent}
+              shippingProgress={shippingProgress}
+              remainingForFreeShipping={remainingForFreeShipping}
+              onCheckout={handleCheckout}
+            />
+          )}
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 };
