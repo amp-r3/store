@@ -31,7 +31,7 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   
-  const isFilter = activeCategoryOption?.slug !== 'all'
+  const isFilter = activeCategoryOption?.slug !== 'all' || activeSortOption.id !== 'default'
 
   const panelRef = useRef<HTMLDivElement>(null);
   const sortBtnRef = useRef<HTMLButtonElement>(null);

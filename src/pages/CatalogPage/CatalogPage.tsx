@@ -14,6 +14,7 @@ import style from './catalogPage.module.scss'
 // Types
 import { Product } from '@/types/products'
 import { selectCartItems } from '@/store'
+import { useEffect } from 'react'
 
 export const CatalogPage = () => {
   const {
@@ -45,8 +46,11 @@ export const CatalogPage = () => {
 
   const onPageChange = (newPage: number) => {
     setPage(newPage)
-    scrollToTop()
   }
+  
+  useEffect(() => {
+    scrollToTop()
+}, [page]);
 
   if (productsLoading) {
     return <Loader />
