@@ -10,11 +10,11 @@
     width: 100%;
     
     @media (min-width: 480px) {
-        width: clamp(380px, 60vw, 440px);
+        width: clamp(470px, 60vw, 500px);
     }
 
     @media (min-width: 1024px) {
-        width: clamp(420px, 35vw, 500px);
+        width: clamp(500px, 35vw, 600px);
     }
 
     z-index: $z-index-modal;

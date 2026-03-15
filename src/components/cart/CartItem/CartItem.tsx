@@ -111,7 +111,7 @@ export const CartItem: FC<CartItemProps> = ({
                         onClick={() => onRemove(id)}
                         aria-label="Remove item"
                     >
-                        <IoTrashOutline size={20} />
+                        <IoTrashOutline size={24} />
                     </button>
                 </div>
             </div>

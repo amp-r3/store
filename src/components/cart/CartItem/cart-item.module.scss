@@ -2,29 +2,29 @@
 
 .cart-item {
     display: flex;
-    gap: $spacing-md;
-    padding: $spacing-md;
+    gap: $spacing-lg;
+    padding: $spacing-lg;
     width: 100%;
     position: relative;
 
     background: rgba(var(--background-component-rgb), 0.4);
-    border: 1px solid var(--border-color-subtle);
+    border: 1px solid var(--border-color);
     border-radius: $radius-lg;
     transition: all $transition-base $ease-in-out-smooth;
 
-    &:last-child {
-        border-bottom: none;
+    @media (width < 768px) {
+        gap: $spacing-md;
+        padding: $spacing-md;
     }
 
-    @media (min-width: 768px) {
-        gap: $spacing-lg;
-        padding: $spacing-lg;
+    @media (width < 480px) {
+        padding: $spacing-sm;
     }
 
     @media (hover: hover) {
         &:hover {
             background: var(--background-component);
-            border-color: var(--border-color);
+            border-color: var(--border-color-strong);
             transform: translateY(-2px);
             box-shadow: var(--shadow-default), 0 0 0 1px rgba(var(--primary-accent-rgb), 0.06);
         }
@@ -35,8 +35,8 @@
     // =============================================
     &__media {
         flex-shrink: 0;
-        width: 80px;
-        height: 80px;
+        width: 110px;
+        height: 110px;
         border-radius: $radius-md;
         overflow: hidden;
         background: var(--background-component);
@@ -44,14 +44,14 @@
         border: 1px solid transparent;
         transition: border-color $transition-base $ease-in-out-smooth;
 
-        @media (min-width: 480px) {
+        @media (width < 768px) {
             width: 96px;
             height: 96px;
         }
 
-        @media (min-width: 768px) {
-            width: 110px;
-            height: 110px;
+        @media (width < 480px) {
+            width: 80px;
+            height: 80px;
         }
 
         .cart-item:hover & {
@@ -80,6 +80,10 @@
         justify-content: space-between;
         min-width: 0;
         gap: $spacing-sm;
+
+        @media (width < 480px) {
+            gap: $spacing-md;
+        }
     }
 
     // =============================================
@@ -90,17 +94,18 @@
         justify-content: space-between;
         align-items: flex-start;
         gap: $spacing-md;
-        
-        @media (max-width: 480px) {
+
+        @media (width < 480px) {
             flex-direction: column;
             align-items: stretch;
             gap: $spacing-xs;
+            padding-right: 40px; 
         }
     }
 
     &__title {
         font-family: $font-primary;
-        font-size: $fs-sm;
+        font-size: $fs-base;
         font-weight: $fw-semibold;
         color: var(--text-primary);
         line-height: $lh-tight;
@@ -112,8 +117,9 @@
         overflow: hidden;
         transition: color $transition-fast;
 
-        @media (min-width: 768px) {
+        @media (width < 480px) {
             font-size: $fs-base;
+            -webkit-line-clamp: 1;
         }
 
         .cart-item:hover & {
@@ -126,29 +132,24 @@
         flex-direction: column;
         align-items: flex-end;
         flex-shrink: 0;
-        gap: 2px;
-        flex-wrap: wrap;
+        gap: $spacing-xs;
 
-        @media (max-width: 480px) {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            gap: $spacing-xs;
+        @media (width < 480px) {
+            align-items: flex-start; 
         }
     }
 
     &__price {
         font-family: $font-primary;
-        font-size: $fs-base;
+        font-size: $fs-lg;
         font-weight: $fw-bold;
         color: var(--text-primary);
         white-space: nowrap;
         line-height: 1;
 
-        @media (min-width: 768px) {
-            font-size: $fs-lg;
+        @media (width < 768px) {
+            font-size: $fs-base;
         }
-        
     }
 
     &__price-details {
@@ -157,21 +158,24 @@
         justify-content: flex-end;
         gap: $spacing-xs;
         flex-wrap: wrap;
-        width: 100%;
-        max-width: 100px;
+
+        @media (width < 480px) {
+            justify-content: flex-start;
+        }
     }
 
     &__unit-price {
         font-size: 0.75rem;
         color: var(--text-muted);
         line-height: 1;
+        white-space: nowrap;
     }
 
     &__discount {
         font-size: 0.7rem;
         font-weight: $fw-bold;
-        color: var(--text-inverse);
-        background: rgba(var(--primary-accent-light-rgb), 0.6);
+        color: #fff;
+        background: rgba(var(--primary-accent-light-rgb));
         padding: 3px 6px;
         border-radius: $radius-pill;
         line-height: 1;
@@ -185,17 +189,19 @@
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        gap: $spacing-xs;
+        column-gap: $spacing-sm;
+        row-gap: $spacing-xs;
         margin-top: auto;
-        
-        @media (min-width: 768px) {
-            gap: $spacing-sm;
+
+        @media (width < 768px) {
+            column-gap: $spacing-xs;
         }
     }
 
     &__quantity-ctrl {
         display: flex;
         align-items: center;
+        flex-shrink: 0;
         gap: 2px;
         background: rgba(var(--background-body-rgb), 0.6);
         padding: 4px;
@@ -206,22 +212,24 @@
 
     &__quantity-value {
         font-family: $font-primary;
-        font-size: $fs-sm;
+        font-size: $fs-base;
         font-weight: $fw-bold;
         color: var(--text-primary);
-        width: 1.5rem;
+        width: 2rem;
         text-align: center;
         font-variant-numeric: tabular-nums;
 
-        @media (min-width: 768px) {
-            font-size: $fs-base;
-            width: 2rem;
+        @media (width < 768px) {
+            font-size: $fs-sm;
+            width: 1.5rem;
         }
     }
 
     &__stock-hint {
         display: inline-flex;
         align-items: center;
+        flex-shrink: 0;
+        white-space: nowrap;
         gap: 4px;
         font-size: 0.65rem;
         font-weight: $fw-semibold;
@@ -253,12 +261,12 @@
         }
 
         &--qty {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
 
-            @media (min-width: 768px) {
-                width: 32px;
-                height: 32px;
+            @media (width < 768px) {
+                width: 28px;
+                height: 28px;
             }
 
             @media (hover: hover) {
@@ -281,18 +289,24 @@
         }
 
         &--remove {
-            width: 32px;
-            height: 32px;
-            color: var(--error-color);
-            background: rgba(var(--error-color-rgb), 0.08);
+            width: $touch-target-min;
+            height: $touch-target-min;
+            border: 1px solid var(--border-color-light);
+            color: var(--text-muted);
+            background: rgba(var(--background-body-rgb), 0.3);
             margin-left: auto;
             flex-shrink: 0;
 
-            @media (min-width: 768px) {
-                width: 36px;
-                height: 36px;
-                color: var(--text-muted);
-                background: rgba(var(--background-body-rgb), 0.3);
+            @media (width < 768px) {
+                color: var(--error-color);
+                background: rgba(var(--error-color-rgb), 0.08);
+            }
+
+            @media (width < 480px) {
+                position: absolute;
+                top: $spacing-sm;
+                right: $spacing-sm;
+                margin: 0;
             }
 
             @media (hover: hover) {
@@ -314,15 +328,33 @@
     // =============================================
     @media (prefers-reduced-motion: reduce) {
         transition: none;
-        &__image, &__title, &__btn { transition: none; }
-        &__stock-hint { animation: none; }
+
+        &__image,
+        &__title,
+        &__btn {
+            transition: none;
+        }
+
+        &__stock-hint {
+            animation: none;
+        }
+
         @media (hover: hover) {
-            &:hover, .cart-item__image:hover { transform: none; }
+            &:hover,
+            .cart-item__image:hover {
+                transform: none;
+            }
         }
     }
 }
 
 @keyframes stock-hint-in {
-    from { opacity: 0; transform: translateY(2px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(2px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
