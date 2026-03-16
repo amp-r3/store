@@ -32,6 +32,7 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
     isMaxValue,
     haptic
 }) => {
+    console.log("footer card rerender");
     return (
         <div className={style.card__footer}>
             <div className={style.card__price_wrapper}>

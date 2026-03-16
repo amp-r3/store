@@ -1,27 +1,20 @@
 import { FC, useMemo } from 'react';
 import { Drawer } from 'vaul';
 import { useNavigate } from 'react-router';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 
-// Styles
 import styles from './cart-drawer.module.scss';
 
-// Redux Typed Hooks
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-
-// Selectors
 import { selectCartItems, selectCartTotalQuantity } from '@/store';
-
-// Functions
 import { changeQuantity, removeFromCart } from '@/store/slices/cartSlice';
 import { calculateCartTotals } from '@/utils';
 
-// Custom components
 import { CartItem } from '../CartItem/CartItem';
 import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
 
-// Custom Hooks
 import { useHaptics } from '@/hooks';
 
 interface CartDrawerProps {
@@ -47,7 +40,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const onIncrease = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); };
   const onDecrease = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); };
-  const onRemove   = (id: number) => { dispatch(removeFromCart(id)); medium(); };
+  const onRemove = (id: number) => { dispatch(removeFromCart(id)); medium(); };
 
   const handleCheckout = () => {
     success();
@@ -65,18 +58,25 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
       open={isOpen}
       onOpenChange={(open) => !open && onClose()}
       direction="right"
+      modal={false}
     >
       <Drawer.Portal>
-        {/* Backdrop */}
         <Drawer.Overlay className={styles.cart__backdrop} />
 
-        {/* Drawer panel */}
         <Drawer.Content
           className={styles.cart}
-          aria-labelledby="cart-title"
           style={{ height: '100%', right: 0, top: 0 }}
+          aria-describedby={undefined}
+          onOpenAutoFocus={(e) => {
+            if (document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
+          }}
         >
-          {/* --- SCROLLABLE AREA (Header + Body) --- */}
+          <VisuallyHidden.Root>
+            <Drawer.Title>Shopping Cart</Drawer.Title>
+          </VisuallyHidden.Root>
+
           <div className={styles.cart__scrollArea}>
             <CartHeader totalQuantity={totalQuantity} onClose={onClose} />
 
@@ -101,7 +101,6 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* --- FOOTER --- */}
           {cartItems.length > 0 && (
             <CartFooter
               subtotal={subtotal}

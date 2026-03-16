@@ -1,7 +1,6 @@
 @use '@/styles/index' as *;
 
 .cart {
-    // --- Layout & Positioning ---
     position: fixed;
     top: 0;
     right: 0;
@@ -22,7 +21,6 @@
     flex-direction: column;
     outline: none;
     
-    // --- Visuals ---
     background: var(--glass-background-strong);
     backdrop-filter: var(--glass-backdrop-blur);
     border-left: 1px solid var(--glass-border);
@@ -34,7 +32,6 @@
         border-radius: $radius-xl 0 0 $radius-xl;
     }
 
-    // --- Scrollable Area ---
     &__scrollArea {
         flex: 1;
         overflow-y: auto;
@@ -62,7 +59,6 @@
         gap: $spacing-md;
     }
 
-    // --- Backdrop ---
     &__backdrop {
         position: fixed;
         inset: 0;

@@ -15,7 +15,15 @@ export const CategoryOverlay: FC<ICategoryProps> = ({
         <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <Drawer.Portal>
                 <Drawer.Overlay className={style['category-overlay__backdrop']} />
-                <Drawer.Content className={style['category-overlay__content']}>
+                <Drawer.Content 
+                    className={style['category-overlay__content']}
+                    aria-describedby={undefined}
+                    onOpenAutoFocus={(e) => {
+                        if (document.activeElement instanceof HTMLElement) {
+                            document.activeElement.blur();
+                        }
+                    }}
+                >
                     <div className={style['category-overlay__handle']} />
 
                     <div className={style['category-overlay__header']}>

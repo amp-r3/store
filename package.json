@@ -11,6 +11,7 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
+    "@radix-ui/react-visually-hidden": "^1.2.4",
     "@reduxjs/toolkit": "^2.9.0",
     "browserslist": "^4.28.1",
     "latest": "^0.2.0",

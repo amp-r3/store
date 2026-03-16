@@ -20,7 +20,15 @@ export const SortBottomSheet: FC<SortBottomSheetProps> = ({
             <Drawer.Portal>
                 <Drawer.Overlay className={style['sort-bottom-sheet__backdrop']} />
 
-                <Drawer.Content className={style['sort-bottom-sheet']}>
+                <Drawer.Content
+                    className={style['sort-bottom-sheet']}
+                    aria-describedby={undefined}
+                    onOpenAutoFocus={(e) => {
+                        if (document.activeElement instanceof HTMLElement) {
+                            document.activeElement.blur();
+                        }
+                    }}
+                >
                     <div className={style['sort-bottom-sheet__drag-handle']} />
 
                     <div className={style['sort-bottom-sheet__header']}>
