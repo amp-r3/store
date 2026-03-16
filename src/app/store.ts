@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import {
-  persistStore,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -11,14 +10,13 @@ import {
 
 import { productsApi } from '@/services/productsApi';
 import cartReducer from '@/store/slices/cartSlice';
-import themeSlice from '@/store/slices/themeSlice'; 
-
+import themeSlice from '@/store/slices/themeSlice';
 
 export const store = configureStore({
   reducer: {
     [productsApi.reducerPath]: productsApi.reducer,
     cart: cartReducer,
-    theme: themeSlice, 
+    theme: themeSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -28,6 +26,7 @@ export const store = configureStore({
     }).concat(productsApi.middleware),
 });
 
+import { persistStore } from 'redux-persist';
 export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;

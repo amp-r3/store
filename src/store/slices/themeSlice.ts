@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from '../storage';
+
 
 export type ThemeType = 'theme-dark' | 'theme-light';
 
@@ -14,7 +15,7 @@ const themePersistConfig = {
 };
 
 const initialState: ThemeState = {
-  theme: 'theme-dark',
+  theme: 'theme-light',
 };
 
 export const themeSlice = createSlice({

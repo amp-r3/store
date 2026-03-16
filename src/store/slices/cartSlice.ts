@@ -1,8 +1,7 @@
 import { CartItem, Product } from "@/types/products";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { persistReducer } from "redux-persist";
-import storage from 'redux-persist/lib/storage';
-
+import storage from "../storage";
 
 export interface CartState {
     items: Record<number, CartItem>;
