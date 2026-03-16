@@ -6,6 +6,7 @@ interface ProductCardImageProps {
     thumbnail: string;
     category: string;
     discountPercentage: number;
+    priority?: boolean
 }
 
 const getOptimizedImageUrl = (originalUrl: string, width: number = 300) => {
@@ -16,7 +17,9 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
     title, 
     thumbnail, 
     category, 
-    discountPercentage 
+    discountPercentage,
+    priority = false
+
 }) => {
     const imageUrl = getOptimizedImageUrl(thumbnail);
 
@@ -26,8 +29,9 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
                 src={imageUrl} 
                 alt={title} 
                 className={style.card__image} 
-                loading="lazy" 
-                decoding="async" 
+                loading={priority ? 'eager' : 'lazy'}
+                decoding={priority ? 'sync' : 'async'}
+                fetchPriority={priority ? 'high' : 'low'}
                 width="400" 
                 height="300"
             />

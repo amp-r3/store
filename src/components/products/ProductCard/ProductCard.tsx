@@ -12,9 +12,10 @@ interface ProductCardProps {
     product: Product;
     itemInCart: CartItem[];
     handleAddToCart: (product: Product) => void;
+    priority?: boolean
 }
 
-export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, itemInCart }) => {
+export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, itemInCart, priority = false }) => {
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
     const { soft } = useHaptics()
     const inStock = (stock ?? 0) > 0;

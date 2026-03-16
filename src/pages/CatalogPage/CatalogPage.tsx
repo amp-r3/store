@@ -78,7 +78,7 @@ export const CatalogPage = () => {
         className={style.content}
         style={{ opacity: productsFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
       >
-        {productsArray.map((product: Product) => {
+        {productsArray.map((product: Product, index) => {
           const itemInCart = cartItems.filter(item => item.id === product.id);
           
           return (
@@ -87,6 +87,7 @@ export const CatalogPage = () => {
               product={product}
               itemInCart={itemInCart}
               handleAddToCart={handleAddToCart}
+              priority={index < 8}
             />
           )
         })}
