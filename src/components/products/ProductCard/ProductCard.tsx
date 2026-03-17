@@ -22,9 +22,12 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, pr
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const hasDiscount = discountPercentage > 0;
-    const isMaxReached = useAppSelector(
-        useMemo(()=> selectIsMaxReached(id, stock), [id, stock])
-    )
+    const selectMaxReached = useMemo(
+        () => selectIsMaxReached(product?.id ?? 0, product?.stock ?? 0),
+        [product?.id, product?.stock]
+    );
+
+    const isMaxReached = useAppSelector(selectMaxReached);
 
     return (
         <article className={style.card}>

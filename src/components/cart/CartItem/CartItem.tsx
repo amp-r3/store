@@ -29,9 +29,12 @@ export const CartItem: FC<CartItemProps> = ({
     const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
     const totalPrice = useMemo(() => price * quantity, [price, quantity]);
     const imageUrl = getOptimizedImageUrl(thumbnail);
-    const isMaxReached = useAppSelector(
-        useMemo(()=> selectIsMaxReached(id, stock), [id, stock])
-    )
+    const selectMaxReached = useMemo(
+        () => selectIsMaxReached(product?.id ?? 0, product?.stock ?? 0),
+        [product?.id, product?.stock]
+    );
+
+    const isMaxReached = useAppSelector(selectMaxReached);
 
     return (
         <article className={styles['cart-item']}>

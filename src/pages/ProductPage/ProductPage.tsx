@@ -28,11 +28,18 @@ import { selectIsMaxReached } from '@/store';
 import style from './productPage.module.scss';
 
 export const ProductPage = () => {
-    const { light } = useHaptics()
+    const { light } = useHaptics();
     const navigate = useNavigate();
     const { id } = useParams();
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const dispatch = useAppDispatch();
+
+    const selectMaxReached = useMemo(
+        () => selectIsMaxReached(product?.id ?? 0, product?.stock ?? 0),
+        [product?.id, product?.stock]
+    );
+
+    const isMaxReached = useAppSelector(selectMaxReached);
 
     useEffect(() => {
         scrollToTop();
@@ -40,7 +47,7 @@ export const ProductPage = () => {
 
     const handleAddToCart = () => {
         if (product) {
-            light()
+            light();
             dispatch(addToCart(product));
         }
     };
@@ -52,7 +59,6 @@ export const ProductPage = () => {
             minimumFractionDigits: 2,
         }).format(value);
 
-        
     if (isLoading) return <Loader />;
     if (error) return <ErrorView error={getErrorMessage(error)} />;
     if (isNotFound) return <Navigate to="/404" replace />;
@@ -64,9 +70,6 @@ export const ProductPage = () => {
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const showPrice = formatPrice(discountedPrice);
-    const isMaxReached = useAppSelector(
-        useMemo(()=> selectIsMaxReached(productId, stock), [productId, stock])
-    )
 
     return (
         <main className={style['product-page']}>
