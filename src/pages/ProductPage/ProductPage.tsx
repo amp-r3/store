@@ -13,26 +13,27 @@ import { ProductReviews } from './components/ProductReviews/ProductReviews';
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
-import { useHaptics, useProduct } from '@/hooks';
+import { useProduct } from '@/hooks';
 
 // Redux Hooks
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
-// Redux Functions
+// Redux Selectors
+import { selectCartItems, selectIsMaxReached } from '@/store';
 import { addToCart } from '@/store/slices/cartSlice';
 
-// Redux Selectors
-import { selectIsMaxReached } from '@/store';
+// Types
+import { Product } from '@/types/products';
 
 // Styles
 import style from './productPage.module.scss';
 
 export const ProductPage = () => {
-    const { light } = useHaptics();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch()
     const { id } = useParams();
     const { product, isLoading, error, isNotFound } = useProduct(id);
-    const dispatch = useAppDispatch();
+    const cartItems = useAppSelector(selectCartItems)
 
     const selectMaxReached = useMemo(
         () => selectIsMaxReached(product?.id ?? 0, product?.stock ?? 0),
@@ -45,19 +46,16 @@ export const ProductPage = () => {
         scrollToTop();
     }, []);
 
-    const handleAddToCart = () => {
-        if (product) {
-            light();
-            dispatch(addToCart(product));
-        }
-    };
-
     const formatPrice = (value: number) =>
         new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 2,
         }).format(value);
+
+    const handleAddToCart = (product: Product) => {
+        dispatch(addToCart(product))
+    }
 
     if (isLoading) return <Loader />;
     if (error) return <ErrorView error={getErrorMessage(error)} />;
@@ -66,10 +64,13 @@ export const ProductPage = () => {
 
     const { id: productId, title, price, description, category, images,
         rating, reviews, discountPercentage, stock } = product;
-        
+
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const showPrice = formatPrice(discountedPrice);
+    const itemInCart = cartItems.filter(item => item.id === productId);
+    const item = itemInCart.find(item => item.id === productId)
+    const quantity = item?.quantity
 
     return (
         <main className={style['product-page']}>
@@ -92,9 +93,11 @@ export const ProductPage = () => {
                             inStock={inStock}
                         />
                         <ProductPurchaseBox
+                            quantity={quantity}
+                            product={product}
+                            onAddToCart={handleAddToCart}
                             originalPrice={price}
                             discountedPriceFormatted={showPrice}
-                            onAddToCart={handleAddToCart}
                             inStock={inStock}
                             isMaxReached={isMaxReached}
                         />

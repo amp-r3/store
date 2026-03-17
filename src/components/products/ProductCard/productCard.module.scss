@@ -193,78 +193,6 @@
     line-height: $lh-ui;
 }
 
-.card__button {
-    position: relative;
-    z-index: 2;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: $spacing-sm;
-    padding: $spacing-xs $spacing-md;
-    min-height: $touch-target-min;
-    background: linear-gradient(135deg,
-            var(--primary-accent-dark) 0%,
-            var(--primary-accent) 60%,
-            var(--primary-accent-light) 100%);
-    color: #fff;
-    border: none;
-    border-radius: $radius-md;
-    font-size: $fs-sm;
-    font-weight: $fw-semibold;
-    letter-spacing: $letter-spacing-wide;
-    cursor: pointer;
-    touch-action: manipulation;
-    transition:
-        transform $transition-base $ease-out-expo,
-        box-shadow $transition-base $ease-in-out-smooth,
-        filter $transition-base $ease-in-out-smooth;
-
-    @media (hover: hover) {
-        &:hover {
-            transform: $hover-lift;
-            box-shadow: var(--shadow-accent-hover);
-            filter: brightness($hover-brightness);
-        }
-    }
-
-        &:active {
-            transform: scale($button-pressed-scale);
-            box-shadow: var(--shadow-accent-sm);
-            transition-duration: $transition-pressed;
-        }
-
-        &:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 calc(#{$focus-ring-width} + #{$focus-ring-offset}) var(--focus-ring-color);
-        }
-
-        &:disabled {
-            background: var(--background-glass-base);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-            filter: none;
-
-            &::after {
-                display: none;
-            }
-
-            &:hover {
-                transform: none;
-                box-shadow: none;
-                filter: none;
-            }
-        }
-}
-
-.card__button:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 calc(#{$focus-ring-width} + #{$focus-ring-offset}) var(--focus-ring-color);
-}
-
 @container (max-width: 249px) {
     .card__imageWrapper {
         aspect-ratio: 1 / 1;
@@ -313,12 +241,6 @@
         font-size: $fs-md;
     }
 
-    .card__button {
-        width: 100%;
-        min-height: 40px;
-        padding: $spacing-xs;
-        border-radius: $radius-sm;
-    }
 }
 
 @container (max-width: 199px) {
@@ -373,19 +295,12 @@
     .card__oldPrice {
         font-size: 0.6875rem;
     }
-
-    .card__button {
-        min-height: 36px;
-        font-size: 0.6875rem;
-        padding: $spacing-xxs $spacing-xs;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
 
     .card,
-    .card__image,
-    .card__button {
+    .card__image {
         transition-duration: $transition-reduced;
     }
 }

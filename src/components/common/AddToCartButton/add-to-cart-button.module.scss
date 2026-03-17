@@ -1,0 +1,225 @@
+@use '@/styles/index' as *;
+
+.container {
+  --button-text: #fff;
+  --button-overlay: rgba(255, 255, 255, 0.15);
+  --button-overlay-hover: rgba(255, 255, 255, 0.25);
+  --button-overlay-active: rgba(255, 255, 255, 0.35);
+
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: $radius-lg;
+  background: linear-gradient(135deg,
+          var(--primary-accent-dark) 0%,
+          var(--primary-accent) 60%,
+          var(--primary-accent-light) 100%);
+  color: var(--button-text);
+  transition: box-shadow $transition-smooth $ease-spring, transform $transition-fast;
+  box-shadow: var(--shadow-sm);
+
+  @media (hover: hover) {
+    &:hover:not(.is-active) {
+      box-shadow: var(--shadow-accent-hover);
+      transform: $hover-lift;
+
+      .add-btn::after {
+        left: 130%;
+      }
+    }
+  }
+
+  &:active:not(.is-active) {
+    transform: scale($button-pressed-scale);
+    box-shadow: var(--shadow-accent-sm);
+  }
+
+  &.is-small {
+    border-radius: $radius-md;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &, .add-btn, .counter, .counter-btn, .spinning, .counter-qty.qty-pop {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+.add-btn, .counter {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  transition: transform 0.4s $ease-spring, opacity 0.3s ease;
+}
+
+.add-btn {
+  position: relative;
+  z-index: 1;
+  padding: $spacing-md $spacing-xl;
+  gap: $spacing-sm;
+  font-size: $fs-md;
+  font-weight: $fw-semibold;
+  letter-spacing: $letter-spacing-wide;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+
+  .icon, .spinning {
+    font-size: $fs-icon-md;
+  }
+
+  .text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.22) 50%, transparent 100%);
+    transform: skewX(-20deg);
+    transition: left $transition-smooth $ease-out-expo;
+    pointer-events: none;
+  }
+
+  &:disabled {
+    background: var(--glass-background-fallback);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    &::after { display: none; }
+  }
+}
+
+.counter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 2;
+  justify-content: space-between;
+  padding: $spacing-xs;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(100%);
+}
+
+.container.is-active {
+  .add-btn {
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+  .counter {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+.counter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: $radius-md;
+  background: var(--button-overlay);
+  color: var(--button-text);
+  cursor: pointer;
+  transition: all $transition-base $ease-in-out-smooth;
+  font-size: $fs-icon-md;
+  backdrop-filter: blur(4px);
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: var(--button-overlay-hover);
+      transform: scale(1.08);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.92);
+    background: var(--button-overlay-active);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.counter-qty {
+  flex: 1;
+  text-align: center;
+  font-size: $fs-lg;
+  font-weight: $fw-bold;
+  line-height: 1;
+  padding: 0 $spacing-sm;
+  user-select: none;
+  transition: transform 0.25s $ease-spring;
+
+  &.qty-pop {
+    animation: pop 0.35s $ease-spring;
+  }
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.75); }
+  40%  { transform: scale(1.18); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.container.is-small {
+  .add-btn {
+    padding: $spacing-sm $spacing-lg;
+    font-size: $fs-sm;
+    gap: $spacing-xs;
+
+    .icon, .spinning {
+      font-size: $fs-icon-sm;
+    }
+  }
+
+  .counter {
+    padding: $spacing-xxs;
+  }
+
+  .counter-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: $radius-sm;
+    font-size: $fs-icon-sm;
+  }
+
+  .counter-qty {
+    font-size: $fs-base;
+  }
+}
+
+.spinning {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

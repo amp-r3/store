@@ -1,7 +1,9 @@
 import { FC } from 'react';
 import { Product } from '@/types/products';
-import { FaCartShopping } from 'react-icons/fa6';
 import style from '../productCard.module.scss';
+import { useAppDispatch } from '@/hooks';
+import { changeQuantity } from '@/store/slices/cartSlice';
+import { AddToCartButton } from '@/components/common';
 
 interface ProductCardFooterProps {
     product: Product;
@@ -11,7 +13,7 @@ interface ProductCardFooterProps {
     handleAddToCart: (product: Product) => void;
     inStock: boolean;
     isMaxReached: boolean;
-    haptic: ()=> void
+    quantity: number;
 }
 
 const formatPrice = (value: number): string => {
@@ -24,15 +26,17 @@ const formatPrice = (value: number): string => {
 
 export const ProductCardFooter: FC<ProductCardFooterProps> = ({
     product,
+    quantity,
     price,
     discountedPrice,
     hasDiscount,
     handleAddToCart,
     inStock,
     isMaxReached,
-    haptic
 }) => {
-    console.log("footer card rerender");
+    const dispatch = useAppDispatch();
+    const onIncrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); };
+    const onDecrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); };
     return (
         <div className={style.card__footer}>
             <div className={style.card__price_wrapper}>
@@ -42,18 +46,15 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
                 <span className={style.card__price}>{formatPrice(discountedPrice)}</span>
             </div>
 
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleAddToCart(product);
-                    haptic()
-                }}
-                className={style.card__button}
-                disabled={!inStock || isMaxReached}
-            >
-                <FaCartShopping size={18} />
-                <span>Add to Cart</span>
-            </button>
+            <AddToCartButton
+                quantity={quantity}
+                onAddToCart={() => handleAddToCart(product)}
+                onIncrement={() => onIncrease(product.id)}
+                onDecrement={() => onDecrease(product.id)}
+                inStock={inStock}
+                isMaxReached={isMaxReached}
+                size="small"
+            />
         </div>
     );
 };

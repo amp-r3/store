@@ -16,8 +16,10 @@ interface ProductCardProps {
     priority?: boolean
 }
 
-export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, priority = false }) => {
+export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, priority = false, itemInCart }) => {
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
+    const item = itemInCart.find(item => item.id === id)
+    const quantity = item?.quantity
     const { soft } = useHaptics()
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
@@ -50,13 +52,13 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, pr
 
             <ProductCardFooter
                 product={product}
+                quantity={quantity}
                 price={price}
                 discountedPrice={discountedPrice}
                 hasDiscount={hasDiscount}
                 handleAddToCart={handleAddToCart}
                 inStock={inStock}
                 isMaxReached={isMaxReached}
-                haptic={soft}
             />
         </article>
     );
