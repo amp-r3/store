@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { CartItem, Product } from '@/types/products';
 import { applyDiscount } from '@/utils';
@@ -6,7 +6,8 @@ import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
 import { ProductCardBody } from './components/ProductCardBody';
 import { ProductCardFooter } from './components/ProductCardFooter';
-import { useHaptics } from '@/hooks';
+import { useAppSelector, useHaptics } from '@/hooks';
+import { selectIsMaxReached } from '@/store';
 
 interface ProductCardProps {
     product: Product;
@@ -15,13 +16,15 @@ interface ProductCardProps {
     priority?: boolean
 }
 
-export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, itemInCart, priority = false }) => {
+export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, priority = false }) => {
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
     const { soft } = useHaptics()
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const hasDiscount = discountPercentage > 0;
-    const isMaxValue = itemInCart.some(item =>  item.quantity >= stock )
+    const isMaxReached = useAppSelector(
+        useMemo(()=> selectIsMaxReached(id, stock), [id, stock])
+    )
 
     return (
         <article className={style.card}>
@@ -32,6 +35,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, it
                 thumbnail={thumbnail}
                 category={category}
                 discountPercentage={discountPercentage}
+                priority={priority}
             />
 
             <ProductCardBody
@@ -48,7 +52,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, it
                 hasDiscount={hasDiscount}
                 handleAddToCart={handleAddToCart}
                 inStock={inStock}
-                isMaxValue={isMaxValue}
+                isMaxReached={isMaxReached}
                 haptic={soft}
             />
         </article>

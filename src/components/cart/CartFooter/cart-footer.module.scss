@@ -1,25 +1,28 @@
 @use '@/styles/index' as *;
 
 .footer {
-    position: sticky;
-    bottom: 0;
-    z-index: $z-index-fixed;
-    
     flex-shrink: 0;
     padding: clamp($spacing-md, 2vw, $spacing-lg);
 
     background: var(--glass-background-strong);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--border-color);
-    border-radius: $radius-xl 0 0 0;
-    
+
+
+    border-radius: 0;
+
+    @media (min-width: 480px) {
+        border-radius: 0 0 0 $radius-xl;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
+    }
+
     display: flex;
     flex-direction: column;
-    gap: $spacing-sm; 
-    
+    gap: $spacing-sm;
+
     @media (min-width: 480px) {
         gap: $spacing-md;
-        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
     }
 
     // =============================================
@@ -32,10 +35,10 @@
     }
 
     &__shippingInfo {
-        font-size: 0.75rem; 
+        font-size: 0.75rem;
         color: var(--text-secondary);
         letter-spacing: 0.01em;
-        
+
         b {
             color: var(--text-primary);
             font-weight: $fw-semibold;
@@ -72,14 +75,14 @@
     &__summary {
         display: flex;
         flex-direction: column;
-        gap: 6px; 
+        gap: 6px;
     }
 
     &__row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: $fs-sm; 
+        font-size: $fs-sm;
         color: var(--text-secondary);
 
         &--discount {
@@ -94,14 +97,14 @@
             color: var(--text-primary);
 
             .footer__label {
-                font-size: $fs-sm; 
+                font-size: $fs-sm;
                 font-weight: $fw-bold;
             }
         }
     }
 
     &__total {
-        font-size: $fs-md; 
+        font-size: $fs-md;
         font-weight: $fw-bold;
         font-family: $font-primary;
         color: var(--text-primary);
@@ -123,16 +126,16 @@
         align-items: center;
         justify-content: center;
         gap: $spacing-xs;
-        
+
         width: 100%;
-        height: $touch-target-min; 
+        height: $touch-target-min;
         padding: 0 $spacing-md;
-        
+
         background: var(--primary-accent);
         color: var(--text-inverse);
         border: none;
         border-radius: $radius-md;
-        
+
         font-size: $fs-base;
         font-weight: $fw-semibold;
         cursor: pointer;

@@ -6,8 +6,8 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import styles from './cart-drawer.module.scss';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { selectCartItems, selectCartTotalQuantity } from '@/store';
-import { changeQuantity, removeFromCart } from '@/store/slices/cartSlice';
+import { selectCartItems, selectCartTotalQuantity, selectIsMaxReached } from '@/store';
+import { changeQuantity, clearCart, removeFromCart } from '@/store/slices/cartSlice';
 import { calculateCartTotals } from '@/utils';
 
 import { CartItem } from '../CartItem/CartItem';
@@ -38,9 +38,10 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     remainingForFreeShipping,
   } = useMemo(() => calculateCartTotals(cartItems), [cartItems]);
 
-  const onIncrease = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); };
-  const onDecrease = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); };
-  const onRemove = (id: number) => { dispatch(removeFromCart(id)); medium(); };
+  const onIncrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); };
+  const onDecrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); };
+  const onRemove    = (id: number) => { dispatch(removeFromCart(id)); medium(); };
+  const onClearCart = ()           => { dispatch(clearCart()); medium(); };
 
   const handleCheckout = () => {
     success();
@@ -58,16 +59,15 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
       open={isOpen}
       onOpenChange={(open) => !open && onClose()}
       direction="right"
-      modal={false}
     >
       <Drawer.Portal>
         <Drawer.Overlay className={styles.cart__backdrop} />
 
         <Drawer.Content
           className={styles.cart}
-          style={{ height: '100%', right: 0, top: 0 }}
           aria-describedby={undefined}
           onOpenAutoFocus={(e) => {
+            e.preventDefault();
             if (document.activeElement instanceof HTMLElement) {
               document.activeElement.blur();
             }
@@ -77,24 +77,26 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             <Drawer.Title>Shopping Cart</Drawer.Title>
           </VisuallyHidden.Root>
 
-          <div className={styles.cart__scrollArea}>
-            <CartHeader totalQuantity={totalQuantity} onClose={onClose} />
+          <div className={styles.cart__header}>
+            <CartHeader
+              totalQuantity={totalQuantity}
+              onClose={onClose}
+              onClearCart={cartItems.length > 0 ? onClearCart : undefined}
+            />
+          </div>
 
+          <div className={styles.cart__scrollArea}>
             <div className={styles.cart__body}>
               {cartItems.length ? (
-                cartItems.map((item) => {
-                  const isMaxValue = item.quantity >= item.stock;
-                  return (
-                    <CartItem
-                      key={item.id}
-                      product={item}
-                      onIncrease={onIncrease}
-                      onDecrease={onDecrease}
-                      onRemove={onRemove}
-                      isMaxValue={isMaxValue}
-                    />
-                  );
-                })
+                cartItems.map((item) => (
+                  <CartItem
+                    key={item.id}
+                    product={item}
+                    onIncrease={onIncrease}
+                    onDecrease={onDecrease}
+                    onRemove={onRemove}
+                  />
+                ))
               ) : (
                 <EmptyCart onStartShopping={onStartShopping} />
               )}

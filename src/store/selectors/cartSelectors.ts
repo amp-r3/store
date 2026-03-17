@@ -1,5 +1,4 @@
 import { RootState } from "@/app/store";
-import { applyDiscount } from "@/utils";
 import { createSelector } from "reselect";
 
 // Basic selector (returns object)
@@ -13,13 +12,12 @@ export const selectCartItems = createSelector(
     (itemsMap) => Object.values(itemsMap)
 );
 
-// TotalPrice Selector
-export const selectCartTotal = createSelector(
-    [selectCartItemsMap],
-    (itemsMap) => Object.values(itemsMap).reduce<number>(
-        (sum, item) => sum + applyDiscount(item.discountPercentage, item.price) * item.quantity, 0
-    )
-);
+export const selectIsMaxReached = (productId: number, stock: number) =>
+    createSelector(selectCartItems, (items) => {
+        const item = items.find(i => i.id === productId);
+        if (!item) return false;
+        return item.quantity >= stock
+    })
 
 export const selectCartTotalQuantity = createSelector(
     [selectCartItems],

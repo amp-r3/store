@@ -6,13 +6,14 @@ import styles from './cart-item.module.scss';
 // Types
 import { CartItem as CartItemType } from '@/types/products';
 import { formatPrice } from '@/utils';
+import { useAppSelector } from '@/hooks';
+import { selectIsMaxReached } from '@/store';
 
 interface CartItemProps {
     product: CartItemType;
     onIncrease: (id: number) => void;
     onDecrease: (id: number) => void;
     onRemove: (id: number) => void;
-    isMaxValue: boolean;
 }
 
 const getOptimizedImageUrl = (originalUrl: string, width: number = 300) => {
@@ -24,11 +25,13 @@ export const CartItem: FC<CartItemProps> = ({
     onIncrease,
     onDecrease,
     onRemove,
-    isMaxValue
 }) => {
-    const { id, title, price, thumbnail, quantity, discountPercentage } = product;
+    const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
     const totalPrice = useMemo(() => price * quantity, [price, quantity]);
     const imageUrl = getOptimizedImageUrl(thumbnail);
+    const isMaxReached = useAppSelector(
+        useMemo(()=> selectIsMaxReached(id, stock), [id, stock])
+    )
 
     return (
         <article className={styles['cart-item']}>
@@ -92,14 +95,14 @@ export const CartItem: FC<CartItemProps> = ({
                             className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
                             onClick={() => onIncrease(id)}
                             aria-label="Increase quantity"
-                            disabled={isMaxValue}
-                            aria-disabled={isMaxValue}
+                            disabled={isMaxReached}
+                            aria-disabled={isMaxReached}
                         >
                             <IoAdd size={18} />
                         </button>
                     </div>
 
-                    {isMaxValue && (
+                    {isMaxReached && (
                         <div className={styles['cart-item__stock-hint']} role="status" aria-live="polite">
                             <IoWarningOutline size={13} aria-hidden="true" />
                             <span>Max</span>

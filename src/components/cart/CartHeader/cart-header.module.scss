@@ -1,14 +1,15 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .header {
     flex-shrink: 0;
     padding: $spacing-lg;
     border-bottom: 1px solid var(--glass-border);
-    border-radius: 12px 0 0 12px;
+    border-radius: 0;
 
-    position: sticky;
-    top: 0;
-    z-index: $z-index-sticky;
+    @media (min-width: 480px) {
+        border-radius: $radius-xl 0 0 0;
+    }
+
     background: var(--glass-background-strong);
     backdrop-filter: var(--glass-backdrop-blur);
     -webkit-backdrop-filter: var(--glass-backdrop-blur);
@@ -122,25 +123,11 @@
 }
 
 @keyframes bump {
-    0% {
-        transform: scale(1);
-    }
-
-    10% {
-        transform: scale(0.9);
-    }
-
-    30% {
-        transform: scale(1.15);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+    0%   { transform: scale(1); }
+    10%  { transform: scale(0.9); }
+    30%  { transform: scale(1.15); }
+    50%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 // =============================================

@@ -6,7 +6,7 @@ interface ProductPurchaseBoxProps {
     discountedPriceFormatted: string;
     onAddToCart: () => void;
     inStock: boolean;
-    isMaxValue: boolean;
+    isMaxReached: boolean;
 }
 
 export const ProductPurchaseBox = ({
@@ -14,7 +14,7 @@ export const ProductPurchaseBox = ({
     discountedPriceFormatted,
     onAddToCart,
     inStock,
-    isMaxValue
+    isMaxReached
 }: ProductPurchaseBoxProps) => {
     return (
         <div className={style['purchase-box']}>
@@ -22,7 +22,7 @@ export const ProductPurchaseBox = ({
                 <p className={style['price']}>${originalPrice}</p>
                 <p className={style['discount-price']}>{discountedPriceFormatted}</p>
             </div>
-            <button onClick={onAddToCart} className={style['add-to-cart-btn']} disabled={!inStock || isMaxValue}>
+            <button onClick={onAddToCart} className={style['add-to-cart-btn']} disabled={!inStock || isMaxReached}>
                 <FaCartShopping size={18} />
                 <span>Add to Cart</span>
             </button>
