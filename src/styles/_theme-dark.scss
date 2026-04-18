@@ -46,14 +46,14 @@
   --gradient-logo-end: #6366f1;
   --gradient-opacity: 0.9;
 
-  // --- Glass Effect  ---
-  --glass-background-subtle: rgba(18, 16, 38, 0.32);
-  --glass-background: rgba(18, 16, 38, 0.52);
-  --glass-background-strong: rgba(18, 16, 38, 0.72);
-  --glass-background-fallback: rgba(18, 16, 38, 0.94);
-  --glass-border-subtle: rgba(124, 109, 255, 0.10);
-  --glass-border: rgba(124, 109, 255, 0.19);
-  --glass-backdrop-blur: blur(16px);
+  /* --- Ultra Matte Glass (Dark) --- */
+  --glass-background-subtle: rgba(18, 16, 38, 0.80);
+  --glass-background: rgba(18, 16, 38, 0.90);            /* Глубокий мат */
+  --glass-background-strong: rgba(18, 16, 38, 0.96);
+  --glass-background-fallback: #121026;
+  --glass-border-subtle: rgba(124, 109, 255, 0.20);
+  --glass-border: rgba(124, 109, 255, 0.35);
+  --glass-backdrop-blur: blur(40px) saturate(160%);      /* Максимальное рассеивание */
 
   // --- Navbar Specific Backgrounds ---
   --navbar-bg-default: rgba(18, 16, 38, 0.52);
