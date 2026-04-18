@@ -18,7 +18,6 @@ export interface ICategoryProps {
 export const CategoryControl: FC<ICategoryProps> = (props) => {
     const isMobile = useMediaQuery('(max-width: 549px)');
 
-    if (!isMobile && !props.isOpen) return null;
 
     if (isMobile) {
         return <CategoryOverlay {...props} />;

@@ -19,7 +19,7 @@
         justify-content: space-between;
         width: 100%;
         padding: $spacing-sm $spacing-md;
-        background: rgba(var(--background-glass-base-rgb), 0.4);
+        background: var(--glass-background-subtle);
         border: 1px solid var(--border-color);
         border-radius: $radius-md;
         color: var(--text-secondary);
@@ -34,9 +34,8 @@
         @media (hover: hover) {
 
             &:hover:not([aria-pressed="true"]) {
-                background: rgba(var(--border-color-light-rgb), 0.1);
-                border-color: var(--border-color-light);
-                color: var(--text-primary);
+                border-color: var(--border-color-strong);
+                color: var(--primary-accent-light);
             }
         }
 
