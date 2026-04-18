@@ -26,7 +26,7 @@
     max-width: 500px;
 
     background-color: var(--glass-background);
-    backdrop-filter: var(--glass-backdrop-blur);
+    backdrop-filter: $backdrop-blur;
     border: 1px solid var(--border-color);
     border-radius: $radius-lg;
     color: var(--text-primary);

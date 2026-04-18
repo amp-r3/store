@@ -6,7 +6,7 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import styles from './cart-drawer.module.scss';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { selectCartItems, selectCartTotalQuantity, selectIsMaxReached } from '@/store';
+import { selectCartItems, selectCartTotalQuantity } from '@/store';
 import { changeQuantity, clearCart, removeFromCart } from '@/store/slices/cartSlice';
 import { calculateCartTotals } from '@/utils';
 

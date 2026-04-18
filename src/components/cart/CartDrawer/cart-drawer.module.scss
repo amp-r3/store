@@ -22,8 +22,7 @@
     outline: none;
 
     background: var(--glass-background-strong);
-    backdrop-filter: var(--glass-backdrop-blur);
-    -webkit-backdrop-filter: var(--glass-backdrop-blur);
+    backdrop-filter: $backdrop-blur;
     border-left: 1px solid var(--glass-border);
     box-shadow: var(--shadow-default);
 
@@ -83,7 +82,6 @@
         inset: 0;
         background: rgba(0, 0, 0, 0.4);
         backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
         z-index: calc(#{$z-index-modal} - 1);
     }
 }

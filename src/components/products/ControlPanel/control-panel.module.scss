@@ -16,7 +16,7 @@
     display: inline-flex;
     align-items: center;
     background: var(--glass-background);
-    backdrop-filter: var(--glass-backdrop-blur);
+    backdrop-filter: $backdrop-blur;
     border: 1px solid var(--glass-border);
     border-radius: $radius-input;
     padding: $spacing-xxs;

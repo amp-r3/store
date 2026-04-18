@@ -76,7 +76,7 @@
         border-radius: $radius-circle;
 
         background: var(--glass-background);
-        backdrop-filter: var(--glass-backdrop-blur);
+        backdrop-filter: $backdrop-blur;
         border: 1px solid var(--glass-border);
         box-shadow: var(--shadow-card);
     }

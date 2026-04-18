@@ -7,7 +7,6 @@
         z-index: $z-index-modal-backdrop;
         background: rgba(0, 0, 0, 0.4);
         backdrop-filter: $backdrop-blur-sm;
-        -webkit-backdrop-filter: $backdrop-blur-sm;
         transition: opacity $transition-base $ease-in-out-smooth;
     }
 
@@ -16,7 +15,7 @@
 
         @supports (backdrop-filter: blur(1px)) {
             background: var(--glass-background-strong);
-            backdrop-filter: var(--glass-backdrop-blur);
+            backdrop-filter: $backdrop-blur;
         }
 
         border-radius: $radius-xl $radius-xl 0 0;

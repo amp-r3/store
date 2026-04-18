@@ -23,7 +23,6 @@
         inset: 0;
         background: rgba(0, 0, 0, 0.5);
         backdrop-filter: $backdrop-blur-sm;
-        -webkit-backdrop-filter: $backdrop-blur-sm;
         animation: backdrop-in $transition-base $ease-in-out-smooth both;
     }
 
@@ -38,7 +37,7 @@
 
         @supports (backdrop-filter: blur(1px)) {
             background: var(--glass-background-strong);
-            backdrop-filter: var(--glass-backdrop-blur);
+            backdrop-filter: $backdrop-blur;
         }
 
         border: 1px solid var(--glass-border);

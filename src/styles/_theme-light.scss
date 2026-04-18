@@ -6,10 +6,10 @@
   // --- Brand & Accent Colors ---
   --primary-accent: #7c6dff;
   --primary-accent-rgb: 124, 109, 255;
-  
+
   --primary-accent-dark: #6456e8;
   --primary-accent-dark-rgb: 100, 86, 232;
-  
+
   --primary-accent-light: #9d8fff;
   --primary-accent-light-rgb: 157, 143, 255;
 
@@ -46,14 +46,13 @@
   --gradient-logo-end: #6366f1;
   --gradient-opacity: 0.9;
 
-  /* --- Ultra Matte Glass (Light) --- */
-  --glass-background-subtle: rgba(255, 255, 255, 0.82);
-  --glass-background: rgba(255, 255, 255, 0.92);        /* Почти непрозрачный */
-  --glass-background-strong: rgba(255, 255, 255, 0.97); 
-  --glass-background-fallback: #ffffff;
-  --glass-border-subtle: rgba(124, 109, 255, 0.20);
-  --glass-border: rgba(124, 109, 255, 0.40);             /* Четкий бортик */
-  --glass-backdrop-blur: blur(40px) saturate(180%);      /* Сильный блюр + сочность */
+  // --- Glass Effect ---
+  --glass-background-subtle: rgba(255, 255, 255, 0.50);
+  --glass-background: rgba(255, 255, 255, 0.75);
+  --glass-background-strong: rgba(255, 255, 255, 0.90);
+  --glass-background-fallback: rgba(255, 255, 255, 0.98);
+  --glass-border-subtle: rgba(124, 109, 255, 0.10);
+  --glass-border: rgba(124, 109, 255, 0.20);
 
   // --- Navbar Specific Backgrounds ---
   --navbar-bg-default: rgba(255, 255, 255, 0.70);

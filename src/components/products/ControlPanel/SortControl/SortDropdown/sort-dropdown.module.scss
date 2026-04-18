@@ -5,7 +5,7 @@
 
   @supports (backdrop-filter: blur(1px)) {
     background: var(--glass-background-strong);
-    backdrop-filter: var(--glass-backdrop-blur);
+    backdrop-filter: $backdrop-blur;
   }
 
   border: 1px solid var(--glass-border);

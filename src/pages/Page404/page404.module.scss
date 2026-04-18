@@ -13,7 +13,7 @@
   align-items: center;
   text-align: center;
   background: var(--glass-background);
-  backdrop-filter: var(--glass-backdrop-blur);
+  backdrop-filter: $backdrop-blur;
   border: 1px solid var(--border-color);
   border-radius: $radius-xl;
   padding: $spacing-xxl;

@@ -52,7 +52,6 @@
     border: 1px solid var(--border-color-subtle);
     background: var(--glass-background-subtle);
     backdrop-filter: $backdrop-blur-sm;
-    -webkit-backdrop-filter: $backdrop-blur-sm;
     color: var(--rating-color);
     margin-top: $spacing-xxs;
 }

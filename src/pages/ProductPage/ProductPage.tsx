@@ -1,5 +1,8 @@
+// React
 import { useEffect, useMemo } from 'react';
-import { useNavigate, useParams, Navigate } from 'react-router';
+
+// Router
+import { useNavigate, useParams, Navigate, useSearchParams } from 'react-router';
 
 // Components
 import { ErrorView, Loader } from '@/components/common';
@@ -27,13 +30,23 @@ import { Product } from '@/types/products';
 
 // Styles
 import style from './productPage.module.scss';
+import { ProductImageModal } from './components/ProductImageModal/ProductImageModal';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
+    const searchParams = useSearchParams()
     const dispatch = useAppDispatch()
     const { id } = useParams();
+    const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const cartItems = useAppSelector(selectCartItems)
+    const onImageClick = (): void => {
+        searchParams[1]({ view: 'true' }, { replace: true })
+    }
+
+    const onCloseModal = (): void => {
+        searchParams[1]({}, { replace: true })
+    }
 
     const selectMaxReached = useMemo(
         () => selectIsMaxReached(product?.id ?? 0, product?.stock ?? 0),
@@ -74,12 +87,13 @@ export const ProductPage = () => {
 
     return (
         <main className={style['product-page']}>
+            <ProductImageModal imageSrc={images[0]} imageAlt={title} onClose={onCloseModal} isOpen={openedImage} />
             <div className="container" key={productId}>
-                <ProductBackButton onClick={() => navigate(-1)} />
+                <ProductBackButton onClick={() => navigate(-1)} label='Back to catalog' />
 
                 <div className={style['layout']}>
                     <div className={style['gallery-column']}>
-                        <ProductGallery imageUrl={images[0]} title={title} />
+                        <ProductGallery imageUrl={images[0]} title={title} onClick={onImageClick} />
                     </div>
 
                     <div className={style['details-column']}>
