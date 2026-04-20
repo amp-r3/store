@@ -21,7 +21,7 @@
     flex-direction: column;
     outline: none;
 
-    background: var(--glass-background-strong);
+    background: var(--background-glass-base);
     backdrop-filter: $backdrop-blur;
     border-left: 1px solid var(--glass-border);
     box-shadow: var(--shadow-default);
@@ -78,10 +78,23 @@
     //               BACKDROP
     // =============================================
     &__backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(4px);
-        z-index: calc(#{$z-index-modal} - 1);
+        @media (max-width: 479px) {
+            display: none;
+        }
+
+        @media (min-width: 480px) {
+            position: fixed;
+            inset: 0;
+            backdrop-filter: none;
+            transition: backdrop-filter 0s 0.3s;
+            will-change: backdrop-filter;
+
+            &[data-state='open'] {
+                backdrop-filter: $backdrop-blur;
+            }
+
+            background: rgba(0, 0, 0, 0.5);
+            z-index: calc(#{$z-index-modal} - 1);
+        }
     }
 }

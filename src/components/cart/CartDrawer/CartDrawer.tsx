@@ -1,7 +1,7 @@
-import { FC, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { Drawer } from 'vaul';
 import { useNavigate } from 'react-router';
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+import { VisuallyHidden } from 'radix-ui'
 
 import styles from './cart-drawer.module.scss';
 
@@ -22,6 +22,8 @@ interface CartDrawerProps {
   onClose: () => void;
 }
 
+const MODAL_ROOT = document.getElementById('modal-root')!;
+
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const cartItems = useAppSelector(selectCartItems);
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
@@ -38,10 +40,10 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     remainingForFreeShipping,
   } = useMemo(() => calculateCartTotals(cartItems), [cartItems]);
 
-  const onIncrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); };
-  const onDecrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); };
-  const onRemove    = (id: number) => { dispatch(removeFromCart(id)); medium(); };
-  const onClearCart = ()           => { dispatch(clearCart()); medium(); };
+  const onIncrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); }, [dispatch, soft]);
+  const onDecrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); }, [dispatch, soft]);
+  const onRemove = useCallback((id: number) => { dispatch(removeFromCart(id)); medium(); }, [dispatch, medium]);
+  const onClearCart = useCallback(() => { dispatch(clearCart()); medium(); }, [dispatch, medium]);
 
   const handleCheckout = () => {
     success();
@@ -60,7 +62,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
       onOpenChange={(open) => !open && onClose()}
       direction="right"
     >
-      <Drawer.Portal>
+      <Drawer.Portal container={MODAL_ROOT}>
         <Drawer.Overlay className={styles.cart__backdrop} />
 
         <Drawer.Content

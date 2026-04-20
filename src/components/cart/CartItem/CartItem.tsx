@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { useMemo, memo } from 'react';
 // Icons
 import { IoAdd, IoRemove, IoTrashOutline, IoWarningOutline } from 'react-icons/io5';
 // Styles
@@ -17,18 +17,13 @@ interface CartItemProps {
 }
 
 const getOptimizedImageUrl = (originalUrl: string, width: number = 300) => {
-    return `https://wsrv.nl/?url=${encodeURIComponent(originalUrl)}&w=${width}&fit=contain&we`;
+    return `https://wsrv.nl/?url=${encodeURIComponent(originalUrl)}&w=${width}&h=${width}`;
 };
 
-export const CartItem: FC<CartItemProps> = ({
-    product,
-    onIncrease,
-    onDecrease,
-    onRemove,
-}) => {
+export const CartItem = memo<CartItemProps>(({ product, onIncrease, onDecrease, onRemove, }) => {
     const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
     const totalPrice = useMemo(() => price * quantity, [price, quantity]);
-    const imageUrl = getOptimizedImageUrl(thumbnail);
+    const imageUrl = getOptimizedImageUrl(thumbnail, 110);
     const selectMaxReached = useMemo(
         () => selectIsMaxReached(id ?? 0, stock ?? 0),
         [id, stock]
@@ -46,8 +41,8 @@ export const CartItem: FC<CartItemProps> = ({
                     className={styles['cart-item__image']}
                     loading="lazy"
                     decoding="async"
-                    width="400"
-                    height="300"
+                    width="110"
+                    height="110"
                 />
             </div>
 
@@ -59,7 +54,7 @@ export const CartItem: FC<CartItemProps> = ({
                     <h3 className={styles['cart-item__title']} title={title}>
                         {title}
                     </h3>
-                    
+
                     <div className={styles['cart-item__price-group']}>
                         <span className={styles['cart-item__price']}>
                             {formatPrice(totalPrice)}
@@ -123,4 +118,13 @@ export const CartItem: FC<CartItemProps> = ({
             </div>
         </article>
     );
-};
+}, (prevProps, nextProps) => {
+    return (
+        prevProps.product.id === nextProps.product.id &&
+        prevProps.product.quantity === nextProps.product.quantity &&
+        prevProps.product.price === nextProps.product.price
+    );
+}
+);
+
+CartItem.displayName = 'CartItem';
