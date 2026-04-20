@@ -1,19 +1,17 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .navbar {
     position: fixed;
     bottom: $spacing-md;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: $z-index-fixed;
 
-    width: calc(100% - #{$spacing-xl} * 2);
-    max-width: 420px;
+    width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
+    inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
+    margin-inline: auto;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: $spacing-xs;
 
     background: var(--glass-background-strong);
@@ -21,14 +19,14 @@
     border: 1px solid var(--glass-border);
     border-radius: $radius-pill;
     box-shadow: var(--shadow-default), var(--shadow-card);
+
     will-change: transform, opacity;
-    transition: transform 0.4s $ease-in-out-smooth,
-        opacity 0.3s ease;
+    transition: transform 0.4s $ease-in-out-smooth, opacity 0.3s ease;
 
     opacity: 1;
 
     &--hidden {
-        transform: translate(-50%, calc(100% + #{$spacing-xl} + #{$spacing-md}));
+        transform: translateY(calc(100% + #{$spacing-xl} + #{$spacing-md}));
         opacity: 0;
         pointer-events: none;
     }
