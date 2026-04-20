@@ -1,40 +1,42 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .sort-dropdown {
   background: var(--glass-background-fallback);
+  border: 1px solid var(--glass-border);
+  border-radius: $radius-lg;
+  padding: $spacing-xs;
+  box-shadow:
+    var(--shadow-default),
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px var(--glass-border-subtle);
 
   @supports (backdrop-filter: blur(1px)) {
     background: var(--glass-background-strong);
     backdrop-filter: $backdrop-blur;
   }
 
-  border: 1px solid var(--glass-border);
-  position: fixed;
-  z-index: $z-index-popover;
-  border-radius: $radius-lg;
-  padding: $spacing-xs;
-  box-shadow: var(--shadow-default),
-  0 12px 40px rgba(0, 0, 0, 0.4),
-  0 0 0 1px var(--glass-border-subtle);
-  animation: dropdown-in $transition-fast $ease-out-expo both;
-  transform-origin: top right;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
-  &__backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: $z-index-modal-backdrop;
-    background: transparent;
+  &[data-state='open'] {
+    animation: slide-down 500ms $ease-out-expo
   }
 
-  &>ul {
-    padding-bottom: 0 !important;
+  &[data-state='closed'] {
+    animation: fade-out 200ms ease-in;
+  }
+
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 }
 
-@keyframes dropdown-in {
+@keyframes slide-down {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(-8px);
+    transform: scale(0.92) translateY(-10px);
   }
 
   to {
@@ -43,8 +45,14 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sort-dropdown {
-    animation: none;
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0;
+    scale: 0.98;
   }
 }

@@ -6,9 +6,10 @@ import { SortControl } from './SortControl/SortControl';
 import { CategoryControl } from './CategoryControl/CategoryControl';
 import { useHaptics } from '@/hooks';
 import { Categories, Category } from '@/services/productsApi';
+import { DropdownMenu } from 'radix-ui'
 
 interface ControlPanelProps {
-  clearAll: ()=> void
+  clearAll: () => void
   changeSort: (newSortBy: string, newOrder: string) => void;
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
@@ -30,7 +31,7 @@ export const ControlPanel: FC<ControlPanelProps> = ({
 }) => {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  
+
   const isFilter = activeCategoryOption?.slug !== 'all' || activeSortOption.id !== 'default'
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -55,11 +56,6 @@ export const ControlPanel: FC<ControlPanelProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleToggleSort = () => {
-    soft()
-    setIsSortOpen((prev) => !prev);
-    setIsCategoryOpen(false);
-  };
 
   const handleToggleCategory = () => {
     soft()
@@ -68,67 +64,81 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   };
 
   const handleSortChange = (newSortBy: string, newOrder: string) => {
-      light()
-      changeSort(newSortBy, newOrder);
-      setIsSortOpen(false);
+    light()
+    changeSort(newSortBy, newOrder);
+    setIsSortOpen(false);
   };
 
   const handleCategoryChange = (newCategory: string | null) => {
-      light()
-      changeCategory(newCategory);  
+    light()
+    changeCategory(newCategory);
   };
 
   return (
     <div className={style['control-panel']} ref={panelRef}>
-      <div className={style['control-panel__group']}>
-        <button
-          ref={sortBtnRef}
-          className={style['control-panel__btn']}
-          type="button"
-          onClick={handleToggleSort}
-          aria-expanded={isSortOpen}
-          aria-label={`Sort by: ${activeSortOption?.label}`}
-        >
-          <IoSwapVertical className={style['control-panel__btn-icon']} aria-hidden="true" />
-          <span className={style['control-panel__btn-label']}>Sort</span>
-          <span className={style['control-panel__btn-value']}>{activeSortOption?.label}</span>
-        </button>
+      <DropdownMenu.Root
+        open={isSortOpen}
+        onOpenChange={(open) => {
+          if (open) {
+            soft();
+            setIsCategoryOpen(false);
+          }
+          setIsSortOpen(open);
+        }}
+      >
+        <div className={style['control-panel__group']}>
 
-        <button
-          className={style['control-panel__btn']}
-          type="button"
-          onClick={handleToggleCategory}
-          aria-expanded={isCategoryOpen}
-          aria-label={`Category: ${activeCategoryOption?.name || 'All'}`}
-          disabled={searchQuery ? true : false}
-        >
-          <IoGrid className={style['control-panel__btn-icon']} aria-hidden="true" />
-          <span className={style['control-panel__btn-label']}>Category</span>
-          <span className={style['control-panel__btn-value']}>
-            {activeCategoryOption?.name || 'All'}
-          </span>
-        </button>
+          <DropdownMenu.Trigger asChild>
+            <button
+              ref={sortBtnRef}
+              className={style['control-panel__btn']}
+              type="button"
+              aria-expanded={isSortOpen}
+              aria-label={`Sort by: ${activeSortOption?.label}`}
+            >
+              <IoSwapVertical className={style['control-panel__btn-icon']} aria-hidden="true" />
+              <span className={style['control-panel__btn-label']}>Sort</span>
+              <span className={style['control-panel__btn-value']}>{activeSortOption?.label}</span>
+            </button>
+          </DropdownMenu.Trigger>
 
-        {isFilter && (
           <button
-            className={`${style['control-panel__btn']} ${style['control-panel__btn--reset']}`}
+            className={style['control-panel__btn']}
             type="button"
-            aria-label="Reset all filters"
-            onClick={()=>{clearAll(); light();}}
+            onClick={handleToggleCategory}
+            aria-expanded={isCategoryOpen}
+            aria-label={`Category: ${activeCategoryOption?.name || 'All'}`}
+            disabled={searchQuery ? true : false}
           >
-            Reset
+            <IoGrid className={style['control-panel__btn-icon']} aria-hidden="true" />
+            <span className={style['control-panel__btn-label']}>Category</span>
+            <span className={style['control-panel__btn-value']}>
+              {activeCategoryOption?.name || 'All'}
+            </span>
           </button>
-        )}
-      </div>
 
-      <SortControl
-        isOpen={isSortOpen}
-        sortingOptions={sortingOptions}
-        activeSortOption={activeSortOption}
-        triggerRef={sortBtnRef}
-        changeSort={handleSortChange}
-        onClose={() => setIsSortOpen(false)}
-      />
+          {isFilter && (
+            <button
+              className={`${style['control-panel__btn']} ${style['control-panel__btn--reset']}`}
+              type="button"
+              aria-label="Reset all filters"
+              onClick={() => { clearAll(); light(); }}
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        <SortControl
+          isOpen={isSortOpen}
+          sortingOptions={sortingOptions}
+          activeSortOption={activeSortOption}
+          triggerRef={sortBtnRef}
+          changeSort={handleSortChange}
+          onClose={() => setIsSortOpen(false)}
+        />
+      </DropdownMenu.Root>
+
       <CategoryControl
         categoryOptions={categoryOptions}
         activeCategoryOption={activeCategoryOption}
