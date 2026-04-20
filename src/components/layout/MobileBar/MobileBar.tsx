@@ -4,7 +4,7 @@ import { useSearch } from '@/hooks';
 import { useEffect, useState, useRef } from 'react';
 
 export const MobileBar = () => {
-    const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage } = useSearch();
+    const { handleSearch, inputValue, handleClear,  isHomePage } = useSearch();
 
     const [isVisible, setIsVisible] = useState(true);
     const [isFocused, setIsFocused] = useState(false);
@@ -48,16 +48,21 @@ export const MobileBar = () => {
     const hiddenClass = (!isVisible || !isHomePage) ? style['navbar--hidden'] : '';
 
     return (
+        <>
         <nav className={`${style.navbar} ${hiddenClass}`}>
             <SearchForm
                 inputValue={inputValue}
                 handleSearch={handleSearch}
-                handleInputChange={handleInputChange}
                 handleClear={handleClear}
                 isHomePage={isHomePage}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
             />
         </nav>
+        {
+            isFocused &&
+        <div className={style.navbar__backdrop}></div>
+        }
+        </>
     )
 }

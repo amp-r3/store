@@ -17,7 +17,7 @@ import { selectCartTotalQuantity } from '@/store/selectors/cartSelectors';
 import style from './navbar.module.scss';
 
 export const Navbar = () => {
-  const { handleSearch, inputValue, handleClear, handleInputChange, isHomePage } = useSearch();
+  const { handleSearch, inputValue, handleClear,  isHomePage } = useSearch();
   const { soft } = useHaptics()
   const navRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -34,7 +34,6 @@ export const Navbar = () => {
         <SearchForm
           inputValue={inputValue}
           handleSearch={handleSearch}
-          handleInputChange={handleInputChange}
           handleClear={handleClear}
           isHomePage={isHomePage}
         />

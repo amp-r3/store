@@ -3,7 +3,7 @@
 .navbar {
     position: fixed;
     bottom: $spacing-md;
-    z-index: $z-index-fixed;
+    z-index: calc($z-index-fixed + 1);
 
     width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
     inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
@@ -29,5 +29,12 @@
         transform: translateY(calc(100% + #{$spacing-xl} + #{$spacing-md}));
         opacity: 0;
         pointer-events: none;
+    }
+
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: $z-index-fixed;
+        background-color: rgba(0, 0, 0, 0.5);
     }
 }
