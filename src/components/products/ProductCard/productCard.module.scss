@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .card {
     position: relative;
@@ -71,14 +71,20 @@
     top: $spacing-sm;
     left: $spacing-sm;
     padding: $spacing-xxs $spacing-sm;
-    background: rgba(var(--primary-accent-rgb), 0.12);
-    color: var(--primary-accent-light);
+    background: var(--border-color-light);
+    color: var(--primary-accent-dark);
     border-radius: $radius-pill;
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     letter-spacing: $letter-spacing-wide;
     text-transform: capitalize;
     z-index: 2;
+
+}
+
+:global(.theme-dark) .card__category {
+    background-color: var(--border-color);
+    color: var(--primary-accent-light);
 }
 
 .card__discount {

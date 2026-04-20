@@ -14,13 +14,18 @@
     padding: $spacing-xxs $spacing-sm;
     border-radius: $radius-pill;
     border: 1px solid rgba(var(--primary-accent-rgb), 0.25);
-    background: rgba(var(--primary-accent-rgb), 0.08);
-    color: var(--primary-accent-light);
+    background: var(--border-color-light);
+    color: var(--primary-accent-dark);
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     text-transform: uppercase;
     letter-spacing: $letter-spacing-wider;
     line-height: $lh-ui;
+}
+
+:global(.theme-dark) .category {
+    background-color: var(--border-color);
+    color: var(--primary-accent-light);
 }
 
 // ── Заголовок ──────────────────────────────────────────
