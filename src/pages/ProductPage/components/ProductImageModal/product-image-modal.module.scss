@@ -9,11 +9,7 @@
   justify-content: center;
 
   padding: max($spacing-md, $safe-area-top) $spacing-md max($spacing-md, $safe-area-bottom);
-
   background: var(--background-glass-base);
-
-
-
   backdrop-filter: $backdrop-blur;
 
   &[data-state='open'] {
@@ -38,38 +34,55 @@
 
   display: flex;
   flex-direction: column;
+
   width: 100%;
   max-width: $container-width;
-  height: 85vh;
+  height: 85dvh; 
   padding: 30px;
 
   border-radius: $radius-xl;
-
   background: var(--background-image-holder);
   backdrop-filter: blur(15px);
   z-index: $z-index-modal;
-
 
   &[data-state='open'] {
     animation: modalFadeIn 200ms ease-out;
   }
 
-  &[data-state='closed'] {
+  &[data-state='closed']:not([data-swipe-closing='true']) {
     animation: modalFadeOut 200ms ease-in;
+  }
+
+  &[data-state='closed'][data-swipe-closing='true'] {
+    animation: modalFadeOutSwipe 200ms ease-in forwards;
+  }
+}
+
+.image-container {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: $radius-lg;
+}
+
+.back-button {
+  @media (max-width: 768px) {
+    display: none;
   }
 }
 
 .image {
-  flex: 1;
   width: 100%;
-  min-height: 0;
-
+  height: 100%;
   object-fit: contain;
   transition: transform $transition-layout $ease-out-expo;
   will-change: transform;
-
-  filter: drop-shadow(0 8px 24px rgba(var(--primary-accent-rgb), 0.12));
-
+  transform-origin: center;
 }
 
 @keyframes modalFadeIn {
@@ -77,7 +90,6 @@
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.96);
   }
-
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -89,29 +101,23 @@
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-
   to {
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.96);
   }
 }
 
-@keyframes overlayFadeIn {
-  from {
-    opacity: 0;
-  }
+@keyframes modalFadeOutSwipe {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 
-  to {
-    opacity: 1;
-  }
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes overlayFadeOut {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
