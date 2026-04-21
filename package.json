@@ -11,6 +11,7 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-visually-hidden": "^1.2.4",
     "@reduxjs/toolkit": "^2.9.0",
     "@use-gesture/react": "^10.3.1",
@@ -19,6 +20,7 @@
     "radix-ui": "^1.4.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-hook-form": "^7.73.1",
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router": "^7.8.2",
@@ -26,7 +28,8 @@
     "redux-persist": "^6.0.0",
     "reselect": "^5.1.1",
     "vaul": "^1.1.2",
-    "web-haptics": "^0.0.6"
+    "web-haptics": "^0.0.6",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
