@@ -11,10 +11,15 @@ import {
 import { productsApi } from '@/services/productsApi';
 import cartReducer from '@/store/slices/cartSlice';
 import themeSlice from '@/store/slices/themeSlice';
+import { authApi } from '@/services/authApi';
+import { persistStore } from 'redux-persist';
+import authReducer from "@/store/slices/authSlice"
 
 export const store = configureStore({
   reducer: {
     [productsApi.reducerPath]: productsApi.reducer,
+    [authApi.reducerPath]: authApi.reducer,
+    auth: authReducer,
     cart: cartReducer,
     theme: themeSlice,
   },
@@ -23,10 +28,9 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(productsApi.middleware),
+    }).concat(productsApi.middleware).concat(authApi.middleware)
 });
 
-import { persistStore } from 'redux-persist';
 export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
