@@ -97,6 +97,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                     onIncrease={onIncrease}
                     onDecrease={onDecrease}
                     onRemove={onRemove}
+                    onClose={onClose}
                   />
                 ))
               ) : (

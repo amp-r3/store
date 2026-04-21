@@ -8,19 +8,21 @@ import { CartItem as CartItemType } from '@/types/products';
 import { formatPrice } from '@/utils';
 import { useAppSelector } from '@/hooks';
 import { selectIsMaxReached } from '@/store';
+import { Link } from 'react-router';
 
 interface CartItemProps {
     product: CartItemType;
     onIncrease: (id: number) => void;
     onDecrease: (id: number) => void;
     onRemove: (id: number) => void;
+    onClose(): void;
 }
 
 const getOptimizedImageUrl = (originalUrl: string, width: number = 300) => {
     return `https://wsrv.nl/?url=${encodeURIComponent(originalUrl)}&w=${width}&h=${width}`;
 };
 
-export const CartItem = memo<CartItemProps>(({ product, onIncrease, onDecrease, onRemove, }) => {
+export const CartItem = memo<CartItemProps>(({ product, onIncrease, onDecrease, onRemove, onClose }) => {
     const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
     const totalPrice = useMemo(() => price * quantity, [price, quantity]);
     const imageUrl = getOptimizedImageUrl(thumbnail, 110);
@@ -33,6 +35,9 @@ export const CartItem = memo<CartItemProps>(({ product, onIncrease, onDecrease, 
 
     return (
         <article className={styles['cart-item']}>
+
+            <Link to={`/product/${id}`}  className={styles['cart-item__link']} aria-label={`View details for ${title}`} onClick={onClose} />
+
             {/* --- Media Section --- */}
             <div className={styles['cart-item__media']}>
                 <img
