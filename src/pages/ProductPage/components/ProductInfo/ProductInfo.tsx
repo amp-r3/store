@@ -3,26 +3,43 @@ import style from './product-info.module.scss';
 
 interface ProductInfoProps {
     category: string;
+    brand: string;
     title: string;
     stock: number;
     rating: number;
     reviewsCount: number;
     description: string;
-    inStock: boolean;
 }
 
 export const ProductInfo = ({
     category,
+    brand,
     title,
-    stock,
+    stock = 0,
     rating,
     reviewsCount,
     description,
-    inStock,
 }: ProductInfoProps) => {
+    const isLowStock = stock > 0 && stock < 5;
+    const isOutOfStock = stock === 0;
+
+    let stockClass = style['stock'];
+    if (isLowStock) stockClass += ` ${style['stock--low']}`;
+    if (isOutOfStock) stockClass += ` ${style['stock--out']}`;
+    const stockText = isOutOfStock ? 'Out of stock' : isLowStock ? `Only ${stock} left!` : `${stock} in stock`;
+
     return (
         <div className={style['info-container']}>
-            <span className={style['category']}>{category}</span>
+            <div className={style['meta']}>
+                <span className={style['category']}>{category}</span>
+                {
+                    brand &&
+                    <>
+                        <span className={style['meta-divider']}>·</span>
+                        <span className={style['brand']}>{brand}</span>
+                    </>
+                }
+            </div>
             <h1 className={style['title']}>{title}</h1>
 
             <div className={style['rating']}>
@@ -33,7 +50,7 @@ export const ProductInfo = ({
                 </a>
             </div>
 
-            <span className={style['stock']} data-stock={inStock ? 'in stock' : 'emty'}>{stock} in stock</span>
+            <span className={stockClass} data-stock={isOutOfStock ? 'empty' : isLowStock ? 'low' : 'in stock'}>{stockText}</span>
 
             <p className={style['description']}>{description}</p>
         </div>

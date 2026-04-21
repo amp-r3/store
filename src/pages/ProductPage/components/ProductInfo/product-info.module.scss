@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .info-container {
     display: flex;
@@ -6,7 +6,29 @@
     gap: $spacing-sm;
 }
 
-// ── Категория ──────────────────────────────────────────
+.meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+}
+
+.meta-divider {
+    color: var(--text-muted);
+    font-size: $fs-sm;
+    line-height: $lh-ui;
+    user-select: none;
+}
+
+.brand {
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-muted);
+    letter-spacing: $letter-spacing-wide;
+    line-height: $lh-ui;
+    text-transform: uppercase;
+}
+
 .category {
     align-self: flex-start;
     display: inline-flex;
@@ -28,7 +50,7 @@
     color: var(--primary-accent-light);
 }
 
-// ── Заголовок ──────────────────────────────────────────
+
 .title {
     font-size: $fs-xxl;
     font-weight: $fw-black;
@@ -46,7 +68,6 @@
     }
 }
 
-// ── Строка рейтинга ────────────────────────────────────
 .rating {
     display: inline-flex;
     align-items: center;
@@ -97,6 +118,14 @@
     color: var(--text-secondary);
 }
 
+.stock--low {
+    color: var(--rating-color);
+}
+
+.stock--out {
+    color: var(--error-color);
+}
+
 .stock[data-stock='in stock']::before {
     content: '';
     flex-shrink: 0;
@@ -108,14 +137,25 @@
     animation: stock-pulse $animation-pulse-duration ease-out infinite;
 }
 
-.stock[data-stock='emty']::before {
+.stock[data-stock='empty']::before {
     content: '';
     flex-shrink: 0;
     width: 7px;
     height: 7px;
     border-radius: $radius-circle;
-    background: #c52222;
+    background: var(--error-color);
     box-shadow: 0 0 0 0 rgba(197, 34, 34, 0.5);
+    animation: none;
+}
+
+.stock[data-stock='low']::before {
+    content: '';
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: $radius-circle;
+    background: var(--rating-color);
+    box-shadow: 0 0 0 0 rgba(237, 227, 41, 0.5);
     animation: none;
 }
 

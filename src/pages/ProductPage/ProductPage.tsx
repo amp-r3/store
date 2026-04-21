@@ -11,6 +11,7 @@ import { ProductGallery } from './components/ProductGallery/ProductGallery';
 import { ProductInfo } from './components/ProductInfo/ProductInfo';
 import { ProductPurchaseBox } from './components/ProductPurchaseBox/ProductPurchaseBox';
 import { ProductReviews } from './components/ProductReviews/ProductReviews';
+import { ProductSpecs } from './components/ProductSpecs/ProductSpecs';
 
 // Utils
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
@@ -75,8 +76,8 @@ export const ProductPage = () => {
     if (isNotFound) return <Navigate to="/404" replace />;
     if (!product) return <Loader />;
 
-    const { id: productId, title, price, description, category, images,
-        rating, reviews, discountPercentage, stock } = product;
+    const { id: productId, title, price, description, category, brand, images,
+        rating, reviews, discountPercentage, stock, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
 
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
@@ -99,12 +100,12 @@ export const ProductPage = () => {
                     <div className={style['details-column']}>
                         <ProductInfo
                             category={category}
+                            brand={brand}
                             title={title}
                             stock={stock}
                             rating={rating}
                             reviewsCount={reviews.length}
                             description={description}
-                            inStock={inStock}
                         />
                         <ProductPurchaseBox
                             quantity={quantity}
@@ -117,6 +118,15 @@ export const ProductPage = () => {
                         />
                     </div>
                 </div>
+
+                <ProductSpecs
+                    sku={sku}
+                    dimensions={dimensions}
+                    weight={weight}
+                    warranty={warrantyInformation}
+                    shipping={shippingInformation}
+                    returnPolicy={returnPolicy}
+                />
 
                 <ProductReviews reviews={reviews} />
             </div>
