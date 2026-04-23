@@ -1,9 +1,12 @@
-import { FormField } from "@/components/common/FormField/FormField"
-import { LoginSchema, loginSchema } from "@/schemas/loginSchema"
-import { useLoginMutation } from "@/services/authApi"
+import { useLocation, useNavigate, Link } from "react-router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useLocation, useNavigate } from "react-router"
+import { LoginSchema, loginSchema } from "@/schemas/loginSchema"
+import { useLoginMutation } from "@/services/authApi"
+import { FormField } from "@/components/common/FormField/FormField"
+import style from './login-page.module.scss'
+import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
+import { Loader } from "@/components/common"
 
 export const LoginPage = () => {
   const navigate = useNavigate()
@@ -34,27 +37,44 @@ export const LoginPage = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormField
-        label='Username'
-        error={errors.username?.message}
-        {...register('username')}
-      />
-      <FormField
-        label='Email'
-        type="email"
-        error={errors.email?.message}
-        {...register('email')}
-      />
-      <FormField
-        label='Password'
-        error={errors.password?.message}
-        {...register('password')}
-      />
+    <AuthLayout
+      title="Welcome Back"
+      subtitle="Log in to access your orders and settings"
+    >
+      <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
 
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Log in'}
-      </button>
-    </form>
+        <FormField
+          label='Username'
+          error={errors.username?.message}
+          {...register('username')}
+        />
+
+        <FormField
+          label='Email'
+          type="email"
+          error={errors.email?.message}
+          {...register('email')}
+        />
+
+        <FormField
+          label='Password'
+          type="password"
+          error={errors.password?.message}
+          {...register('password')}
+        />
+
+        <button
+          type="submit"
+          className={style.submitButton}
+          disabled={isLoading}
+        >
+          {isLoading ? <Loader size="sm"/> : 'Log in'}
+        </button>
+
+        <p className={style.footerText}>
+          Don't have an account? <Link to="/register" className={style.link}>Sign up</Link>
+        </p>
+      </form>
+    </AuthLayout>
   )
 }

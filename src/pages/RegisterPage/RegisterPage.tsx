@@ -1,9 +1,12 @@
-import { useNavigate } from "react-router"
+import { useNavigate, Link } from "react-router"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { RegisterSchema, registerSchema } from "@/schemas/registerSchema"
 import { useRegisterMutation } from "@/services/authApi"
 import { FormField } from "@/components/common/FormField/FormField"
+import style from './register-page.module.scss'
+import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
+import { Loader } from "@/components/common"
 
 export const RegisterPage = () => {
   const navigate = useNavigate()
@@ -28,52 +31,67 @@ export const RegisterPage = () => {
       }
     }
   }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+    <AuthLayout
+      title="Create an Account"
+      subtitle="Join us to start managing your orders"
+    >
+      <form className={style.form} onSubmit={handleSubmit(onSubmit)} noValidate>
 
-      <FormField
-        label='Name'
-        error={errors.firstName?.message}
-        {...registerField('firstName')}
-      />
+        <div className={style.row}>
+          <FormField
+            label='Name'
+            error={errors.firstName?.message}
+            {...registerField('firstName')}
+          />
+          <FormField
+            label='Last Name'
+            error={errors.lastName?.message}
+            {...registerField('lastName')}
+          />
+        </div>
 
-      <FormField
-        label='Last Name'
-        error={errors.lastName?.message}
-        {...registerField('lastName')}
-      />
+        <FormField
+          label="Username"
+          error={errors.username?.message}
+          {...registerField('username')}
+        />
 
-      <FormField
-        label="Username"
-        error={errors.username?.message}
-        {...registerField('username')}
-      />
+        <FormField
+          label='Email'
+          type="email"
+          error={errors.email?.message}
+          {...registerField('email')}
+        />
 
-      <FormField
-        label='Email'
-        type="email"
-        error={errors.email?.message}
-        {...registerField('email')}
-      />
+        <FormField
+          label='Password'
+          type='password'
+          error={errors.password?.message}
+          {...registerField('password')}
+        />
 
-      <FormField
-        label='Password'
-        type='password'
-        error={errors.password?.message}
-        {...registerField('password')}
-      />
+        <FormField
+          label='Repeat password'
+          type='password'
+          error={errors.confirm?.message}
+          {...registerField('confirm')}
+        />
 
-      <FormField
-        label='Repeat password'
-        type='password'
-        error={errors.confirm?.message}
-        {...registerField('confirm')}
-      />
+        <button
+          type="submit"
+          className={style.submitButton}
+          disabled={isLoading}
+        >
+          {isLoading ? <Loader size="sm"/> : 'Register'}
+        </button>
 
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Register'}
-      </button>
+        <p className={style.footerText}>
+          Already have an account? <Link to="/login" className={style.link}>Log in</Link>
+        </p>
 
-    </form>
+      </form>
+    </AuthLayout>
   )
 }
