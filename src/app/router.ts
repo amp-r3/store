@@ -9,6 +9,20 @@ export const router = createBrowserRouter([
         Component: Layout,
         children: [
             {
+                path: 'login',
+                lazy: async () => {
+                    const module = await import ("@/pages/LoginPage/LoginPage");
+                    return { Component: module.LoginPage }
+                }
+            },
+            {
+                path: 'register',
+                lazy: async () => {
+                    const module = await import ("@/pages/RegisterPage/RegisterPage");
+                    return { Component: module.RegisterPage }
+                }
+            },
+            {
                 ErrorBoundary: ErrorView,
                 children: [
                     {
@@ -16,7 +30,7 @@ export const router = createBrowserRouter([
                         Component: CatalogPage
                     },
                     {
-                        path: '/product/:id',
+                        path: 'product/:id',
                         lazy: async () => {
                             const module = await import("@/pages/ProductPage/ProductPage");
                             return { Component: module.ProductPage }
