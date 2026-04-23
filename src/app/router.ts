@@ -1,5 +1,6 @@
 import { ErrorView } from "@/components/common";
 import { Layout } from "@/components/layout";
+import { ProtectedRoute } from "@/components/layout/ProtectedRoute/ProtectedRoute";
 import { PublicRoute } from "@/components/layout/PublicRoute/PublicRoute";
 import { CatalogPage } from "@/pages";
 import { createBrowserRouter } from "react-router";
@@ -12,6 +13,13 @@ export const router = createBrowserRouter([
             {
                 Component: PublicRoute,
                 children: [
+                  {
+                    path: "*",
+                    lazy: async () => {
+                        const module = await import("@/pages/Page404/Page404");
+                        return { Component: module.Page404 }
+                    }
+                  },
                   {
                     path: 'login',
                     lazy: async () => {
@@ -28,6 +36,18 @@ export const router = createBrowserRouter([
                   },
                 ]
               },
+              {
+                Component: ProtectedRoute,
+                children: [
+                  {
+                    path: 'user',
+                    lazy: async () => {
+                      const module = await import("@/pages/UserPage/UserPage")
+                      return { Component: module.UserPage }
+                    }
+                  }
+                ]
+              },
             {
                 ErrorBoundary: ErrorView,
                 children: [
@@ -41,13 +61,6 @@ export const router = createBrowserRouter([
                             const module = await import("@/pages/ProductPage/ProductPage");
                             return { Component: module.ProductPage }
                         },
-                    },
-                    {
-                        path: "*",
-                        lazy: async () => {
-                            const module = await import("@/pages/Page404/Page404");
-                            return { Component: module.Page404 }
-                        }
                     }
                 ]
             }
