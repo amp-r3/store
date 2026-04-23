@@ -1,0 +1,80 @@
+@use '@/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  width: 100%;
+}
+
+.label {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-secondary);
+  margin-left: $spacing-xs; 
+}
+
+.input {
+  width: 100%;
+  font-family: $font-primary;
+  font-size: $fs-base;
+  color: var(--text-primary);
+  background: var(--background-glass-base);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-input;
+  padding: $spacing-sm $spacing-md;
+
+  transition: all $transition-fast $ease-in-out-smooth;
+  box-shadow: var(--shadow-xs);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--border-color-strong);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+    box-shadow: var(--shadow-focus-input);
+    background: var(--background-component);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--border-color-subtle);
+  }
+}
+
+.inputError {
+  border-color: var(--error-color);
+
+  &:focus {
+    border-color: var(--error-color);
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.15);
+  }
+}
+
+.error {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--error-color);
+  margin-left: $spacing-xs;
+  animation: slideDown $transition-fast $ease-out-expo;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
