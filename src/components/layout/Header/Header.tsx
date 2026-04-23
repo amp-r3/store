@@ -24,7 +24,10 @@ export const Header = () => {
         {
           isAuth ?
             <div className={style.navGroup}>
-              <span>{userName}</span>
+              <Link to={'/user'} className={style.link}>
+                <FaUser className={style.icon} />
+                <span>{userName}</span>
+              </Link>
               <button className={style.link} onClick={handleLogout}>
                 <FaUserMinus className={style.icon} />
                 <span>Log out</span>
