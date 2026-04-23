@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 @keyframes spin {
   to {
@@ -19,17 +19,12 @@
   pointer-events: none;
 }
 
-.spinnerWrapper--xs {
-  padding: $spacing-xs;
+.spinnerWrapper__inline {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.spinnerWrapper--sm {
-  padding: $spacing-sm;
-}
-
-.spinnerWrapper--md {
-  padding: 20rem;
-}
 
 .spinner {
   border-radius: $radius-circle;

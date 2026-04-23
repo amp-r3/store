@@ -1,8 +1,15 @@
 import style from './loader.module.scss';
 
-export const Loader = ({ size = 'md' }) => {
-    const wrapperClass = `${style.spinnerWrapper} ${style[`spinnerWrapper--${size}`] || ''}`;
-    const spinnerClass = `${style.spinner} ${style[`spinner--${size}`] || ''}`;
+type LoaderSize = 'xs' | 'sm' | 'md';
+
+export const Loader = ({ size }: { size?: LoaderSize }) => {
+    const wrapperClass = size
+        ? `${style.spinnerWrapper__inline} ${style[`spinnerWrapper--${size}`] || ''}`
+        : style.spinnerWrapper;
+
+    const spinnerClass = size
+        ? `${style.spinner} ${style[`spinner--${size}`]}`
+        : `${style.spinner} ${style['spinner--md']}`;
 
     return (
         <div className={wrapperClass}>
