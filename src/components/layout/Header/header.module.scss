@@ -1,0 +1,66 @@
+@use '@/styles/index' as *;
+
+.topbar {
+  background: var(--glass-background-subtle);
+  backdrop-filter: $backdrop-blur-sm;
+  border-bottom: 1px solid var(--border-color-subtle);
+
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+}
+
+.container {
+  max-width: $container-width;
+  margin: 0 auto;
+  padding: $spacing-xs $container-padding;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navGroup {
+  display: flex;
+  gap: $spacing-lg;
+  align-items: center;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: $fw-semibold;
+  transition: color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--primary-accent);
+  }
+}
+
+.icon {
+  font-size: $icon-size-sm;
+  color: var(--primary-accent);
+  opacity: 0.7;
+  transition: opacity $transition-fast $ease-in-out-smooth;
+
+  // Подсвечиваем иконку при наведении на всю ссылку
+  .link:hover &,
+  .loginLink:hover & {
+    opacity: 1;
+  }
+}
+
+.loginLink {
+  @extend .link;
+  color: var(--text-primary); // Выделяем логин более контрастным цветом текста
+
+  &:hover {
+    color: var(--primary-accent-light);
+  }
+
+  .icon {
+    color: var(--primary-accent-light);
+  }
+}
