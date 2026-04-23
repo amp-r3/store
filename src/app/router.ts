@@ -1,5 +1,6 @@
 import { ErrorView } from "@/components/common";
 import { Layout } from "@/components/layout";
+import { PublicRoute } from "@/components/layout/PublicRoute/PublicRoute";
 import { CatalogPage } from "@/pages";
 import { createBrowserRouter } from "react-router";
 
@@ -9,19 +10,24 @@ export const router = createBrowserRouter([
         Component: Layout,
         children: [
             {
-                path: 'login',
-                lazy: async () => {
-                    const module = await import ("@/pages/LoginPage/LoginPage");
-                    return { Component: module.LoginPage }
-                }
-            },
-            {
-                path: 'register',
-                lazy: async () => {
-                    const module = await import ("@/pages/RegisterPage/RegisterPage");
-                    return { Component: module.RegisterPage }
-                }
-            },
+                Component: PublicRoute,
+                children: [
+                  {
+                    path: 'login',
+                    lazy: async () => {
+                      const module = await import("@/pages/LoginPage/LoginPage")
+                      return { Component: module.LoginPage }
+                    }
+                  },
+                  {
+                    path: 'register',
+                    lazy: async () => {
+                      const module = await import("@/pages/RegisterPage/RegisterPage")
+                      return { Component: module.RegisterPage }
+                    }
+                  },
+                ]
+              },
             {
                 ErrorBoundary: ErrorView,
                 children: [
