@@ -1,19 +1,13 @@
 import { authApi } from "@/services/authApi";
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import storage from "../storage";
 import persistReducer from "redux-persist/es/persistReducer";
+import { SessionUser, StoredUser } from "@/types/auth";
 
-interface User {
-  id: number
-  username: string
-  email: string
-  firstName: string
-  lastName: string
-  image: string
-}
+
 
 export interface AuthState {
-  user: User | null
+  user: SessionUser | null
   token: string | null
 }
 
@@ -38,13 +32,14 @@ export const authSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      authApi.endpoints.login.matchFulfilled,
-      (state, { payload }) => {
-        state.user = payload
-        state.token = payload.accessToken
-      }
-    )
+    const handleFulfilled = (state, { payload }: PayloadAction<SessionUser>) => {
+      state.user = payload
+      state.token = payload.accessToken
+    }
+
+    builder
+    .addMatcher(authApi.endpoints.login.matchFulfilled, handleFulfilled)
+    .addMatcher(authApi.endpoints.register.matchFulfilled, handleFulfilled)
   }
 });
 
