@@ -9,7 +9,7 @@ interface AuthLayoutProps {
 
 export const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => {
   return (
-    <div className={style.pageWrapper}>
+    <main className={style.pageWrapper}>
       <div className={style.card}>
         <div className={style.header}>
           <h1 className={style.title}>{title}</h1>
@@ -17,6 +17,6 @@ export const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => {
         </div>
         {children}
       </div>
-    </div>
+    </main>
   )
 }
