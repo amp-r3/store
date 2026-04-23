@@ -22,7 +22,7 @@
     padding: $spacing-sm $spacing-lg;
     border-radius: $radius-pill;
     position: fixed;
-    top: $spacing-lg;
+    top: $spacing-xxl;
     z-index: $z-index-fixed;
     max-width: 50rem;
     width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));

@@ -17,6 +17,7 @@ import { selectIsCartOpen } from '@/store/selectors/cartSelectors';
 import style from './layout.module.scss';
 import { Footer } from '../Footer/Footer';
 import { useTheme } from '@/hooks';
+import { Header } from '../Header/Header';
 
 export const Layout = () => {
     useTheme();
@@ -31,10 +32,11 @@ export const Layout = () => {
 
     return (
         <>
+            <Header />
             <div className={style.layout}>
-                <header className={style.header}>
-                <Navbar />
-                </header>
+                <div className={style.header}>
+                    <Navbar />
+                </div>
                 {
                     isLoading && <Loader />
                 }
