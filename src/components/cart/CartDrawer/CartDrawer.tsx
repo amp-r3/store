@@ -1,7 +1,8 @@
-import { FC, useCallback, useMemo } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { Drawer } from 'vaul';
 import { useNavigate } from 'react-router';
 import { VisuallyHidden } from 'radix-ui'
+import { IoWarningOutline } from "react-icons/io5";
 
 import styles from './cart-drawer.module.scss';
 
@@ -16,6 +17,8 @@ import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
 
 import { useHaptics } from '@/hooks';
+import { Modal } from '@/components/common/Modal/Modal';
+import { selectIsAuth } from '@/store/selectors/authSelectors';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -26,6 +29,8 @@ const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const cartItems = useAppSelector(selectCartItems);
+  const isAuth = useAppSelector(selectIsAuth)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -47,7 +52,8 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const handleCheckout = () => {
     success();
-    console.log('Proceed to checkout');
+    onClose();
+    if (!isAuth) setIsModalOpen(true)
   };
 
   const onStartShopping = () => {
@@ -57,68 +63,83 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Drawer.Root
-      open={isOpen}
-      onOpenChange={(open) => !open && onClose()}
-      direction="right"
-    >
-      <Drawer.Portal container={MODAL_ROOT}>
-        <Drawer.Overlay className={styles.cart__backdrop} />
+    <>
 
-        <Drawer.Content
-          className={styles.cart}
-          aria-describedby={undefined}
-          onOpenAutoFocus={(e) => {
-            e.preventDefault();
-            if (document.activeElement instanceof HTMLElement) {
-              document.activeElement.blur();
-            }
-          }}
-        >
-          <VisuallyHidden.Root>
-            <Drawer.Title>Shopping Cart</Drawer.Title>
-          </VisuallyHidden.Root>
+      <Drawer.Root
+        open={isOpen}
+        onOpenChange={(open) => !open && onClose()}
+        direction="right"
+      >
+        <Drawer.Portal container={MODAL_ROOT}>
+          <Drawer.Overlay className={styles.cart__backdrop} />
 
-          <div className={styles.cart__header}>
-            <CartHeader
-              totalQuantity={totalQuantity}
-              onClose={onClose}
-              onClearCart={cartItems.length > 0 ? onClearCart : undefined}
-            />
-          </div>
+          <Drawer.Content
+            className={styles.cart}
+            aria-describedby={undefined}
+            onOpenAutoFocus={(e) => {
+              e.preventDefault();
+              if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+              }
+            }}
+          >
+            <VisuallyHidden.Root>
+              <Drawer.Title>Shopping Cart</Drawer.Title>
+            </VisuallyHidden.Root>
 
-          <div className={styles.cart__scrollArea}>
-            <div className={styles.cart__body}>
-              {cartItems.length ? (
-                cartItems.map((item) => (
-                  <CartItem
-                    key={item.id}
-                    product={item}
-                    onIncrease={onIncrease}
-                    onDecrease={onDecrease}
-                    onRemove={onRemove}
-                    onClose={onClose}
-                  />
-                ))
-              ) : (
-                <EmptyCart onStartShopping={onStartShopping} />
-              )}
+            <div className={styles.cart__header}>
+              <CartHeader
+                totalQuantity={totalQuantity}
+                onClose={onClose}
+                onClearCart={cartItems.length > 0 ? onClearCart : undefined}
+              />
             </div>
-          </div>
 
-          {cartItems.length > 0 && (
-            <CartFooter
-              subtotal={subtotal}
-              total={total}
-              discountAmount={discountAmount}
-              discountPercent={discountPercent}
-              shippingProgress={shippingProgress}
-              remainingForFreeShipping={remainingForFreeShipping}
-              onCheckout={handleCheckout}
-            />
-          )}
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+            <div className={styles.cart__scrollArea}>
+              <div className={styles.cart__body}>
+                {cartItems.length ? (
+                  cartItems.map((item) => (
+                    <CartItem
+                      key={item.id}
+                      product={item}
+                      onIncrease={onIncrease}
+                      onDecrease={onDecrease}
+                      onRemove={onRemove}
+                      onClose={onClose}
+                    />
+                  ))
+                ) : (
+                  <EmptyCart onStartShopping={onStartShopping} />
+                )}
+              </div>
+            </div>
+
+            {cartItems.length > 0 && (
+              <CartFooter
+                subtotal={subtotal}
+                total={total}
+                discountAmount={discountAmount}
+                discountPercent={discountPercent}
+                shippingProgress={shippingProgress}
+                remainingForFreeShipping={remainingForFreeShipping}
+                onCheckout={handleCheckout}
+              />
+            )}
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+      {
+        !isAuth &&
+        <Modal
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          title="You are not registered"
+          description="To continue you need to register"
+          icon={<IoWarningOutline size={50} />}
+          actionLabel="register"
+          onAction={() => { navigate('/register'); setIsModalOpen(false) }}
+        />
+      }
+    </>
   );
 };
