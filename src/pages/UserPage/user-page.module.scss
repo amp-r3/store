@@ -6,14 +6,20 @@
   gap: $spacing-md;
 }
 
-.submitButton {
+.formActions {
+  display: flex;
+  gap: $spacing-sm;
   margin-top: $spacing-sm;
-  width: 100%;
+
+  button {
+    flex: 1;
+  }
+}
+
+%btn-base {
   padding: $spacing-md;
   border: none;
   border-radius: $radius-input;
-  background-color: var(--primary-accent);
-  color: var(--text-inverse);
   font-family: $font-primary;
   font-size: $fs-base;
   font-weight: $fw-semibold;
@@ -23,6 +29,19 @@
   align-items: center;
   min-height: 48px;
   transition: all $transition-fast $ease-in-out-smooth;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+.submitButton {
+  @extend %btn-base;
+  background-color: var(--primary-accent);
+  color: var(--text-inverse);
   box-shadow: var(--shadow-accent-sm);
 
   &:hover:not(:disabled) {
@@ -30,12 +49,80 @@
     box-shadow: var(--shadow-accent-hover);
     transform: translateY(-1px);
   }
+}
 
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    background-color: var(--text-muted);
-    box-shadow: none;
+.cancelButton {
+  @extend %btn-base;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+
+  &:hover:not(:disabled) {
+    background-color: var(--border-color-subtle);
+    color: var(--text-primary);
+  }
+}
+
+.profileView {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.infoList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  background: var(--background-glass-base);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  box-shadow: var(--shadow-sm);
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: $spacing-sm;
+  border-bottom: 1px solid var(--border-color-subtle);
+
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}
+
+.label {
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  margin-bottom: $spacing-xxs;
+  font-weight: $fw-semibold;
+}
+
+.value {
+  font-size: $fs-base;
+  color: var(--text-primary);
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.editButton {
+  @extend .submitButton;
+}
+
+.logoutButton {
+  @extend %btn-base;
+  background-color: transparent;
+  color: var(--error-color);
+  border: 1px solid rgba(220, 38, 38, 0.2); 
+
+  &:hover:not(:disabled) {
+    background-color: rgba(220, 38, 38, 0.05);
+    border-color: var(--error-color);
   }
 }
 

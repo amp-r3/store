@@ -17,12 +17,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    padding: $spacing-xxs $spacing-sm;
+  }
+}
+
+.text {
+  text-align: center;
+  flex-grow: 1;
+  padding: 0 $spacing-sm;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 }
 
 .navGroup {
   display: flex;
   gap: $spacing-lg;
   align-items: center;
+
+  @media (max-width: 768px) {
+    gap: $spacing-md;
+  }
+
+  @media (max-width: 480px) {
+    gap: $spacing-sm;
+  }
 }
 
 .link {
@@ -37,6 +62,13 @@
   &:hover {
     color: var(--primary-accent);
   }
+
+  span {
+
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
 }
 
 .icon {
@@ -45,16 +77,19 @@
   opacity: 0.7;
   transition: opacity $transition-fast $ease-in-out-smooth;
 
-  // Подсвечиваем иконку при наведении на всю ссылку
   .link:hover &,
   .loginLink:hover & {
     opacity: 1;
+  }
+
+  @media (max-width: 480px) {
+    font-size: $icon-size-md;
   }
 }
 
 .loginLink {
   @extend .link;
-  color: var(--text-primary); // Выделяем логин более контрастным цветом текста
+  color: var(--text-primary);
 
   &:hover {
     color: var(--primary-accent-light);
