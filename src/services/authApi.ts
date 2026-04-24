@@ -93,7 +93,6 @@ export const authApi = createApi({
           data: {
             firstName: userData.firstName,
             lastName: userData.lastName,
-            username: userData.username,
           }
         });
 

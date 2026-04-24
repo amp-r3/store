@@ -1,5 +1,5 @@
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
-import { useAppDispatch, useAppSelector } from "@/hooks"
+import { useAppSelector } from "@/hooks"
 import { EditProfileSchema, editProfileSchema } from "@/schemas/editProfileSchema"
 import { selectUser } from "@/store/selectors/authSelectors"
 import { zodResolver } from "@hookform/resolvers/zod"

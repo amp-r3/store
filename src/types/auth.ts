@@ -21,7 +21,6 @@ export type SessionUser = Omit<StoredUser, 'password'> & {
 }
 
 export interface LoginFormData {
-  username: string
   email:    string
   password: string
 }

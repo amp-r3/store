@@ -44,12 +44,6 @@ export const LoginPage = () => {
       <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
 
         <FormField
-          label='Username'
-          error={errors.username?.message}
-          {...register('username')}
-        />
-
-        <FormField
           label='Email'
           type="email"
           error={errors.email?.message}
