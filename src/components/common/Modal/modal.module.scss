@@ -1,0 +1,207 @@
+@use '@/styles/index' as *;
+
+.overlay {
+  background-color: var(--glass-background-subtle);
+  backdrop-filter: $backdrop-blur-sm;
+  position: fixed;
+  inset: 0;
+  z-index: $z-index-modal - 1;
+
+  &[data-state='open'] {
+    animation: overlayFadeIn $transition-layout $ease-out-expo;
+  }
+
+  &[data-state='closed'] {
+    animation: overlayFadeOut $transition-layout $ease-out-expo;
+  }
+}
+
+.content {
+  background-color: var(--background-component);
+  border: 1px solid var(--glass-border);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-lg);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 400px;
+  max-height: 85vh;
+  padding: $spacing-lg;
+  z-index: $z-index-modal;
+
+  &[data-state='open'] {
+    animation: modalFadeIn $transition-layout $ease-out-expo;
+  }
+
+  &[data-state='closed'] {
+    animation: modalFadeOut $transition-layout $ease-out-expo;
+  }
+
+  background: var(--background-glass-base);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+  text-align: center;
+}
+
+.iconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--glass-background-subtle);
+  color: var(--primary-accent);
+  margin-bottom: $spacing-xs;
+}
+
+.title {
+  margin: 0;
+  font-family: $font-primary;
+  font-size: $fs-lg;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.description {
+  margin: 0 0 $spacing-lg;
+  font-size: $fs-base;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-sm;
+  justify-content: flex-end;
+}
+
+%btn-modal {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $fs-base;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  transition: all $transition-fast $ease-in-out-smooth;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.cancelButton {
+  @extend %btn-modal;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+
+  &:hover:not(:disabled) {
+    background-color: var(--border-color-subtle);
+    color: var(--text-primary);
+  }
+}
+
+.actionButton {
+  @extend %btn-modal;
+
+  &.primary {
+    background-color: var(--primary-accent);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-accent-sm);
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-accent-dark);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.danger {
+    background-color: var(--error-color);
+    color: var(--text-inverse);
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.9);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.closeIconButton {
+  font-family: inherit;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  position: absolute;
+  top: $spacing-sm;
+  right: $spacing-sm;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: var(--text-primary);
+    background-color: var(--glass-background-subtle);
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlayFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
