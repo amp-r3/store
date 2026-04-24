@@ -4,13 +4,15 @@ import style from './header.module.scss'
 import { selectIsAuth, selectUserName } from '@/store/selectors/authSelectors'
 import { useAppDispatch, useAppSelector } from '@/hooks'
 import { logout } from '@/store/slices/authSlice'
+import { supabase } from '@/supabase'
 
 export const Header = () => {
   const isAuth = useAppSelector(selectIsAuth)
   const userName = useAppSelector(selectUserName)
   const dispatch = useAppDispatch()
-  const handleLogout = () => {
+  const handleLogout = async () => {
     dispatch(logout())
+    await supabase.auth.signOut()
   }
   return (
     <header className={style.topbar}>
