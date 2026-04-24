@@ -27,7 +27,7 @@ export const RegisterPage = () => {
       navigate('/')
     } catch (err: any) {
       if (err?.status === 409) {
-        setError('username', { message: 'Username is already taken' })
+        setError('email', { message: 'Email is already taken' })
       }
     }
   }

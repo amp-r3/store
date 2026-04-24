@@ -2,19 +2,20 @@ import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
 import { useAppDispatch, useAppSelector } from "@/hooks"
 import { EditProfileSchema, editProfileSchema } from "@/schemas/editProfileSchema"
 import { selectUser } from "@/store/selectors/authSelectors"
-import { edit } from "@/store/slices/authSlice"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router"
 import style from './user-page.module.scss'
 import { FormField } from "@/components/common/FormField/FormField"
-import { StoredUser } from "@/types/auth"
+import { useUpdateProfileMutation } from "@/services/authApi"
+import { Loader } from "@/components/common"
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
   const navigate = useNavigate()
   const location = useLocation()
-  const dispatch = useAppDispatch()
+
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation()
   const from = location.state?.from ?? '/'
 
   const {
@@ -28,24 +29,22 @@ export const UserPage = () => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      username: user.username,
       password: ''
     }
   })
 
-  const onSubmit = (data: EditProfileSchema) => {
-    const users: StoredUser[] = JSON.parse(
-      localStorage.getItem('users') || '[]'
-    )
-    const stored = users.find(u => u.id === user.id)
+  const onSubmit = async (data: EditProfileSchema) => {
+    try {
+      await updateProfile(data).unwrap();
 
-    if (!stored || stored.password !== data.password) {
-      setError('password', { message: 'Incorrect password' })
-      return
+      navigate(from, { replace: true });
+
+    } catch (error: any) {
+      if (error?.data === 'Incorrect current password') {
+        setError('password', { message: 'Incorrect password' });
+      }
     }
-
-    const { password, ...rest } = data
-    dispatch(edit(rest))
-    navigate(from, { replace: true })
   }
   return (
     <AuthLayout
@@ -88,8 +87,9 @@ export const UserPage = () => {
         <button
           type="submit"
           className={style.submitButton}
+          disabled={isLoading}
         >
-          Edit
+          {isLoading ? <Loader size="sm" /> : 'Register'}
         </button>
       </form>
     </AuthLayout >

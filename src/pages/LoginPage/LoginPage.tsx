@@ -30,8 +30,8 @@ export const LoginPage = () => {
       navigate(from, { replace: true })
     } catch (err: any) {
       if (err?.status === 401) {
-        setError('username', { message: 'Invalid username or password' })
-        setError('password', { message: 'Invalid username or password' })
+        setError('email', { message: 'Invalid email or password' })
+        setError('password', { message: 'Invalid email or password' })
       }
     }
   }
@@ -68,7 +68,7 @@ export const LoginPage = () => {
           className={style.submitButton}
           disabled={isLoading}
         >
-          {isLoading ? <Loader size="sm"/> : 'Log in'}
+          {isLoading ? <Loader size="sm" /> : 'Log in'}
         </button>
 
         <p className={style.footerText}>
