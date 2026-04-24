@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { LoginFormData, RegisterFormData, SessionUser, StoredUser } from "@/types/auth";
+import { supabase } from "@/supabase";
+import { EditProfileSchema } from "@/schemas/editProfileSchema";
 
 
 export const authApi = createApi({
@@ -8,69 +10,104 @@ export const authApi = createApi({
   endpoints: (builder) => ({
 
     register: builder.mutation<SessionUser, RegisterFormData>({
-      queryFn: ({ firstName, lastName, username, email, password}) => {
-        const users: StoredUser[] = JSON.parse(
-          localStorage.getItem('users') || '[]'
-        )
-        if (users.find(u => u.email === email) || users.find(u => u.username === username)) {
-          if (users.find(u => u.username === username)) {
-            return { error: { status: 409, data: 'Username is already taken' } }
+      queryFn: async ({ firstName, lastName, username, email, password }) => {
+        
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              firstName: firstName,
+              lastName: lastName,
+              username: username,
+            }
           }
-          return { error: { status: 409, data: 'Email is already taken' } }
+        });
+
+        if (error) {
+          return { error: { status: 400, data: error.message } }
         }
 
-        const newUser: StoredUser = {
-          id: crypto.randomUUID(),
-          username,
-          firstName,
-          lastName,
-          email,
-          password
-        }
-
-        localStorage.setItem('users', JSON.stringify([...users, newUser]))
-
+        const user = data.user!;
+        
         return {
           data: {
-            id: newUser.id,
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            username: newUser.username,
-            email: newUser.email,
-            accessToken: crypto.randomUUID(),
+            id: user.id,
+            firstName: user.user_metadata.firstName,
+            lastName: user.user_metadata.lastName,
+            username: user.user_metadata.username,
+            email: user.email!,
+            accessToken: data.session?.access_token || '',
           }
         }
       }
     }),
     
     login: builder.mutation<SessionUser, LoginFormData>({
-      queryFn: ({email, username, password}) => {
-        const users: StoredUser[] = JSON.parse(
-          localStorage.getItem('users') || '[]'
-        )
+      queryFn: async ({ email, password }) => {
+        
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
 
-        const user = users.find(
-          u => u.email === email && u.username === username && u.password === password
-        )
-
-        if (!user) {
-          return { error: { status: 401, data: 'Invalid data' } }
+        if (error) {
+          return { error: { status: 401, data: 'Incorrect email or password' } }
         }
+
+        const user = data.user;
 
         return {
           data: {
             id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            username: user.username,
-            email: user.email,
-            accessToken: crypto.randomUUID(),
+            firstName: user.user_metadata.firstName,
+            lastName: user.user_metadata.lastName,
+            username: user.user_metadata.username,
+            email: user.email!,
+            accessToken: data.session.access_token,
           }
         }
       }
-    })
+    }),
+
+    updateProfile: builder.mutation<Partial<SessionUser>, EditProfileSchema>({
+      queryFn: async (userData) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user || !user.email) {
+          return { error: { status: 401, data: 'The user is not authorized' } };
+        }
+
+
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: user.email,
+          password: userData.password,
+        });
+
+
+        if (signInError) {
+          return { error: { status: 400, data: 'Incorrect current password' } };
+        }
+
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            username: userData.username,
+          }
+        });
+
+        if (updateError) {
+          return { error: { status: 400, data: updateError.message } };
+        }
+
+        const { password, ...restData } = userData;
+
+        return { data: restData };
+      }
+    }),
 
   })
 })
 
-export const { useLoginMutation, useRegisterMutation } = authApi
+export const { useLoginMutation, useRegisterMutation, useUpdateProfileMutation } = authApi

@@ -26,19 +26,6 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    edit: (state, action: PayloadAction<Partial<SessionUser>>)=>{
-      if (!state.user) return
-      const users: StoredUser[] = JSON.parse(
-        localStorage.getItem('users') || '[]'
-      )
-      const updated = users.map(u =>
-        u.id === state.user!.id
-        ? {...u, ...action.payload }
-        : u
-      )
-
-      localStorage.setItem('users', JSON.stringify(updated))
-    },
     logout(state) {
       state.user = null
       state.token = null
@@ -53,11 +40,19 @@ export const authSlice = createSlice({
     builder
     .addMatcher(authApi.endpoints.login.matchFulfilled, handleFulfilled)
     .addMatcher(authApi.endpoints.register.matchFulfilled, handleFulfilled)
+    .addMatcher(
+      authApi.endpoints.updateProfile.matchFulfilled,
+      (state, { payload }) => {
+        if (state.user) {
+          state.user = { ...state.user, ...payload };
+        }
+      }
+    );
   }
 });
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice.reducer);
 
-export const {logout, edit} = authSlice.actions
+export const {logout} = authSlice.actions
 
 export default persistedAuthReducer;
