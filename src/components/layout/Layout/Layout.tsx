@@ -1,5 +1,5 @@
 import { useNavigation, Outlet } from 'react-router';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 
 // Custom Components
 import { Navbar } from '../Navbar/Navbar';
@@ -18,6 +18,9 @@ import style from './layout.module.scss';
 import { Footer } from '../Footer/Footer';
 import { useTheme } from '@/hooks';
 import { Header } from '../Header/Header';
+import { supabase } from '@/supabase';
+import { logout, setSession } from '@/store/slices/authSlice';
+
 
 export const Layout = () => {
     useTheme();
@@ -25,10 +28,32 @@ export const Layout = () => {
     const isLoading = navigation.state === 'loading';
     const dispatch = useAppDispatch();
     const isOpen = useAppSelector(selectIsCartOpen);
+    useEffect(() => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                dispatch(setSession({
+                    user: {
+                        id: session.user.id,
+                        firstName: session.user.user_metadata.firstName,
+                        lastName: session.user.user_metadata.lastName,
+                        username: session.user.user_metadata.username,
+                        email: session.user.email!,
+                        accessToken: session.access_token,
+                    },
+                    token: session.access_token,
+                }));
+            } else if (event === 'SIGNED_OUT') {
+                dispatch(logout());
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [dispatch]);
 
     const handleClose = () => {
         dispatch(closeCart())
     }
+
 
     return (
         <>

@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import storage from "../storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import { SessionUser, StoredUser } from "@/types/auth";
+import { purgeStoredState } from "redux-persist";
 
 
 
@@ -29,6 +30,11 @@ export const authSlice = createSlice({
     logout(state) {
       state.user = null
       state.token = null
+      purgeStoredState(authPersistConfig);
+    },
+    setSession(state, action: PayloadAction<{ user: SessionUser, token: string }>) {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
     }
   },
   extraReducers: (builder) => {
@@ -53,6 +59,6 @@ export const authSlice = createSlice({
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice.reducer);
 
-export const {logout} = authSlice.actions
+export const {logout, setSession} = authSlice.actions
 
 export default persistedAuthReducer;
