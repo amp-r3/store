@@ -18,6 +18,9 @@
   border: 1px solid var(--glass-border);
   border-radius: $radius-xl;
   box-shadow: var(--shadow-default);
+  @media (max-width: 560px) {
+    padding: $spacing-lg $spacing-md;
+  }
 }
 
 .header {
