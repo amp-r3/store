@@ -14,22 +14,32 @@ export interface ProductParams {
     order?: string | null;
     search?: string | null;
     category?: string | null;
+    limit?: number | null;
 }
 
 export interface ProductsResponse {
-    items: Record<string, Product>;
+    items: Record<number, Product>;
     ids: number[];
     total: number;
+}
+
+interface QueryParams {
+    limit: number;
+    skip: number;
+    q?: string;
+    sortBy?: string;
+    order?: string;
 }
 
 export const productsApi = createApi({
     reducerPath: 'productsApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://dummyjson.com' }),
+    tagTypes: ['Product', 'Category'],
     endpoints: (builder) => ({
         getProducts: builder.query<ProductsResponse, ProductParams>({
             query: (params) => {
                 const { page = 1, search, sortBy, order, category } = params;
-                const limit = 12;
+                const limit = params.limit ?? 12;
                 const skip = (page - 1) * limit;
 
                 let url = 'products';
@@ -39,7 +49,7 @@ export const productsApi = createApi({
                     url = `products/category/${category}`;
                 }
 
-                const queryParams: Record<string, any> = {
+                const queryParams: QueryParams = {
                     limit,
                     skip,
                 };
@@ -62,7 +72,7 @@ export const productsApi = createApi({
                 const items = response.products.reduce((acc, curr) => {
                     acc[curr.id] = curr;
                     return acc;
-                }, {} as Record<string, Product>);
+                }, {} as Record<number, Product>);
 
                 const ids = response.products.map((product) => product.id);
 
@@ -72,6 +82,13 @@ export const productsApi = createApi({
                     total: response.total
                 };
             },
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.ids.map((id) => ({ type: 'Product' as const, id })),
+                          { type: 'Product', id: 'LIST' },
+                      ]
+                    : [{ type: 'Product', id: 'LIST' }],
         }),
         
         getCategories: builder.query<Categories, void>({
@@ -85,10 +102,12 @@ export const productsApi = createApi({
                 };
                 return [defaultCategory, ...response];
             },
+            providesTags: [{ type: 'Category', id: 'LIST' }]
         }),
 
-        getProductById: builder.query<Product, string>({
+        getProductById: builder.query<Product, number>({
             query: (id) => `products/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Product', id }],
         }),
     }),
 });
