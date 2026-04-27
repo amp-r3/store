@@ -66,10 +66,16 @@
     }
 }
 
-.card__category {
+.card__promo-block {
+    display: flex;
+    gap: $spacing-xs;
     position: absolute;
     top: $spacing-sm;
     left: $spacing-sm;
+    flex-direction: column;
+}
+
+.card__category {
     padding: $spacing-xxs $spacing-sm;
     background: var(--border-color-light);
     color: var(--primary-accent-dark);
@@ -88,17 +94,51 @@
 }
 
 .card__discount {
-    position: absolute;
-    top: $spacing-sm;
-    right: $spacing-sm;
     padding: $spacing-xxs $spacing-sm;
     background: var(--error-color);
     color: #ffffff;
     border-radius: $radius-pill;
+    text-align: center;
     font-size: $fs-sm;
     font-weight: $fw-bold;
     letter-spacing: $letter-spacing-wide;
+    width: min-content;
     z-index: 2;
+}
+
+.card__add-to-favorites {
+    position: absolute;
+    top: $spacing-xs;
+    right: $spacing-sm;
+    padding: $spacing-xs;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    z-index: 4;
+    background: var(--glass-background);
+    border: 1px solid var(--border-color);
+    transition: transform $transition-base $ease-out-expo;
+
+    &:hover {
+        .card__icon {
+            transform: scale(1.1);
+        }
+
+        transform: scale(1.1);
+    }
+
+    &:active {
+        .card__icon {
+            transform: scale($button-pressed-scale);
+        }
+
+        transform: scale($button-pressed-scale);
+    }
+}
+
+.card__icon {
+    transition: transform $transition-base $ease-out-expo ;
+    color: var(--error-color)
 }
 
 .card__body {
@@ -210,14 +250,9 @@
 
     .card__category,
     .card__discount {
-        top: $spacing-xs;
         padding: 2px $spacing-xs;
         font-size: 0.6875rem;
         letter-spacing: 0;
-    }
-
-    .card__category {
-        left: $spacing-xs;
     }
 
     .card__body {
@@ -262,12 +297,6 @@
     .card__discount {
         font-size: 0.625rem;
         padding: 2px 6px;
-    }
-
-    .card__discount {
-        right: auto;
-        left: $spacing-xs;
-        top: calc(#{$spacing-xxs} + 1.75rem);
     }
 
     .card__body {

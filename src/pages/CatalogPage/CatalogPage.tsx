@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 // Common components
 import { ErrorView, Loader, NoResults } from '@/components/common'
 // Custom Components
@@ -6,15 +7,8 @@ import { Pagination, ProductCard, ControlPanel } from '@/components/products'
 import { useFilters, useProductCatalog } from '@/hooks'
 // Utils
 import { getErrorMessage, scrollToTop } from '@/utils'
-// Redux hooks
-import { useAppDispatch, useAppSelector } from '@/hooks/redux'
-import { addToCart } from '@/store/slices/cartSlice'
-// Styles
-import style from './catalogPage.module.scss'
 // Types
 import { Product } from '@/types/products'
-import { selectCartItems } from '@/store'
-import { useEffect } from 'react'
 
 export const CatalogPage = () => {
   const {
@@ -29,28 +23,22 @@ export const CatalogPage = () => {
     categories,
   } = useProductCatalog();
 
-  const { 
+  const {
     changeSort,
     sortingOptions,
     activeSortOption,
     changeCategory,
     activeCategoryOption,
-    clearAllFilters 
+    clearAllFilters
   } = useFilters();
-  const dispatch = useAppDispatch()
-  const cartItems = useAppSelector(selectCartItems);
-
-  const handleAddToCart = (product: Product) => {
-    dispatch(addToCart(product))
-  }
 
   const onPageChange = (newPage: number) => {
     setPage(newPage)
   }
-  
+
   useEffect(() => {
     scrollToTop()
-}, [page]);
+  }, [page]);
 
   if (productsLoading) {
     return <Loader />
@@ -75,18 +63,14 @@ export const CatalogPage = () => {
       />
 
       <div
-        className={style.content}
+        className='content'
         style={{ opacity: productsFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
       >
         {productsArray.map((product: Product, index) => {
-          const itemInCart = cartItems.filter(item => item.id === product.id);
-          
           return (
             <ProductCard
               key={product.id}
               product={product}
-              itemInCart={itemInCart}
-              handleAddToCart={handleAddToCart}
               priority={index < 8}
             />
           )

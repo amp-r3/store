@@ -1,7 +1,8 @@
-import { Link, NavLink } from 'react-router';
+import { Link } from 'react-router';
 import { useRef } from 'react';
 // Icons
-import { IoCartOutline, IoHome } from "react-icons/io5";
+import { IoCartOutline } from "react-icons/io5";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 // Custom Hooks
 import { useHaptics, useNavbarScroll, useSearch } from '@/hooks';
 // Redux Hooks
@@ -17,7 +18,7 @@ import { selectCartTotalQuantity } from '@/store/selectors/cartSelectors';
 import style from './navbar.module.scss';
 
 export const Navbar = () => {
-  const { handleSearch, inputValue, handleClear,  isHomePage } = useSearch();
+  const { handleSearch, inputValue, handleClear, isHomePage } = useSearch();
   const { soft } = useHaptics()
   const navRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -42,12 +43,17 @@ export const Navbar = () => {
       <div className={style.nav__main_actions}>
         <ThemeToggle />
 
-        <button onClick={() => { dispatch(openCart()); soft() }} type='button' aria-label='open cart' className={style.nav__cart}>
+        <Link to={'/wishlist'} aria-label='open wishlist' className={style.nav__btn}>
+          <FaRegHeart />
+        </Link>
+        
+        <button onClick={() => { dispatch(openCart()); soft() }} type='button' aria-label='open cart' className={style.nav__btn}>
           {
-            isCartLoaded && <span className={style.nav__cart__count}>{totalQuantity}</span>
+            isCartLoaded && <span className={style.nav__btn__count}>{totalQuantity}</span>
           }
           <IoCartOutline />
         </button>
+
       </div>
     </nav>
   );

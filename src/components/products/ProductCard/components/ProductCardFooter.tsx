@@ -10,7 +10,7 @@ interface ProductCardFooterProps {
     price: number;
     discountedPrice: number;
     hasDiscount: boolean;
-    handleAddToCart: (product: Product) => void;
+    handleAddToCart: (id: number) => void;
     inStock: boolean;
     isMaxReached: boolean;
     quantity: number;
@@ -35,8 +35,8 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
     isMaxReached,
 }) => {
     const dispatch = useAppDispatch();
-    const onIncrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); };
-    const onDecrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); };
+    const onIncrease = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); };
+    const onDecrease = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); };
     return (
         <div className={style.card__footer}>
             <div className={style.card__price_wrapper}>
@@ -48,7 +48,7 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
 
             <AddToCartButton
                 quantity={quantity}
-                onAddToCart={() => handleAddToCart(product)}
+                onAddToCart={() => handleAddToCart(product.id)}
                 onIncrement={() => onIncrease(product.id)}
                 onDecrement={() => onDecrease(product.id)}
                 inStock={inStock}

@@ -68,7 +68,7 @@
         flex: 1;
     }
 
-    &__cart {
+    &__btn {
         position: relative;
         display: grid;
         place-items: center;
@@ -119,7 +119,7 @@
     .nav {
         gap: $spacing-md;
 
-        &__cart {
+        &__btn {
             font-size: $fs-icon-md;
             width: 40px;
             height: 40px;
@@ -148,7 +148,7 @@
             justify-content: flex-end;
         }
 
-        &__cart {
+        &__btn {
             width: 38px;
             height: 38px;
             border: 1px solid var(--border-color);

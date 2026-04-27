@@ -1,35 +1,42 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { CartItem, Product } from '@/types/products';
+import { CartData, Product } from '@/types/products';
 import { applyDiscount } from '@/utils';
 import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
 import { ProductCardBody } from './components/ProductCardBody';
 import { ProductCardFooter } from './components/ProductCardFooter';
-import { useAppSelector, useHaptics } from '@/hooks';
-import { selectIsMaxReached } from '@/store';
+import { useAppDispatch, useAppSelector, useHaptics } from '@/hooks';
+import { selectCartItemsArray, selectIsMaxReached } from '@/store';
+import { addToCart } from '@/store/slices/cartSlice';
+import { toogleFavorite } from '@/store/slices/wishlistSlice';
+import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
 
 interface ProductCardProps {
     product: Product;
-    itemInCart: CartItem[];
-    handleAddToCart: (product: Product) => void;
     priority?: boolean
 }
 
-export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, priority = false, itemInCart }) => {
+export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
+    const dispatch = useAppDispatch()
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
-    const item = itemInCart.find(item => item.id === id)
-    const quantity = item?.quantity
+    const cartItems = useAppSelector(selectCartItemsArray)
+    const itemInCart = cartItems.find(item => item.id === product.id)
+    const isFavorite = useAppSelector(state => selectIsFavorite(state, id))
+    const quantity = itemInCart?.quantity
     const { soft } = useHaptics()
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const hasDiscount = discountPercentage > 0;
-    const selectMaxReached = useMemo(
-        () => selectIsMaxReached(product?.id ?? 0, product?.stock ?? 0),
-        [product?.id, product?.stock]
-    );
 
-    const isMaxReached = useAppSelector(selectMaxReached);
+    const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, stock ?? 0));
+
+    const handleAddToCart = () => {
+        dispatch(addToCart(id))
+    }
+    const handleAddToWishlist = () => {
+        dispatch(toogleFavorite(id))
+    }
 
     return (
         <article className={style.card}>
@@ -41,6 +48,8 @@ export const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart, pr
                 category={category}
                 discountPercentage={discountPercentage}
                 priority={priority}
+                handleAddToWishlist={handleAddToWishlist}
+                isFavorite={isFavorite}
             />
 
             <ProductCardBody

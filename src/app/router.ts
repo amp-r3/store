@@ -37,6 +37,13 @@ export const router = createBrowserRouter([
                 ]
               },
               {
+                path: 'wishlist',
+                lazy: async () => {
+                  const module = await import ("@/pages/WishlistPage/WishlistPage")
+                  return { Component: module.WishListPage }
+                }
+              },
+              {
                 Component: ProtectedRoute,
                 children: [
                   {

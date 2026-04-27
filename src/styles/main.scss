@@ -1,4 +1,4 @@
-@use "index"as *;
+@use "index" as *;
 
 html {
     scroll-behavior: smooth;
@@ -47,6 +47,24 @@ body {
     padding: 0 $spacing-md;
 }
 
+.content {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: $spacing-xl;
+    padding: $spacing-xl 0;
+    justify-items: center;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: $spacing-md;
+    }
+
+    @media (max-width: 500px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: $spacing-xs;
+        padding: $spacing-md 0;
+    }
+}
 
 input,
 textarea,
@@ -110,17 +128,17 @@ button {
     top: 0;
     left: 0;
     width: 100%;
-    height: 0; 
-    
+    height: 0;
+
     z-index: 9999;
-    
+
     pointer-events: none;
-  }
-  
-  #modal-root:not(:empty) {
+}
+
+#modal-root:not(:empty) {
     height: 100vh;
-  }
-  
-  #modal-root > * {
+}
+
+#modal-root>* {
     pointer-events: auto;
-  }
+}
