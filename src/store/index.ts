@@ -1,1 +1,1 @@
-export { selectCartItems, selectIsMaxReached, selectCartTotalQuantity } from './selectors/cartSelectors'
+export { selectCartItemsArray, selectIsMaxReached, selectCartTotalQuantity } from './selectors/cartSelectors'

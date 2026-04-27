@@ -14,6 +14,7 @@ import themeSlice from '@/store/slices/themeSlice';
 import { authApi } from '@/services/authApi';
 import { persistStore } from 'redux-persist';
 import authReducer from "@/store/slices/authSlice"
+import wishlistReducer from '@/store/slices/wishlistSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     auth: authReducer,
     cart: cartReducer,
     theme: themeSlice,
+    wishlist: wishlistReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
