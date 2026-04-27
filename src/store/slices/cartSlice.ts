@@ -1,10 +1,10 @@
-import { CartItem, Product } from "@/types/products";
+import { CartData } from "@/types/products";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { persistReducer } from "redux-persist";
 import storage from "../storage";
 
 export interface CartState {
-    items: Record<number, CartItem>;
+    items: Record<number, CartData>;
     isOpen: boolean;
 }
 
@@ -23,16 +23,13 @@ export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addToCart: (state, action: PayloadAction<Product>) => {
-        const product = action.payload;
-        const { id, stock } = product;
+        addToCart: (state, action: PayloadAction<number>) => {
+        const productId = action.payload;
 
-         if (state.items[id]) {
-            if (state.items[id].quantity < stock) {
-                state.items[id].quantity += 1;
-            }
+         if (state.items[productId]) {
+                state.items[productId].quantity += 1;
             } else {
-            state.items[id] = { ...product, quantity: 1 };
+            state.items[productId] = { quantity: 1 };
             }
         },
         removeFromCart: (state, action: PayloadAction<number>) => {
@@ -45,9 +42,7 @@ export const cartSlice = createSlice({
             if (!item) return;
         
             if (type === 'inc') {
-                if (item.quantity < item.stock) {
                     item.quantity++;
-                }
             } else {
                 if (item.quantity > 1) {
                     item.quantity--;

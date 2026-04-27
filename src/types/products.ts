@@ -52,3 +52,7 @@ export interface ProductStateType {
 export interface CartItem extends Product {
     quantity: number;
 }
+
+export interface CartData {
+    quantity: number;
+}
