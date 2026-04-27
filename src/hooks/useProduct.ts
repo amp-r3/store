@@ -7,7 +7,7 @@ export function useProduct(id: string | undefined) {
         isLoading,
         isError,
         error
-    } = useGetProductByIdQuery(id ?? skipToken);
+    } = useGetProductByIdQuery(Number(id) ?? skipToken);
 
     const isNotFound = isError || (!isLoading && !product);
 

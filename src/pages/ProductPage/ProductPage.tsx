@@ -17,13 +17,13 @@ import { ProductSpecs } from './components/ProductSpecs/ProductSpecs';
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
-import { useProduct } from '@/hooks';
+import { useCartDetails, useProduct } from '@/hooks';
 
 // Redux Hooks
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 // Redux Selectors
-import { selectCartItems, selectIsMaxReached } from '@/store';
+import { selectIsMaxReached } from '@/store';
 import { addToCart } from '@/store/slices/cartSlice';
 
 // Types
@@ -40,21 +40,14 @@ export const ProductPage = () => {
     const { id } = useParams();
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
-    const cartItems = useAppSelector(selectCartItems)
+    const { cartDetails: cartItems } = useCartDetails()
     const onImageClick = (): void => {
         searchParams[1]({ view: 'true' }, { replace: true })
     }
-
+    
     const onCloseModal = (): void => {
         searchParams[1]({}, { replace: true })
     }
-
-    const selectMaxReached = useMemo(
-        () => selectIsMaxReached(product?.id ?? 0, product?.stock ?? 0),
-        [product?.id, product?.stock]
-    );
-
-    const isMaxReached = useAppSelector(selectMaxReached);
 
     useEffect(() => {
         scrollToTop();
@@ -67,8 +60,8 @@ export const ProductPage = () => {
             minimumFractionDigits: 2,
         }).format(value);
 
-    const handleAddToCart = (product: Product) => {
-        dispatch(addToCart(product))
+    const handleAddToCart = (id: number) => {
+        dispatch(addToCart(id))
     }
 
     if (isLoading) return <Loader />;
@@ -85,6 +78,7 @@ export const ProductPage = () => {
     const itemInCart = cartItems.filter(item => item.id === productId);
     const item = itemInCart.find(item => item.id === productId)
     const quantity = item?.quantity
+
 
     return (
         <main className={style['product-page']}>
@@ -109,12 +103,12 @@ export const ProductPage = () => {
                         />
                         <ProductPurchaseBox
                             quantity={quantity}
-                            product={product}
+                            productId={product.id}
                             onAddToCart={handleAddToCart}
                             originalPrice={price}
                             discountedPriceFormatted={showPrice}
                             inStock={inStock}
-                            isMaxReached={isMaxReached}
+                            stock={stock}
                         />
                     </div>
                 </div>

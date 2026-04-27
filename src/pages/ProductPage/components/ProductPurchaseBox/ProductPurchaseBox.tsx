@@ -1,32 +1,32 @@
-import { FaCartShopping } from 'react-icons/fa6';
 import style from './product-purchase-box.module.scss';
-import { useAppDispatch } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import { changeQuantity } from '@/store/slices/cartSlice';
 import { AddToCartButton } from '@/components/common';
-import { Product } from '@/types/products';
+import { selectIsMaxReached } from '@/store';
 
 interface ProductPurchaseBoxProps {
-    product: Product;
+    productId: number;
     quantity: number;
     originalPrice: number;
     discountedPriceFormatted: string;
-    onAddToCart: (product: Product) => void;
+    onAddToCart: (id: number) => void;
     inStock: boolean;
-    isMaxReached: boolean;
+    stock: number;
 }
 
 export const ProductPurchaseBox = ({
-    product,
+    productId,
     quantity,
     originalPrice,
     discountedPriceFormatted,
     onAddToCart,
     inStock,
-    isMaxReached
+    stock,
 }: ProductPurchaseBoxProps) => {
     const dispatch = useAppDispatch();
-    const onIncrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); };
-    const onDecrease  = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); };
+    const onIncrease = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); };
+    const onDecrease = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); };
+    const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, stock ?? 0));
     return (
         <div className={style['purchase-box']}>
             <div className={style['price-block']}>
@@ -35,9 +35,9 @@ export const ProductPurchaseBox = ({
             </div>
             <AddToCartButton
                 quantity={quantity}
-                onAddToCart={() => onAddToCart(product)}
-                onIncrement={() => onIncrease(product.id)}
-                onDecrement={() => onDecrease(product.id)}
+                onAddToCart={() => onAddToCart(productId)}
+                onIncrement={() => onIncrease(productId)}
+                onDecrement={() => onDecrease(productId)}
                 inStock={inStock}
                 isMaxReached={isMaxReached}
                 size="large"

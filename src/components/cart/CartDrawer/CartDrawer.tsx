@@ -7,7 +7,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import styles from './cart-drawer.module.scss';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { selectCartItems, selectCartTotalQuantity } from '@/store';
+import { selectCartTotalQuantity } from '@/store';
 import { changeQuantity, clearCart, removeFromCart } from '@/store/slices/cartSlice';
 import { calculateCartTotals } from '@/utils';
 
@@ -16,9 +16,10 @@ import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
 
-import { useHaptics } from '@/hooks';
+import { useCartDetails, useHaptics } from '@/hooks';
 import { Modal } from '@/components/common/Modal/Modal';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
+import { Loader } from '@/components/common';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ interface CartDrawerProps {
 const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const cartItems = useAppSelector(selectCartItems);
+  const { cartDetails, isEmpty, isLoading, isFetching } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
@@ -43,7 +44,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     discountPercent,
     shippingProgress,
     remainingForFreeShipping,
-  } = useMemo(() => calculateCartTotals(cartItems), [cartItems]);
+  } = useMemo(() => calculateCartTotals(cartDetails), [cartDetails]);
 
   const onIncrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); }, [dispatch, soft]);
   const onDecrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); }, [dispatch, soft]);
@@ -61,6 +62,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     navigate('/', { replace: true });
     onClose();
   };
+
 
   return (
     <>
@@ -91,14 +93,20 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
               <CartHeader
                 totalQuantity={totalQuantity}
                 onClose={onClose}
-                onClearCart={cartItems.length > 0 ? onClearCart : undefined}
+                onClearCart={isEmpty ? undefined : onClearCart}
               />
             </div>
 
             <div className={styles.cart__scrollArea}>
-              <div className={styles.cart__body}>
-                {cartItems.length ? (
-                  cartItems.map((item) => (
+              <div
+                className={styles.cart__body}
+                style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
+              >
+                {isEmpty ? (
+                  <EmptyCart onStartShopping={onStartShopping} />
+                ) :
+
+                  cartDetails.map((item) => (
                     <CartItem
                       key={item.id}
                       product={item}
@@ -107,14 +115,13 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       onRemove={onRemove}
                       onClose={onClose}
                     />
-                  ))
-                ) : (
-                  <EmptyCart onStartShopping={onStartShopping} />
-                )}
+                  )
+                  )
+                }
               </div>
             </div>
 
-            {cartItems.length > 0 && (
+            {!isEmpty && (
               <CartFooter
                 subtotal={subtotal}
                 total={total}
