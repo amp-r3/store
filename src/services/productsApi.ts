@@ -109,7 +109,28 @@ export const productsApi = createApi({
             query: (id) => `products/${id}`,
             providesTags: (result, error, id) => [{ type: 'Product', id }],
         }),
+
+        getProductArrayById: builder.query<Product[], string[]>({
+            async queryFn(ids, _queryApi, _extraOptions, fetchWithBq) {
+                try {
+                    const promises = ids.map((id) => fetchWithBq(`products/${id}`))
+
+                    const results = await Promise.all(promises)
+
+                    const hasError = results.find((res) => res.error)
+                    if (hasError) {
+                        return { error: hasError.error }
+                    }
+
+                    const products = results.map((res) => res.data as Product)
+
+                    return {data: products}
+                } catch (error) {
+                    return { error: { status: 'CUSTOM_ERROR', error: String(error) } }
+                }
+            }
+        })
     }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery, useGetCategoriesQuery } = productsApi;
+export const { useGetProductsQuery, useGetProductByIdQuery, useGetCategoriesQuery, useGetProductArrayByIdQuery} = productsApi;
