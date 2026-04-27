@@ -23,11 +23,13 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
   const { products, isLoading, isError, isFetching } = useProductsByIds(productIds, isOpen);
 
   const { cartDetails } = useMemo(() => {
-    
+    const quantityMap = cartItems.reduce<Record<string, number>>((acc, item) => {
+      acc[item.id] = item.quantity;
+      return acc;
+    }, {});
+
     const details = products.map((product) => {
-      const localItem = cartItems.find((item) => item.id === Number(product.id));
-      const quantity = localItem ? localItem.quantity : 0;
-      
+      const quantity = quantityMap[product.id] || 0; 
 
       return {
         ...product,
@@ -36,7 +38,7 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
     });
 
     return { 
-        cartDetails: details,  
+        cartDetails: details, 
     };
   }, [products, cartItems]);
 
