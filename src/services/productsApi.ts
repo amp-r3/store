@@ -1,10 +1,11 @@
+import { supabase } from "@/supabase";
 import { Product } from "@/types/products";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface Category {
     slug: string;
     name: string;
-    url: string;
+    url?: string;
 }
 export type Categories = Category[]
 
@@ -23,64 +24,62 @@ export interface ProductsResponse {
     total: number;
 }
 
-interface QueryParams {
-    limit: number;
-    skip: number;
-    q?: string;
-    sortBy?: string;
-    order?: string;
-}
-
 export const productsApi = createApi({
     reducerPath: 'productsApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://dummyjson.com' }),
+    baseQuery: fakeBaseQuery(), 
     tagTypes: ['Product', 'Category'],
     endpoints: (builder) => ({
+        
         getProducts: builder.query<ProductsResponse, ProductParams>({
-            query: (params) => {
-                const { page = 1, search, sortBy, order, category } = params;
-                const limit = params.limit ?? 12;
-                const skip = (page - 1) * limit;
+            async queryFn(params) {
+                try {
+                    const { page = 1, search, sortBy, order, category } = params;
+                    const limit = params.limit ?? 12;
+                    
+                    const from = (page - 1) * limit;
+                    const to = from + limit - 1;
 
-                let url = 'products';
-                if (search) {
-                    url = 'products/search';
-                } else if (category) {
-                    url = `products/category/${category}`;
+                    let query = supabase
+                        .from('products_view')
+                        .select('*', { count: 'exact' });
+
+                    if (search) {
+                        query = query.ilike('title', `%${search}%`);
+                    }
+
+                    if (category && category !== 'all') {
+                        query = query.eq('category', category); 
+                    }
+
+                    if (sortBy && order) {
+                        query = query.order(sortBy, { ascending: order === 'asc' });
+                    } else {
+                        query = query.order('id', { ascending: true });
+                    }
+
+                    query = query.range(from, to);
+
+                    const { data, error, count } = await query;
+
+                    if (error) throw error;
+
+                    const items = (data as Product[]).reduce((acc, curr) => {
+                        acc[curr.id] = curr;
+                        return acc;
+                    }, {} as Record<number, Product>);
+
+                    const ids = (data as Product[]).map((product) => product.id);
+
+                    return {
+                        data: {
+                            items,
+                            ids,
+                            total: count ?? 0
+                        }
+                    };
+                } catch (error: any) {
+                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
                 }
-
-                const queryParams: QueryParams = {
-                    limit,
-                    skip,
-                };
-
-                if (search) {
-                    queryParams.q = search;
-                }
-
-                if (sortBy && order) {
-                    queryParams.sortBy = sortBy;
-                    queryParams.order = order;
-                }
-
-                return {
-                    url,
-                    params: queryParams,
-                };
-            },
-            transformResponse: (response: { products: Product[], total: number }) => {
-                const items = response.products.reduce((acc, curr) => {
-                    acc[curr.id] = curr;
-                    return acc;
-                }, {} as Record<number, Product>);
-
-                const ids = response.products.map((product) => product.id);
-
-                return {
-                    items,
-                    ids,
-                    total: response.total
-                };
             },
             providesTags: (result) =>
                 result
@@ -92,45 +91,68 @@ export const productsApi = createApi({
         }),
         
         getCategories: builder.query<Categories, void>({
-            query: () => 'products/categories',
-            
-            transformResponse: (response: Categories) => {
-                const defaultCategory: Category = {
-                    slug: 'all',
-                    name: 'All Products',
-                    url: '',
-                };
-                return [defaultCategory, ...response];
+            async queryFn() {
+                try {
+                    const { data, error } = await supabase
+                        .from('categories')
+                        .select('slug, name');
+
+                    if (error) throw error;
+
+                    const defaultCategory: Category = {
+                        slug: 'all',
+                        name: 'All Products',
+                    };
+
+                    return { data: [defaultCategory, ...(data as Category[])] };
+                } catch (error: any) {
+                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
+                }
             },
             providesTags: [{ type: 'Category', id: 'LIST' }]
         }),
 
         getProductById: builder.query<Product, number>({
-            query: (id) => `products/${id}`,
+            async queryFn(id) {
+                try {
+                    const { data, error } = await supabase
+                        .from('products_view')
+                        .select('*')
+                        .eq('id', id)
+                        .single();
+
+                    if (error) throw error;
+
+                    return { data: data as Product };
+                } catch (error: any) {
+                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
+                }
+            },
             providesTags: (result, error, id) => [{ type: 'Product', id }],
         }),
 
-        getProductArrayById: builder.query<Product[], string[]>({
-            async queryFn(ids, _queryApi, _extraOptions, fetchWithBq) {
+        getProductArrayById: builder.query<Product[], number[]>({
+            async queryFn(ids) {
                 try {
-                    const promises = ids.map((id) => fetchWithBq(`products/${id}`))
+                    const { data, error } = await supabase
+                        .from('products_view')
+                        .select('*')
+                        .in('id', ids);
 
-                    const results = await Promise.all(promises)
+                    if (error) throw error;
 
-                    const hasError = results.find((res) => res.error)
-                    if (hasError) {
-                        return { error: hasError.error }
-                    }
-
-                    const products = results.map((res) => res.data as Product)
-
-                    return {data: products}
-                } catch (error) {
-                    return { error: { status: 'CUSTOM_ERROR', error: String(error) } }
+                    return { data: data as Product[] };
+                } catch (error: any) {
+                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
                 }
             }
         })
     }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery, useGetCategoriesQuery, useGetProductArrayByIdQuery} = productsApi;
+export const { 
+    useGetProductsQuery, 
+    useGetProductByIdQuery, 
+    useGetCategoriesQuery, 
+    useGetProductArrayByIdQuery 
+} = productsApi;

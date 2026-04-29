@@ -29,7 +29,10 @@ export interface Product {
         qrCode: string;
     };
     thumbnail: string;
-    images: string[]
+    images: string[];
+    
+    sizes: string[];
+    colors: ProductColor[];
 }
 
 export interface Review {
@@ -38,6 +41,11 @@ export interface Review {
     date: string;
     reviewerName: string;
     reviewerEmail: string;
+}
+
+export interface ProductColor {
+    name: string;
+    hex: string;
 }
 
 export type LoadingStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
