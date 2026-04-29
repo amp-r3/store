@@ -48,7 +48,7 @@ export const ProductSpecs: FC<ProductSpecsProps> = ({
 }) => {
   const { width, height, depth } = dimensions;
   const dimensionsFormatted = `${width} × ${height} × ${depth} cm`;
-  const weightFormatted = `${weight} g`;
+  const weightFormatted = weight < 1 ? `${weight * 1000} g` : `${weight} kg`;
 
   return (
     <section className={style['specs-section']}>

@@ -12,8 +12,8 @@ interface ProductCardImageProps {
     priority?: boolean
 }
 
-const getOptimizedImageUrl = (originalUrl: string, width: number = 300) => {
-    return `https://wsrv.nl/?url=${encodeURIComponent(originalUrl)}&w=${width}&fit=contain&we`;
+const getOptimizedImageUrl = (originalUrl: string) => {
+    return `https://wsrv.nl/?url=${encodeURIComponent(originalUrl)}`;
 };
 
 export const ProductCardImage: FC<ProductCardImageProps> = ({
@@ -27,7 +27,6 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
 
 }) => {
     const imageUrl = getOptimizedImageUrl(thumbnail);
-
     return (
         <div className={style.card__imageWrapper}>
             <img
