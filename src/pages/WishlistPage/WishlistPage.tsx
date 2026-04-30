@@ -1,9 +1,9 @@
 import { ProductCard } from "@/components/products"
 import { useWishlistDetails } from "@/hooks"
-import { ProductBackButton } from "../ProductPage/components/ProductBackButton/ProductBackButton"
 import { useNavigate } from "react-router"
 import { ErrorView, Loader } from "@/components/common"
 import { WishlistEmpty } from "@/components/common/WishlistEmpty/WishlistEmpty"
+import { BackButton } from "@/components/common/BackButton/BackButton"
 
 export const WishListPage = () => {
   const { wishlistDetails, isEmpty, isError, isLoading, isFetching } = useWishlistDetails()
@@ -20,7 +20,7 @@ export const WishListPage = () => {
 
   return (
     <main className="container">
-      <ProductBackButton
+      <BackButton
         onClick={() => { navigate(-1) }}
       />
       {

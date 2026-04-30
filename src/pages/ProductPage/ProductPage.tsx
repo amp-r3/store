@@ -1,12 +1,12 @@
 // React
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 // Router
 import { useNavigate, useParams, Navigate, useSearchParams } from 'react-router';
 
 // Components
 import { ErrorView, Loader } from '@/components/common';
-import { ProductBackButton } from './components/ProductBackButton/ProductBackButton';
+import { ProductHeader } from './components/ProductHeader/ProductHeader';
 import { ProductGallery } from './components/ProductGallery/ProductGallery';
 import { ProductInfo } from './components/ProductInfo/ProductInfo';
 import { ProductPurchaseBox } from './components/ProductPurchaseBox/ProductPurchaseBox';
@@ -84,7 +84,7 @@ export const ProductPage = () => {
         <main className={style['product-page']}>
             <ProductImageModal imageSrc={images[0]} imageAlt={title} onClose={onCloseModal} isOpen={openedImage} />
             <div className="container" key={productId}>
-                <ProductBackButton onClick={() => navigate(-1)} label='Back to catalog' />
+                <ProductHeader onClick={() => navigate(-1)} label='Back to catalog' />
 
                 <div className={style['layout']}>
                     <div className={style['gallery-column']}>

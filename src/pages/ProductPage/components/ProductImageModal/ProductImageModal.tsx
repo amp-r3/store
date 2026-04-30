@@ -1,7 +1,7 @@
 import { Dialog, VisuallyHidden } from 'radix-ui';
 import style from './product-image-modal.module.scss';
-import { ProductBackButton } from "../ProductBackButton/ProductBackButton";
 import { useImageView } from '@/hooks';
+import { BackButton } from '@/components/common/BackButton/BackButton';
 
 interface ProductImageModalProps {
   imageSrc: string;
@@ -37,7 +37,7 @@ export const ProductImageModal = ({ imageSrc, imageAlt, onClose, isOpen }: Produ
           </VisuallyHidden.Root>
 
           <div className={style['back-button']}>
-            <ProductBackButton onClick={onClose} label="Back to product" />
+            <BackButton onClick={onClose} label="Back to product" />
           </div>
 
           <div className={style['image-container']}>
