@@ -5,7 +5,6 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 export interface Category {
     slug: string;
     name: string;
-    url?: string;
 }
 export type Categories = Category[]
 
@@ -61,7 +60,11 @@ export const productsApi = createApi({
 
                     const { data, error, count } = await query;
 
-                    if (error) throw error;
+                    if (error) {
+                        return { 
+                            error: { status: error.code, data: error.message } 
+                        };
+                    }
 
                     const items = (data as Product[]).reduce((acc, curr) => {
                         acc[curr.id] = curr;
@@ -77,8 +80,10 @@ export const productsApi = createApi({
                             total: count ?? 0
                         }
                     };
-                } catch (error: any) {
-                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
+                } catch (err: any) {
+                    return { 
+                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    };
                 }
             },
             providesTags: (result) =>
@@ -96,17 +101,24 @@ export const productsApi = createApi({
                     const { data, error } = await supabase
                         .from('categories')
                         .select('slug, name');
-
-                    if (error) throw error;
-
+        
+                    if (error) {
+                        return { 
+                            error: { status: error.code, data: error.message } 
+                        };
+                    }
+        
                     const defaultCategory: Category = {
                         slug: 'all',
                         name: 'All Products',
                     };
-
-                    return { data: [defaultCategory, ...(data as Category[])] };
-                } catch (error: any) {
-                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
+        
+                    return { data: [defaultCategory, ...(data || [])] as Categories };
+                    
+                } catch (err: any) {
+                    return { 
+                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    };
                 }
             },
             providesTags: [{ type: 'Category', id: 'LIST' }]
@@ -121,14 +133,20 @@ export const productsApi = createApi({
                         .eq('id', id)
                         .single();
 
-                    if (error) throw error;
+                        if (error) {
+                            return { 
+                                error: { status: error.code, data: error.message } 
+                            };
+                        }
 
                     return { data: data as Product };
-                } catch (error: any) {
-                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
+                } catch (err: any) {
+                    return { 
+                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    };
                 }
             },
-            providesTags: (result, error, id) => [{ type: 'Product', id }],
+            providesTags: (_, __, id) => [{ type: 'Product', id }],
         }),
 
         getProductArrayById: builder.query<Product[], number[]>({
@@ -139,11 +157,17 @@ export const productsApi = createApi({
                         .select('*')
                         .in('id', ids);
 
-                    if (error) throw error;
+                        if (error) {
+                            return { 
+                                error: { status: error.code, data: error.message } 
+                            };
+                        }
 
                     return { data: data as Product[] };
-                } catch (error: any) {
-                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
+                } catch (err: any) {
+                    return { 
+                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    };
                 }
             }
         })
