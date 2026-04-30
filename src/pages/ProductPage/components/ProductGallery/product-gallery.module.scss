@@ -28,11 +28,9 @@
         position: absolute;
         inset: 0;
         border-radius: inherit;
-        background: linear-gradient(
-            160deg,
-            rgba(255, 255, 255, 0.07) 0%,
-            transparent 50%
-        );
+        background: linear-gradient(160deg,
+                rgba(255, 255, 255, 0.07) 0%,
+                transparent 50%);
         pointer-events: none;
         z-index: 1;
     }
@@ -65,4 +63,36 @@
     will-change: transform;
 
     filter: drop-shadow(0 8px 24px rgba(var(--primary-accent-rgb), 0.12));
+}
+
+.image-add-to-favorites {
+    position: absolute;
+    top: $spacing-md;
+    right: $spacing-md;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    transition: transform $transition-base $ease-out-expo;
+
+    &:hover {
+        .card__icon {
+            transform: scale(1.1);
+        }
+
+        transform: scale(1.1);
+    }
+
+    &:active {
+        .card__icon {
+            transform: scale($button-pressed-scale);
+        }
+
+        transform: scale($button-pressed-scale);
+    }
+}
+
+.image-icon {
+    font-size: $fs-icon-lg;
+    transition: transform $transition-base $ease-out-expo ;
+    color: var(--primary-accent)
 }

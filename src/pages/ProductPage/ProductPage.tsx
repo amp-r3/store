@@ -23,21 +23,20 @@ import { useCartDetails, useProduct } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 // Redux Selectors
-import { selectIsMaxReached } from '@/store';
 import { addToCart } from '@/store/slices/cartSlice';
-
-// Types
-import { Product } from '@/types/products';
 
 // Styles
 import style from './productPage.module.scss';
 import { ProductImageModal } from './components/ProductImageModal/ProductImageModal';
+import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
+import { toogleFavorite } from '@/store/slices/wishlistSlice';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
     const searchParams = useSearchParams()
     const dispatch = useAppDispatch()
     const { id } = useParams();
+    const isFavorite = useAppSelector(state => selectIsFavorite(state, +id))
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const { cartDetails: cartItems } = useCartDetails()
@@ -47,6 +46,10 @@ export const ProductPage = () => {
     
     const onCloseModal = (): void => {
         searchParams[1]({}, { replace: true })
+    }
+
+    const handleAddToWishlist = () => {
+        dispatch(toogleFavorite(+id))
     }
 
     useEffect(() => {
@@ -88,7 +91,13 @@ export const ProductPage = () => {
 
                 <div className={style['layout']}>
                     <div className={style['gallery-column']}>
-                        <ProductGallery imageUrl={images[0]} title={title} onClick={onImageClick} />
+                        <ProductGallery
+                            imageUrl={images[0]}
+                            title={title}
+                            isFavorite={isFavorite}
+                            handleAddToWishlist={handleAddToWishlist}
+                            onClick={onImageClick}
+                        />
                     </div>
 
                     <div className={style['details-column']}>
