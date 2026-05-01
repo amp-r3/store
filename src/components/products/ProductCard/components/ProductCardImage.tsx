@@ -12,10 +12,6 @@ interface ProductCardImageProps {
     priority?: boolean
 }
 
-const getOptimizedImageUrl = (originalUrl: string) => {
-    return `https://wsrv.nl/?url=${encodeURIComponent(originalUrl)}`;
-};
-
 export const ProductCardImage: FC<ProductCardImageProps> = ({
     title,
     thumbnail,
@@ -26,18 +22,17 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
     priority = false
 
 }) => {
-    const imageUrl = getOptimizedImageUrl(thumbnail);
     return (
         <div className={style.card__imageWrapper}>
             <img
-                src={imageUrl}
+                src={thumbnail}
                 alt={title}
                 className={style.card__image}
                 loading={priority ? 'eager' : 'lazy'}
                 decoding={priority ? 'sync' : 'async'}
                 fetchPriority={priority ? 'high' : 'low'}
-                width="400"
-                height="300"
+                width="241"
+                height="241"
             />
             <div className={style['card__promo-block']}>
                 <span className={style.card__category}>{category}</span>
