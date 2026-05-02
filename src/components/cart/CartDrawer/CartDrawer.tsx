@@ -106,7 +106,6 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             <div className={styles.cart__scrollArea}>
               <div
                 className={styles.cart__body}
-                style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
               >
                 {isEmpty ? (
                   <EmptyCart onStartShopping={onStartShopping} />
@@ -120,6 +119,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       onDecrease={onDecrease}
                       onRemove={onRemove}
                       onClose={onClose}
+                      isLoading={isLoading}
                     />
                   )
                   )
@@ -135,6 +135,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 discountPercent={discountPercent}
                 shippingProgress={shippingProgress}
                 remainingForFreeShipping={remainingForFreeShipping}
+                isLoading={isLoading}
                 onCheckout={handleCheckout}
               />
             )}

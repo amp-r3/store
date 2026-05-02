@@ -15,7 +15,8 @@ interface CartItemProps {
     onIncrease: (id: number) => void;
     onDecrease: (id: number) => void;
     onRemove: (id: number) => void;
-    onClose(): void;
+    onClose: () => void;
+    isLoading: boolean;
 }
 
 export const CartItem = memo<CartItemProps>(({

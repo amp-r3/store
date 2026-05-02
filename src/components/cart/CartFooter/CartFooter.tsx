@@ -10,6 +10,7 @@ interface CartFooterProps {
     discountPercent: number;
     shippingProgress: number;
     remainingForFreeShipping: number;
+    isLoading: boolean;
     onCheckout?: () => void;
 }
 
