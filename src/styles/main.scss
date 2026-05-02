@@ -53,6 +53,12 @@ body {
     gap: $spacing-xl;
     padding: $spacing-xl 0;
     justify-items: center;
+    transition: opacity 0.3s ease;
+
+    &.fetching-state {
+        opacity: 0.6;
+        pointer-events: none;
+    }
 
     @media (max-width: 768px) {
         grid-template-columns: repeat(3, minmax(0, 1fr));

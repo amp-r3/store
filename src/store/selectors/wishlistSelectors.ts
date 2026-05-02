@@ -3,9 +3,13 @@ import { createSelector } from "reselect";
 
 const selectFavoriteDict = (state: RootState) => state.wishlist.favoriteItems
 
+export interface WishlistData {
+  id: number
+}
+
 export const selectFavoritesArray = createSelector(
   [selectFavoriteDict],
-  (items) => 
+  (items): WishlistData[] => 
     Object.entries(items).map(([id]) => ({
       id: Number(id)
     }))
