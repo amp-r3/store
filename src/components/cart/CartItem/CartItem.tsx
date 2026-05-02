@@ -9,6 +9,7 @@ import { formatPrice } from '@/utils';
 import { useAppSelector } from '@/hooks';
 import { selectIsMaxReached } from '@/store';
 import { Link } from 'react-router';
+import { CartItemSkeleton } from './CartItemSkeleton';
 
 interface CartItemProps {
     product: CartItemType;
@@ -25,7 +26,13 @@ export const CartItem = memo<CartItemProps>(({
     onDecrease,
     onRemove,
     onClose,
+    isLoading
 }) => {
+
+    if (isLoading || !product) {
+        return <CartItemSkeleton />;
+    }
+
     const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
 
     const totalPrice = price * quantity;
@@ -34,10 +41,10 @@ export const CartItem = memo<CartItemProps>(({
 
     return (
         <article className={styles['cart-item']}>
-
             <Link to={`/product/${id}`} className={styles['cart-item__link']} aria-label={`View details for ${title}`} onClick={onClose} />
 
             {/* --- Media Section --- */}
+
             <div className={styles['cart-item__media']}>
                 <img
                     src={thumbnail}
@@ -52,8 +59,6 @@ export const CartItem = memo<CartItemProps>(({
 
             {/* --- Content Section --- */}
             <div className={styles['cart-item__content']}>
-
-                {/* Header: Title & Prices */}
                 <div className={styles['cart-item__header']}>
                     <h3 className={styles['cart-item__title']} title={title}>
                         {title}
@@ -80,7 +85,7 @@ export const CartItem = memo<CartItemProps>(({
                     </div>
                 </div>
 
-                {/* Footer: Quantity Controls, Hints & Remove */}
+                {/* Footer */}
                 <div className={styles['cart-item__footer']}>
                     <div className={styles['cart-item__quantity-ctrl']}>
                         <button
