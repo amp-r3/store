@@ -16,7 +16,7 @@ export const useWishlistDetails = (isOpen: boolean = true): WishlistDetailsRetur
   const wishlistItems = useSelector(selectFavoritesArray);
   
   const productIds = useMemo(
-    () => wishlistItems.map(item => String(item.id)), 
+    () => wishlistItems.map(item => item.id), 
     [wishlistItems]
   );
 

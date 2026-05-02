@@ -16,7 +16,7 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
   const cartItems = useSelector(selectCartItemsArray);
   
   const productIds = useMemo(
-    () => cartItems.map(item => String(item.id)), 
+    () => cartItems.map(item => item.id), 
     [cartItems]
   );
 
