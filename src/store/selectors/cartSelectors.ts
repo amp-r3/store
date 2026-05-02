@@ -4,9 +4,14 @@ import { createSelector } from "@reduxjs/toolkit";
 export const selectCartItemsMap = (state: RootState) => state.cart.items;
 export const selectIsCartOpen = (state: RootState) => state.cart.isOpen;
 
+export interface CartProduct {
+    id: number;
+    quantity: number;
+}
+
 export const selectCartItemsArray = createSelector(
     [selectCartItemsMap],
-    (itemsMap) => 
+    (itemsMap): CartProduct[] => 
         Object.entries(itemsMap).map(([id, data]) => ({
             id: Number(id),
             quantity: data.quantity
