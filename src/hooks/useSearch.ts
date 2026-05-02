@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useSearchParams } from "react-router";
 
 export function useSearch() {
@@ -7,7 +7,6 @@ export function useSearch() {
     const [searchParams, setSearchParams] = useSearchParams();
     
     const queryFromUrl = searchParams.get('q') || '';
-
     const [inputValue, setInputValue] = useState(queryFromUrl);
 
     useEffect(() => {
@@ -17,20 +16,22 @@ export function useSearch() {
     useEffect(() => {
         const trimmedQuery = inputValue.trim();
 
+        if (trimmedQuery === queryFromUrl) return;
+
         const timerId = setTimeout(() => {
-            if (trimmedQuery === queryFromUrl) return;
+            const params = new URLSearchParams(searchParams);
 
             if (trimmedQuery) {
-                setSearchParams({ q: trimmedQuery }, { replace: true });
+                params.set('q', trimmedQuery);
             } else {
-                setSearchParams({}, { replace: true });
+                params.delete('q');
             }
+
+            setSearchParams(params, { replace: true });
         }, 300); 
 
-        return () => {
-            clearTimeout(timerId);
-        };
-    }, [inputValue, setSearchParams, queryFromUrl]);
+        return () => clearTimeout(timerId);
+    }, [inputValue, queryFromUrl, searchParams, setSearchParams]);
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value);
@@ -38,8 +39,11 @@ export function useSearch() {
 
     const handleClear = useCallback(() => {
         setInputValue('');
-        setSearchParams({});
-    }, [setSearchParams]);
+        
+        const params = new URLSearchParams(searchParams);
+        params.delete('q');
+        setSearchParams(params, { replace: true });
+    }, [searchParams, setSearchParams]);
 
     return {
         inputValue,
