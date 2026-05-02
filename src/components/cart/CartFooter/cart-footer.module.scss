@@ -149,6 +149,15 @@
             transform: scale(0.98);
         }
 
+        &:disabled,
+        &[aria-disabled="true"] {
+            background: rgba(var(--primary-accent-rgb), 0.15);
+            color: rgba(var(--text-inverse-rgb, 255, 255, 255), 0.5);
+            cursor: not-allowed;
+            pointer-events: none;
+            transform: none;
+        }
+
         svg {
             width: 18px;
             height: 18px;
