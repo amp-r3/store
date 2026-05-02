@@ -1,4 +1,4 @@
-import { useMemo, memo } from 'react';
+import { memo } from 'react';
 // Icons
 import { IoAdd, IoRemove, IoTrashOutline, IoWarningOutline } from 'react-icons/io5';
 // Styles
@@ -18,9 +18,16 @@ interface CartItemProps {
     onClose(): void;
 }
 
-export const CartItem = memo<CartItemProps>(({ product, onIncrease, onDecrease, onRemove, onClose }) => {
+export const CartItem = memo<CartItemProps>(({
+    product,
+    onIncrease,
+    onDecrease,
+    onRemove,
+    onClose,
+}) => {
     const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
-    const totalPrice = useMemo(() => price * quantity, [price, quantity]);;
+
+    const totalPrice = price * quantity;
 
     const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, stock ?? 0));
 
@@ -114,13 +121,6 @@ export const CartItem = memo<CartItemProps>(({ product, onIncrease, onDecrease, 
             </div>
         </article>
     );
-}, (prevProps, nextProps) => {
-    return (
-        prevProps.product.id === nextProps.product.id &&
-        prevProps.product.quantity === nextProps.product.quantity &&
-        prevProps.product.price === nextProps.product.price
-    );
-}
-);
+});
 
 CartItem.displayName = 'CartItem';
