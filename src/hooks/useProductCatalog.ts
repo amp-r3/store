@@ -10,7 +10,7 @@ export function useProductCatalog() {
     const {
         data: categories = [],  
         isLoading: categoriesLoading,
-        error: categoriesError
+        isFetching: categoriesFetching,
     } = useGetCategoriesQuery();
     
     const categoryId = activeCategoryOption?.slug
@@ -53,5 +53,9 @@ export function useProductCatalog() {
 
     }, [productsResponse]);
 
-    return { productsArray, setPage, page, productsLoading, productsFetching, totalItems, query, productsError, categories }
+    const itemsToRender = productsLoading && productsArray.length === 0 
+  ? Array.from({ length: 8 }) 
+  : productsArray;
+
+    return { productsArray: itemsToRender, setPage, page, productsLoading, productsFetching, categoriesLoading, categoriesFetching, totalItems, query, productsError, categories }
 }

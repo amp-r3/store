@@ -2,10 +2,11 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useProductsByIds } from './useProductByIds';
 import { Product } from '@/types/products';
-import { selectFavoritesArray } from '@/store/selectors/wishlistSelectors';
+import { WishlistData, selectFavoritesArray } from '@/store/selectors/wishlistSelectors';
 
 interface WishlistDetailsReturn {
   wishlistDetails: Product[];
+  wishlistItems: WishlistData[];
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -23,7 +24,8 @@ export const useWishlistDetails = (isOpen: boolean = true): WishlistDetailsRetur
   const { products, isLoading, isError, isFetching } = useProductsByIds(productIds, isOpen);
 
   return {
-    wishlistDetails: products,                  
+    wishlistDetails: products, 
+    wishlistItems,                  
     isLoading, 
     isFetching,
     isError,
