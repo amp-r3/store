@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { CartData, Product } from '@/types/products';
+import { Product } from '@/types/products';
 import { applyDiscount } from '@/utils';
 import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
@@ -11,13 +11,17 @@ import { selectCartItemsArray, selectIsMaxReached } from '@/store';
 import { addToCart } from '@/store/slices/cartSlice';
 import { toogleFavorite } from '@/store/slices/wishlistSlice';
 import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
+import { ProductCardSkeleton } from './ProductCardSkeleton';
 
 interface ProductCardProps {
     product: Product;
-    priority?: boolean
+    priority?: boolean;
+    isLoading: boolean;
 }
 
-export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
+export const ProductCard: FC<ProductCardProps> = ({ product, priority = false, isLoading }) => {
+    if (isLoading || !product) return <ProductCardSkeleton />
+
     const dispatch = useAppDispatch()
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
     const cartItems = useAppSelector(selectCartItemsArray)

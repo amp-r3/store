@@ -1,10 +1,15 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .control-panel {
   display: flex;
   justify-content: flex-end;
   margin-top: $spacing-md;
   margin-bottom: $spacing-md;
+
+  &__fetching-state {
+    opacity: 0.6;
+    pointer-events: none;
+  }
 
   @media (width < 550px) {
     margin-top: $spacing-sm;
