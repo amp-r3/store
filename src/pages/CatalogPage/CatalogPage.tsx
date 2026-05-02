@@ -53,7 +53,6 @@ export const CatalogPage = () => {
     <main className='container'>
       <ControlPanel
         clearAll={clearAllFilters}
-        searchQuery={query}
         sortingOptions={sortingOptions}
         changeSort={changeSort}
         activeSortOption={activeSortOption}
