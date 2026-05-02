@@ -19,7 +19,6 @@ import { EmptyCart } from '../EmptyCart/EmptyCart';
 import { useCartDetails, useHaptics } from '@/hooks';
 import { Modal } from '@/components/common/Modal/Modal';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
-import { Loader } from '@/components/common';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -29,13 +28,14 @@ interface CartDrawerProps {
 const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cartDetails, isEmpty, isLoading, isFetching } = useCartDetails(isOpen);
+  const { cartDetails, isEmpty, isLoading, cartItems } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { soft, medium, success } = useHaptics();
+
 
   const {
     subtotal,
@@ -44,7 +44,13 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     discountPercent,
     shippingProgress,
     remainingForFreeShipping,
-  } = useMemo(() => calculateCartTotals(cartDetails), [cartDetails]);
+  } = useMemo(() => {
+    const validCartItems = cartDetails.filter(
+      (item): item is NonNullable<typeof item> => item !== null
+    );
+
+    return calculateCartTotals(validCartItems);
+  }, [cartDetails]);
 
   const onIncrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); }, [dispatch, soft]);
   const onDecrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); }, [dispatch, soft]);
@@ -106,10 +112,10 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   <EmptyCart onStartShopping={onStartShopping} />
                 ) :
 
-                  cartDetails.map((item) => (
+                  cartItems.map((item, index) => (
                     <CartItem
                       key={item.id}
-                      product={item}
+                      product={cartDetails[index]}
                       onIncrease={onIncrease}
                       onDecrease={onDecrease}
                       onRemove={onRemove}
