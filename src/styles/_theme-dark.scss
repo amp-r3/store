@@ -72,4 +72,8 @@
   --focus-ring-color: rgba(var(--primary-accent-rgb), 0.5);
   --shadow-focus-input: 0 0 16px rgba(var(--primary-accent-rgb), 0.16);
   --shadow-focus-button: 0 0 0 3px rgba(var(--primary-accent-rgb), 0.26);
+
+  // --- Skeleton ---
+  --skeleton-base: #1e1a38;
+  --skeleton-highlight: #272245;
 }
