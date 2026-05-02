@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCartItemsArray } from '@/store';
-import { CartItem } from '@/types/products';
+import { CartItem, Product } from '@/types/products'; 
 import { useProductsByIds } from './useProductByIds';
+import { CartProduct } from '@/store/selectors/cartSelectors';
 
 interface CartDetailsReturn {
-  cartDetails: CartItem[];
+  cartDetails: (CartItem | null)[];
+  cartItems: CartProduct[];
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -22,27 +24,28 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
 
   const { products, isLoading, isError, isFetching } = useProductsByIds(productIds, isOpen);
 
-  const { cartDetails } = useMemo(() => {
-    const quantityMap = cartItems.reduce<Record<string, number>>((acc, item) => {
-      acc[item.id] = item.quantity;
+  const cartDetails = useMemo(() => {
+    const productsMap = products.reduce<Record<number, Product>>((acc, product) => {
+      acc[product.id] = product;
       return acc;
     }, {});
 
-    const details = products.map((product) => {
-      const quantity = quantityMap[product.id] || 0; 
+    return cartItems.map((item) => {
+      const serverProduct = productsMap[item.id];
+
+      if (!serverProduct) {
+        return null;
+      }
 
       return {
-        ...product,
-        quantity,
+        ...serverProduct,
+        quantity: item.quantity,
       };
     });
-
-    return { 
-        cartDetails: details, 
-    };
   }, [products, cartItems]);
 
   return {
+    cartItems,
     cartDetails,  
     isFetching,                
     isLoading, 
