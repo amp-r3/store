@@ -1,17 +1,13 @@
 import { ProductCard } from "@/components/products"
 import { useWishlistDetails } from "@/hooks"
 import { useNavigate } from "react-router"
-import { ErrorView, Loader } from "@/components/common"
+import { ErrorView } from "@/components/common"
 import { WishlistEmpty } from "@/components/common/WishlistEmpty/WishlistEmpty"
 import { BackButton } from "@/components/common/BackButton/BackButton"
 
 export const WishListPage = () => {
-  const { wishlistDetails, isEmpty, isError, isLoading, isFetching } = useWishlistDetails()
+  const { wishlistDetails, isEmpty, isError, isLoading, isFetching, wishlistItems } = useWishlistDetails()
   const navigate = useNavigate()
-
-  if (isLoading) {
-    return <Loader />
-  }
 
   if (isError) {
     return <ErrorView />
@@ -19,7 +15,7 @@ export const WishListPage = () => {
 
 
   return (
-    <main className="container">
+    <main className='container'>
       <BackButton
         onClick={() => { navigate(-1) }}
       />
@@ -27,15 +23,15 @@ export const WishListPage = () => {
         isEmpty ? <WishlistEmpty /> :
           <>
             <h1>Your Favorites</h1>
-            <div className='content'
-              style={{ opacity: isFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
-            >
+            <div className={`content ${isFetching && !isLoading ? 'fetching-state' : ''}`}>
+
               {
-                wishlistDetails.map((item, index) => (
+                wishlistItems.map((item, index) => (
                   <ProductCard
                     key={item.id}
-                    product={item}
+                    product={wishlistDetails[index]}
                     priority={index < 8}
+                    isLoading={isLoading}
                   />
                 ))
               }

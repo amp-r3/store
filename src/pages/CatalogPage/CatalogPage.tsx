@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 // Common components
-import { ErrorView, Loader, NoResults } from '@/components/common'
+import { ErrorView, NoResults } from '@/components/common'
 // Custom Components
 import { Pagination, ProductCard, ControlPanel } from '@/components/products'
 // Custom Hooks
@@ -17,6 +17,8 @@ export const CatalogPage = () => {
     page,
     productsLoading,
     productsFetching,
+    categoriesLoading,
+    categoriesFetching,
     totalItems,
     query,
     productsError,
@@ -40,10 +42,6 @@ export const CatalogPage = () => {
     scrollToTop()
   }, [page]);
 
-  if (productsLoading) {
-    return <Loader />
-  }
-
   if (productsError) {
     const errorMessage = getErrorMessage(productsError);
     return <ErrorView error={errorMessage} />
@@ -59,35 +57,42 @@ export const CatalogPage = () => {
         categoryOptions={categories}
         changeCategory={changeCategory}
         activeCategoryOption={activeCategoryOption}
+        isLoading={productsLoading || categoriesLoading}
+        isFetching={productsFetching || categoriesFetching}
       />
 
       <div
-        className='content'
-        style={{ opacity: productsFetching ? 0.5 : 1, transition: 'opacity 0.2s' }}
+        className={`content ${productsFetching && !productsLoading ? 'fetching-state' : ''}`}
       >
-        {productsArray.map((product: Product, index) => {
+        {productsArray.map((product: Product | undefined, index) => {
+          const isFakeItem = product === undefined;
           return (
             <ProductCard
-              key={product.id}
-              product={product}
+              key={isFakeItem ? `skeleton-${index}` : product.id}
+              product={isFakeItem ? null : product}
               priority={index < 8}
+              isLoading={productsLoading}
             />
           )
         })}
       </div>
 
-      {productsArray.length > 0 && (
-        <Pagination
-          totalItems={totalItems}
-          currentPage={page}
-          itemsPerPage={12}
-          onPageChange={onPageChange}
-        />
-      )}
+      {
+        productsArray.length > 0 && (
+          <Pagination
+            totalItems={totalItems}
+            currentPage={page}
+            itemsPerPage={12}
+            onPageChange={onPageChange}
+          />
+        )
+      }
 
-      {productsArray.length === 0 && !productsFetching && (
-        <NoResults query={query} />
-      )}
-    </main>
+      {
+        productsArray.length === 0 && !productsFetching && (
+          <NoResults query={query} />
+        )
+      }
+    </main >
   )
 }
