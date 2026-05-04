@@ -5,13 +5,15 @@ import { useEffect } from 'react';
 import { useNavigate, useParams, Navigate, useSearchParams } from 'react-router';
 
 // Components
-import { ErrorView, Loader } from '@/components/common';
+import { ErrorView } from '@/components/common';
 import { ProductHeader } from './components/ProductHeader/ProductHeader';
 import { ProductGallery } from './components/ProductGallery/ProductGallery';
 import { ProductInfo } from './components/ProductInfo/ProductInfo';
 import { ProductPurchaseBox } from './components/ProductPurchaseBox/ProductPurchaseBox';
 import { ProductReviews } from './components/ProductReviews/ProductReviews';
 import { ProductSpecs } from './components/ProductSpecs/ProductSpecs';
+import { ProductImageModal } from './components/ProductImageModal/ProductImageModal';
+import { ProductPageSkeleton } from './ProductPageSkeleton';
 
 // Utils
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
@@ -24,12 +26,11 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 // Redux Selectors
 import { addToCart } from '@/store/slices/cartSlice';
+import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
+import { toogleFavorite } from '@/store/slices/wishlistSlice';
 
 // Styles
 import style from './productPage.module.scss';
-import { ProductImageModal } from './components/ProductImageModal/ProductImageModal';
-import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
-import { toogleFavorite } from '@/store/slices/wishlistSlice';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ export const ProductPage = () => {
     const onImageClick = (): void => {
         searchParams[1]({ view: 'true' }, { replace: true })
     }
-    
+
     const onCloseModal = (): void => {
         searchParams[1]({}, { replace: true })
     }
@@ -67,10 +68,9 @@ export const ProductPage = () => {
         dispatch(addToCart(id))
     }
 
-    if (isLoading) return <Loader />;
+    if (isLoading || !product) return <ProductPageSkeleton />;
     if (error) return <ErrorView error={getErrorMessage(error)} />;
     if (isNotFound) return <Navigate to="/404" replace />;
-    if (!product) return <Loader />;
 
     const { id: productId, title, price, description, category, brand, images,
         rating, reviews, discountPercentage, stock, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
