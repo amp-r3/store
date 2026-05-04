@@ -9,6 +9,8 @@ import { useFilters, useProductCatalog } from '@/hooks'
 import { getErrorMessage, scrollToTop } from '@/utils'
 // Types
 import { Product } from '@/types/products'
+import { ProductCardSkeleton } from '@/components/products/ProductCard/ProductCardSkeleton'
+import { ControlPanelSkeleton } from '@/components/products/ControlPanel/ControlPanelSkeleton'
 
 export const CatalogPage = () => {
   const {
@@ -49,30 +51,32 @@ export const CatalogPage = () => {
 
   return (
     <main className='container'>
-      <ControlPanel
-        clearAll={clearAllFilters}
-        sortingOptions={sortingOptions}
-        changeSort={changeSort}
-        activeSortOption={activeSortOption}
-        categoryOptions={categories}
-        changeCategory={changeCategory}
-        activeCategoryOption={activeCategoryOption}
-        isLoading={productsLoading || categoriesLoading}
-        isFetching={productsFetching || categoriesFetching}
-      />
+      {
+        productsLoading || categoriesLoading ? <ControlPanelSkeleton /> :
+          <ControlPanel
+            clearAll={clearAllFilters}
+            sortingOptions={sortingOptions}
+            changeSort={changeSort}
+            activeSortOption={activeSortOption}
+            categoryOptions={categories}
+            changeCategory={changeCategory}
+            activeCategoryOption={activeCategoryOption}
+            isFetching={productsFetching || categoriesFetching}
+          />
+      }
 
       <div
         className={`content ${productsFetching && !productsLoading ? 'fetching-state' : ''}`}
       >
         {productsArray.map((product: Product | undefined, index) => {
-          const isFakeItem = product === undefined;
+          const isFakeItem = product === undefined || productsLoading;
           return (
-            <ProductCard
-              key={isFakeItem ? `skeleton-${index}` : product.id}
-              product={isFakeItem ? null : product}
-              priority={index < 8}
-              isLoading={productsLoading}
-            />
+            isFakeItem ? <ProductCardSkeleton key={`skeleton-${index}`} /> :
+              <ProductCard
+                key={product.id}
+                product={isFakeItem ? null : product}
+                priority={index < 8}
+              />
           )
         })}
       </div>

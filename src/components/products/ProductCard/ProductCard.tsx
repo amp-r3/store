@@ -11,17 +11,13 @@ import { selectCartItemsArray, selectIsMaxReached } from '@/store';
 import { addToCart } from '@/store/slices/cartSlice';
 import { toogleFavorite } from '@/store/slices/wishlistSlice';
 import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
-import { ProductCardSkeleton } from './ProductCardSkeleton';
 
 interface ProductCardProps {
     product: Product;
     priority?: boolean;
-    isLoading: boolean;
 }
 
-export const ProductCard: FC<ProductCardProps> = ({ product, priority = false, isLoading }) => {
-    if (isLoading || !product) return <ProductCardSkeleton />
-
+export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
     const dispatch = useAppDispatch()
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
     const cartItems = useAppSelector(selectCartItemsArray)

@@ -7,7 +7,6 @@ import { CategoryControl } from './CategoryControl/CategoryControl';
 import { useHaptics } from '@/hooks';
 import { Categories, Category } from '@/services/productsApi';
 import { DropdownMenu } from 'radix-ui'
-import { ControlPanelSkeleton } from './ControlPanelSkeleton';
 
 interface ControlPanelProps {
   clearAll: () => void
@@ -17,7 +16,6 @@ interface ControlPanelProps {
   changeCategory: (category: string | null) => void;
   categoryOptions: Categories;
   activeCategoryOption: Category | null;
-  isLoading: boolean;
   isFetching: boolean;
 }
 
@@ -29,10 +27,8 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   categoryOptions,
   activeCategoryOption,
   clearAll,
-  isLoading,
   isFetching,
 }) => {
-  if (isLoading) return <ControlPanelSkeleton />;
 
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
