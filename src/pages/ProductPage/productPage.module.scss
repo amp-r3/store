@@ -29,19 +29,6 @@
     }
 }
 
-.gallery-column {
-    position: sticky;
-    top: calc(#{$header-height} + #{$spacing-lg});
-
-    @media (max-width: 1024px) {
-        top: calc(#{$header-height-tablet} + #{$spacing-md});
-    }
-
-    @media (max-width: 768px) {
-        position: static;
-    }
-}
-
 .details-column {
     display: flex;
     flex-direction: column;
