@@ -77,4 +77,9 @@
   // --- Skeleton ---
   --skeleton-base: #e2e0f2;
   --skeleton-highlight: #f0eef9;
+
+  // --- Loader Colors ---
+  --loader-grad-start: var(--primary-accent);
+  --loader-grad-end: #ec4899;
+  --loader-grad-end-rgb: 236, 72, 153;
 }
