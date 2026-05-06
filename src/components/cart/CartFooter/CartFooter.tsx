@@ -13,6 +13,7 @@ interface CartFooterProps {
     shippingProgress: number;
     remainingForFreeShipping: number;
     isLoading: boolean;
+    isFetching: boolean;
     onCheckout?: () => void;
 }
 
@@ -24,6 +25,7 @@ export const CartFooter: FC<CartFooterProps> = ({
     shippingProgress,
     remainingForFreeShipping,
     isLoading,
+    isFetching,
     onCheckout,
 }) => {
     const safeProgress = Math.min(100, Math.max(0, shippingProgress));
@@ -89,10 +91,10 @@ export const CartFooter: FC<CartFooterProps> = ({
             <button
                 className={style.footer__checkoutBtn}
                 onClick={onCheckout}
-                disabled={isLoading}
+                disabled={isLoading || isFetching}
             >
                 {
-                    isLoading ? <Loader size='sm' /> :
+                    isLoading || isFetching ? <Loader size='sm' /> :
                         <span>
                             Proceed to Checkout <IoArrowForward size={20} />
                         </span>

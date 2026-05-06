@@ -28,7 +28,7 @@ interface CartDrawerProps {
 const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cartDetails, isEmpty, isLoading, cartItems } = useCartDetails(isOpen);
+  const { cartDetails, isEmpty, isLoading, isFetching, cartItems } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const totalQuantity = useAppSelector(selectCartTotalQuantity);
@@ -136,6 +136,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 shippingProgress={shippingProgress}
                 remainingForFreeShipping={remainingForFreeShipping}
                 isLoading={isLoading}
+                isFetching={isFetching}
                 onCheckout={handleCheckout}
               />
             )}
