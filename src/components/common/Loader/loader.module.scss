@@ -1,10 +1,44 @@
 @use '@/styles/index' as *;
 
-@keyframes spin {
+// Circle circumference: 2π × r=20 ≈ 125.66
+$c: 125.66;
+
+// ─── Keyframes ──────────────────────────────────────────────
+
+@keyframes loader-rotate {
   to {
     transform: rotate(360deg);
   }
 }
+
+@keyframes loader-arc {
+  0% {
+    stroke-dasharray: 4, #{$c};
+    stroke-dashoffset: 0;
+  }
+
+  30% {
+    stroke-dasharray: 94, #{$c};
+    stroke-dashoffset: -30;
+  }
+
+  60% {
+    stroke-dasharray: 94, #{$c};
+    stroke-dashoffset: -64;
+  }
+
+  100% {
+    stroke-dasharray: 4, #{$c};
+    stroke-dashoffset: -#{$c};
+  }
+}
+
+@keyframes loader-track-pulse {
+  0%, 100% { opacity: 0.07; }
+  50%       { opacity: 0.14; }
+}
+
+// ─── Wrappers ────────────────────────────────────────────────
 
 .spinnerWrapper {
   display: flex;
@@ -25,45 +59,53 @@
   align-items: center;
 }
 
+// ─── SVG ────────────────────────────────────────────────────
 
-.spinner {
-  border-radius: $radius-circle;
-  background: conic-gradient(var(--primary-accent), var(--gradient-logo-mid-1), var(--primary-accent));
-  animation: spin $animation-spin-duration linear infinite;
+.spinnerSvg {
+  animation: loader-rotate 1.4s linear infinite;
+  transform-origin: center;
+  overflow: visible;
+
+  &--xs {
+    width: $loader-size-xs;
+    height: $loader-size-xs;
+
+    .spinnerTrack,
+    .spinnerPath { stroke-width: 6; }
+  }
+
+  &--sm {
+    width: $loader-size-sm;
+    height: $loader-size-sm;
+
+    .spinnerTrack,
+    .spinnerPath { stroke-width: 5; }
+  }
+
+  &--md {
+    width: $loader-size-md;
+    height: $loader-size-md;
+    filter:
+      drop-shadow(0 0 10px rgba(var(--primary-accent-rgb), 0.45))
+      drop-shadow(0 0  4px rgba(var(--loader-grad-end-rgb), 0.30));
+
+    .spinnerTrack,
+    .spinnerPath { stroke-width: 4; }
+  }
 }
 
-.spinner--xs {
-  width: $loader-size-xs;
-  height: $loader-size-xs;
+// ─── Track ───────────────────────────────────────────────────
 
-  mask-image: radial-gradient(farthest-side,
-    transparent calc(100% - #{$loader-border-width-xs}),
-    #000 0);
-  -webkit-mask-image: radial-gradient(farthest-side,
-    transparent calc(100% - #{$loader-border-width-xs}),
-    #000 0);
+.spinnerTrack {
+  stroke: var(--loader-grad-start);
+  stroke-linecap: round;
+  animation: loader-track-pulse 2.8s ease-in-out infinite;
 }
 
-.spinner--sm {
-  width: $loader-size-sm;
-  height: $loader-size-sm;
+// ─── Arc ─────────────────────────────────────────────────────
 
-  mask-image: radial-gradient(farthest-side,
-    transparent calc(100% - #{$loader-border-width-sm}),
-    #000 0);
-  -webkit-mask-image: radial-gradient(farthest-side,
-    transparent calc(100% - #{$loader-border-width-sm}),
-    #000 0);
-}
-
-.spinner--md {
-  width: $loader-size-md;
-  height: $loader-size-md;
-
-  mask-image: radial-gradient(farthest-side,
-    transparent calc(100% - #{$loader-border-width}),
-    #000 0);
-  -webkit-mask-image: radial-gradient(farthest-side,
-    transparent calc(100% - #{$loader-border-width}),
-    #000 0);
+.spinnerPath {
+  stroke: url(#loader-gradient);
+  stroke-linecap: round;
+  animation: loader-arc 1.6s linear infinite;
 }
