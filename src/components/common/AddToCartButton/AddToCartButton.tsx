@@ -11,9 +11,9 @@ interface AddToCartButtonProps {
   isMaxReached?: boolean;
   size?: 'small' | 'large';
   className?: string;
-  isLoading?: boolean;           
-  buttonText?: string;           
-  outOfStockText?: string;      
+  isLoading?: boolean;
+  buttonText?: string;
+  outOfStockText?: string;
 }
 
 export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
@@ -58,8 +58,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         className={styles['add-btn']}
         onClick={(e) => handleAction(e, onAddToCart)}
         disabled={!inStock || isMaxReached || isLoading}
-        tabIndex={isActive ? -1 : 0}
-        aria-hidden={isActive}
+        inert={isActive ? true : undefined}
       >
         {isLoading ? (
           <FaSpinner className={`${styles.icon} ${styles.spinning}`} />
@@ -71,14 +70,13 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
 
       <div
         className={styles.counter}
-        aria-hidden={!isActive}
+        inert={!isActive ? true : undefined}
       >
         <button
           type="button"
           className={styles['counter-btn']}
           onClick={(e) => handleAction(e, onDecrement)}
           disabled={isLoading}
-          tabIndex={isActive ? 0 : -1}
           aria-label="Remove from cart"
         >
           <FaMinus />
@@ -93,7 +91,6 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
           className={styles['counter-btn']}
           onClick={(e) => handleAction(e, onIncrement)}
           disabled={isMaxReached || isLoading}
-          tabIndex={isActive ? 0 : -1}
           aria-label="Add more"
         >
           <FaPlus />
