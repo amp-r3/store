@@ -23,15 +23,6 @@ export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addToCart: (state, action: PayloadAction<number>) => {
-        const productId = action.payload;
-
-         if (state.items[productId]) {
-                state.items[productId].quantity += 1;
-            } else {
-            state.items[productId] = { quantity: 1 };
-            }
-        },
         removeFromCart: (state, action: PayloadAction<number>) => {
             const id = action.payload;
             delete state.items[id];
@@ -39,10 +30,13 @@ export const cartSlice = createSlice({
         changeQuantity: (state, action: PayloadAction<{ id: number; type: 'inc' | 'dec' }>) => {
             const { id, type } = action.payload;
             const item = state.items[id];
-            if (!item) return;
-        
+            if (!item) {
+                state.items[id] = { quantity: 1 };
+                return
+            };
+
             if (type === 'inc') {
-                    item.quantity++;
+                item.quantity++;
             } else {
                 if (item.quantity > 1) {
                     item.quantity--;
@@ -66,5 +60,5 @@ export const cartSlice = createSlice({
 
 const persistedCartReducer = persistReducer(cartPersistConfig, cartSlice.reducer)
 
-export const { addToCart, removeFromCart, changeQuantity, clearCart, openCart, closeCart } = cartSlice.actions
+export const { removeFromCart, changeQuantity, clearCart, openCart, closeCart } = cartSlice.actions
 export default persistedCartReducer
