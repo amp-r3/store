@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Drawer } from 'vaul';
 import { useNavigate } from 'react-router';
 import { VisuallyHidden } from 'radix-ui'
@@ -6,9 +6,8 @@ import { IoWarningOutline } from "react-icons/io5";
 
 import styles from './cart-drawer.module.scss';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import {  useAppSelector } from '@/hooks/redux';
 import { selectCartTotalQuantity } from '@/store';
-import { changeQuantity, clearCart, removeFromCart } from '@/store/slices/cartSlice';
 import { calculateCartTotals } from '@/utils';
 
 import { CartItem } from '../CartItem/CartItem';
@@ -16,7 +15,7 @@ import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
 
-import { useCartDetails, useHaptics } from '@/hooks';
+import { useCartActions, useCartDetails, useHaptics } from '@/hooks';
 import { Modal } from '@/components/common/Modal/Modal';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
 
@@ -28,13 +27,11 @@ interface CartDrawerProps {
 const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cartDetails, isEmpty, isLoading, isFetching, cartItems } = useCartDetails(isOpen);
+  const { cartDetails, isEmpty, isLoading, isFetching, cartItems, totalQuantity } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const totalQuantity = useAppSelector(selectCartTotalQuantity);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { soft, medium, success } = useHaptics();
+  const { soft, success } = useHaptics();
 
 
   const {
@@ -52,10 +49,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     return calculateCartTotals(validCartItems);
   }, [cartDetails]);
 
-  const onIncrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); soft(); }, [dispatch, soft]);
-  const onDecrease = useCallback((id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); soft(); }, [dispatch, soft]);
-  const onRemove = useCallback((id: number) => { dispatch(removeFromCart(id)); medium(); }, [dispatch, medium]);
-  const onClearCart = useCallback(() => { dispatch(clearCart()); medium(); }, [dispatch, medium]);
+  const { onIncrease, onDecrease, onRemove, onClearCart, isUpdating } = useCartActions()
 
   const handleCheckout = () => {
     success();
@@ -137,6 +131,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 remainingForFreeShipping={remainingForFreeShipping}
                 isLoading={isLoading}
                 isFetching={isFetching}
+                isUpdating={isUpdating}
                 onCheckout={handleCheckout}
               />
             )}
