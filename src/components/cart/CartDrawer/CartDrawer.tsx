@@ -6,8 +6,7 @@ import { IoWarningOutline } from "react-icons/io5";
 
 import styles from './cart-drawer.module.scss';
 
-import {  useAppSelector } from '@/hooks/redux';
-import { selectCartTotalQuantity } from '@/store';
+import { useAppSelector } from '@/hooks/redux';
 import { calculateCartTotals } from '@/utils';
 
 import { CartItem } from '../CartItem/CartItem';
@@ -27,7 +26,7 @@ interface CartDrawerProps {
 const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cartDetails, isEmpty, isLoading, isFetching, cartItems, totalQuantity } = useCartDetails(isOpen);
+  const { cartDetails, isEmpty, isLoading, isFetching, cartItems, totalQuantity, refetchCart } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
@@ -51,10 +50,15 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const { onIncrease, onDecrease, onRemove, onClearCart, isUpdating } = useCartActions()
 
-  const handleCheckout = () => {
-    success();
-    onClose();
-    if (!isAuth) setIsModalOpen(true)
+  const handleCheckout = async () => {
+    try {
+      if (isAuth) {
+        await refetchCart().unwrap();
+      }
+
+    } catch (error) {
+      console.error("Error reconciling cart:", error);
+    }
   };
 
   const onStartShopping = () => {

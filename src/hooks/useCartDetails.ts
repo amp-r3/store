@@ -5,11 +5,12 @@ import { useProductsByIds } from './useProductByIds';
 import { CartProduct } from '@/store/selectors/cartSelectors';
 import { useAppSelector } from './redux';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
-import { useGetCartQuery } from '@/services/cartApi';
+import { cartApi, useGetCartQuery } from '@/services/cartApi';
 
 interface CartDetailsReturn {
   cartDetails: (CartItem | null)[];
   cartItems: CartProduct[];
+  refetchCart: RefetchType;
   totalQuantity: number | null;
   isLoading: boolean;
   isFetching: boolean;
@@ -17,12 +18,15 @@ interface CartDetailsReturn {
   isEmpty: boolean;
 }
 
+type UseGetCartQueryResult = ReturnType<typeof cartApi.endpoints.getCart.useQuery>;
+type RefetchType = UseGetCartQueryResult['refetch'];
+
 export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
   const isAuth = useAppSelector(selectIsAuth);
   const localCartItems = useAppSelector(selectCartItemsArray);
 
-  const { data, isLoading: isCartLoading, isError: isCartError, isFetching: isCartFetching } =
-    useGetCartQuery(undefined, { skip: !isAuth});
+  const { data, isLoading: isCartLoading, isError: isCartError, isFetching: isCartFetching, refetch } =
+    useGetCartQuery(undefined, { skip: !isAuth });
 
   const unifiedCartItems = useMemo(() => {
     if (isAuth && data) {
@@ -43,6 +47,7 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
 
   const { products, isLoading: isProductsLoading, isFetching: isProductsFetching, isError: isProductsError } =
     useProductsByIds(productIds, isOpen);
+  useProductsByIds(productIds, isOpen);
 
   const cartDetails = useMemo(() => {
     const productsMap = products.reduce<Record<number, Product>>((acc, product) => {
@@ -70,6 +75,7 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
     cartItems: unifiedCartItems,
     cartDetails,
     totalQuantity,
+    refetchCart: refetch,
     isFetching: isCartFetching || isProductsFetching,
     isLoading: isCartLoading || isProductsLoading,
     isError: isCartError || isProductsError,

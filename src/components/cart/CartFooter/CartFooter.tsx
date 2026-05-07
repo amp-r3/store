@@ -31,6 +31,7 @@ export const CartFooter: FC<CartFooterProps> = ({
     onCheckout,
 }) => {
     const safeProgress = Math.min(100, Math.max(0, shippingProgress));
+    const isCheckoutDisabled = isLoading || isFetching || isUpdating
     return (
         <footer className={style.footer}>
             {/* Shipping Progress */}
@@ -93,7 +94,7 @@ export const CartFooter: FC<CartFooterProps> = ({
             <button
                 className={style.footer__checkoutBtn}
                 onClick={onCheckout}
-                disabled={isLoading || isFetching || isUpdating}
+                disabled={isCheckoutDisabled}
             >
                 {
                     isLoading || isFetching || isUpdating ? <Loader size='sm' /> :
