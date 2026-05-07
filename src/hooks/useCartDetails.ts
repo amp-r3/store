@@ -1,13 +1,16 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { selectCartItemsArray } from '@/store';
-import { CartItem, Product } from '@/types/products'; 
+import { CartItem, Product } from '@/types/products';
 import { useProductsByIds } from './useProductByIds';
 import { CartProduct } from '@/store/selectors/cartSelectors';
+import { useAppSelector } from './redux';
+import { selectIsAuth } from '@/store/selectors/authSelectors';
+import { useGetCartQuery } from '@/services/cartApi';
 
 interface CartDetailsReturn {
   cartDetails: (CartItem | null)[];
   cartItems: CartProduct[];
+  totalQuantity: number | null;
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -15,14 +18,31 @@ interface CartDetailsReturn {
 }
 
 export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
-  const cartItems = useSelector(selectCartItemsArray);
-  
+  const isAuth = useAppSelector(selectIsAuth);
+  const localCartItems = useAppSelector(selectCartItemsArray);
+
+  const { data, isLoading: isCartLoading, isError: isCartError, isFetching: isCartFetching } =
+    useGetCartQuery(undefined, { skip: !isAuth});
+
+  const unifiedCartItems = useMemo(() => {
+    if (isAuth && data) {
+      return (Object.entries(data) as [string, { quantity: number }][]).map(
+        ([id, info]) => ({
+          id: Number(id),
+          quantity: info.quantity,
+        })
+      );
+    }
+    return localCartItems;
+  }, [isAuth, data, localCartItems]);
+
   const productIds = useMemo(
-    () => cartItems.map(item => item.id), 
-    [cartItems]
+    () => unifiedCartItems.map(item => item.id),
+    [unifiedCartItems]
   );
 
-  const { products, isLoading, isError, isFetching } = useProductsByIds(productIds, isOpen);
+  const { products, isLoading: isProductsLoading, isFetching: isProductsFetching, isError: isProductsError } =
+    useProductsByIds(productIds, isOpen);
 
   const cartDetails = useMemo(() => {
     const productsMap = products.reduce<Record<number, Product>>((acc, product) => {
@@ -30,26 +50,29 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
       return acc;
     }, {});
 
-    return cartItems.map((item) => {
+    return unifiedCartItems.map((item) => {
       const serverProduct = productsMap[item.id];
-
-      if (!serverProduct) {
-        return null;
-      }
+      if (!serverProduct) return null;
 
       return {
         ...serverProduct,
         quantity: item.quantity,
       };
     });
-  }, [products, cartItems]);
+  }, [products, unifiedCartItems]);
+
+  const totalQuantity = useMemo(() =>
+    unifiedCartItems.reduce((acc, item) => acc + item.quantity, 0),
+    [unifiedCartItems]
+  );
 
   return {
-    cartItems,
-    cartDetails,  
-    isFetching,                
-    isLoading, 
-    isError,
-    isEmpty: cartItems.length === 0,
+    cartItems: unifiedCartItems,
+    cartDetails,
+    totalQuantity,
+    isFetching: isCartFetching || isProductsFetching,
+    isLoading: isCartLoading || isProductsLoading,
+    isError: isCartError || isProductsError,
+    isEmpty: unifiedCartItems.length === 0,
   };
 };
