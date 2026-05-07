@@ -10,7 +10,7 @@ import { Loader } from '@/components/common';
 // Redux Hooks
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 // Functions and Selectors
-import { closeCart } from '@/store/slices/cartSlice';
+import { clearCart, closeCart } from '@/store/slices/cartSlice';
 import { selectIsCartOpen } from '@/store/selectors/cartSelectors';
 
 // Style
@@ -20,6 +20,8 @@ import { useTheme } from '@/hooks';
 import { Header } from '../Header/Header';
 import { supabase } from '@/supabase';
 import { logout, setSession } from '@/store/slices/authSlice';
+import { store } from '@/app/store';
+import { cartApi, useSyncCartMutation } from '@/services/cartApi';
 
 
 export const Layout = () => {
@@ -28,27 +30,48 @@ export const Layout = () => {
     const isLoading = navigation.state === 'loading';
     const dispatch = useAppDispatch();
     const isOpen = useAppSelector(selectIsCartOpen);
+    const [syncCart] = useSyncCartMutation();
+
     useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            if (session?.user) {
-                dispatch(setSession({
-                    user: {
-                        id: session.user.id,
-                        firstName: session.user.user_metadata.firstName,
-                        lastName: session.user.user_metadata.lastName,
-                        username: session.user.user_metadata.username,
-                        email: session.user.email!,
-                        accessToken: session.access_token,
-                    },
-                    token: session.access_token,
-                }));
-            } else if (event === 'SIGNED_OUT') {
-                dispatch(logout());
-            }
-        });
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            async (event, session) => {
+                if (session?.user) {
+                    dispatch(setSession({
+                        user: {
+                            id: session.user.id,
+                            firstName: session.user.user_metadata.firstName,
+                            lastName: session.user.user_metadata.lastName,
+                            username: session.user.user_metadata.username,
+                            email: session.user.email!,
+                            accessToken: session.access_token,
+                        },
+                        token: session.access_token,
+                    }));
+                }
+
+                if (event === 'SIGNED_IN' && session?.user) {
+                    const currentState = store.getState();
+                    const localCartItems = currentState.cart.items;
+
+                    if (localCartItems && Object.keys(localCartItems).length > 0) {
+                        try {
+                            await syncCart(localCartItems).unwrap();
+                            dispatch(clearCart());
+                        } catch (error) {
+                            console.error('Error synchronizing cart:', error);
+                        }
+                    }
+                }
+
+                else if (event === 'SIGNED_OUT') {
+                    dispatch(cartApi.util.resetApiState());
+                    dispatch(clearCart());
+                    dispatch(logout());
+                }
+            });
 
         return () => subscription.unsubscribe();
-    }, [dispatch]);
+    }, [dispatch, syncCart]);
 
     const handleClose = () => {
         dispatch(closeCart())
