@@ -1,8 +1,6 @@
 import { FC } from 'react';
 import { Product } from '@/types/products';
 import style from '../productCard.module.scss';
-import { useAppDispatch } from '@/hooks';
-import { changeQuantity } from '@/store/slices/cartSlice';
 import { AddToCartButton } from '@/components/common';
 
 interface ProductCardFooterProps {
@@ -10,7 +8,7 @@ interface ProductCardFooterProps {
     price: number;
     discountedPrice: number;
     hasDiscount: boolean;
-    handleAddToCart: (id: number) => void;
+    handleCart: (id: number, type: 'inc' | 'dec') => void;
     inStock: boolean;
     isMaxReached: boolean;
     quantity: number;
@@ -30,13 +28,10 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
     price,
     discountedPrice,
     hasDiscount,
-    handleAddToCart,
+    handleCart,
     inStock,
     isMaxReached,
 }) => {
-    const dispatch = useAppDispatch();
-    const onIncrease = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); };
-    const onDecrease = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); };
     return (
         <div className={style.card__footer}>
             <div className={style.card__price_wrapper}>
@@ -48,9 +43,9 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
 
             <AddToCartButton
                 quantity={quantity}
-                onAddToCart={() => handleAddToCart(product.id)}
-                onIncrement={() => onIncrease(product.id)}
-                onDecrement={() => onDecrease(product.id)}
+                onAddToCart={() => handleCart(product.id, 'inc')}
+                onIncrement={() => handleCart(product.id, 'inc')}
+                onDecrement={() => handleCart(product.id, 'dec')}
                 inStock={inStock}
                 isMaxReached={isMaxReached}
                 size="small"

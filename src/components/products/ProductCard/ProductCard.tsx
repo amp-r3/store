@@ -6,9 +6,8 @@ import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
 import { ProductCardBody } from './components/ProductCardBody';
 import { ProductCardFooter } from './components/ProductCardFooter';
-import { useAppDispatch, useAppSelector, useHaptics } from '@/hooks';
-import { selectCartItemsArray, selectIsMaxReached } from '@/store';
-import { addToCart } from '@/store/slices/cartSlice';
+import { useAppDispatch, useAppSelector, useCartActions, useCartDetails, useHaptics } from '@/hooks';
+import { selectIsMaxReached } from '@/store';
 import { toogleFavorite } from '@/store/slices/wishlistSlice';
 import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
 
@@ -19,9 +18,10 @@ interface ProductCardProps {
 
 export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
     const dispatch = useAppDispatch()
+    const { onIncrease, onDecrease } = useCartActions()
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
-    const cartItems = useAppSelector(selectCartItemsArray)
-    const itemInCart = cartItems.find(item => item.id === product.id)
+    const { cartItems } = useCartDetails()
+    const itemInCart = cartItems.find(item => item?.id === product.id)
     const isFavorite = useAppSelector(state => selectIsFavorite(state, id))
     const quantity = itemInCart?.quantity
     const { soft } = useHaptics()
@@ -31,9 +31,10 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
 
     const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, stock ?? 0));
 
-    const handleAddToCart = () => {
-        dispatch(addToCart(id))
+    const handleCart = (id: number, type: 'inc' | 'dec') => {
+        type === 'inc' ? onIncrease(id) : onDecrease(id)
     }
+
     const handleAddToWishlist = () => {
         dispatch(toogleFavorite(id))
     }
@@ -65,7 +66,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
                 price={price}
                 discountedPrice={discountedPrice}
                 hasDiscount={hasDiscount}
-                handleAddToCart={handleAddToCart}
+                handleCart={handleCart}
                 inStock={inStock}
                 isMaxReached={isMaxReached}
             />

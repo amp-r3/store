@@ -1,6 +1,5 @@
 import style from './product-purchase-box.module.scss';
-import { useAppDispatch, useAppSelector } from '@/hooks';
-import { changeQuantity } from '@/store/slices/cartSlice';
+import { useAppSelector } from '@/hooks';
 import { AddToCartButton } from '@/components/common';
 import { selectIsMaxReached } from '@/store';
 
@@ -9,7 +8,7 @@ interface ProductPurchaseBoxProps {
     quantity: number;
     originalPrice: number;
     discountedPriceFormatted: string;
-    onAddToCart: (id: number) => void;
+    handleCart(id: number, type: 'inc' | 'dec'): void;
     inStock: boolean;
     stock: number;
 }
@@ -19,13 +18,10 @@ export const ProductPurchaseBox = ({
     quantity,
     originalPrice,
     discountedPriceFormatted,
-    onAddToCart,
+    handleCart,
     inStock,
     stock,
 }: ProductPurchaseBoxProps) => {
-    const dispatch = useAppDispatch();
-    const onIncrease = (id: number) => { dispatch(changeQuantity({ id, type: 'inc' })); };
-    const onDecrease = (id: number) => { dispatch(changeQuantity({ id, type: 'dec' })); };
     const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, stock ?? 0));
     return (
         <div className={style['purchase-box']}>
@@ -35,9 +31,9 @@ export const ProductPurchaseBox = ({
             </div>
             <AddToCartButton
                 quantity={quantity}
-                onAddToCart={() => onAddToCart(productId)}
-                onIncrement={() => onIncrease(productId)}
-                onDecrement={() => onDecrease(productId)}
+                onAddToCart={() => handleCart(productId, 'inc')}
+                onIncrement={() => handleCart(productId, 'inc')}
+                onDecrement={() => handleCart(productId, 'dec')}
                 inStock={inStock}
                 isMaxReached={isMaxReached}
                 size="large"

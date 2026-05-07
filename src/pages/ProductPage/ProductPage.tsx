@@ -19,29 +19,30 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
-import { useProduct } from '@/hooks';
+import { useCartActions, useCartDetails, useProduct } from '@/hooks';
 
 // Redux Hooks
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 
 // Redux Selectors
-import { addToCart } from '@/store/slices/cartSlice';
 import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
 import { toogleFavorite } from '@/store/slices/wishlistSlice';
-import { selectCartItemsArray } from '@/store';
 
 // Styles
 import style from './productPage.module.scss';
+import { selectIsMaxReached } from '@/store';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
     const searchParams = useSearchParams()
     const dispatch = useAppDispatch()
     const { id } = useParams();
+    const { onIncrease, onDecrease } = useCartActions()
     const isFavorite = useAppSelector(state => selectIsFavorite(state, +id))
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
-    const cartItems = useAppSelector(selectCartItemsArray);
+    const { cartItems } = useCartDetails()
+
     const onImageClick = (): void => {
         searchParams[1]({ view: 'true' }, { replace: true })
     }
@@ -65,8 +66,8 @@ export const ProductPage = () => {
             minimumFractionDigits: 2,
         }).format(value);
 
-    const handleAddToCart = (id: number) => {
-        dispatch(addToCart(id))
+    const handleCart = (id: number, type: 'inc' | 'dec') => {
+        type === 'inc' ? onIncrease(id) : onDecrease(id)
     }
 
     if (isLoading || !product) return <ProductPageSkeleton />;
@@ -79,7 +80,7 @@ export const ProductPage = () => {
     const inStock = (stock ?? 0) > 0;
     const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const showPrice = formatPrice(discountedPrice);
-    const itemInCart = cartItems.find(item => item.id === productId);
+    const itemInCart = cartItems.find(item => item?.id === product.id)
     const quantity = itemInCart?.quantity
 
 
@@ -113,7 +114,7 @@ export const ProductPage = () => {
                         <ProductPurchaseBox
                             quantity={quantity}
                             productId={product.id}
-                            onAddToCart={handleAddToCart}
+                            handleCart={handleCart}
                             originalPrice={price}
                             discountedPriceFormatted={showPrice}
                             inStock={inStock}
