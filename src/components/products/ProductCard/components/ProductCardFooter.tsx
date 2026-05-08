@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Product } from '@/types/products';
 import style from '../productCard.module.scss';
+import { formatPrice } from '@/utils';
 import { AddToCartButton } from '@/components/common';
 
 interface ProductCardFooterProps {
@@ -13,14 +14,6 @@ interface ProductCardFooterProps {
     isMaxReached: boolean;
     quantity: number;
 }
-
-const formatPrice = (value: number): string => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-    }).format(value);
-};
 
 export const ProductCardFooter: FC<ProductCardFooterProps> = ({
     product,
