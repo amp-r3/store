@@ -3,7 +3,7 @@ import storage from "../storage";
 import { persistReducer } from "redux-persist";
 
 export interface WishlistState {
-  favoriteItems: Record<string, boolean>;
+  favoriteItems: Record<number, boolean>;
 }
 
 const initialState: WishlistState = {
@@ -28,11 +28,14 @@ export const wishlistSlice = createSlice({
       } else {
         state.favoriteItems[productId] = true
       }
+    },
+    clearFavorite(state) {
+      state.favoriteItems = {}
     }
   }
 })
 
 const persistedWishlistReducer = persistReducer(wishlistPersistConfig, wishlistSlice.reducer)
 
-export const { toogleFavorite } = wishlistSlice.actions
+export const { toogleFavorite, clearFavorite } = wishlistSlice.actions
 export default persistedWishlistReducer
