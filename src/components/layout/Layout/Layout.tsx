@@ -22,6 +22,8 @@ import { supabase } from '@/supabase';
 import { logout, setSession } from '@/store/slices/authSlice';
 import { store } from '@/app/store';
 import { cartApi, useSyncCartMutation } from '@/services/cartApi';
+import { useSyncWishlistMutation, wishlistApi } from '@/services/wishlistApi';
+import { clearFavorite } from '@/store/slices/wishlistSlice';
 
 
 export const Layout = () => {
@@ -31,6 +33,7 @@ export const Layout = () => {
     const dispatch = useAppDispatch();
     const isOpen = useAppSelector(selectIsCartOpen);
     const [syncCart] = useSyncCartMutation();
+    const [syncWishlist] = useSyncWishlistMutation();
 
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -51,6 +54,7 @@ export const Layout = () => {
 
                 if (event === 'SIGNED_IN' && session?.user) {
                     const currentState = store.getState();
+                    const localWishlistItems = currentState.wishlist.favoriteItems
                     const localCartItems = currentState.cart.items;
 
                     if (localCartItems && Object.keys(localCartItems).length > 0) {
@@ -61,10 +65,21 @@ export const Layout = () => {
                             console.error('Error synchronizing cart:', error);
                         }
                     }
+
+                    if (localWishlistItems && Object.keys(localWishlistItems).length > 0) {
+                        try {
+                            await syncWishlist(localWishlistItems).unwrap();
+                            dispatch(clearFavorite());
+                        } catch (error) {
+                            console.error('Error synchronizing wishlist:', error);
+                        }
+                    }
                 }
 
                 else if (event === 'SIGNED_OUT') {
                     dispatch(cartApi.util.resetApiState());
+                    dispatch(wishlistApi.util.resetApiState());
+                    dispatch(clearFavorite())
                     dispatch(clearCart());
                     dispatch(logout());
                 }
