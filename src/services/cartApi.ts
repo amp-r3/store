@@ -17,9 +17,15 @@ export const cartApi = createApi({
     getCart: builder.query<Record<number, CartData>, void>({
       async queryFn() {
         try {
+          const { data: { user }, error: authError } = await supabase.auth.getUser();
+          if (authError || !user) {
+            return { error: { status: 'CUSTOM_ERROR', data: 'The user is not authorized' } };
+          }
+
           const { data, error } = await supabase
             .from('cart_items')
-            .select('product_id, quantity');
+            .select('product_id, quantity')
+            .eq('user_id', user.id);
 
           if (error) {
             return { error: { status: error.code, data: error.message } };
@@ -44,9 +50,10 @@ export const cartApi = createApi({
     upsertCartItem: builder.mutation<null, { productId: number; action: QuantityAction }>({
       queryFn: async ({ productId, action }, { getState }) => {
         try {
-          const { data: { user }, error: authError } = await supabase.auth.getUser();
-          if (authError || !user) {
-            return { error: { status: 'CUSTOM_ERROR', data: 'The user is not authorized' } };
+          const { data: { session } } = await supabase.auth.getSession();
+          const user = session?.user;
+          if (!user) {
+            return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
           }
 
           const state = getState() as RootState;
@@ -120,10 +127,10 @@ export const cartApi = createApi({
     deleteCartItem: builder.mutation<null, number>({
       queryFn: async (productId) => {
         try {
-          const { data: { user } } = await supabase.auth.getUser();
-
+          const { data: { session } } = await supabase.auth.getSession();
+          const user = session?.user;
           if (!user) {
-            return { error: { status: 'CUSTOM_ERROR', data: 'The user is not authorized' } };
+            return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
           }
 
           const { error } = await supabase
@@ -158,10 +165,10 @@ export const cartApi = createApi({
     syncCart: builder.mutation<null, Record<number, CartData>>({
       queryFn: async (localCart) => {
         try {
-          const { data: { user } } = await supabase.auth.getUser();
-
+          const { data: { session } } = await supabase.auth.getSession();
+          const user = session?.user;
           if (!user) {
-            return { error: { status: 'CUSTOM_ERROR', data: 'The user is not authorized' } };
+            return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
           }
 
           const itemsToSync = Object.entries(localCart).map(([productId, data]) => ({
@@ -191,12 +198,13 @@ export const cartApi = createApi({
     }),
 
     clearCart: builder.mutation<null, void>({
-      queryFn: async (_, { getState }) => {
+      queryFn: async () => {
         try {
-          const { data: { user }, error: authError } = await supabase.auth.getUser();
+          const { data: { session } } = await supabase.auth.getSession();
+          const user = session?.user;
 
-          if (authError || !user) {
-            return { error: { status: 'CUSTOM_ERROR', data: 'The user is not authorized' } };
+          if (!user) {
+            return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
           }
 
           const { error } = await supabase

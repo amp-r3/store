@@ -47,7 +47,6 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
 
   const { products, isLoading: isProductsLoading, isFetching: isProductsFetching, isError: isProductsError } =
     useProductsByIds(productIds, isOpen);
-  useProductsByIds(productIds, isOpen);
 
   const cartDetails = useMemo(() => {
     const productsMap = products.reduce<Record<number, Product>>((acc, product) => {
