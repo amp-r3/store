@@ -1,12 +1,34 @@
 import { useSearchParams } from "react-router";
 import { sortingOptions, } from "@/utils";
-import { useGetCategoriesQuery } from "@/services/productsApi";
+import { Categories, Category, useGetCategoriesQuery } from "@/services/productsApi";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
+import { SortingOption } from "@/utils/sortingOptions";
 
-export function useFilters(defaultPage = 1) {
+interface useFiltersProps {
+    page: Number;
+    currentSortBy: String;
+    currentOrder: String;
+    currentCategory: String;
+    categories: Categories;
+    categoriesLoading: boolean;
+    categoriesFetching: boolean;
+    categoriesError: FetchBaseQueryError | SerializedError;
+    activeSortOption: SortingOption;
+    activeCategoryOption: Category;
+    sortingOptions: SortingOption[];
+    changeSort(newSortBy?: string, newOrder?: string): void;
+    changeCategory(newCategory: string | null): void;
+    setPage(newPage: number): void;
+    clearAllFilters(): void;
+}
+
+export function useFilters(defaultPage = 1): useFiltersProps {
     const [searchParams, setSearchParams] = useSearchParams();
     const {
-        data: categories = [],  
+        data: categories = [],
         isLoading: categoriesLoading,
+        isFetching: categoriesFetching,
         error: categoriesError
     } = useGetCategoriesQuery();
 
@@ -26,7 +48,7 @@ export function useFilters(defaultPage = 1) {
     const updateParams = (updates: Record<string, string | number | null>) => {
         setSearchParams((prev) => {
             const newParams = new URLSearchParams(prev);
-            
+
             Object.entries(updates).forEach(([key, value]) => {
                 if (value === null || value === 'all') {
                     newParams.delete(key);
@@ -38,7 +60,7 @@ export function useFilters(defaultPage = 1) {
             if (!('page' in updates)) {
                 newParams.delete('page');
             }
-            
+
             return newParams;
         }, { replace: true });
     };
@@ -73,6 +95,10 @@ export function useFilters(defaultPage = 1) {
         currentSortBy,
         currentOrder,
         currentCategory,
+        categories,
+        categoriesLoading,
+        categoriesFetching,
+        categoriesError,
         activeSortOption,
         activeCategoryOption,
         sortingOptions,

@@ -1,0 +1,1 @@
+export {useAuthSync} from './useAuthSync'

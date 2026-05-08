@@ -6,10 +6,9 @@ import { FaRegHeart } from "react-icons/fa";
 // Custom Hooks
 import { useCartDetails, useHaptics, useNavbarScroll, useSearch } from '@/hooks';
 // Redux Hooks
-import { useAppDispatch, } from '@/hooks/redux';
+import { useAppDispatch, } from '@/hooks';
 // Custom Components
-import { SearchForm } from '@/components/common';
-import { ThemeToggle } from '@/components/common/ThemeToggle/ThemeToggle';
+import { SearchForm, ThemeToggle } from '@/components/common';
 // Functions and Selectors
 import { openCart } from '@/store/slices/cartSlice';
 

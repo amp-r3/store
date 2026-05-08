@@ -1,6 +1,6 @@
 import Skeleton from 'react-loading-skeleton'
 import style from './product-purchase-box.module.scss'
-import { AddToCartButtonSkeleton } from '@/components/common/AddToCartButton/AddToCartButtonSkeleton'
+import { AddToCartButtonSkeleton } from '@/components/common'
 
 export const ProductPurchaseBoxSkeleton = () => {
   return (

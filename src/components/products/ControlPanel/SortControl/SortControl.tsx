@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { SortingOption } from '@/utils/sortingOptions';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { useMediaQuery } from '@/hooks';
 import { SortBottomSheet } from './SortBottomSheet/SortBottomSheet';
 import { SortDropdown } from './SortDropdown/SortDropdown';
 

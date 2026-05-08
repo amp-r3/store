@@ -1,5 +1,5 @@
 import { selectIsAuth } from "@/store/selectors/authSelectors"
-import { useAppDispatch, useAppSelector } from "./redux"
+import { useAppDispatch, useAppSelector } from "../../common/redux"
 import { useGetWishlistQuery, useToggleWishlistMutation } from "@/services/wishlistApi"
 import { useCallback } from "react"
 import { toogleFavorite } from "@/store/slices/wishlistSlice"

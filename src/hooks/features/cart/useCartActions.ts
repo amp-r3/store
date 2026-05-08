@@ -1,6 +1,6 @@
 // useCartActions.ts
 import { useCallback } from "react";
-import { useAppDispatch, useAppSelector } from "./redux";
+import { useAppDispatch, useAppSelector } from "../../common/redux";
 import { changeQuantity, clearCart, removeFromCart } from "@/store/slices/cartSlice";
 import { selectIsAuth } from "@/store/selectors/authSelectors";
 import { useClearCartMutation, useDeleteCartItemMutation, useUpsertCartItemMutation } from "@/services/cartApi";

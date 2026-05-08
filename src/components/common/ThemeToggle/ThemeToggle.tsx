@@ -1,5 +1,5 @@
 import { RiMoonLine, RiSunLine } from "react-icons/ri";
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from '@/hooks';
 import style from './theme-toggle.module.scss';
 import { useHaptics } from "@/hooks";
 

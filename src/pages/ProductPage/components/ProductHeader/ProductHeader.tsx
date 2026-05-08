@@ -1,6 +1,5 @@
-import { BackButton } from '@/components/common/BackButton/BackButton';
-import { ShareCopyBtn } from '@/components/common/ShareCopyBtn/ShareCopyBtn';
 import style from './product-header.module.scss'
+import { BackButton, ShareCopyBtn } from '@/components/common';
 interface ProductHeaderProps {
     onClick: () => void;
     label?: string;

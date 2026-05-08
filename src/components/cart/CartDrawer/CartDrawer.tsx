@@ -6,16 +6,16 @@ import { IoWarningOutline } from "react-icons/io5";
 
 import styles from './cart-drawer.module.scss';
 
-import { useAppSelector } from '@/hooks/redux';
+import { useAppSelector } from '@/hooks';
 import { calculateCartTotals } from '@/utils';
 
 import { CartItem } from '../CartItem/CartItem';
 import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
+import { Modal } from '@/components/common';
 
 import { useCartActions, useCartDetails, useHaptics } from '@/hooks';
-import { Modal } from '@/components/common/Modal/Modal';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
 
 interface CartDrawerProps {

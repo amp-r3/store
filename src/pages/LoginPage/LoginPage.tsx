@@ -1,19 +1,15 @@
-import { useLocation, useNavigate, Link } from "react-router"
+import { useNavigate, Link } from "react-router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { LoginSchema, loginSchema } from "@/schemas/loginSchema"
 import { useLoginMutation } from "@/services/authApi"
-import { FormField } from "@/components/common/FormField/FormField"
 import style from './login-page.module.scss'
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
-import { Loader } from "@/components/common"
+import { FormField, Loader } from "@/components/common"
 
 export const LoginPage = () => {
   const navigate = useNavigate()
-  const location = useLocation()
   const [login, { isLoading }] = useLoginMutation()
-
-  const from = location.state?.from ?? '/'
 
   const {
     register,
@@ -27,7 +23,7 @@ export const LoginPage = () => {
   const onSubmit = async (data: LoginSchema) => {
     try {
       await login(data).unwrap()
-      navigate(from, { replace: true })
+      navigate('/', { replace: true })
     } catch (err: any) {
       if (err?.status === 401) {
         setError('email', { message: 'Invalid email or password' })

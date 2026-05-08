@@ -5,27 +5,23 @@ import { EditProfileSchema, editProfileSchema } from "@/schemas/editProfileSchem
 import { selectUser } from "@/store/selectors/authSelectors"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useLocation, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 import style from './user-page.module.scss'
-import { FormField } from "@/components/common/FormField/FormField"
 import { useUpdateProfileMutation } from "@/services/authApi"
-import { Loader } from "@/components/common"
+import { FormField, Loader, Modal } from "@/components/common"
 import { logout } from "@/store/slices/authSlice"
 import { supabase } from "@/supabase"
-import { Modal } from "@/components/common/Modal/Modal"
 import { CgLogOut } from "react-icons/cg";
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const location = useLocation()
 
   const [isEditing, setIsEditing] = useState(false)
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const [updateProfile, { isLoading }] = useUpdateProfileMutation()
-  const from = location.state?.from ?? '/'
 
   const {
     register,
@@ -48,6 +44,7 @@ export const UserPage = () => {
     try {
       await updateProfile(data).unwrap()
       setIsEditing(false)
+      navigate('/', { replace: true })
     } catch (error: any) {
       if (error?.data === 'Incorrect current password') {
         setError('password', { message: 'Incorrect password' })

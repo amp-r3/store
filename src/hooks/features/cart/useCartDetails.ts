@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { selectCartItemsArray } from '@/store';
 import { CartItem, Product } from '@/types/products';
-import { useProductsByIds } from './useProductByIds';
 import { CartProduct } from '@/store/selectors/cartSelectors';
-import { useAppSelector } from './redux';
+import { useAppSelector } from '../../common/redux';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
 import { cartApi, useGetCartQuery } from '@/services/cartApi';
+import { useProductsByIds } from '../product';
 
 interface CartDetailsReturn {
   cartDetails: (CartItem | null)[];

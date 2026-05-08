@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { useProductsByIds } from './useProductByIds';
 import { Product } from '@/types/products';
 import { WishlistData, selectFavoritesArray } from '@/store/selectors/wishlistSelectors';
-import { useAppSelector } from './redux';
+import { useAppSelector } from '../../common/redux';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
 import { useGetWishlistQuery } from '@/services/wishlistApi';
+import { useProductsByIds } from '../product';
 
 interface WishlistDetailsReturn {
   wishlistDetails: Product[];

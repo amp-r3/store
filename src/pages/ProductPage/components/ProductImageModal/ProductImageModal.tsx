@@ -1,7 +1,7 @@
 import { Dialog, VisuallyHidden } from 'radix-ui';
 import style from './product-image-modal.module.scss';
 import { useImageView } from '@/hooks';
-import { BackButton } from '@/components/common/BackButton/BackButton';
+import { BackButton } from '@/components/common';
 
 interface ProductImageModalProps {
   imageSrc: string;

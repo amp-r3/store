@@ -1,6 +1,6 @@
 import style from './pagination.module.scss';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { usePagination, DOTS } from '@/hooks/usePagination';
+import { usePagination, DOTS } from '@/hooks';
 import { useHaptics, useMediaQuery } from '@/hooks';
 
 interface PaginationProps {
@@ -76,7 +76,7 @@ export const Pagination = ({
                         onClick={() => handlePageChange(pageNumber)}
                         aria-label={`Page ${pageNumber}`}
                         aria-current={isActive ? 'page' : undefined}
-                        disabled={isActive} 
+                        disabled={isActive}
                     >
                         {pageNumber}
                     </button>

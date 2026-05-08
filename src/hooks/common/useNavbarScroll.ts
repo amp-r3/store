@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function useNavbarScroll(navRef) {
+export function useNavbarScroll(navRef: React.RefObject<HTMLElement>): void {
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 50) {

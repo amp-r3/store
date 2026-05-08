@@ -16,7 +16,7 @@ import { ProductImageModal } from './components/ProductImageModal/ProductImageMo
 import { ProductPageSkeleton } from './ProductPageSkeleton';
 
 // Utils
-import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
+import { applyDiscount, formatPrice, getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
 import { useCartActions, useCartDetails, useProduct, useWishlistActions, useWishlistDetails } from '@/hooks';
@@ -53,12 +53,6 @@ export const ProductPage = () => {
         scrollToTop();
     }, []);
 
-    const formatPrice = (value: number) =>
-        new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2,
-        }).format(value);
 
     const handleCart = (id: number, type: 'inc' | 'dec') => {
         type === 'inc' ? onIncrease(id) : onDecrease(id)

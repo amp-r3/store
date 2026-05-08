@@ -3,10 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { RegisterSchema, registerSchema } from "@/schemas/registerSchema"
 import { useRegisterMutation } from "@/services/authApi"
-import { FormField } from "@/components/common/FormField/FormField"
 import style from './register-page.module.scss'
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
-import { Loader } from "@/components/common"
+import { FormField, Loader } from "@/components/common"
 
 export const RegisterPage = () => {
   const navigate = useNavigate()

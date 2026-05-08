@@ -1,20 +1,14 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { useGetCategoriesQuery, useGetProductsQuery } from "@/services/productsApi";
+import { useGetProductsQuery } from "@/services/productsApi";
 import { useFilters } from "./useFilters";
 
 export function useProductCatalog() {
     const [searchParams] = useSearchParams();
-    const { activeSortOption, page, setPage, activeCategoryOption } = useFilters()
-    
-    const {
-        data: categories = [],  
-        isLoading: categoriesLoading,
-        isFetching: categoriesFetching,
-    } = useGetCategoriesQuery();
-    
+    const { activeSortOption, page, setPage, activeCategoryOption, categories, categoriesLoading, categoriesFetching } = useFilters()
+
     const categoryId = activeCategoryOption?.slug
-    
+
 
     const query = searchParams.get('q')
 
@@ -39,7 +33,7 @@ export function useProductCatalog() {
         isLoading: productsLoading,
         error: productsError
     } = useGetProductsQuery(params);
-    
+
 
     const totalItems = useMemo(() => {
         if (!productsResponse?.total) return 0
@@ -53,9 +47,9 @@ export function useProductCatalog() {
 
     }, [productsResponse]);
 
-    const itemsToRender = productsLoading && productsArray.length === 0 
-  ? Array.from({ length: 8 }) 
-  : productsArray;
+    const itemsToRender = productsLoading && productsArray.length === 0
+        ? Array.from({ length: 8 })
+        : productsArray;
 
     return { productsArray: itemsToRender, setPage, page, productsLoading, productsFetching, categoriesLoading, categoriesFetching, totalItems, query, productsError, categories }
 }
