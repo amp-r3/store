@@ -16,12 +16,14 @@ import { persistStore } from 'redux-persist';
 import authReducer from "@/store/slices/authSlice"
 import wishlistReducer from '@/store/slices/wishlistSlice';
 import { cartApi } from '@/services/cartApi';
+import { wishlistApi } from '@/services/wishlistApi';
 
 export const store = configureStore({
   reducer: {
     [productsApi.reducerPath]: productsApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
+    [wishlistApi.reducerPath]: wishlistApi.reducer,
     auth: authReducer,
     cart: cartReducer,
     theme: themeSlice,
@@ -32,7 +34,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(productsApi.middleware).concat(authApi.middleware).concat(cartApi.middleware)
+    }).concat(productsApi.middleware).concat(authApi.middleware).concat(cartApi.middleware).concat(wishlistApi.middleware)
 });
 
 export const persistor = persistStore(store);
