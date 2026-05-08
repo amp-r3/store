@@ -9,7 +9,6 @@ import { formatPrice } from '@/utils';
 import { useAppSelector } from '@/hooks';
 import { selectIsMaxReached } from '@/store';
 import { Link } from 'react-router';
-import { CartItemSkeleton } from './CartItemSkeleton';
 
 interface CartItemProps {
     product: CartItemType;
@@ -17,7 +16,6 @@ interface CartItemProps {
     onDecrease: (id: number) => void;
     onRemove: (id: number) => void;
     onClose: () => void;
-    isLoading: boolean;
 }
 
 export const CartItem = memo<CartItemProps>(({
@@ -26,12 +24,7 @@ export const CartItem = memo<CartItemProps>(({
     onDecrease,
     onRemove,
     onClose,
-    isLoading
 }) => {
-
-    if (isLoading || !product) {
-        return <CartItemSkeleton />;
-    }
 
     const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
 

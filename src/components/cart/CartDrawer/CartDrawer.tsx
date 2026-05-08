@@ -10,6 +10,7 @@ import { useAppSelector } from '@/hooks';
 import { calculateCartTotals } from '@/utils';
 
 import { CartItem } from '../CartItem/CartItem';
+import { CartItemSkeleton } from '../CartItem/CartItemSkeleton';
 import { CartFooter } from '../CartFooter/CartFooter';
 import { CartHeader } from '../CartHeader/CartHeader';
 import { EmptyCart } from '../EmptyCart/EmptyCart';
@@ -110,15 +111,15 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 ) :
 
                   cartItems.map((item, index) => (
-                    <CartItem
-                      key={item.id}
-                      product={cartDetails[index]}
-                      onIncrease={onIncrease}
-                      onDecrease={onDecrease}
-                      onRemove={onRemove}
-                      onClose={onClose}
-                      isLoading={isLoading}
-                    />
+                    isLoading || isFetching ? <CartItemSkeleton key={item.id} /> :
+                      <CartItem
+                        key={item.id}
+                        product={cartDetails[index]}
+                        onIncrease={onIncrease}
+                        onDecrease={onDecrease}
+                        onRemove={onRemove}
+                        onClose={onClose}
+                      />
                   )
                   )
                 }
