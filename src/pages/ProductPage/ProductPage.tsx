@@ -19,26 +19,20 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 import { applyDiscount, getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
-import { useCartActions, useCartDetails, useProduct } from '@/hooks';
+import { useCartActions, useCartDetails, useProduct, useWishlistActions, useWishlistDetails } from '@/hooks';
 
-// Redux Hooks
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-
-// Redux Selectors
-import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
-import { toogleFavorite } from '@/store/slices/wishlistSlice';
 
 // Styles
 import style from './productPage.module.scss';
-import { selectIsMaxReached } from '@/store';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
     const searchParams = useSearchParams()
-    const dispatch = useAppDispatch()
     const { id } = useParams();
     const { onIncrease, onDecrease } = useCartActions()
-    const isFavorite = useAppSelector(state => selectIsFavorite(state, +id))
+    const { onWishlist } = useWishlistActions()
+    const { wishlistItems } = useWishlistDetails()
+    const isFavorite = wishlistItems.some(item => item?.id === +id)
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const { cartItems } = useCartDetails()
@@ -52,7 +46,7 @@ export const ProductPage = () => {
     }
 
     const handleAddToWishlist = () => {
-        dispatch(toogleFavorite(+id))
+        onWishlist(+id)
     }
 
     useEffect(() => {

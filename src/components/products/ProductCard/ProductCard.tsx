@@ -6,10 +6,9 @@ import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
 import { ProductCardBody } from './components/ProductCardBody';
 import { ProductCardFooter } from './components/ProductCardFooter';
-import { useAppDispatch, useAppSelector, useCartActions, useCartDetails, useHaptics } from '@/hooks';
+import { useAppDispatch, useAppSelector, useCartActions, useCartDetails, useHaptics, useWishlistActions, useWishlistDetails } from '@/hooks';
 import { selectIsMaxReached } from '@/store';
-import { toogleFavorite } from '@/store/slices/wishlistSlice';
-import { selectIsFavorite } from '@/store/selectors/wishlistSelectors';
+
 
 interface ProductCardProps {
     product: Product;
@@ -17,12 +16,13 @@ interface ProductCardProps {
 }
 
 export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
-    const dispatch = useAppDispatch()
     const { onIncrease, onDecrease } = useCartActions()
     const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
     const { cartItems } = useCartDetails()
     const itemInCart = cartItems.find(item => item?.id === product.id)
-    const isFavorite = useAppSelector(state => selectIsFavorite(state, id))
+    const { wishlistItems } = useWishlistDetails()
+    const isFavorite = wishlistItems.some(item => item?.id === id)
+    const { onWishlist } = useWishlistActions()
     const quantity = itemInCart?.quantity
     const { soft } = useHaptics()
     const inStock = (stock ?? 0) > 0;
@@ -36,7 +36,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
     }
 
     const handleAddToWishlist = () => {
-        dispatch(toogleFavorite(id))
+        onWishlist(id)
     }
 
     return (
