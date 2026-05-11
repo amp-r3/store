@@ -11,7 +11,7 @@ import { useUpdateProfileMutation } from "@/services/authApi"
 import { FormField, Loader, Modal } from "@/components/common"
 import { logout } from "@/store/slices/authSlice"
 import { supabase } from "@/supabase"
-import { CgLogOut } from "react-icons/cg";
+import { CgLogOut, CgTrash } from "react-icons/cg";
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
@@ -20,6 +20,7 @@ export const UserPage = () => {
 
   const [isEditing, setIsEditing] = useState(false)
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [updateProfile, { isLoading }] = useUpdateProfileMutation()
 
@@ -63,6 +64,15 @@ export const UserPage = () => {
     reset()
   }
 
+  const handleDeleteAccount = async () => {
+    const {error} = await supabase.functions.invoke('delete-account')
+
+    if (!error) {
+      await supabase.auth.signOut()
+      navigate('/', { replace: true })
+    }
+  }
+
   return (
     <AuthLayout
       title={isEditing ? 'Edit Profile' : `Hello, ${user.username}!`}
@@ -96,12 +106,20 @@ export const UserPage = () => {
             >
               Edit Profile
             </button>
-            <button
-              className={style.logoutButton}
-              onClick={() => setIsLogoutModalOpen(true)}
-            >
-              Logout
-            </button>
+            <div className={style.dangerRow}>
+              <button
+                className={style.logoutButton}
+                onClick={() => setIsLogoutModalOpen(true)}
+              >
+                Logout
+              </button>
+              <button
+                className={style.deleteButton}
+                onClick={() => setIsDeleteModalOpen(true)}
+              >
+                Delete Account
+              </button>
+            </div>
           </div>
           <Modal
             isOpen={isLogoutModalOpen}
@@ -112,6 +130,16 @@ export const UserPage = () => {
             actionLabel="Log out"
             actionVariant="danger"
             onAction={handleLogout}
+          />
+          <Modal
+            isOpen={isDeleteModalOpen}
+            onOpenChange={setIsDeleteModalOpen}
+            title="Delete your account?"
+            description="This action is permanent and cannot be undone. All your data, settings, and history will be erased immediately."
+            icon={<CgTrash size={50} />}
+            actionLabel="Delete Account"
+            actionVariant="danger"
+            onAction={handleDeleteAccount}
           />
         </div>
       ) : (
@@ -132,13 +160,6 @@ export const UserPage = () => {
             label='Username'
             error={errors.username?.message}
             {...register('username')}
-          />
-
-          <FormField
-            label='Email'
-            type="email"
-            error={errors.email?.message}
-            {...register('email')}
           />
 
           <FormField
