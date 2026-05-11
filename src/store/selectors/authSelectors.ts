@@ -9,5 +9,5 @@ export const selectIsAuth = (state: RootState) => !!state.auth.token
 export const selectUserName = (state: RootState) => {
   const user = state.auth.user
   if (!user) return null
-  return `${user.firstName} ${user.lastName}`
+  return `${user.username}`
 }

@@ -16,23 +16,38 @@ export const useAuthSync = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+
         if (session?.user) {
-          dispatch(setSession({
-            user: {
-              id: session.user.id,
-              firstName: session.user.user_metadata.firstName,
-              lastName: session.user.user_metadata.lastName,
-              username: session.user.user_metadata.username,
-              email: session.user.email!,
-              accessToken: session.access_token,
-            },
-            token: session.access_token,
-          }));
+          try {
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+
+            if (profileError) {
+              console.error('Error fetching user profile:', profileError);
+            }
+
+            dispatch(setSession({
+              user: {
+                id: session.user.id,
+                email: session.user.email!,
+                accessToken: session.access_token,
+                firstName: profile?.first_name || '',
+                lastName: profile?.last_name || '',
+                username: profile?.username || '',
+              },
+              token: session.access_token,
+            }));
+          } catch (error) {
+            console.error('Failed to load profile inside auth listener:', error);
+          }
         }
 
         if (event === 'SIGNED_IN' && session?.user) {
           const currentState = store.getState();
-          const localWishlistItems = currentState.wishlist.favoriteItems
+          const localWishlistItems = currentState.wishlist.favoriteItems;
           const localCartItems = currentState.cart.items;
 
           if (localCartItems && Object.keys(localCartItems).length > 0) {
@@ -57,7 +72,7 @@ export const useAuthSync = () => {
         else if (event === 'SIGNED_OUT') {
           dispatch(cartApi.util.resetApiState());
           dispatch(wishlistApi.util.resetApiState());
-          dispatch(clearFavorite())
+          dispatch(clearFavorite());
           dispatch(clearCart());
           dispatch(logout());
         }
