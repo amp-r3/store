@@ -1,21 +1,22 @@
 import { useSearchParams } from "react-router";
-import { sortingOptions, } from "@/utils";
-import { Categories, Category, useGetCategoriesQuery } from "@/services/productsApi";
+import { sortingOptions } from "@/utils";
+import { Categories, Category } from "@/services/productsApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import { SortingOption } from "@/utils/sortingOptions";
+import { useCallback, useMemo } from "react";
 
-interface useFiltersProps {
-    page: Number;
-    currentSortBy: String;
-    currentOrder: String;
-    currentCategory: String;
+export interface UseFilterReturn {
+    page: number;
+    currentSortBy: string | null;
+    currentOrder: string | null;
+    currentCategory: string;
     categories: Categories;
     categoriesLoading: boolean;
     categoriesFetching: boolean;
-    categoriesError: FetchBaseQueryError | SerializedError;
+    categoriesError: FetchBaseQueryError | SerializedError | undefined;
     activeSortOption: SortingOption;
-    activeCategoryOption: Category;
+    activeCategoryOption?: Category;
     sortingOptions: SortingOption[];
     changeSort(newSortBy?: string, newOrder?: string): void;
     changeCategory(newCategory: string | null): void;
@@ -23,29 +24,41 @@ interface useFiltersProps {
     clearAllFilters(): void;
 }
 
-export function useFilters(defaultPage = 1): useFiltersProps {
+interface CategoriesQueryProps {
+    data?: Categories;
+    isLoading: boolean;
+    isFetching: boolean;
+    error?: FetchBaseQueryError | SerializedError;
+}
+
+export function useFilters
+    (defaultPage = 1,
+        { data: categories = [],
+            isLoading: categoriesLoading,
+            isFetching: categoriesFetching,
+            error: categoriesError,
+        }: CategoriesQueryProps): UseFilterReturn {
     const [searchParams, setSearchParams] = useSearchParams();
-    const {
-        data: categories = [],
-        isLoading: categoriesLoading,
-        isFetching: categoriesFetching,
-        error: categoriesError
-    } = useGetCategoriesQuery();
 
     const currentSortBy = searchParams.get('sortBy');
     const currentOrder = searchParams.get('order');
-    const currentCategory = (searchParams.get('category')) || 'all';
-    const page = Number(searchParams.get('page')) || defaultPage;
+    const currentCategory = searchParams.get('category') || 'all';
 
-    const activeSortOption = sortingOptions.find(
+    const rawPage = Number(searchParams.get('page'));
+    const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : defaultPage;
+
+    const activeSortOption = useMemo(() => sortingOptions.find(
         (opt) => opt.sortBy === currentSortBy && opt.order === currentOrder
-    ) || sortingOptions[0];
+    ) || sortingOptions[0], [currentSortBy, currentOrder]);
 
-    const activeCategoryOption = categories.find(
+    const activeCategoryOption = useMemo(() => categories.find(
         (opt) => opt.slug === currentCategory
-    );
+    ), [categories, currentCategory]);
 
-    const updateParams = (updates: Record<string, string | number | null>) => {
+    const updateParams = useCallback((
+        updates: Record<string, string | number | null>,
+        action: 'replace' | 'push' = 'replace'
+    ) => {
         setSearchParams((prev) => {
             const newParams = new URLSearchParams(prev);
 
@@ -62,33 +75,33 @@ export function useFilters(defaultPage = 1): useFiltersProps {
             }
 
             return newParams;
-        }, { replace: true });
-    };
+        }, { replace: action === 'replace' });
+    }, [setSearchParams]);
 
-    const changeSort = (newSortBy?: string, newOrder?: string) => {
+    const changeSort = useCallback((newSortBy?: string, newOrder?: string) => {
         if (newSortBy && newOrder) {
             updateParams({ sortBy: newSortBy, order: newOrder });
         } else {
             updateParams({ sortBy: null, order: null });
         }
-    };
+    }, [updateParams]);
 
-    const changeCategory = (newCategory: string | null) => {
+    const changeCategory = useCallback((newCategory: string | null) => {
         updateParams({ category: newCategory });
-    };
+    }, [updateParams]);
 
-    const setPage = (newPage: number) => {
-        updateParams({ page: newPage });
-    };
+    const setPage = useCallback((newPage: number) => {
+        updateParams({ page: newPage }, 'push');
+    }, [updateParams]);
 
-    const clearAllFilters = () => {
+    const clearAllFilters = useCallback(() => {
         updateParams({
             sortBy: null,
             order: null,
             category: null,
             page: null
         });
-    };
+    }, [updateParams]);
 
     return {
         page,

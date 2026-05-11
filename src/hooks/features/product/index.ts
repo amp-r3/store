@@ -1,4 +1,3 @@
-export { useFilters } from './useFilters'
 export { useProduct } from './useProduct'
 export { useProductsByIds } from './useProductByIds'
 export { useProductCatalog } from './useProductCatalog'

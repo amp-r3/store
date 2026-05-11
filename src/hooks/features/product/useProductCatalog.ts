@@ -1,31 +1,32 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { useGetProductsQuery } from "@/services/productsApi";
+import { useGetCategoriesQuery, useGetProductsQuery } from "@/services/productsApi";
 import { useFilters } from "./useFilters";
+import { usePaginationBounds } from "./usePaginationBounds";
+import { getItemsToRender } from "@/utils";
+
+const ITEMS_PER_PAGE = 12;
 
 export function useProductCatalog() {
     const [searchParams] = useSearchParams();
-    const { activeSortOption, page, setPage, activeCategoryOption, categories, categoriesLoading, categoriesFetching } = useFilters()
+    const categories = useGetCategoriesQuery();
+    const filters = useFilters(1, categories);
 
-    const categoryId = activeCategoryOption?.slug
+    const query = searchParams.get('q');
+    const categoryId = filters.activeCategoryOption?.slug;
 
-
-    const query = searchParams.get('q')
 
     const params = useMemo(() => {
-        const p: Record<string, any> = { page };
+        const p: Record<string, any> = { page: filters.page };
         if (query) p.search = query;
-        if (activeSortOption) {
-            p.sortBy = activeSortOption.sortBy;
-            p.order = activeSortOption.order;
+        if (filters.activeSortOption) {
+            p.sortBy = filters.activeSortOption.sortBy;
+            p.order = filters.activeSortOption.order;
         }
-
-        if (categoryId !== 'all') {
-            p.category = categoryId;
-        }
+        if (categoryId !== 'all') p.category = categoryId;
 
         return p;
-    }, [page, query, activeSortOption, activeCategoryOption]);
+    }, [filters.page, query, filters.activeSortOption, categoryId]);
 
     const {
         data: productsResponse,
@@ -34,22 +35,52 @@ export function useProductCatalog() {
         error: productsError
     } = useGetProductsQuery(params);
 
+    const totalItems = productsResponse?.total || 0;
 
-    const totalItems = useMemo(() => {
-        if (!productsResponse?.total) return 0
+    usePaginationBounds(
+        filters.page,
+        totalItems,
+        ITEMS_PER_PAGE,
+        filters.setPage,
+        productsError
+    );
 
-        return productsResponse.total
-    }, [productsResponse])
+    const isOutOfBoundsError = productsError && (
+        (productsError as any).status === 416 ||
+        (productsError as any).status === 'PGRST103'
+    );
 
-    const productsArray = useMemo(() => {
-        if (!productsResponse?.items || !productsResponse?.ids) return [];
-        return productsResponse.ids.map((id) => productsResponse.items[id]);
+    const displayLoading = productsLoading || isOutOfBoundsError;
+    const displayFetching = productsFetching || isOutOfBoundsError;
+    const displayError = isOutOfBoundsError ? null : productsError;
 
-    }, [productsResponse]);
+    const isEmpty = Boolean(
+        !displayLoading &&
+        !displayError &&
+        productsResponse &&
+        totalItems === 0
+    );
 
-    const itemsToRender = productsLoading && productsArray.length === 0
-        ? Array.from({ length: 8 })
-        : productsArray;
+    const itemsToRender = useMemo(
+        () => getItemsToRender(productsResponse, displayLoading, ITEMS_PER_PAGE),
+        [productsResponse, displayLoading]
+    );
 
-    return { productsArray: itemsToRender, setPage, page, productsLoading, productsFetching, categoriesLoading, categoriesFetching, totalItems, query, productsError, categories }
+    return {
+        products: {
+            items: itemsToRender,
+            total: totalItems,
+            query,
+        },
+        status: {
+            productsLoading: displayLoading,
+            productsFetching: displayFetching,
+            productsError: displayError,
+            isEmpty,
+            categoriesLoading: filters.categoriesLoading,
+            categoriesFetching: filters.categoriesFetching,
+            categoriesError: filters.categoriesError,
+        },
+        filters
+    };
 }

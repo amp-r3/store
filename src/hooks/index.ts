@@ -1,6 +1,6 @@
 export { useCartDetails, useCartActions } from './features/cart'
 export { useWishlistDetails, useWishlistActions } from './features/wishlist'
-export { useProduct, useProductCatalog, useFilters, useSearch } from './features/product'
+export { useProduct, useProductCatalog, useSearch } from './features/product'
 export { useAuthSync } from './features/auth'
 export {
   useMediaQuery, useNavbarScroll, useHaptics,

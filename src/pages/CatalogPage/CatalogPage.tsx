@@ -4,7 +4,7 @@ import { ErrorView, NoResults } from '@/components/common'
 // Custom Components
 import { Pagination, ProductCard, ControlPanel } from '@/components/products'
 // Custom Hooks
-import { useFilters, useProductCatalog } from '@/hooks'
+import { useProductCatalog } from '@/hooks'
 // Utils
 import { getErrorMessage, scrollToTop } from '@/utils'
 // Types
@@ -13,63 +13,42 @@ import { ProductCardSkeleton } from '@/components/products/ProductCard/ProductCa
 import { ControlPanelSkeleton } from '@/components/products/ControlPanel/ControlPanelSkeleton'
 
 export const CatalogPage = () => {
-  const {
-    productsArray,
-    setPage,
-    page,
-    productsLoading,
-    productsFetching,
-    categoriesLoading,
-    categoriesFetching,
-    totalItems,
-    query,
-    productsError,
-    categories,
-  } = useProductCatalog();
-
-  const {
-    changeSort,
-    sortingOptions,
-    activeSortOption,
-    changeCategory,
-    activeCategoryOption,
-    clearAllFilters
-  } = useFilters();
+  const { products, status, filters } = useProductCatalog();
 
   const onPageChange = (newPage: number) => {
-    setPage(newPage)
+    filters.setPage(newPage)
   }
 
   useEffect(() => {
     scrollToTop()
-  }, [page]);
+  }, [filters.page]);
 
-  if (productsError) {
-    const errorMessage = getErrorMessage(productsError);
+  if (status.productsError) {
+    const errorMessage = getErrorMessage(status.productsError);
     return <ErrorView error={errorMessage} />
   }
 
   return (
     <main className='container'>
       {
-        productsLoading || categoriesLoading ? <ControlPanelSkeleton /> :
+        status.productsLoading || status.categoriesLoading ? <ControlPanelSkeleton /> :
           <ControlPanel
-            clearAll={clearAllFilters}
-            sortingOptions={sortingOptions}
-            changeSort={changeSort}
-            activeSortOption={activeSortOption}
-            categoryOptions={categories}
-            changeCategory={changeCategory}
-            activeCategoryOption={activeCategoryOption}
-            isFetching={productsFetching || categoriesFetching}
+            clearAll={filters.clearAllFilters}
+            sortingOptions={filters.sortingOptions}
+            changeSort={filters.changeSort}
+            activeSortOption={filters.activeSortOption}
+            categoryOptions={filters.categories}
+            changeCategory={filters.changeCategory}
+            activeCategoryOption={filters.activeCategoryOption}
+            isFetching={status.productsFetching || status.categoriesFetching}
           />
       }
 
       <div
-        className={`content ${productsFetching && !productsLoading ? 'fetching-state' : ''}`}
+        className={`content ${status.productsFetching && !status.productsLoading ? 'fetching-state' : ''}`}
       >
-        {productsArray.map((product: Product | undefined, index) => {
-          const isFakeItem = product === undefined || productsLoading;
+        {products.items.map((product: Product | undefined, index) => {
+          const isFakeItem = product === undefined || status.productsLoading;
           return (
             isFakeItem ? <ProductCardSkeleton key={`skeleton-${index}`} /> :
               <ProductCard
@@ -82,10 +61,10 @@ export const CatalogPage = () => {
       </div>
 
       {
-        productsArray.length > 0 && (
+        !status.isEmpty && (
           <Pagination
-            totalItems={totalItems}
-            currentPage={page}
+            totalItems={products.total}
+            currentPage={filters.page}
             itemsPerPage={12}
             onPageChange={onPageChange}
           />
@@ -93,8 +72,8 @@ export const CatalogPage = () => {
       }
 
       {
-        productsArray.length === 0 && !productsFetching && (
-          <NoResults query={query} />
+        status.isEmpty && (
+          <NoResults query={products.query} />
         )
       }
     </main >
