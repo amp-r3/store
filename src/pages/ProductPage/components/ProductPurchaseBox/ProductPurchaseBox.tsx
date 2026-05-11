@@ -6,7 +6,7 @@ import { selectIsMaxReached } from '@/store';
 interface ProductPurchaseBoxProps {
     productId: number;
     quantity: number;
-    originalPrice: number;
+    originalPrice: string;
     discountedPriceFormatted: string;
     handleCart(id: number, type: 'inc' | 'dec'): void;
     inStock: boolean;
@@ -26,8 +26,14 @@ export const ProductPurchaseBox = ({
     return (
         <div className={style['purchase-box']}>
             <div className={style['price-block']}>
-                <p className={style['price']}>${originalPrice}</p>
-                <p className={style['discount-price']}>{discountedPriceFormatted}</p>
+                {
+                    discountedPriceFormatted ?
+                        <>
+                            <p className={style['price']}>{originalPrice}</p>
+                            <p className={style['discount-price']}>{discountedPriceFormatted}</p>
+                        </> :
+                        <p className={style['discount-price']}>{originalPrice}</p>
+                }
             </div>
             <AddToCartButton
                 quantity={quantity}

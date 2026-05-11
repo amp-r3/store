@@ -66,8 +66,8 @@ export const ProductPage = () => {
         rating, reviews, discountPercentage, stock, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
 
     const inStock = (stock ?? 0) > 0;
-    const discountedPrice = applyDiscount({ price, discount: discountPercentage });
-    const showPrice = formatPrice(discountedPrice);
+    const discountedPrice = discountPercentage > 0 ? formatPrice(applyDiscount({ price, discount: discountPercentage })) : null;
+    const originalPrice = formatPrice(price);
     const itemInCart = cartItems.find(item => item?.id === product.id)
     const quantity = itemInCart?.quantity
 
@@ -103,8 +103,8 @@ export const ProductPage = () => {
                             quantity={quantity}
                             productId={product.id}
                             handleCart={handleCart}
-                            originalPrice={price}
-                            discountedPriceFormatted={showPrice}
+                            originalPrice={originalPrice}
+                            discountedPriceFormatted={discountedPrice}
                             inStock={inStock}
                             stock={stock}
                         />
