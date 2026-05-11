@@ -16,6 +16,37 @@
   }
 }
 
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-input;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  background-color: rgba(220, 38, 38, 0.07);
+  color: var(--error-color);
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  line-height: $lh-normal;
+
+  &::before {
+    content: '!';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    border-radius: 50%;
+    border: 1.5px solid var(--error-color);
+    font-size: 10px;
+    font-weight: $fw-bold;
+    line-height: 1;
+  }
+}
+
 .submitButton {
   margin-top: $spacing-sm;
   width: 100%;

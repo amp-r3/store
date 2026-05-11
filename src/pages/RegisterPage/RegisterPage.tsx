@@ -20,16 +20,37 @@ export const RegisterPage = () => {
     resolver: zodResolver(registerSchema)
   })
 
-  const onSubmit = async (data: RegisterSchema) => {
+  const onSubmit = async (formData: RegisterSchema) => {
     try {
-      await register(data).unwrap()
-      navigate('/')
+      await register(formData).unwrap();
+      navigate('/');
     } catch (err: any) {
-      if (err?.status === 409) {
-        setError('email', { message: 'Email is already taken' })
+      console.error('Registration error details:', JSON.stringify(err, null, 2));
+
+      const errorMessage = err?.data || err?.message || '';
+
+      const errText = errorMessage.toLowerCase();
+
+      if (errText.includes('already registered') || errText.includes('already exists')) {
+        setError('email', {
+          type: 'server',
+          message: 'This email is already registered'
+        });
+      }
+      else if (errText.includes('password')) {
+        setError('password', {
+          type: 'server',
+          message: 'The password is too weak'
+        });
+      }
+      else {
+        setError('root', {
+          type: 'server',
+          message: errorMessage || 'An error occurred while registering. Please try again later.'
+        });
       }
     }
-  }
+  };
 
   return (
     <AuthLayout
@@ -38,20 +59,29 @@ export const RegisterPage = () => {
     >
       <form className={style.form} onSubmit={handleSubmit(onSubmit)} noValidate>
 
+        {errors.root && (
+          <div className={style.root} role="alert">
+            {errors.root.message}
+          </div>
+        )}
+
         <div className={style.row}>
           <FormField
-            label='Name'
+            label='First name'
             error={errors.firstName?.message}
+            optional
             {...registerField('firstName')}
           />
           <FormField
-            label='Last Name'
+            optional
+            label='Last name'
             error={errors.lastName?.message}
             {...registerField('lastName')}
           />
         </div>
 
         <FormField
+          optional
           label="Username"
           error={errors.username?.message}
           {...registerField('username')}
@@ -83,7 +113,7 @@ export const RegisterPage = () => {
           className={style.submitButton}
           disabled={isLoading}
         >
-          {isLoading ? <Loader size="sm"/> : 'Register'}
+          {isLoading ? <Loader size="sm" /> : 'Register'}
         </button>
 
         <p className={style.footerText}>
