@@ -1,7 +1,7 @@
 @use '@/styles/index' as *;
 
 .pageWrapper {
-  min-height: calc(100vh - $header-height);
+  min-height: calc(100vh - $header-height - 120px);
   display: flex;
   align-items: center;
   justify-content: center;

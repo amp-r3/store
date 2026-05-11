@@ -15,6 +15,27 @@
   margin-left: $spacing-xs; 
 }
 
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $spacing-xs;
+}
+
+.optional {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  color: var(--text-muted);
+  background: var(--border-color-subtle);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-pill;
+  padding: $spacing-xxs $spacing-xs;
+  line-height: $lh-ui;
+  letter-spacing: $letter-spacing-wide;
+  user-select: none;
+}
+
 .input {
   width: 100%;
   font-family: $font-primary;
@@ -56,6 +77,29 @@
   &:focus {
     border-color: var(--error-color);
     box-shadow: 0 0 16px rgba(220, 38, 38, 0.15);
+  }
+}
+
+.labelOptional {
+  color: var(--text-muted);
+  font-weight: $fw-normal;
+  font-style: italic;
+}
+
+.inputOptional {
+  background: var(--background-glass-base);
+  border-color: var(--border-color-light);
+  color: var(--text-primary);
+  opacity: 0.85;
+
+  &:hover:not(:disabled) {
+    opacity: 1;
+    border-color: var(--border-color);
+  }
+
+  &:focus {
+    opacity: 1;
+    border-style: solid;
   }
 }
 
