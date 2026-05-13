@@ -96,6 +96,22 @@ export const authApi = createApi({
       }
     }),
 
+    signInWithGoogle: builder.mutation<any, void>({
+      queryFn: async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}`
+          }
+        });
+
+        if (error) {
+          return { error: { status: error.status, data: error.message } };
+        }
+
+        return { data };
+      }
+    }),
     updateProfile: builder.mutation<Partial<SessionUser>, EditProfileSchema>({
       queryFn: async (userData) => {
         const { data: { user } } = await supabase.auth.getUser();
@@ -109,7 +125,7 @@ export const authApi = createApi({
           .update({
             first_name: userData.firstName,
             last_name: userData.lastName,
-            username: userData.username 
+            username: userData.username
           })
           .eq('id', user.id);
 
@@ -125,4 +141,4 @@ export const authApi = createApi({
   })
 })
 
-export const { useLoginMutation, useRegisterMutation, useUpdateProfileMutation } = authApi
+export const { useLoginMutation, useRegisterMutation, useSignInWithGoogleMutation, useUpdateProfileMutation } = authApi
