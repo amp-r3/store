@@ -11,12 +11,8 @@ export const useTheme = () => {
     const root = document.documentElement;
 
     root.classList.remove('theme-dark', 'theme-light');
-    
     root.classList.add(theme);
 
-    return () => {
-      root.classList.remove(theme);
-    };
   }, [theme]);
 
   return {
