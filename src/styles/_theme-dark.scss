@@ -81,4 +81,10 @@
   --loader-grad-start: var(--primary-accent);
   --loader-grad-end: #ec4899;
   --loader-grad-end-rgb: 236, 72, 153;
+
+  // --- Auth Providers ---
+  --provider-google-bg: #131314;
+  --provider-google-text: #e3e3e3;
+  --provider-google-border: #8e918f;
+  --provider-google-hover: #282a2c;
 }
