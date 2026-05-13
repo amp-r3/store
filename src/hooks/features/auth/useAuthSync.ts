@@ -11,7 +11,7 @@ import { clearFavorite } from "@/store/slices/wishlistSlice";
 export const useAuthSync = () => {
   const [syncCart] = useSyncCartMutation();
   const [syncWishlist] = useSyncWishlistMutation();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -78,6 +78,8 @@ export const useAuthSync = () => {
         }
       });
 
-    return () => subscription.unsubscribe();
-  }, [dispatch, syncCart]);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [dispatch, syncCart, syncWishlist]);
 }
