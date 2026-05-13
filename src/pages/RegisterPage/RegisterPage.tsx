@@ -2,14 +2,15 @@ import { useNavigate, Link } from "react-router"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { RegisterSchema, registerSchema } from "@/schemas/registerSchema"
-import { useRegisterMutation } from "@/services/authApi"
+import { useRegisterMutation, useSignInWithGoogleMutation } from "@/services/authApi"
 import style from './register-page.module.scss'
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
-import { FormField, Loader } from "@/components/common"
+import { FormField, Loader, SignInButton } from "@/components/common"
 
 export const RegisterPage = () => {
   const navigate = useNavigate()
   const [register, { isLoading }] = useRegisterMutation()
+  const [signInWithGoogle] = useSignInWithGoogleMutation()
 
   const {
     register: registerField,
@@ -51,6 +52,18 @@ export const RegisterPage = () => {
       }
     }
   };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithGoogle()
+    } catch (err) {
+      const errorMessage = err?.data || err?.message || '';
+      setError('root', {
+        type: 'server',
+        message: errorMessage || 'An error occurred while registering. Please try again later.'
+      });
+    }
+  }
 
   return (
     <AuthLayout
@@ -115,6 +128,8 @@ export const RegisterPage = () => {
         >
           {isLoading ? <Loader size="sm" /> : 'Register'}
         </button>
+
+        <SignInButton provider="Google" onClick={handleGoogleLogin} />
 
         <p className={style.footerText}>
           Already have an account? <Link to="/login" className={style.link}>Log in</Link>
