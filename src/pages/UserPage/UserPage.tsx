@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
+import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
 import { useAppDispatch, useAppSelector } from "@/hooks"
 import { EditProfileSchema, editProfileSchema } from "@/schemas/editProfileSchema"
 import { selectUser } from "@/store/selectors/authSelectors"

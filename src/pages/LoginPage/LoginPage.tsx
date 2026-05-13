@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form"
 import { LoginSchema, loginSchema } from "@/schemas/loginSchema"
 import { useLoginMutation, useSignInWithGoogleMutation } from "@/services/authApi"
 import style from './login-page.module.scss'
-import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
 import { FormField, Loader, SignInButton } from "@/components/common"
+import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
 
 export const LoginPage = () => {
   const navigate = useNavigate()

@@ -1,3 +1,3 @@
-export { Layout } from './Layout/Layout'
+export { Layout } from './Layout/MainLayout/MainLayout'
 export { MobileBar } from './MobileBar/MobileBar'
 export { Navbar } from './Navbar/Navbar'

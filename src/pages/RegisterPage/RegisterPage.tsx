@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form'
 import { RegisterSchema, registerSchema } from "@/schemas/registerSchema"
 import { useRegisterMutation, useSignInWithGoogleMutation } from "@/services/authApi"
 import style from './register-page.module.scss'
-import { AuthLayout } from "@/components/layout/Layout/AuthLayout"
 import { FormField, Loader, SignInButton } from "@/components/common"
+import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
 
 export const RegisterPage = () => {
   const navigate = useNavigate()

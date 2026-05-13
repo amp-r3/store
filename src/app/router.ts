@@ -1,5 +1,6 @@
 import { ErrorView } from "@/components/common";
-import { Layout } from "@/components/layout";
+import { MainLayout } from "@/components/layout/Layout/MainLayout/MainLayout";
+import RootLayout from "@/components/layout/Layout/RootLayout/RootLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute/ProtectedRoute";
 import { PublicRoute } from "@/components/layout/PublicRoute/PublicRoute";
 import { CatalogPage } from "@/pages";
@@ -7,38 +8,24 @@ import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    Component: Layout,
+    Component: RootLayout,
+    ErrorBoundary: ErrorView,
     children: [
       {
-
+        Component: MainLayout,
+        path: '/',
         ErrorBoundary: ErrorView,
         children: [
           {
-            Component: PublicRoute,
-            children: [
-              {
-                path: "*",
-                lazy: async () => {
-                  const module = await import("@/pages/Page404/Page404");
-                  return { Component: module.Page404 }
-                }
-              },
-              {
-                path: 'login',
-                lazy: async () => {
-                  const module = await import("@/pages/LoginPage/LoginPage")
-                  return { Component: module.LoginPage }
-                }
-              },
-              {
-                path: 'register',
-                lazy: async () => {
-                  const module = await import("@/pages/RegisterPage/RegisterPage")
-                  return { Component: module.RegisterPage }
-                }
-              },
-            ]
+            index: true,
+            Component: CatalogPage
+          },
+          {
+            path: 'product/:id',
+            lazy: async () => {
+              const module = await import("@/pages/ProductPage/ProductPage");
+              return { Component: module.ProductPage }
+            },
           },
           {
             path: 'wishlist',
@@ -60,15 +47,32 @@ export const router = createBrowserRouter([
             ]
           },
           {
-            index: true,
-            Component: CatalogPage
+            path: '*',
+            lazy: async () => {
+              const module = await import("@/pages/Page404/Page404");
+              return { Component: module.Page404 }
+            }
+          },
+        ]
+      },
+
+      {
+        Component: PublicRoute,
+        ErrorBoundary: ErrorView,
+        children: [
+          {
+            path: 'login',
+            lazy: async () => {
+              const module = await import("@/pages/LoginPage/LoginPage")
+              return { Component: module.LoginPage }
+            }
           },
           {
-            path: 'product/:id',
+            path: 'register',
             lazy: async () => {
-              const module = await import("@/pages/ProductPage/ProductPage");
-              return { Component: module.ProductPage }
-            },
+              const module = await import("@/pages/RegisterPage/RegisterPage")
+              return { Component: module.RegisterPage }
+            }
           }
         ]
       }
