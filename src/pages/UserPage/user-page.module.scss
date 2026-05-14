@@ -1,175 +1,44 @@
 @use '@/styles/index' as *;
 
-.form {
+.pageWrapper {
+  min-height: calc(100vh - $header-height - 120px);
   display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-}
-
-.formActions {
-  display: flex;
-  gap: $spacing-sm;
-  margin-top: $spacing-sm;
-
-  button {
-    flex: 1;
-  }
-}
-
-%btn-base {
-  padding: $spacing-md;
-  border: none;
-  border-radius: $radius-input;
-  font-family: $font-primary;
-  font-size: $fs-base;
-  font-weight: $fw-semibold;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 48px;
-  transition: all $transition-fast $ease-in-out-smooth;
-
-  @media (max-width: 480px) {
-    font-size: $fs-sm;
-    padding: $spacing-sm $spacing-md;
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-  }
+  justify-content: center;
+  padding: $spacing-xl $container-padding;
 }
 
-.submitButton {
-  @extend %btn-base;
-  background-color: var(--primary-accent);
-  color: var(--text-inverse);
-  box-shadow: var(--shadow-accent-sm);
+.card {
+  width: 100%;
+  max-width: 480px;
+  padding: $spacing-xl;
+  background: var(--glass-background-strong);
+  backdrop-filter: $backdrop-blur;
+  -webkit-backdrop-filter: $backdrop-blur;
+  border: 1px solid var(--glass-border);
+  border-radius: $radius-xl;
+  box-shadow: var(--shadow-default);
 
-  &:hover:not(:disabled) {
-    background-color: var(--primary-accent-dark);
-    box-shadow: var(--shadow-accent-hover);
-    transform: translateY(-1px);
+  @media (max-width: 560px) {
+    padding: $spacing-lg $spacing-md;
   }
 }
 
-.cancelButton {
-  @extend %btn-base;
-  background-color: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-
-  &:hover:not(:disabled) {
-    background-color: var(--border-color-subtle);
-    color: var(--text-primary);
-  }
+.header {
+  text-align: center;
+  margin-bottom: $spacing-xl;
 }
 
-.profileView {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
+.title {
+  font-family: $font-primary;
+  font-size: $fs-xl;
+  font-weight: $fw-bold;
+  color: var(--text-primary);
+  margin-bottom: $spacing-xs;
 }
 
-.infoList {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-  background: var(--background-glass-base);
-  border: 1px solid var(--glass-border-subtle);
-  border-radius: $radius-md;
-  padding: $spacing-md;
-  box-shadow: var(--shadow-sm);
-}
-
-.infoRow {
-  display: flex;
-  flex-direction: column;
-  padding-bottom: $spacing-sm;
-  border-bottom: 1px solid var(--border-color-subtle);
-
-  &:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-}
-
-.label {
+.subtitle {
+  font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--text-muted);
-  margin-bottom: $spacing-xxs;
-  font-weight: $fw-semibold;
-}
-
-.value {
-  font-size: $fs-base;
-  color: var(--text-primary);
-}
-
-.actionButtons {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-}
-
-.editButton {
-  @extend .submitButton;
-}
-
-.dangerRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: $spacing-sm;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.logoutButton {
-  @extend %btn-base;
-  background-color: transparent;
-  color: var(--error-color);
-  border: 1px solid rgba(220, 38, 38, 0.2);
-
-  &:hover:not(:disabled) {
-    background-color: rgba(220, 38, 38, 0.05);
-    border-color: var(--error-color);
-  }
-}
-
-.deleteButton {
-  @extend %btn-base;
-  background-color: rgba(220, 38, 38, 0.08);
-  color: var(--error-color);
-  border: 1px solid rgba(220, 38, 38, 0.25);
-
-  &:hover:not(:disabled) {
-    background-color: rgba(220, 38, 38, 0.15);
-    border-color: var(--error-color);
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-  }
-}
-
-.footerText {
-  text-align: center;
-  margin-top: $spacing-md;
-  font-family: $font-primary;
-  font-size: $fs-sm;
-  color: var(--text-secondary);
-}
-
-.link {
-  color: var(--primary-accent);
-  font-weight: $fw-semibold;
-  text-decoration: none;
-  transition: color $transition-fast $ease-in-out-smooth;
-
-  &:hover {
-    color: var(--primary-accent-light);
-    text-decoration: underline;
-  }
 }

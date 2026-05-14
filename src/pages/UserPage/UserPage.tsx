@@ -1,194 +1,51 @@
 import { useState } from "react"
-import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
-import { useAppDispatch, useAppSelector } from "@/hooks"
-import { EditProfileSchema, editProfileSchema } from "@/schemas/editProfileSchema"
+import { useAppSelector } from "@/hooks"
 import { selectUser } from "@/store/selectors/authSelectors"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
+import { BackButton } from "@/components/common"
 import style from './user-page.module.scss'
-import { useUpdateProfileMutation } from "@/services/authApi"
-import { FormField, Loader, Modal } from "@/components/common"
-import { logout } from "@/store/slices/authSlice"
-import { supabase } from "@/supabase"
-import { CgLogOut, CgTrash } from "react-icons/cg";
+import { UserProfileForm } from "./components/UserProfileForm/UserProfileForm"
+import { UserProfileView } from "./components/UserProfileView/UserProfileView"
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
   const [isEditing, setIsEditing] = useState(false)
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [updateProfile, { isLoading }] = useUpdateProfileMutation()
-
-  const {
-    register,
-    setError,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm<EditProfileSchema>({
-    resolver: zodResolver(editProfileSchema),
-    defaultValues: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      username: user.username,
-      password: ''
-    }
-  })
-
-  const onSubmit = async (data: EditProfileSchema) => {
-    try {
-      await updateProfile(data).unwrap()
-      setIsEditing(false)
-      navigate('/', { replace: true })
-    } catch (error: any) {
-      if (error?.data === 'Incorrect current password') {
-        setError('password', { message: 'Incorrect password' })
-      }
-    }
-  }
-
-  const handleLogout = async () => {
-    setIsLogoutModalOpen(false);
-    dispatch(logout())
-    await supabase.auth.signOut()
-  }
-
-  const handleCancelEdit = () => {
-    setIsEditing(false)
-    reset()
-  }
-
-  const handleDeleteAccount = async () => {
-    const {error} = await supabase.functions.invoke('delete-account')
-
-    if (!error) {
-      await supabase.auth.signOut()
-      navigate('/', { replace: true })
-    }
-  }
+  if (!user) return null;
 
   return (
-    <AuthLayout
-      title={isEditing ? 'Edit Profile' : `Hello, ${user.username}!`}
-      subtitle={isEditing ? 'Update your personal information below.' : 'You can edit fields or just look at your data.'}
-    >
-      {!isEditing ? (
-        <div className={style.profileView}>
-          <div className={style.infoList}>
-            <div className={style.infoRow}>
-              <span className={style.label}>First Name</span>
-              <span className={style.value}>{user.firstName || '—'}</span>
-            </div>
-            <div className={style.infoRow}>
-              <span className={style.label}>Last Name</span>
-              <span className={style.value}>{user.lastName || '—'}</span>
-            </div>
-            <div className={style.infoRow}>
-              <span className={style.label}>Username</span>
-              <span className={style.value}>@{user.username}</span>
-            </div>
-            <div className={style.infoRow}>
-              <span className={style.label}>Email</span>
-              <span className={style.value}>{user.email}</span>
-            </div>
+    <main className='container'>
+      <BackButton onClick={() => navigate('/')} />
+
+      <article className={style.pageWrapper}>
+        <div className={style.card}>
+          <div className={style.header}>
+            <h1 className={style.title}>
+              {isEditing ? 'Edit Profile' : `Hello, ${user.username}!`}
+            </h1>
+            <p className={style.subtitle}>
+              {isEditing
+                ? 'Update your personal information below.'
+                : 'You can edit fields or just look at your data.'}
+            </p>
           </div>
 
-          <div className={style.actionButtons}>
-            <button
-              className={style.editButton}
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Profile
-            </button>
-            <div className={style.dangerRow}>
-              <button
-                className={style.logoutButton}
-                onClick={() => setIsLogoutModalOpen(true)}
-              >
-                Logout
-              </button>
-              <button
-                className={style.deleteButton}
-                onClick={() => setIsDeleteModalOpen(true)}
-              >
-                Delete Account
-              </button>
-            </div>
-          </div>
-          <Modal
-            isOpen={isLogoutModalOpen}
-            onOpenChange={setIsLogoutModalOpen}
-            title="Log out of your account?"
-            description="Are you sure you want to log out? You will need to enter your credentials to log back in."
-            icon={<CgLogOut size={50} />}
-            actionLabel="Log out"
-            actionVariant="danger"
-            onAction={handleLogout}
-          />
-          <Modal
-            isOpen={isDeleteModalOpen}
-            onOpenChange={setIsDeleteModalOpen}
-            title="Delete your account?"
-            description="This action is permanent and cannot be undone. All your data, settings, and history will be erased immediately."
-            icon={<CgTrash size={50} />}
-            actionLabel="Delete Account"
-            actionVariant="danger"
-            onAction={handleDeleteAccount}
-          />
+          {!isEditing ? (
+            <UserProfileView
+              user={user}
+              onEditClick={() => setIsEditing(true)}
+            />
+          ) : (
+            <UserProfileForm
+              user={user}
+              onCancel={() => setIsEditing(false)}
+              onSuccess={() => setIsEditing(false)}
+            />
+          )}
         </div>
-      ) : (
-        <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
-          <FormField
-            label='First name'
-            error={errors.firstName?.message}
-            {...register('firstName')}
-          />
-
-          <FormField
-            label='Last name'
-            error={errors.lastName?.message}
-            {...register('lastName')}
-          />
-
-          <FormField
-            label='Username'
-            error={errors.username?.message}
-            {...register('username')}
-          />
-
-          <FormField
-            label='Current Password (to confirm changes)'
-            type="password"
-            error={errors.password?.message}
-            {...register('password')}
-          />
-
-          <div className={style.formActions}>
-            <button
-              type="button"
-              className={style.cancelButton}
-              onClick={handleCancelEdit}
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className={style.submitButton}
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader size="sm" /> : 'Save Changes'}
-            </button>
-          </div>
-        </form>
-      )}
-
-    </AuthLayout>
+      </article>
+    </main>
   )
 }
