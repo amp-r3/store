@@ -43,6 +43,18 @@
     }
   }
 
+  &--email {
+    background-color: var(--provider-google-bg);
+    color: var(--provider-google-text);
+    border: 1px solid var(--provider-google-border);
+    box-shadow: var(--shadow-xs);
+
+    &:hover {
+      background-color: var(--provider-google-hover);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
   &__icon {
     display: flex;
     align-items: center;
