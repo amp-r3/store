@@ -1,5 +1,7 @@
 @use '@/styles/index' as *;
 
+// ─── Wrapper ────────────────────────────────────────────────────────────────
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -7,13 +9,7 @@
   width: 100%;
 }
 
-.label {
-  font-family: $font-primary;
-  font-size: $fs-sm;
-  font-weight: $fw-semibold;
-  color: var(--text-secondary);
-  margin-left: $spacing-xs; 
-}
+// ─── Label row ──────────────────────────────────────────────────────────────
 
 .labelRow {
   display: flex;
@@ -22,62 +18,13 @@
   padding: 0 $spacing-xs;
 }
 
-.optional {
+.label {
   font-family: $font-primary;
   font-size: $fs-sm;
-  font-weight: $fw-normal;
-  color: var(--text-muted);
-  background: var(--border-color-subtle);
-  border: 1px solid var(--border-color-light);
-  border-radius: $radius-pill;
-  padding: $spacing-xxs $spacing-xs;
+  font-weight: $fw-semibold;
   line-height: $lh-ui;
-  letter-spacing: $letter-spacing-wide;
-  user-select: none;
-}
-
-.input {
-  width: 100%;
-  font-family: $font-primary;
-  font-size: $fs-base;
-  color: var(--text-primary);
-  background: var(--background-glass-base);
-  border: 1px solid var(--border-color);
-  border-radius: $radius-input;
-  padding: $spacing-sm $spacing-md;
-
-  transition: all $transition-fast $ease-in-out-smooth;
-  box-shadow: var(--shadow-xs);
-
-  &::placeholder {
-    color: var(--text-muted);
-  }
-
-  &:hover:not(:disabled) {
-    border-color: var(--border-color-strong);
-  }
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary-accent);
-    box-shadow: var(--shadow-focus-input);
-    background: var(--background-component);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background: var(--border-color-subtle);
-  }
-}
-
-.inputError {
-  border-color: var(--error-color);
-
-  &:focus {
-    border-color: var(--error-color);
-    box-shadow: 0 0 16px rgba(220, 38, 38, 0.15);
-  }
+  color: var(--text-secondary);
+  transition: color $transition-fast $ease-in-out-smooth;
 }
 
 .labelOptional {
@@ -86,22 +33,139 @@
   font-style: italic;
 }
 
-.inputOptional {
-  background: var(--background-glass-base);
-  border-color: var(--border-color-light);
-  color: var(--text-primary);
-  opacity: 0.85;
+.optionalBadge {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  line-height: $lh-ui;
+  letter-spacing: $letter-spacing-wide;
+  color: var(--text-muted);
+  background: var(--border-color-subtle);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-pill;
+  padding: $spacing-xxs $spacing-xs;
+  user-select: none;
+}
 
-  &:hover:not(:disabled) {
-    opacity: 1;
-    border-color: var(--border-color);
+// ─── Input wrapper  ─────────────────────────────
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--background-glass-base);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-input;
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+  transition:
+    border-color $transition-fast $ease-in-out-smooth,
+    box-shadow $transition-fast $ease-in-out-smooth,
+    background $transition-fast $ease-in-out-smooth;
+
+  &:hover:not(.inputWrapperDisabled):not(.inputWrapperError) {
+    border-color: var(--border-color-strong);
   }
+
+  &:focus-within:not(.inputWrapperError) {
+    border-color: var(--primary-accent);
+    box-shadow: var(--shadow-focus-input);
+    background: var(--background-component);
+  }
+}
+
+.inputWrapperError {
+  border-color: var(--error-color);
+
+  &:focus-within {
+    border-color: var(--error-color);
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.15);
+  }
+}
+
+.inputWrapperDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--border-color-subtle);
+}
+
+// ─── Icon slot ───────────────────────────────────────────────────────────────
+
+.iconSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: $icon-size-md;
+  height: $icon-size-md;
+  margin-left: $spacing-md;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: color $transition-fast $ease-in-out-smooth;
+
+  .inputWrapper:focus-within & {
+    color: var(--primary-accent);
+  }
+
+  .inputWrapperError & {
+    color: var(--error-color);
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// ─── Input ───────────────────────────────────────────────────────────────────
+
+.input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: inherit;
+  font-family: $font-primary;
+  font-size: $fs-base;
+  font-weight: $fw-normal;
+  line-height: $lh-normal;
+  color: var(--text-primary);
+  padding: $spacing-sm $spacing-md;
+
+  &::placeholder {
+    color: var(--text-muted);
+    font-weight: $fw-normal;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary);
+    -webkit-box-shadow: 0 0 0px 1000px var(--background-component) inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+.inputWithIcon {
+  padding-left: $spacing-xs;
+}
+
+.inputOptional {
+  opacity: 0.85;
 
   &:focus {
     opacity: 1;
-    border-style: solid;
   }
 }
+
+// ─── Error message ────────────────────────────────────────────────────────────
 
 .error {
   font-family: $font-primary;
