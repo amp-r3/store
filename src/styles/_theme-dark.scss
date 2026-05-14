@@ -83,8 +83,21 @@
   --loader-grad-end-rgb: 236, 72, 153;
 
   // --- Auth Providers ---
-  --provider-google-bg: #131314;
-  --provider-google-text: #e3e3e3;
-  --provider-google-border: #8e918f;
-  --provider-google-hover: #282a2c;
+
+  // Google
+  --provider-google-bg: #1a1633;
+  --provider-google-text: var(--text-primary);
+  --provider-google-border: rgba(124, 109, 255, 0.2); 
+  --provider-google-hover: #231f42;
+
+  // Email Provider (New)
+  --provider-email-bg: var(--primary-accent);
+  --provider-email-text: #ffffff;
+  --provider-email-border: transparent;
+  --provider-email-hover: var(--primary-accent-dark);
+
+  // --- Auth Background Gradient ---
+  --gradient-auth-start: #15122e;
+  --gradient-auth-mid: #1c1840;
+  --gradient-auth-end: #0b0914;
 }

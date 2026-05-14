@@ -84,8 +84,21 @@
   --loader-grad-end-rgb: 236, 72, 153;
 
   // --- Auth Providers ---
+
+  // Google
   --provider-google-bg: #ffffff;
   --provider-google-text: #3c4043;
   --provider-google-border: #dadce0;
   --provider-google-hover: #f8f9fa;
+
+  // Email
+  --provider-email-bg: var(--primary-accent);
+  --provider-email-text: var(--text-inverse);
+  --provider-email-border: transparent;
+  --provider-email-hover: var(--primary-accent-dark);
+
+  // --- Auth Background Gradient ---
+  --gradient-auth-start: #f0eeff;
+  --gradient-auth-mid: #e5e1f8;
+  --gradient-auth-end: #dddaf2;
 }
