@@ -1,19 +1,5 @@
 @use '@/styles/index' as *;
 
-@keyframes gradient-flow {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
 .nav {
     display: flex;
     align-items: center;
@@ -39,27 +25,6 @@
         backdrop-filter: $backdrop-blur;
         border: 2px solid var(--border-color);
         box-shadow: var(--shadow-default);
-    }
-
-    &__logo {
-        background: linear-gradient(130deg,
-                var(--gradient-logo-start),
-                var(--gradient-logo-mid-1),
-                var(--gradient-logo-mid-2),
-                var(--gradient-logo-end));
-        background-size: 300% 300%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: $fs-logo-fluid;
-        font-weight: $fw-bold;
-        transition: $transition-base;
-        animation: gradient-flow $animation-gradient-duration $ease-in-out-smooth infinite;
-        flex-shrink: 0;
-
-        &:hover {
-            transform: scale($scale-up-sm);
-        }
     }
 
     &__form {
@@ -145,6 +110,7 @@
 
         &__main_actions {
             flex: 1;
+            gap: $spacing-xxs;
             justify-content: flex-end;
         }
 

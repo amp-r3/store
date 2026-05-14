@@ -8,7 +8,7 @@ import { useCartDetails, useHaptics, useNavbarScroll, useSearch } from '@/hooks'
 // Redux Hooks
 import { useAppDispatch, } from '@/hooks';
 // Custom Components
-import { SearchForm, ThemeToggle } from '@/components/common';
+import { Logo, SearchForm, ThemeToggle } from '@/components/common';
 // Functions and Selectors
 import { openCart } from '@/store/slices/cartSlice';
 
@@ -27,7 +27,7 @@ export const Navbar = () => {
 
   return (
     <nav ref={navRef} className={style.nav}>
-      <Link to={'/'} className={style.nav__logo} aria-label="Store">store</Link>
+      <Logo />
 
       <div className={style.nav__form}>
         <SearchForm
