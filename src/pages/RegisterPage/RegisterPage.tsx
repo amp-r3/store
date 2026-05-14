@@ -3,12 +3,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { RegisterSchema, registerSchema } from "@/schemas/registerSchema"
 import { useRegisterMutation, useSignInWithGoogleMutation } from "@/services/authApi"
-import style from './register-page.module.scss'
+import '@/styles/auth-page.scss'
 import { FormField, Loader, SignInButton } from "@/components/common"
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
+import { useState } from "react"
+import { LuMail } from "react-icons/lu";
+import { RiLockPasswordLine, RiShieldCheckLine } from "react-icons/ri"
 
 export const RegisterPage = () => {
   const navigate = useNavigate()
+  const [isEmail, setIsEmail] = useState(false)
   const [register, { isLoading }] = useRegisterMutation()
   const [signInWithGoogle] = useSignInWithGoogleMutation()
 
@@ -18,7 +22,8 @@ export const RegisterPage = () => {
     setError,
     formState: { errors }
   } = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema)
+    resolver: zodResolver(registerSchema),
+    mode: 'onTouched'
   })
 
   const onSubmit = async (formData: RegisterSchema) => {
@@ -70,69 +75,71 @@ export const RegisterPage = () => {
       title="Create an Account"
       subtitle="Join us to start managing your orders"
     >
-      <form className={style.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className='auth' onSubmit={handleSubmit(onSubmit)} noValidate>
 
         {errors.root && (
-          <div className={style.root} role="alert">
+          <div className='auth__root-message' role="alert">
             {errors.root.message}
           </div>
         )}
 
-        <div className={style.row}>
-          <FormField
-            label='First name'
-            error={errors.firstName?.message}
-            optional
-            {...registerField('firstName')}
-          />
-          <FormField
-            optional
-            label='Last name'
-            error={errors.lastName?.message}
-            {...registerField('lastName')}
-          />
-        </div>
+        {
+          isEmail ?
+            <>
+              <FormField
+                label='Email'
+                type="email"
+                icon={<LuMail />}
+                placeholder="you@example.com"
+                error={errors.email?.message}
+                {...registerField('email')}
+              />
 
-        <FormField
-          optional
-          label="Username"
-          error={errors.username?.message}
-          {...registerField('username')}
-        />
+              <FormField
+                label='Password'
+                type='password'
+                icon={<RiLockPasswordLine />}
+                placeholder="At least 6 characters"
+                error={errors.password?.message}
+                {...registerField('password')}
+              />
 
-        <FormField
-          label='Email'
-          type="email"
-          error={errors.email?.message}
-          {...registerField('email')}
-        />
+              <FormField
+                label='Repeat password'
+                type='password'
+                icon={<RiShieldCheckLine />}
+                placeholder="Confirm your password"
+                error={errors.confirm?.message}
+                {...registerField('confirm')}
+              />
+              <div className='auth__actions'>
+                <button
+                  type="button"
+                  className='auth__cancelBtn'
+                  onClick={() => setIsEmail(false)}>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className='auth__submitBtn'
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader size="sm" /> : 'Register'}
+                </button>
+              </div>
+            </> :
+            <>
+              <SignInButton provider="Email" onClick={() => setIsEmail(true)} />
+              <SignInButton provider="Google" onClick={handleGoogleLogin} />
+            </>
 
-        <FormField
-          label='Password'
-          type='password'
-          error={errors.password?.message}
-          {...registerField('password')}
-        />
+        }
 
-        <FormField
-          label='Repeat password'
-          type='password'
-          error={errors.confirm?.message}
-          {...registerField('confirm')}
-        />
 
-        <button
-          type="submit"
-          className={style.submitButton}
-          disabled={isLoading}
-        >
-          {isLoading ? <Loader size="sm" /> : 'Register'}
-        </button>
 
-        <SignInButton provider="Google" onClick={handleGoogleLogin} />
 
-        <p className={style.footerText}>
-          Already have an account? <Link to="/login" className={style.link}>Log in</Link>
+        <p className='auth__footer-text'>
+          Already have an account? <Link to="/login" className='auth__link'>Log in</Link>
         </p>
 
       </form>
