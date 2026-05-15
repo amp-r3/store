@@ -1,0 +1,1 @@
+export { PROVIDER_CONFIG } from './providers.config'
