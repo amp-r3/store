@@ -92,10 +92,16 @@
   --provider-google-hover: #f8f9fa;
 
   // Email
-  --provider-email-bg: var(--primary-accent);
-  --provider-email-text: var(--text-inverse);
-  --provider-email-border: transparent;
-  --provider-email-hover: var(--primary-accent-dark);
+  --provider-email-bg: #f3f4ff;
+  --provider-email-text: #3c4043;
+  --provider-email-border: #c8cbf0;
+  --provider-email-hover: #eaebff;
+
+  // Telegram
+  --provider-telegram-bg: #eef7fd;
+  --provider-telegram-text: #0e6898;
+  --provider-telegram-border: #a8d5f0;
+  --provider-telegram-hover: #daeef9;
 
   // --- Auth Background Gradient ---
   --gradient-auth-start: #f0eeff;
