@@ -9,6 +9,10 @@ import { UserProfileView } from "./components/UserProfileView/UserProfileView"
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
+
+  const providers = user?.app_metadata?.providers || [];
+  const isGoogleUser = providers.includes('google');
+  const isTelegramUser = providers.includes('telegram');
   const navigate = useNavigate()
 
   const [isEditing, setIsEditing] = useState(false)
@@ -35,11 +39,14 @@ export const UserPage = () => {
           {!isEditing ? (
             <UserProfileView
               user={user}
+              providers={providers}
               onEditClick={() => setIsEditing(true)}
             />
           ) : (
             <UserProfileForm
               user={user}
+              isTelegramUser={isTelegramUser}
+              isGoogleUser={isGoogleUser}
               onCancel={() => setIsEditing(false)}
               onSuccess={() => setIsEditing(false)}
             />

@@ -5,12 +5,15 @@ import { logout } from "@/store/slices/authSlice";
 import { supabase } from "@/supabase";
 import { Modal } from "@/components/common";
 import { CgLogOut, CgTrash } from "react-icons/cg";
+
 import style from './user-profile-view.module.scss';
 import { SessionUser } from "@/types/auth";
+import { PROVIDER_CONFIG } from "@/config";
 
 
 interface UserProfileViewProps {
   user: SessionUser;
+  providers: string[];
   onEditClick: () => void;
 }
 
@@ -21,7 +24,29 @@ const UserInfoRow = ({ label, value, prefix = '' }: { label: string, value: stri
   </div>
 );
 
-export const UserProfileView = ({ user, onEditClick }: UserProfileViewProps) => {
+const LinkedProviders = ({ providers }: { providers: string[] }) => {
+  if (!providers.length) return null;
+
+  return (
+    <div className={style.providersSection}>
+      <span className={style.providersLabel}>Linked accounts</span>
+      <div className={style.providersList}>
+        {providers.map((key) => {
+          const config = PROVIDER_CONFIG[key.toLowerCase()];
+          if (!config) return null;
+          return (
+            <div key={key} className={style.providerBadge}>
+              <span className={style.providerIcon}>{config.icon}</span>
+              <span className={style.providerName}>{config.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export const UserProfileView = ({ user, onEditClick, providers }: UserProfileViewProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -51,6 +76,8 @@ export const UserProfileView = ({ user, onEditClick }: UserProfileViewProps) => 
         <UserInfoRow label="Username" value={user.username} prefix="@" />
         <UserInfoRow label="Email" value={user.email} />
       </div>
+
+      <LinkedProviders providers={providers} />
 
       <div className={style.actionButtons}>
         <button

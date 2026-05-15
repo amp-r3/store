@@ -41,6 +41,73 @@
   color: var(--text-primary);
 }
 
+// -----------------------------------------------
+// # LINKED PROVIDERS
+// -----------------------------------------------
+
+.providersSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  background: var(--background-glass-base);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  box-shadow: var(--shadow-sm);
+}
+
+.providersLabel {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-muted);
+  padding-left: $spacing-xxs;
+}
+
+.providersList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.providerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-pill;
+  border: 1px solid;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  line-height: $lh-ui;
+  transition: background-color $transition-fast $ease-in-out-smooth,
+    box-shadow $transition-fast $ease-in-out-smooth;
+
+  background-color: var(--glass-background);
+  color: var(--text-secondary);
+  border-color: var(--border-color-light);
+
+  &:hover {
+    background-color: var(--glass-background-strong);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-xs);
+  }
+}
+
+.providerIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.providerName {
+  white-space: nowrap;
+}
+
+// -----------------------------------------------
+// # ACTION BUTTONS
+// -----------------------------------------------
+
 .actionButtons {
   display: flex;
   flex-direction: column;
