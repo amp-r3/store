@@ -10,17 +10,10 @@ export const authApi = createApi({
   endpoints: (builder) => ({
 
     register: builder.mutation<SessionUser, RegisterFormData>({
-      queryFn: async ({ firstName, lastName, username, email, password }) => {
+      queryFn: async ({ email, password }) => {
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: {
-              firstName,
-              lastName,
-              username,
-            },
-          },
         });
 
         if (authError) {
@@ -40,9 +33,9 @@ export const authApi = createApi({
             data: {
               id: user.id,
               email: user.email!,
-              firstName: firstName,
-              lastName: lastName,
-              username: username,
+              firstName: '',
+              lastName: '',
+              username: '',
               accessToken: authData.session?.access_token || '',
             },
           };
@@ -120,21 +113,47 @@ export const authApi = createApi({
           return { error: { status: 401, data: 'The user is not authorized' } };
         }
 
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({
-            first_name: userData.firstName,
-            last_name: userData.lastName,
-            username: userData.username
-          })
-          .eq('id', user.id);
+        const profilePayload: Record<string, any> = {};
+        if (userData.firstName !== undefined) profilePayload.first_name = userData.firstName;
+        if (userData.lastName !== undefined) profilePayload.last_name = userData.lastName;
+        if (userData.username !== undefined) profilePayload.username = userData.username;
 
-        if (updateError) {
-          return { error: { status: 400, data: updateError.message } };
+        let updatedProfile = null;
+
+        if (Object.keys(profilePayload).length > 0) {
+          const { data: profileData, error: updateError } = await supabase
+            .from('profiles')
+            .update(profilePayload)
+            .eq('id', user.id)
+            .select()
+            .single();
+
+          if (updateError) {
+            return { error: { status: 400, data: updateError.message } };
+          }
+          updatedProfile = profileData;
         }
 
-        const { password, ...restData } = userData;
-        return { data: restData };
+        let updatedEmail = user.email;
+        if (userData.email && userData.email !== user.email) {
+          const { error: authError } = await supabase.auth.updateUser({ email: userData.email });
+
+          if (authError) {
+            return { error: { status: 400, data: authError.message } };
+          }
+          updatedEmail = userData.email;
+        }
+
+        return {
+          data: {
+            ...(updatedProfile && {
+              firstName: updatedProfile.first_name,
+              lastName: updatedProfile.last_name,
+              username: updatedProfile.username,
+            }),
+            email: updatedEmail
+          }
+        };
       }
     }),
 
