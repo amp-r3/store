@@ -10,11 +10,13 @@ import { SessionUser } from "@/types/auth"
 
 interface UserProfileFormProps {
   user: SessionUser;
+  isTelegramUser: boolean;
+  isGoogleUser: boolean;
   onCancel: () => void;
   onSuccess: () => void;
 }
 
-export const UserProfileForm = ({ user, onCancel, onSuccess }: UserProfileFormProps) => {
+export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: UserProfileFormProps) => {
   const navigate = useNavigate()
   const [updateProfile, { isLoading }] = useUpdateProfileMutation()
 
@@ -29,9 +31,8 @@ export const UserProfileForm = ({ user, onCancel, onSuccess }: UserProfileFormPr
     defaultValues: {
       firstName: user.firstName || '',
       lastName: user.lastName || '',
-      email: user.email,
+      email: user.email || '',
       username: user.username,
-      password: ''
     }
   })
 
@@ -40,9 +41,29 @@ export const UserProfileForm = ({ user, onCancel, onSuccess }: UserProfileFormPr
       await updateProfile(data).unwrap()
       onSuccess()
       navigate('/', { replace: true })
-    } catch (error: any) {
-      if (error?.data === 'Incorrect current password') {
-        setError('password', { message: 'Incorrect password' })
+    } catch (err: any) {
+      console.error('Registration error details:', JSON.stringify(err, null, 2));
+
+      const errorMessage = err?.data || err?.message || '';
+
+      const errText = errorMessage.toLowerCase();
+
+      if (errText.includes('already registered') || errText.includes('already exists')) {
+        setError('email', {
+          type: 'server',
+          message: 'This email is already registered'
+        });
+      } else if (errText.includes('duplicate key value violates unique constraint "profiles_username_key"')) {
+        setError('username', {
+          type: 'server',
+          message: 'This username is already taken'
+        })
+      }
+      else {
+        setError('root', {
+          type: 'server',
+          message: errorMessage || 'An error occurred while registering. Please try again later.'
+        });
       }
     }
   }
@@ -52,8 +73,21 @@ export const UserProfileForm = ({ user, onCancel, onSuccess }: UserProfileFormPr
     onCancel()
   }
 
+  const emailError = errors.email?.message
+    ? errors.email.message
+    : isGoogleUser
+      ? "Your email is linked to Google. You can't change it here."
+      : undefined;
+
   return (
     <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
+
+      {errors.root && (
+        <div className={style.root} role="alert">
+          {errors.root.message}
+        </div>
+      )}
+
       <FormField
         label='First name'
         error={errors.firstName?.message}
@@ -71,13 +105,14 @@ export const UserProfileForm = ({ user, onCancel, onSuccess }: UserProfileFormPr
         error={errors.username?.message}
         {...register('username')}
       />
-
       <FormField
-        label='Current Password (to confirm changes)'
-        type="password"
-        error={errors.password?.message}
-        {...register('password')}
+        label='Email'
+        disabled={isGoogleUser}
+        error={emailError}
+        {...register('email')}
       />
+
+
 
       <div className={style.formActions}>
         <button
