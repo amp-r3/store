@@ -105,6 +105,22 @@ export const authApi = createApi({
         return { data };
       }
     }),
+    signInWithTelegram: builder.mutation<any, void>({
+      queryFn: async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'custom:telegram',
+          options: {
+            redirectTo: `${window.location.origin}`
+          }
+        });
+
+        if (error) {
+          return { error: { status: error.status, data: error.message } };
+        }
+
+        return { data };
+      }
+    }),
     updateProfile: builder.mutation<Partial<SessionUser>, EditProfileSchema>({
       queryFn: async (userData) => {
         const { data: { user } } = await supabase.auth.getUser();
@@ -160,4 +176,4 @@ export const authApi = createApi({
   })
 })
 
-export const { useLoginMutation, useRegisterMutation, useSignInWithGoogleMutation, useUpdateProfileMutation } = authApi
+export const { useLoginMutation, useRegisterMutation, useSignInWithGoogleMutation, useSignInWithTelegramMutation, useUpdateProfileMutation } = authApi
