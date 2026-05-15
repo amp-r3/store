@@ -1,8 +1,9 @@
 import { FcGoogle } from 'react-icons/fc';
-import { FaRegEnvelope } from 'react-icons/fa';
+import { FaRegEnvelope, FaTelegram } from 'react-icons/fa';
 import style from './sign-in-button.module.scss';
+import { ReactNode } from 'react';
 
-type Provider = 'Google' | 'Email';
+type Provider = 'Google' | 'Email' | 'Telegram';
 
 interface SignInButtonProps {
   provider: Provider;
@@ -25,10 +26,12 @@ export const SignInButton = ({
     .filter(Boolean)
     .join(' ');
 
-  const icon =
-    provider === 'Google'
-      ? <FcGoogle />
-      : <FaRegEnvelope />;
+  let icon: ReactNode
+
+  icon =
+    provider === 'Google' ? <FcGoogle /> :
+      provider === 'Email' ? <FaRegEnvelope /> :
+        <FaTelegram color="#2AABEE" />;
 
   return (
     <button

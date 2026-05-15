@@ -44,13 +44,25 @@
   }
 
   &--email {
-    background-color: var(--provider-google-bg);
-    color: var(--provider-google-text);
-    border: 1px solid var(--provider-google-border);
+    background-color: var(--provider-email-bg);
+    color: var(--provider-email-text);
+    border: 1px solid var(--provider-email-border);
     box-shadow: var(--shadow-xs);
 
     &:hover {
-      background-color: var(--provider-google-hover);
+      background-color: var(--provider-email-hover);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &--telegram {
+    background-color: var(--provider-telegram-bg);
+    color: var(--provider-telegram-text);
+    border: 1px solid var(--provider-telegram-border);
+    box-shadow: var(--shadow-xs);
+
+    &:hover {
+      background-color: var(--provider-telegram-hover);
       box-shadow: var(--shadow-sm);
     }
   }
