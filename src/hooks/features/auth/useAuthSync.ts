@@ -18,34 +18,55 @@ export const useAuthSync = () => {
       async (event, session) => {
 
         if (session?.user) {
-          try {
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
+          dispatch(setSession({
+            user: {
+              id: session.user.id,
+              email: session.user.email!,
+              accessToken: session.access_token,
+              app_metadata: session.user.app_metadata,
+              firstName: '',
+              lastName: '',
+              username: '',
+            },
+            token: session.access_token,
+          }));
 
-            if (profileError) {
-              console.error('Error fetching user profile:', profileError);
+          const fetchProfile = async () => {
+            try {
+              const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+              if (profileError) {
+                console.error('Error fetching user profile:', profileError);
+                return;
+              }
+
+              if (profile) {
+                dispatch(setSession({
+                  user: {
+                    id: session.user.id,
+                    email: session.user.email!,
+                    accessToken: session.access_token,
+                    app_metadata: session.user.app_metadata,
+                    firstName: profile.first_name || '',
+                    lastName: profile.last_name || '',
+                    username: profile.username || '',
+                  },
+                  token: session.access_token,
+                }));
+              }
+            } catch (error) {
+              console.error('Failed to load profile inside auth listener:', error);
             }
+          };
 
-            dispatch(setSession({
-              user: {
-                id: session.user.id,
-                email: session.user.email!,
-                accessToken: session.access_token,
-                firstName: profile?.first_name || '',
-                lastName: profile?.last_name || '',
-                username: profile?.username || '',
-              },
-              token: session.access_token,
-            }));
-          } catch (error) {
-            console.error('Failed to load profile inside auth listener:', error);
-          }
+          fetchProfile();
         }
 
-        if (event === 'SIGNED_IN' && session?.user) {
+        if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
           const currentState = store.getState();
           const localWishlistItems = currentState.wishlist.favoriteItems;
           const localCartItems = currentState.cart.items;
