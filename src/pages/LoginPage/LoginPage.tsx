@@ -2,7 +2,7 @@ import { useNavigate, Link } from "react-router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { LoginSchema, loginSchema } from "@/schemas/loginSchema"
-import { useLoginMutation, useSignInWithGoogleMutation } from "@/services/authApi"
+import { useLoginMutation, useSignInWithGoogleMutation, useSignInWithTelegramMutation } from "@/services/authApi"
 import '@/styles/auth-page.scss'
 import { FormField, Loader, SignInButton } from "@/components/common"
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
@@ -15,6 +15,7 @@ export const LoginPage = () => {
   const [isEmail, setIsEmail] = useState(false)
   const [login, { isLoading }] = useLoginMutation()
   const [signInWithGoogle] = useSignInWithGoogleMutation()
+  const [signInWithTelegram] = useSignInWithTelegramMutation()
 
   const {
     register,
@@ -41,6 +42,18 @@ export const LoginPage = () => {
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle()
+    } catch (err) {
+      const errorMessage = err?.data || err?.message || '';
+      setError('root', {
+        type: 'server',
+        message: errorMessage || 'An error occurred while registering. Please try again later.'
+      });
+    }
+  }
+
+  const handleTelegramLogin = async () => {
+    try {
+      await signInWithTelegram()
     } catch (err) {
       const errorMessage = err?.data || err?.message || '';
       setError('root', {
@@ -100,9 +113,9 @@ export const LoginPage = () => {
               </div>
             </> :
             <>
-
               <SignInButton provider="Email" onClick={() => setIsEmail(true)} />
               <SignInButton provider="Google" onClick={handleGoogleLogin} />
+              <SignInButton provider="Telegram" onClick={handleTelegramLogin} />
             </>
         }
         <p className='auth__footer-text'>
