@@ -1,14 +1,13 @@
 import { CartItem } from '@/types/products';
-import { applyDiscount } from './priceHelper';
 
 export const calculateCartTotals = (items: CartItem[]) => {
     const FREE_SHIPPING_THRESHOLD = 200;
 
     const { subtotal, total } = items.reduce(
         (acc, item) => {
-            const priceOriginal = item.price;
+            const priceOriginal = item.basePrice;
 
-            const priceDiscounted = applyDiscount({ price: item.price, discount:item.discountPercentage});
+            const priceDiscounted = item.price;
 
             const lineOriginalTotal = priceOriginal * item.quantity;
             const lineDiscountedTotal = priceDiscounted * item.quantity;

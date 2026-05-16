@@ -2,12 +2,14 @@ import style from './product-purchase-box.module.scss';
 import { useAppSelector } from '@/hooks';
 import { AddToCartButton } from '@/components/common';
 import { selectIsMaxReached } from '@/store';
+import { formatPrice } from '@/utils';
 
 interface ProductPurchaseBoxProps {
     productId: number;
     quantity: number;
-    originalPrice: string;
-    discountedPriceFormatted: string;
+    hasDiscount: boolean;
+    originalPrice: number;
+    discountedPriceFormatted: number;
     handleCart(id: number, type: 'inc' | 'dec'): void;
     inStock: boolean;
     stock: number;
@@ -16,6 +18,7 @@ interface ProductPurchaseBoxProps {
 export const ProductPurchaseBox = ({
     productId,
     quantity,
+    hasDiscount,
     originalPrice,
     discountedPriceFormatted,
     handleCart,
@@ -27,12 +30,12 @@ export const ProductPurchaseBox = ({
         <div className={style['purchase-box']}>
             <div className={style['price-block']}>
                 {
-                    discountedPriceFormatted ?
+                    hasDiscount ?
                         <>
-                            <p className={style['price']}>{originalPrice}</p>
+                            <p className={style['price']}>{formatPrice(originalPrice)}</p>
                             <p className={style['discount-price']}>{discountedPriceFormatted}</p>
                         </> :
-                        <p className={style['discount-price']}>{originalPrice}</p>
+                        <p className={style['discount-price']}>{formatPrice(originalPrice)}</p>
                 }
             </div>
             <AddToCartButton

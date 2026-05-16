@@ -3,6 +3,7 @@ export interface Product {
     title: string;
     description: string;
     category: string;
+    basePrice: number;
     price: number;
     discountPercentage: number;
     rating: number;
@@ -30,7 +31,7 @@ export interface Product {
     };
     thumbnail: string;
     images: string[];
-    
+
     sizes: string[];
     colors: ProductColor[];
 }
