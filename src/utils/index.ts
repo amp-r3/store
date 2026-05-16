@@ -1,5 +1,4 @@
 export { scrollToTop } from './scrollToTop'
-export { applyDiscount } from './priceHelper'
 export { sortingOptions } from './sortingOptions'
 export { getErrorMessage } from './getErrorMessage'
 export { calculateCartTotals } from './cartHelper'

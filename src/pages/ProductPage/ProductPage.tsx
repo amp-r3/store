@@ -16,7 +16,7 @@ import { ProductImageModal } from './components/ProductImageModal/ProductImageMo
 import { ProductPageSkeleton } from './ProductPageSkeleton';
 
 // Utils
-import { applyDiscount, formatPrice, getErrorMessage, scrollToTop } from '@/utils';
+import { formatPrice, getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
 import { useCartActions, useCartDetails, useProduct, useWishlistActions, useWishlistDetails } from '@/hooks';
@@ -62,12 +62,10 @@ export const ProductPage = () => {
     if (error) return <ErrorView error={getErrorMessage(error)} />;
     if (isNotFound) return <Navigate to="/404" replace />;
 
-    const { id: productId, title, price, description, category, brand, images,
+    const { id: productId, title, basePrice, price, description, category, brand, images,
         rating, reviews, discountPercentage, stock, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
-
+    const hasDiscount = discountPercentage > 0;
     const inStock = (stock ?? 0) > 0;
-    const discountedPrice = discountPercentage > 0 ? formatPrice(applyDiscount({ price, discount: discountPercentage })) : null;
-    const originalPrice = formatPrice(price);
     const itemInCart = cartItems.find(item => item?.id === product.id)
     const quantity = itemInCart?.quantity
 
@@ -103,8 +101,9 @@ export const ProductPage = () => {
                             quantity={quantity}
                             productId={product.id}
                             handleCart={handleCart}
-                            originalPrice={originalPrice}
-                            discountedPriceFormatted={discountedPrice}
+                            hasDiscount={hasDiscount}
+                            originalPrice={basePrice}
+                            discountedPriceFormatted={price}
                             inStock={inStock}
                             stock={stock}
                         />

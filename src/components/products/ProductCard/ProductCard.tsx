@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '@/types/products';
-import { applyDiscount } from '@/utils';
 import style from './productCard.module.scss';
 import { ProductCardImage } from './components/ProductCardImage';
 import { ProductCardBody } from './components/ProductCardBody';
@@ -17,7 +16,7 @@ interface ProductCardProps {
 
 export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
     const { onIncrease, onDecrease } = useCartActions()
-    const { id, title, price, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
+    const { id, title, price, basePrice, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
     const { cartItems } = useCartDetails()
     const itemInCart = cartItems.find(item => item?.id === product.id)
     const { wishlistItems } = useWishlistDetails()
@@ -26,7 +25,6 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
     const quantity = itemInCart?.quantity
     const { soft } = useHaptics()
     const inStock = (stock ?? 0) > 0;
-    const discountedPrice = applyDiscount({ price, discount: discountPercentage });
     const hasDiscount = discountPercentage > 0;
 
     const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, stock ?? 0));
@@ -61,10 +59,10 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
             />
 
             <ProductCardFooter
-                product={product}
+                productId={id}
                 quantity={quantity}
+                basePrice={basePrice}
                 price={price}
-                discountedPrice={discountedPrice}
                 hasDiscount={hasDiscount}
                 handleCart={handleCart}
                 inStock={inStock}

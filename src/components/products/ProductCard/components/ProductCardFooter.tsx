@@ -5,9 +5,9 @@ import { formatPrice } from '@/utils';
 import { AddToCartButton } from '@/components/common';
 
 interface ProductCardFooterProps {
-    product: Product;
+    productId: number;
+    basePrice: number;
     price: number;
-    discountedPrice: number;
     hasDiscount: boolean;
     handleCart: (id: number, type: 'inc' | 'dec') => void;
     inStock: boolean;
@@ -16,10 +16,10 @@ interface ProductCardFooterProps {
 }
 
 export const ProductCardFooter: FC<ProductCardFooterProps> = ({
-    product,
-    quantity,
+    productId,
+    basePrice,
     price,
-    discountedPrice,
+    quantity,
     hasDiscount,
     handleCart,
     inStock,
@@ -29,16 +29,16 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
         <div className={style.card__footer}>
             <div className={style.card__price_wrapper}>
                 {hasDiscount && (
-                    <span className={style.card__oldPrice}>{formatPrice(price)}</span>
+                    <span className={style.card__oldPrice}>{formatPrice(basePrice)}</span>
                 )}
-                <span className={style.card__price}>{formatPrice(discountedPrice)}</span>
+                <span className={style.card__price}>{formatPrice(price)}</span>
             </div>
 
             <AddToCartButton
                 quantity={quantity}
-                onAddToCart={() => handleCart(product.id, 'inc')}
-                onIncrement={() => handleCart(product.id, 'inc')}
-                onDecrement={() => handleCart(product.id, 'dec')}
+                onAddToCart={() => handleCart(productId, 'inc')}
+                onIncrement={() => handleCart(productId, 'inc')}
+                onDecrement={() => handleCart(productId, 'dec')}
                 inStock={inStock}
                 isMaxReached={isMaxReached}
                 size="small"
