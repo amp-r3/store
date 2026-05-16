@@ -6,6 +6,7 @@ import { EditProfileSchema, editProfileSchema } from "@/schemas/editProfileSchem
 import { FormField, Loader } from "@/components/common"
 import style from './user-profile-form.module.scss';
 import { SessionUser } from "@/types/auth"
+import { LuAtSign, LuMail, LuUser } from "react-icons/lu"
 
 
 interface UserProfileFormProps {
@@ -90,23 +91,27 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
 
       <FormField
         label='First name'
+        icon={<LuUser />}
         error={errors.firstName?.message}
         {...register('firstName')}
       />
 
       <FormField
         label='Last name'
+        icon={<LuUser />}
         error={errors.lastName?.message}
         {...register('lastName')}
       />
 
       <FormField
         label='Username'
+        icon={<LuAtSign />}
         error={errors.username?.message}
         {...register('username')}
       />
       <FormField
         label='Email'
+        icon={<LuMail />}
         disabled={isGoogleUser}
         error={emailError}
         {...register('email')}
