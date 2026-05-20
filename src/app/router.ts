@@ -1,4 +1,5 @@
 import { ErrorView } from "@/components/common";
+import { CheckoutGuard } from "@/components/layout/CheckoutGuard/CheckoutGuard";
 import { MainLayout } from "@/components/layout/Layout/MainLayout/MainLayout";
 import RootLayout from "@/components/layout/Layout/RootLayout/RootLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute/ProtectedRoute";
@@ -75,7 +76,20 @@ export const router = createBrowserRouter([
             }
           }
         ]
-      }
+      },
+      {
+        path: '/checkout',
+        Component: CheckoutGuard,
+        children: [
+          {
+            index: true,
+            lazy: async () => {
+              const module = await import("@/pages/CheckoutPage/CheckoutPage")
+              return { Component: module.CheckoutPage }
+            }
+          },
+        ],
+      },
     ]
   }
 ])
