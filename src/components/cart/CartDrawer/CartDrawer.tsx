@@ -60,6 +60,8 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error("Error reconciling cart:", error);
     }
+    navigate('/checkout');
+    onClose();
   };
 
   const onStartShopping = () => {
