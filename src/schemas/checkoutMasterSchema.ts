@@ -17,11 +17,13 @@ const deliverySchema = z.object({
 });
 
 const paymentSchema = z.object({
-  paymentMethod: z.enum(['online', 'onDelivery']),
-  cardNumber: z.string().optional(),
-  cardDate: z.string().optional(),
-  cardHolder: z.string().optional(),
-  cvc: z.string().optional()
+  paymentMethod: z.enum([
+    'cash_on_delivery', 
+    'online_card', 
+    'paypal', 
+    'sepa', 
+    'klarna'
+  ])
 });
 
 export const checkoutMasterSchema = z.object({
@@ -69,43 +71,6 @@ export const checkoutMasterSchema = z.object({
         code: "custom",
         message: 'Postcode is required (min 3 characters)',
         path: ['postcode'],
-      });
-    }
-  }
-
-  if (data.paymentMethod === 'online') {
-
-    const cleanCardNumber = data.cardNumber ? data.cardNumber.replace(/\s/g, '') : '';
-
-    if (cleanCardNumber.length < 16) {
-      ctx.addIssue({
-        code: "custom",
-        message: 'Card number must be at least 16 digits long',
-        path: ['cardNumber'],
-      });
-    }
-
-    if (!data.cardDate || data.cardDate.trim().length < 4) {
-      ctx.addIssue({
-        code: "custom",
-        message: 'Expiration date must be at least 4 digits long (MM/YY)',
-        path: ['cardDate'],
-      });
-    }
-
-    if (!data.cardHolder || data.cardHolder.trim().length < 2) {
-      ctx.addIssue({
-        code: "custom",
-        message: 'Cardholder name is required',
-        path: ['cardHolder'],
-      });
-    }
-
-    if (!data.cvc || data.cvc.trim().length !== 3) {
-      ctx.addIssue({
-        code: "custom",
-        message: 'CVC must be exactly 3 digits long',
-        path: ['cvc'],
       });
     }
   }

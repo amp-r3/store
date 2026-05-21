@@ -14,126 +14,16 @@
     border: 1px solid var(--border-color-light);
     border-radius: $radius-xl;
     box-shadow: var(--shadow-sm);
-  }
 
-  &__card-option {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    padding: $spacing-sm $spacing-md;
-    border: 1.5px solid var(--border-color-light);
-    border-radius: $radius-md;
-    background-color: var(--background-body);
-    cursor: pointer;
-    transition:
-      border-color $transition-fast $ease-in-out-smooth,
-      background-color $transition-fast $ease-in-out-smooth,
-      box-shadow $transition-fast $ease-in-out-smooth;
-
-    &--active {
-      border-color: var(--primary-accent);
-      background-color: rgba(var(--primary-accent-rgb), 0.05);
-      box-shadow: var(--shadow-accent-sm);
-
-      .payment__card-option__dot {
-        border-color: var(--primary-accent);
-        background-color: var(--primary-accent);
-        box-shadow: 0 0 0 3px rgba(var(--primary-accent-rgb), 0.2);
-
-        &::after {
-          opacity: 1;
-        }
-      }
-
-      .payment__card-option__icon {
-        background-color: rgba(var(--primary-accent-rgb), 0.12);
-        color: var(--primary-accent);
-        border-color: transparent;
-      }
+    @media (max-width: 768px) {
+      border-radius: $radius-lg;
+      padding: $spacing-lg;
     }
 
-    &:not(&--active):hover {
-      border-color: var(--border-color);
-    }
-
-    &__radio {
-      display: none;
-    }
-
-    &__dot {
-      flex-shrink: 0;
-      width: 18px;
-      height: 18px;
-      border-radius: $radius-circle;
-      border: 2px solid var(--border-color);
-      background-color: transparent;
-      position: relative;
-      transition:
-        border-color $transition-fast $ease-in-out-smooth,
-        background-color $transition-fast $ease-in-out-smooth,
-        box-shadow $transition-fast $ease-in-out-smooth;
-
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 3px;
-        border-radius: $radius-circle;
-        background-color: var(--text-inverse);
-        opacity: 0;
-        transition: opacity $transition-fast $ease-in-out-smooth;
-      }
-    }
-
-    &__icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      width: $touch-target-min;
-      height: $touch-target-min;
+    @media (max-width: 480px) {
       border-radius: $radius-md;
-      background-color: var(--background-component);
-      border: 1px solid var(--border-color-light);
-      color: var(--text-secondary);
-      font-size: $fs-icon-md;
-
-      transition:
-        background-color $transition-fast $ease-in-out-smooth,
-        border-color $transition-fast $ease-in-out-smooth,
-        color $transition-fast $ease-in-out-smooth;
-
-      @media (max-width: 480px) {
-        font-size: $fs-icon-sm;
-        border-radius: $radius-sm;
-      }
+      padding: $spacing-md;
     }
-
-    &__info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    &__label {
-      font-family: $font-primary;
-      font-size: $fs-sm;
-      font-weight: $fw-semibold;
-      color: var(--text-primary);
-      line-height: $lh-ui;
-    }
-
-  }
-
-  @media (max-width: 768px) {
-    border-radius: $radius-lg;
-    padding: $spacing-lg;
-  }
-
-  @media (max-width: 480px) {
-    border-radius: $radius-md;
-    padding: $spacing-md;
-    gap: $spacing-sm;
   }
 
   &__title {
@@ -144,6 +34,110 @@
     color: var(--text-primary);
     letter-spacing: $letter-spacing-tight;
   }
+
+  // ─── Compact payment methods grid ───────────────────────────────────────────
+
+  &__methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: $spacing-xs;
+
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: $spacing-xxs;
+    }
+  }
+
+  &__method-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xxs;
+    padding: $spacing-sm $spacing-xs;
+    border: 1.5px solid var(--border-color-light);
+    border-radius: $radius-md;
+    background-color: var(--background-body);
+    cursor: pointer;
+    min-height: 72px;
+    transition:
+      border-color $transition-fast $ease-in-out-smooth,
+      background-color $transition-fast $ease-in-out-smooth,
+      box-shadow $transition-fast $ease-in-out-smooth,
+      transform $transition-fast $ease-spring;
+
+    &:not(&--active):hover {
+      border-color: var(--border-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    &:active {
+      transform: scale($scale-down-sm);
+    }
+
+    &--active {
+      border-color: var(--primary-accent);
+      background-color: rgba(var(--primary-accent-rgb), 0.06);
+      box-shadow: var(--shadow-accent-sm);
+
+      .payment__method-card__icon {
+        color: var(--primary-accent);
+        background-color: rgba(var(--primary-accent-rgb), 0.12);
+      }
+
+      .payment__method-card__label {
+        color: var(--primary-accent);
+        font-weight: $fw-semibold;
+      }
+    }
+
+    &__radio {
+      display: none;
+    }
+
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: $radius-sm;
+      background-color: var(--background-component);
+      color: var(--text-secondary);
+      font-size: $fs-icon-md;
+      flex-shrink: 0;
+      transition:
+        background-color $transition-fast $ease-in-out-smooth,
+        color $transition-fast $ease-in-out-smooth;
+
+      @media (max-width: 480px) {
+        width: 30px;
+        height: 30px;
+        font-size: $fs-icon-sm;
+      }
+    }
+
+    &__label {
+      font-family: $font-primary;
+      font-size: $fs-sm;
+      font-weight: $fw-normal;
+      color: var(--text-secondary);
+      line-height: $lh-ui;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      transition: color $transition-fast $ease-in-out-smooth;
+
+      @media (max-width: 480px) {
+        font-size: $fs-xs;
+      }
+    }
+  }
+
+  // ─── Cash on delivery banner ─────────────────────────────────────────────────
 
   &__row {
     display: grid;
@@ -253,25 +247,6 @@
           }
         }
       }
-    }
-  }
-
-  &__secure-note {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xs;
-    padding: $spacing-xs $spacing-md;
-    border-radius: $radius-md;
-    background-color: rgba(var(--primary-accent-rgb), 0.06);
-    border: 1px solid var(--border-color-subtle);
-    font-family: $font-primary;
-    font-size: $fs-sm;
-    font-weight: $fw-normal;
-    color: var(--text-muted);
-
-    svg {
-      flex-shrink: 0;
-      color: var(--primary-accent);
     }
   }
 }

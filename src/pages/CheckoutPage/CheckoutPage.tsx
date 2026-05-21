@@ -14,11 +14,10 @@ import { CheckoutSummary } from "./components/CheckoutSummary/CheckoutSummary"
 import { calculateCartTotals } from "@/utils"
 import { Header } from "@/components/layout/Header/Header"
 import { CheckoutStepBar } from "./components/CheckoutStepBar/CheckoutStepBar"
-import { FaCreditCard, FaMoneyBillWave } from 'react-icons/fa';
+import { PAYMENT_CONFIG } from "@/config"
 
 export type DeliveryMethod = 'standard' | 'express' | 'pickup'
 
-export type PaymentMethod = 'online' | 'onDelivery'
 
 
 const STEPS_ORDER = ['contacts', 'delivery', 'payment'] as const;
@@ -32,21 +31,10 @@ export interface DeliveryOption {
   price: number
 }
 
-export interface PaymentOption {
-  id: PaymentMethod;
-  label: string;
-  icon: ReactNode;
-}
-
 const DELIVERY_OPTIONS: DeliveryOption[] = [
   { id: 'standard', label: 'Standard', duration: '5–7 days', price: 4.99 },
   { id: 'express', label: 'Express', duration: '1–2 days', price: 9.99 },
   { id: 'pickup', label: 'Pickup', duration: 'Today', price: 0 },
-]
-
-const PAYMENT_METHODS: PaymentOption[] = [
-  { id: 'online', label: 'Online', icon: <FaCreditCard /> },
-  { id: 'onDelivery', label: 'Upon delivery', icon: <FaMoneyBillWave /> },
 ]
 
 
@@ -66,7 +54,7 @@ export const CheckoutPage = () => {
     mode: 'onChange',
     defaultValues: {
       deliveryMethod: 'standard',
-      paymentMethod: 'onDelivery'
+      paymentMethod: 'cash_on_delivery'
     },
   });
 
@@ -78,7 +66,7 @@ export const CheckoutPage = () => {
     } else if (step === 'delivery') {
       isStepValid = await methods.trigger(['deliveryMethod', 'country', 'city', 'street', 'housenumber', 'postcode'])
     } else if (step === 'payment') {
-      isStepValid = await methods.trigger(['paymentMethod', 'cardHolder', 'cardNumber', 'cardDate', 'cvc'])
+      isStepValid = await methods.trigger(['paymentMethod'])
     }
 
     if (isStepValid) {
@@ -110,9 +98,7 @@ export const CheckoutPage = () => {
           'deliveryMethod', 'country', 'city', 'street', 'housenumber', 'postcode'
         ]);
       } else if (step === 'payment') {
-        isStepValid = await methods.trigger([
-          'paymentMethod', 'cardNumber', 'cardDate', 'cardHolder', 'cvc'
-        ]);
+        isStepValid = await methods.trigger(['paymentMethod']);
       }
 
       if (isStepValid) {
@@ -194,7 +180,7 @@ export const CheckoutPage = () => {
                 )}
 
                 {step === 'payment' && (
-                  <CheckoutPayments paymentMethods={PAYMENT_METHODS} />
+                  <CheckoutPayments paymentMethods={PAYMENT_CONFIG} />
                 )}
               </section>
 
