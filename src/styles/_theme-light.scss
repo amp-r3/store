@@ -107,4 +107,12 @@
   --gradient-auth-start: #f0eeff;
   --gradient-auth-mid: #e5e1f8;
   --gradient-auth-end: #dddaf2;
+
+  // --- Switch Component ---
+  --switch-track-bg: #ded9f0;
+  --switch-track-border: rgba(124, 109, 255, 0.15);
+  --switch-track-hover-border: rgba(124, 109, 255, 0.4);
+  --switch-indicator-bg: #ffffff;
+  --switch-icon-moon: var(--text-muted);
+  --switch-icon-sun: #ff9800;
 }
