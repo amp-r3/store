@@ -71,7 +71,7 @@
   &__brand {
     margin: 0;
     font-family: $font-primary;
-    font-size: 0.6875rem;
+    font-size: $fs-xs;
     font-weight: $fw-semibold;
     color: var(--primary-accent);
     text-transform: uppercase;
@@ -111,7 +111,7 @@
 
     &--original {
       font-family: $font-primary;
-      font-size: 0.6875rem;
+      font-size: $fs-xs;
       font-weight: $fw-normal;
       color: var(--text-muted);
       text-decoration: line-through;

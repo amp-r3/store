@@ -251,7 +251,7 @@
     .card__category,
     .card__discount {
         padding: 2px $spacing-xs;
-        font-size: 0.6875rem;
+        font-size: $fs-xs;
         letter-spacing: 0;
     }
 
@@ -308,15 +308,15 @@
     }
 
     .card__rating {
-        font-size: 0.6875rem;
+        font-size: $fs-xs;
     }
 
     .card__ratingCount {
-        font-size: 0.6875rem;
+        font-size: $fs-xs;
     }
 
     .card__stock {
-        font-size: 0.6875rem;
+        font-size: $fs-xs;
     }
 
     .card__footer {
@@ -328,7 +328,7 @@
     }
 
     .card__oldPrice {
-        font-size: 0.6875rem;
+        font-size: $fs-xs;
     }
 }
 
