@@ -4,23 +4,21 @@
   background: var(--glass-background-subtle);
   backdrop-filter: $backdrop-blur-sm;
   border-bottom: 1px solid var(--border-color-subtle);
-
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--text-secondary);
 }
 
 .container {
-  max-width: $container-width;
-  margin: 0 auto;
   padding: $spacing-xs $container-padding;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   @media (max-width: 768px) {
-    padding: $spacing-xxs $spacing-sm;
+    padding: $spacing-xxs inherit;
   }
+
 }
 
 .text {
@@ -31,71 +29,108 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @media (max-width: 640px) {
+  @media (max-width: 860px) {
     display: none;
   }
 }
 
 .navGroup {
   display: flex;
-  gap: $spacing-lg;
   align-items: center;
 
-  @media (max-width: 768px) {
-    gap: $spacing-md;
-  }
-
   @media (max-width: 480px) {
-    gap: $spacing-sm;
+    span {
+      display: none;
+    }
+
+    ;
   }
 }
 
-.link {
+.actionsGroup {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  @media (max-width: 480px) {
+    gap: $spacing-xs;
+  }
+}
+
+.authButtons {
   display: flex;
   align-items: center;
   gap: $spacing-xs;
-  color: var(--text-secondary);
-  text-decoration: none;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--border-color);
+  margin: 0 $spacing-xs;
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+.buttonBase {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-xxs $spacing-xs;
+  gap: $spacing-xxs;
+  border-radius: $radius-pill;
   font-weight: $fw-semibold;
-  transition: color $transition-fast $ease-in-out-smooth;
+  font-size: $fs-sm;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all $transition-fast $ease-in-out-smooth;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (max-width: 480px) {
+    font-size: $fs-xs;
+  }
+}
+
+.ghostButton {
+  @extend .buttonBase;
+  color: var(--text-secondary);
+  background: transparent;
 
   &:hover {
     color: var(--primary-accent);
+    background: rgba(var(--primary-accent-rgb), 0.08);
   }
 
-  span {
+  &:active {
+    background: rgba(var(--primary-accent-rgb), 0.12);
+  }
+}
 
-    @media (max-width: 480px) {
-      display: none;
-    }
+.primaryButton {
+  @extend .buttonBase;
+  color: var(--text-inverse);
+  background: var(--primary-accent);
+  box-shadow: var(--shadow-accent-sm);
+  border: 1px solid transparent;
+
+  &:hover {
+    background: var(--primary-accent-light);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-accent-hover);
+  }
+
+  &:active {
+    transform: scale($button-pressed-scale);
+    box-shadow: none;
   }
 }
 
 .icon {
-  font-size: $icon-size-sm;
-  color: var(--primary-accent);
-  opacity: 0.7;
-  transition: opacity $transition-fast $ease-in-out-smooth;
-
-  .link:hover &,
-  .loginLink:hover & {
-    opacity: 1;
-  }
+  font-size: $icon-size-md;
 
   @media (max-width: 480px) {
-    font-size: $icon-size-md;
-  }
-}
-
-.loginLink {
-  @extend .link;
-  color: var(--text-primary);
-
-  &:hover {
-    color: var(--primary-accent-light);
-  }
-
-  .icon {
-    color: var(--primary-accent-light);
+    font-size: $fs-icon-sm;
   }
 }

@@ -8,7 +8,7 @@ import { useCartDetails, useHaptics, useNavbarScroll, useSearch } from '@/hooks'
 // Redux Hooks
 import { useAppDispatch, } from '@/hooks';
 // Custom Components
-import { Logo, SearchForm, ThemeToggle } from '@/components/common';
+import { Logo, SearchForm } from '@/components/common';
 // Functions and Selectors
 import { openCart } from '@/store/slices/cartSlice';
 
@@ -39,7 +39,6 @@ export const Navbar = () => {
       </div>
 
       <div className={style.nav__main_actions}>
-        <ThemeToggle />
 
         <Link to={'/wishlist'} aria-label='open wishlist' className={style.nav__btn}>
           <FaRegHeart />

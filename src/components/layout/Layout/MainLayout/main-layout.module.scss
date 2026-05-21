@@ -4,6 +4,11 @@
     padding-top: $header-height;
     min-height: 100vh;
     padding-bottom: $header-height;
+
+    @media (max-width: 525px) {
+        padding-top: $header-height-tablet;
+        padding-bottom: $header-height-tablet;
+    }
 }
 
 .mobileBar {

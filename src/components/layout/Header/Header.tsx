@@ -1,13 +1,14 @@
-import { Link } from 'react-router'
-import { FaUserPlus, FaArrowRightToBracket, FaUser } from 'react-icons/fa6'
-import { FaGithub } from 'react-icons/fa'
-import { selectIsAuth, selectUserName } from '@/store/selectors/authSelectors'
-import { useAppSelector } from '@/hooks'
-import style from './header.module.scss'
+import { Link } from 'react-router';
+import { FaUserPlus, FaArrowRightToBracket, FaUser } from 'react-icons/fa6';
+import { FaGithub } from 'react-icons/fa';
+import { selectIsAuth, selectUserName } from '@/store/selectors/authSelectors';
+import { useAppSelector } from '@/hooks';
+import style from './header.module.scss';
+import { ThemeToggle } from '@/components/common';
 
 export const Header = () => {
-  const isAuth = useAppSelector(selectIsAuth)
-  const userName = useAppSelector(selectUserName)
+  const isAuth = useAppSelector(selectIsAuth);
+  const userName = useAppSelector(selectUserName);
 
   return (
     <header className={style.topbar}>
@@ -17,35 +18,41 @@ export const Header = () => {
             href="https://github.com/amp-r3/store"
             target="_blank"
             rel="noopener noreferrer"
-            className={style.link}
+            className={style.ghostButton}
           >
             <FaGithub className={style.icon} />
             <span>source code</span>
           </a>
         </div>
 
-        <span className={style.text}>Portfolio site: materials are not commercial.</span>
+        <span className={style.text}>
+          Portfolio site: materials are not commercial.
+        </span>
 
-        {isAuth ? (
-          <div className={style.navGroup}>
-            <Link to={'/user'} className={style.link}>
+        <div className={style.actionsGroup}>
+          <ThemeToggle variant="switch" />
+
+          <div className={style.divider} />
+
+          {isAuth ? (
+            <Link to={'/user'} className={style.primaryButton}>
               <FaUser className={style.icon} />
               <span>{userName}</span>
             </Link>
-          </div>
-        ) : (
-          <div className={style.navGroup}>
-            <Link to={'/register'} className={style.link}>
-              <FaUserPlus className={style.icon} />
-              <span>Sign up</span>
-            </Link>
-            <Link to={'/login'} className={style.loginLink}>
-              <FaArrowRightToBracket className={style.icon} />
-              <span>Sign in</span>
-            </Link>
-          </div>
-        )}
+          ) : (
+            <div className={style.authButtons}>
+              <Link to={'/register'} className={style.ghostButton}>
+                <FaUserPlus className={style.icon} />
+                <span>Sign up</span>
+              </Link>
+              <Link to={'/login'} className={style.primaryButton}>
+                <FaArrowRightToBracket className={style.icon} />
+                <span>Sign in</span>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </header>
-  )
-}
+  );
+};
