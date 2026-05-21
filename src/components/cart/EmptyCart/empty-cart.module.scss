@@ -117,7 +117,7 @@
     }
 
     &__title {
-        font-family: $font-primary;
+        font-family: $font-display;
         font-size: $fs-xl;
         font-weight: $fw-bold;
         color: var(--text-primary);
@@ -144,7 +144,7 @@
         background: var(--primary-accent);
         color: var(--text-inverse);
 
-        font-family: $font-primary;
+        font-family: $font-display;
         font-weight: $fw-semibold;
         font-size: $fs-base;
 

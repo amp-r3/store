@@ -7,7 +7,7 @@
 
   &__title {
     margin: 0;
-    font-family: $font-primary;
+    font-family: $font-display;
     font-size: $fs-base;
     font-weight: $fw-bold;
     color: var(--text-primary);
@@ -170,7 +170,7 @@
     }
 
     &__title {
-      font-family: $font-primary;
+      font-family: $font-display;
       font-size: $fs-base;
       font-weight: $fw-bold;
       color: var(--text-primary);
