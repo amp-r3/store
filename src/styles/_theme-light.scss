@@ -38,6 +38,11 @@
   // --- Semantic Colors ---
   --rating-color: #f59e0b;
   --error-color: #dc2626;
+  --success-color: #16a34a;
+  --success-color-rgb: 22, 163, 74;
+  --success-color-dark: #15803d;
+  --success-background: rgba(22, 163, 74, 0.10);
+  --shadow-success-sm: 0 4px 15px rgba(22, 163, 74, 0.18);
 
   // --- Gradient Colors (Logo & Decorative) ---
   --gradient-logo-start: #a78bfa;

@@ -18,24 +18,36 @@ export const WishListPage = () => {
       <BackButton
         onClick={() => { navigate(-1) }}
       />
+
       {
-        isEmpty ? <WishlistEmpty /> :
+        isLoading || isFetching ? (
+          isEmpty
+            ? Array.from({ length: 8 }).map((_, index) => (
+              <ProductCardSkeleton key={`skeleton-mock-${index}`} />
+            ))
+            : wishlistItems.map((item) => (
+              <ProductCardSkeleton key={`skeleton-${item.id}`} />
+            ))
+
+        ) : isEmpty ? (
+          <WishlistEmpty />
+
+        ) : (
           <>
             <h1>Your Favorites</h1>
             <div className={`content ${isFetching && !isLoading ? 'fetching-state' : ''}`}>
-
               {
                 wishlistItems.map((item, index) => (
-                  isLoading ? <ProductCardSkeleton key={item.id} /> :
-                    <ProductCard
-                      key={item.id}
-                      product={wishlistDetails[index]}
-                      priority={index < 8}
-                    />
+                  <ProductCard
+                    key={item.id}
+                    product={wishlistDetails[index]}
+                    priority={index < 8}
+                  />
                 ))
               }
             </div>
           </>
+        )
       }
     </main>
   )

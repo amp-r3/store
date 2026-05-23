@@ -11,7 +11,7 @@ interface ModalProps {
   icon?: ReactNode;
   actionLabel: string;
   onAction: () => void;
-  actionVariant?: 'primary' | 'danger';
+  actionVariant?: 'default' | 'success' | 'danger';
   isLoading?: boolean;
 }
 
@@ -23,7 +23,7 @@ export const Modal: FC<ModalProps> = ({
   icon,
   actionLabel,
   onAction,
-  actionVariant = 'primary',
+  actionVariant = 'default',
   isLoading = false,
 }) => {
   return (
@@ -31,7 +31,7 @@ export const Modal: FC<ModalProps> = ({
       <Dialog.Portal container={document.getElementById('modal-root')!}>
         <Dialog.Overlay className={style.overlay} />
 
-        <Dialog.Content className={style.content}>
+        <Dialog.Content className={`${style.content} ${style[actionVariant]}`}>
           <div className={style.header}>
             {icon && <div className={style.iconWrapper}>{icon}</div>}
             <Dialog.Title className={style.title}>{title}</Dialog.Title>
@@ -44,14 +44,13 @@ export const Modal: FC<ModalProps> = ({
           )}
 
           <div className={style.actions}>
-            <Dialog.Close asChild>
-              <button
-                className={style.cancelButton}
-                disabled={isLoading}
-              >
-                Cancel
-              </button>
-            </Dialog.Close>
+            {actionVariant !== 'success' && (
+              <Dialog.Close asChild>
+                <button className={style.cancelButton} disabled={isLoading}>
+                  Cancel
+                </button>
+              </Dialog.Close>
+            )}
             <button
               className={`${style.actionButton} ${style[actionVariant]}`}
               onClick={onAction}
