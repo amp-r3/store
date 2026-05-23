@@ -1,16 +1,12 @@
 import { CartItem } from '@/types/products';
 
-export const calculateCartTotals = (items: CartItem[]) => {
-    const FREE_SHIPPING_THRESHOLD = 200;
+const roundPrice = (num: number) => Number(Math.round(Number(num + 'e2')) + 'e-2');
 
+export const calculateCartTotals = (items: CartItem[], freeShippingThreshold: number | null) => {
     const { subtotal, total } = items.reduce(
         (acc, item) => {
-            const priceOriginal = item.basePrice;
-
-            const priceDiscounted = item.price;
-
-            const lineOriginalTotal = priceOriginal * item.quantity;
-            const lineDiscountedTotal = priceDiscounted * item.quantity;
+            const lineOriginalTotal = item.basePrice * item.quantity;
+            const lineDiscountedTotal = item.price * item.quantity;
 
             return {
                 subtotal: acc.subtotal + lineOriginalTotal,
@@ -20,18 +16,28 @@ export const calculateCartTotals = (items: CartItem[]) => {
         { subtotal: 0, total: 0 }
     );
 
-    const discountAmount = subtotal - total;
+    const safeSubtotal = roundPrice(subtotal);
+    const safeTotal = roundPrice(total);
 
-    const discountPercent = subtotal > 0
-        ? Math.round((discountAmount / subtotal) * 100)
+    const discountAmount = roundPrice(safeSubtotal - safeTotal);
+    const discountPercent = safeSubtotal > 0
+        ? Math.round((discountAmount / safeSubtotal) * 100)
         : 0;
 
-    const shippingProgress = Math.min((total / FREE_SHIPPING_THRESHOLD) * 100, 100);
-    const remainingForFreeShipping = FREE_SHIPPING_THRESHOLD - total;
+    let shippingProgress = 0;
+    let remainingForFreeShipping = 0;
+
+    if (freeShippingThreshold !== null && freeShippingThreshold > 0) {
+        shippingProgress = Math.min((safeTotal / freeShippingThreshold) * 100, 100);
+        remainingForFreeShipping = Math.max(0, freeShippingThreshold - safeTotal);
+    } else if (freeShippingThreshold === 0) {
+        shippingProgress = 100;
+        remainingForFreeShipping = 0;
+    }
 
     return {
-        subtotal,
-        total,
+        subtotal: safeSubtotal,
+        total: safeTotal,
         discountAmount,
         discountPercent,
         shippingProgress,

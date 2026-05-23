@@ -7,7 +7,6 @@ import { IoWarningOutline } from "react-icons/io5";
 import styles from './cart-drawer.module.scss';
 
 import { useAppSelector } from '@/hooks';
-import { calculateCartTotals } from '@/utils';
 
 import { CartItem } from '../CartItem/CartItem';
 import { CartItemSkeleton } from '../CartItem/CartItemSkeleton';
@@ -27,27 +26,11 @@ interface CartDrawerProps {
 const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cartDetails, isEmpty, isLoading, isFetching, cartItems, totalQuantity, refetchCart } = useCartDetails(isOpen);
+  const { cartDetails, isEmpty, totals, isLoading, isFetching, cartItems, totalQuantity, refetchCart } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
   const { soft, success } = useHaptics();
-
-
-  const {
-    subtotal,
-    total,
-    discountAmount,
-    discountPercent,
-    shippingProgress,
-    remainingForFreeShipping,
-  } = useMemo(() => {
-    const validCartItems = cartDetails.filter(
-      (item): item is NonNullable<typeof item> => item !== null
-    );
-
-    return calculateCartTotals(validCartItems);
-  }, [cartDetails]);
 
   const { onIncrease, onDecrease, onRemove, onClearCart, isUpdating } = useCartActions()
 
@@ -105,37 +88,46 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className={styles.cart__scrollArea}>
-              <div
-                className={styles.cart__body}
-              >
-                {isEmpty ? (
-                  <EmptyCart onStartShopping={onStartShopping} />
-                ) :
+              <div className={styles.cart__body}>
 
+                {isLoading || isFetching ? (
+                  isEmpty
+                    ?
+                    Array.from({ length: 4 }).map((_, index) => (
+                      <CartItemSkeleton key={`skeleton-mock-${index}`} />
+                    ))
+                    :
+                    cartItems.map((item) => (
+                      <CartItemSkeleton key={`skeleton-${item.id}`} />
+                    ))
+
+                ) : isEmpty ? (
+                  <EmptyCart onStartShopping={onStartShopping} />
+
+                ) : (
                   cartItems.map((item, index) => (
-                    isLoading || isFetching ? <CartItemSkeleton key={item.id} /> :
-                      <CartItem
-                        key={item.id}
-                        product={cartDetails[index]}
-                        onIncrease={onIncrease}
-                        onDecrease={onDecrease}
-                        onRemove={onRemove}
-                        onClose={onClose}
-                      />
-                  )
-                  )
-                }
+                    <CartItem
+                      key={item.id}
+                      product={cartDetails[index]}
+                      onIncrease={onIncrease}
+                      onDecrease={onDecrease}
+                      onRemove={onRemove}
+                      onClose={onClose}
+                    />
+                  ))
+                )}
+
               </div>
             </div>
 
             {!isEmpty && (
               <CartFooter
-                subtotal={subtotal}
-                total={total}
-                discountAmount={discountAmount}
-                discountPercent={discountPercent}
-                shippingProgress={shippingProgress}
-                remainingForFreeShipping={remainingForFreeShipping}
+                subtotal={totals.subtotal}
+                total={totals.total}
+                discountAmount={totals.discountAmount}
+                discountPercent={totals.discountPercent}
+                shippingProgress={totals.shippingProgress}
+                remainingForFreeShipping={totals.remainingForFreeShipping}
                 isLoading={isLoading}
                 isFetching={isFetching}
                 isUpdating={isUpdating}

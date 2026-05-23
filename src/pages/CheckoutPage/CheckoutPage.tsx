@@ -11,7 +11,6 @@ import { CheckoutShipping } from "./components/ChecoutShipping/CheckoutShipping"
 import { CheckoutFormValues, checkoutMasterSchema } from "@/schemas/checkoutMasterSchema"
 import { CheckoutPayments } from "./components/CheckoutPayments/CheckoutPayments"
 import { CheckoutSummary } from "./components/CheckoutSummary/CheckoutSummary"
-import { calculateCartTotals } from "@/utils"
 import { Header } from "@/components/layout/Header/Header"
 import { CheckoutStepBar } from "./components/CheckoutStepBar/CheckoutStepBar"
 import { PAYMENT_CONFIG } from "@/config"
@@ -40,7 +39,7 @@ const DELIVERY_OPTIONS: DeliveryOption[] = [
 
 export const CheckoutPage = () => {
   const navigate = useNavigate()
-  const { cartDetails, isLoading, cartItems, totalQuantity } = useCartDetails()
+  const { cartDetails, totals, isLoading, isFetching, cartItems } = useCartDetails()
   const user = useAppSelector(selectUser)
   const [step, setStep] = useState<StepType>('contacts')
   const [highestStepIndex, setHighestStepIndex] = useState<number>(0);
@@ -116,35 +115,16 @@ export const CheckoutPage = () => {
 
   const paymentMethod = methods.watch('paymentMethod')
 
-  const selectedDelivery = DELIVERY_OPTIONS.find(o => o.id === deliveryMethod)
-
-  const {
-    subtotal,
-    total,
-    discountAmount,
-    discountPercent,
-    shippingProgress,
-    remainingForFreeShipping,
-  } = useMemo(() => {
-    const validCartItems = cartDetails.filter(
-      (item): item is NonNullable<typeof item> => item !== null
-    );
-
-    return calculateCartTotals(validCartItems);
-  }, [cartDetails]);
-
-
-  const updatedDeliveryOptions = DELIVERY_OPTIONS.map((opt) => {
-    if (opt.id === 'standard' && remainingForFreeShipping <= 0) {
+    if (opt.code === 'standard' && totals.remainingForFreeShipping <= 0) {
       return { ...opt, price: 0 }
     }
-
+    
     return opt
   })
 
   const deliveryCost = remainingForFreeShipping <= 0 && selectedDelivery.id !== 'express' ? 0 : selectedDelivery.price;
 
-  const totalPrice = total + deliveryCost
+  const totalPrice = totals.total + deliveryCost;
 
   return (
     <>
@@ -188,16 +168,19 @@ export const CheckoutPage = () => {
                 cartDetails={cartDetails}
                 cartItems={cartItems}
                 deliveryCost={deliveryCost}
-                subtotal={subtotal}
+                subtotal={totals.subtotal}
                 total={totalPrice}
-                discountAmount={discountAmount}
-                discountPercent={discountPercent}
-                remainingForFreeShipping={remainingForFreeShipping}
-                shippingProgress={shippingProgress}
+                discountAmount={totals.discountAmount}
+                discountPercent={totals.discountPercent}
+                remainingForFreeShipping={totals.remainingForFreeShipping}
+                shippingProgress={totals.shippingProgress}
                 step={step}
-                selectedDelivery={selectedDelivery}
+                selectedDelivery={selectedDeliveryMethod}
                 isLastStep={isLastStep}
+                isLoading={isLoading || isFetching}
+                isCreating={isCreating || isClearing}
                 handleNextStep={handleNextStep}
+                onSubmit={onSubmit}
               />
 
             </form>
