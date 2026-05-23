@@ -15,14 +15,14 @@ export interface PaymentBanner {
   details: PaymentDetailItem[]
 }
 
-export interface PaymentOption {
+export interface PaymentConfig {
   id: string
   label: string
   icon: ReactNode
   banner?: PaymentBanner
 }
 
-export const PAYMENT_CONFIG: PaymentOption[] = [
+export const PAYMENT_CONFIG: PaymentConfig[] = [
   {
     id: 'online_card',
     label: 'Online',
