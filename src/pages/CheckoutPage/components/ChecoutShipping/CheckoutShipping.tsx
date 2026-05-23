@@ -1,57 +1,50 @@
 import { FormField } from "@/components/common"
 import style from './checkout-shipping.module.scss'
-import type { DeliveryOption } from "../../CheckoutPage"
 import { FC } from "react"
-import { formatPrice } from "@/utils";
 import { useFormContext } from "react-hook-form";
 import { CheckoutFormValues } from "@/schemas/checkoutMasterSchema";
 import { LuHouse, LuClock, LuPackageOpen, LuMapPin } from "react-icons/lu";
+import { DeliveryMethod, DeliveryOptions } from "@/types/checkout";
+import { DeliveryOption } from "./DeliveryOption/DeliveryOption";
+import { DeliveryOptionSkeleton } from "./DeliveryOption/DeliveryOptionSkeleton";
 
 
 interface CheckoutShipping {
-  deliveryOptions: DeliveryOption[];
+  isLoading: boolean;
+  selectedDelivery: DeliveryMethod;
+  deliveryOptions: DeliveryMethod[];
+  isShippingRequiered: boolean;
+  handleSelect(id: string, name: DeliveryOptions): void;
 }
 
-export const CheckoutShipping: FC<CheckoutShipping> = ({ deliveryOptions }) => {
-  const { register, watch, formState: { errors } } = useFormContext<CheckoutFormValues>();
+export const CheckoutShipping: FC<CheckoutShipping> = ({ deliveryOptions, isLoading, selectedDelivery, handleSelect, isShippingRequiered }) => {
+  const { register, formState: { errors } } = useFormContext<CheckoutFormValues>();
 
-  const currentDeliveryMethod = watch("deliveryMethod");
   return (
     <section className={style['shipping']}>
       <div className={style['shipping__wrapper']}>
+        {errors.deliveryMethodId && (
+          <div className={style['shipping__delivery-message']} role="alert">
+            {errors.deliveryMethodId.message}
+          </div>
+        )}
         <h2 className={style['shipping__title']}>Delivery Method</h2>
         {
-          deliveryOptions.map(opt => {
-            const isSelected = currentDeliveryMethod === opt.id;
-            return (
-              <label
-                key={opt.id}
-                className={`${style['shipping__delivery-option']}  ${isSelected ? style['shipping__delivery-option--active'] : ''}`}
-              >
-                <input
-                  type="radio"
-                  name="deliveryMethod"
-                  value={opt.id}
-                  className={style['shipping__delivery-option__radio']}
-                  {...register("deliveryMethod")}
-                />
-                <span className={style['shipping__delivery-option__dot']}></span>
-                <div className={style['shipping__delivery-option__info']}>
-                  <span className={style['shipping__delivery-option__label']}>{opt.label}</span>
-                  <span className={style['shipping__delivery-option__duration']}>{opt.duration}</span>
-                </div>
-                <span className={style['shipping__delivery-option__price']}>
-                  {opt.price === 0 ? 'Free' : `${formatPrice(opt.price)}`}
-                </span>
-              </label>
-            )
-          })
+          isLoading ? Array.from({ length: 3 }).map((_, index) => (
+            <DeliveryOptionSkeleton key={`skeleton-mock-${index}`} />
+          )) :
+            deliveryOptions.map(opt => {
+              const isSelected = selectedDelivery?.id === opt.id;
+              return (
+                <DeliveryOption handleSelect={handleSelect} isSelected={isSelected} option={opt} key={opt.id} />
+              )
+            })
         }
       </div>
 
       <div className={style['shipping__wrapper']}>
         {
-          currentDeliveryMethod === 'pickup' ?
+          !isShippingRequiered ?
             <div className={style['shipping__pickup-banner']}>
               <div className={style['shipping__pickup-banner__icon-wrap']}>
                 <LuHouse aria-hidden="true" />

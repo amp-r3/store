@@ -2,43 +2,52 @@ import style from './checkout-payments.module.scss'
 import { useFormContext } from 'react-hook-form'
 import { CheckoutFormValues } from '@/schemas/checkoutMasterSchema'
 import { FC } from 'react'
-import { PaymentOption } from '@/config/payment.config';
+import { PaymentMethod, PaymentOptions } from '@/types/checkout';
+import { PAYMENT_CONFIG } from '@/config';
+import { PaymentOption } from './PaymentOption/PaymentOption';
+import { PaymentOptionSkeleton } from './PaymentOption/PaymentOptionSkeleton';
 
 interface CheckoutPaymentsProps {
-  paymentMethods: PaymentOption[];
+  paymentMethods: PaymentMethod[];
+  isLoading: boolean;
+  handleSelect(id: string, code: PaymentOptions): void
 }
 
-export const CheckoutPayments: FC<CheckoutPaymentsProps> = ({ paymentMethods }) => {
-  const { register, watch } = useFormContext<CheckoutFormValues>()
-  const currentPaymentMethod = watch('paymentMethod')
+export const CheckoutPayments: FC<CheckoutPaymentsProps> = ({ paymentMethods, isLoading, handleSelect }) => {
+  const { watch, formState: { errors, isSubmitted } } = useFormContext<CheckoutFormValues>()
+  const currentPaymentMethod = watch('paymentMethodId')
 
-  const selectedMethod = paymentMethods.find(m => m.id === currentPaymentMethod)
-  const banner = selectedMethod?.banner
-
+  const selectedMethod = paymentMethods.find(m => m?.id === currentPaymentMethod)
+  const paymentInfo = PAYMENT_CONFIG.find(m => m.id === selectedMethod?.code)
+  const banner = paymentInfo?.banner
   return (
     <section className={style['payment']}>
       <div className={style['payment__wrapper']}>
+        {errors.paymentMethodId && isSubmitted && (
+          <div className={style['payment__message']} role="alert">
+            {errors.paymentMethodId.message}
+          </div>
+        )}
         <h2 className={style['payment__title']}>Payment method</h2>
 
         <div className={style['payment__methods-grid']}>
-          {paymentMethods.map(opt => {
-            const isSelected = currentPaymentMethod === opt.id
-            return (
-              <label
-                key={opt.id}
-                className={`${style['payment__method-card']} ${isSelected ? style['payment__method-card--active'] : ''}`}
-              >
-                <input
-                  type="radio"
-                  value={opt.id}
-                  className={style['payment__method-card__radio']}
-                  {...register('paymentMethod')}
-                />
-                <span className={style['payment__method-card__icon']}>{opt.icon}</span>
-                <span className={style['payment__method-card__label']}>{opt.label}</span>
-              </label>
-            )
-          })}
+          {
+            isLoading ? Array.from({ length: 5 }).map((_, i) => <PaymentOptionSkeleton key={i} />) :
+              paymentMethods.map(opt => {
+                const ui = PAYMENT_CONFIG.find(m => m.id === opt.code);
+                if (!ui) return null;
+                const isSelected = currentPaymentMethod === opt.id
+                return (
+                  <PaymentOption
+                    option={opt}
+                    icon={ui.icon}
+                    label={ui.label}
+                    handleSelect={handleSelect}
+                    isSelected={isSelected} />
+                )
+              })
+
+          }
         </div>
       </div>
 

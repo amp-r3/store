@@ -1,15 +1,9 @@
 import { CheckoutFormValues } from '@/schemas/checkoutMasterSchema';
 import style from './checkout-contacts.module.scss'
 import { FormField } from "@/components/common";
-import { SessionUser } from "@/types/auth";
-import { FC } from "react";
 import { useFormContext } from 'react-hook-form';
 
-interface CheckoutContactsProps {
-  user: SessionUser;
-}
-
-export const CheckoutContacts: FC<CheckoutContactsProps> = ({ user }) => {
+export const CheckoutContacts = () => {
 
   const { register, formState: { errors } } = useFormContext<CheckoutFormValues>();
 
@@ -20,14 +14,12 @@ export const CheckoutContacts: FC<CheckoutContactsProps> = ({ user }) => {
       <div className={style['contacts__row']}>
         <FormField
           label="First name"
-          value={user.firstName}
           placeholder="John"
           error={errors.firstName?.message}
           {...register('firstName')}
         />
         <FormField
           label="Last name"
-          value={user.lastName}
           placeholder="Doe"
           error={errors.lastName?.message}
           {...register('lastName')}
@@ -36,7 +28,6 @@ export const CheckoutContacts: FC<CheckoutContactsProps> = ({ user }) => {
       <FormField
         label="Email"
         type="email"
-        value={user.email}
         placeholder="john@example.com"
         error={errors.email?.message}
         {...register('email')}

@@ -26,6 +26,37 @@
     }
   }
 
+  &__message {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-input;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    background-color: rgba(220, 38, 38, 0.07);
+    color: var(--error-color);
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-normal;
+    line-height: $lh-normal;
+
+    &::before {
+      content: '!';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      border-radius: 50%;
+      border: 1.5px solid var(--error-color);
+      font-size: 10px;
+      font-weight: $fw-bold;
+      line-height: 1;
+    }
+  }
+
   &__title {
     margin: 0;
     font-family: $font-display;
@@ -47,97 +78,6 @@
       gap: $spacing-xxs;
     }
   }
-
-  &__method-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: $spacing-xxs;
-    padding: $spacing-sm $spacing-xs;
-    border: 1.5px solid var(--border-color-light);
-    border-radius: $radius-md;
-    background-color: var(--background-body);
-    cursor: pointer;
-    min-height: 72px;
-    transition:
-      border-color $transition-fast $ease-in-out-smooth,
-      background-color $transition-fast $ease-in-out-smooth,
-      box-shadow $transition-fast $ease-in-out-smooth,
-      transform $transition-fast $ease-spring;
-
-    &:not(&--active):hover {
-      border-color: var(--border-color);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    &:active {
-      transform: scale($scale-down-sm);
-    }
-
-    &--active {
-      border-color: var(--primary-accent);
-      background-color: rgba(var(--primary-accent-rgb), 0.06);
-      box-shadow: var(--shadow-accent-sm);
-
-      .payment__method-card__icon {
-        color: var(--primary-accent);
-        background-color: rgba(var(--primary-accent-rgb), 0.12);
-      }
-
-      .payment__method-card__label {
-        color: var(--primary-accent);
-        font-weight: $fw-semibold;
-      }
-    }
-
-    &__radio {
-      display: none;
-    }
-
-    &__icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: $radius-sm;
-      background-color: var(--background-component);
-      color: var(--text-secondary);
-      font-size: $fs-icon-md;
-      flex-shrink: 0;
-      transition:
-        background-color $transition-fast $ease-in-out-smooth,
-        color $transition-fast $ease-in-out-smooth;
-
-      @media (max-width: 480px) {
-        width: 30px;
-        height: 30px;
-        font-size: $fs-icon-sm;
-      }
-    }
-
-    &__label {
-      font-family: $font-primary;
-      font-size: $fs-sm;
-      font-weight: $fw-normal;
-      color: var(--text-secondary);
-      line-height: $lh-ui;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      transition: color $transition-fast $ease-in-out-smooth;
-
-      @media (max-width: 480px) {
-        font-size: $fs-xs;
-      }
-    }
-  }
-
-  // ─── Cash on delivery banner ─────────────────────────────────────────────────
 
   &__row {
     display: grid;

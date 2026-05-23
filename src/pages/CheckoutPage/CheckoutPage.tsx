@@ -1,6 +1,6 @@
 import { BackButton } from "@/components/common"
 import { useAppSelector, useCartDetails } from "@/hooks"
-import { ReactNode, useMemo, useState } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router"
 import styles from './checkout-page.module.scss'
 import { selectUser } from "@/store/selectors/authSelectors"
@@ -13,33 +13,22 @@ import { CheckoutPayments } from "./components/CheckoutPayments/CheckoutPayments
 import { CheckoutSummary } from "./components/CheckoutSummary/CheckoutSummary"
 import { Header } from "@/components/layout/Header/Header"
 import { CheckoutStepBar } from "./components/CheckoutStepBar/CheckoutStepBar"
-import { PAYMENT_CONFIG } from "@/config"
-
-export type DeliveryMethod = 'standard' | 'express' | 'pickup'
-
-
+import { useCreateOrderMutation, useGetDeliveryMethodsQuery, useGetPaymentMethodsQuery } from "@/services/checkoutApi"
+import { DeliveryOptions, PaymentOptions } from "@/types/checkout"
+import { useClearCartMutation } from "@/services/cartApi"
 
 const STEPS_ORDER = ['contacts', 'delivery', 'payment'] as const;
 
 export type StepType = typeof STEPS_ORDER[number];
 
-export interface DeliveryOption {
-  id: DeliveryMethod;
-  label: string;
-  duration: string;
-  price: number
-}
-
-const DELIVERY_OPTIONS: DeliveryOption[] = [
-  { id: 'standard', label: 'Standard', duration: '5–7 days', price: 4.99 },
-  { id: 'express', label: 'Express', duration: '1–2 days', price: 9.99 },
-  { id: 'pickup', label: 'Pickup', duration: 'Today', price: 0 },
-]
-
 
 export const CheckoutPage = () => {
   const navigate = useNavigate()
   const { cartDetails, totals, isLoading, isFetching, cartItems } = useCartDetails()
+  const { data: deliveryMethods, isLoading: isDeliveryLoading } = useGetDeliveryMethodsQuery();
+  const { data: paymentMethods, isLoading: isPaymentLoading } = useGetPaymentMethodsQuery();
+  const [clearServerCart, { isLoading: isClearing }] = useClearCartMutation();
+  const [createOrder, { isLoading: isCreating }] = useCreateOrderMutation();
   const user = useAppSelector(selectUser)
   const [step, setStep] = useState<StepType>('contacts')
   const [highestStepIndex, setHighestStepIndex] = useState<number>(0);
@@ -52,10 +41,28 @@ export const CheckoutPage = () => {
     resolver: zodResolver(checkoutMasterSchema),
     mode: 'onChange',
     defaultValues: {
-      deliveryMethod: 'standard',
-      paymentMethod: 'cash_on_delivery'
+      paymentMethodId: '',
+      deliveryMethodId: '',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email
     },
   });
+
+  const deliveryCode = methods.watch('deliveryMethodCode');
+  const isShippingRequired = deliveryCode !== 'pickup';
+
+
+  const handleDeliverySelect = (id: string, code: DeliveryOptions) => {
+    methods.setValue('deliveryMethodId', id, { shouldValidate: true });
+
+    methods.setValue('deliveryMethodCode', code, { shouldValidate: true });
+  };
+
+  const handlePaymentSelect = (id: string, code: PaymentOptions) => {
+    methods.setValue('paymentMethodId', id, { shouldValidate: true })
+    methods.setValue('paymentMethodCode', code, { shouldValidate: true })
+  }
 
   const handleNextStep = async () => {
     let isStepValid = false;
@@ -63,12 +70,14 @@ export const CheckoutPage = () => {
     if (step === 'contacts') {
       isStepValid = await methods.trigger(['firstName', 'lastName', 'email', 'phone'])
     } else if (step === 'delivery') {
-      isStepValid = await methods.trigger(['deliveryMethod', 'country', 'city', 'street', 'housenumber', 'postcode'])
-    } else if (step === 'payment') {
-      isStepValid = await methods.trigger(['paymentMethod'])
+      isStepValid = await methods.trigger([
+        'deliveryMethodId', 'deliveryMethodCode', 'country', 'city', 'street', 'housenumber', 'postcode'
+      ]);
     }
 
     if (isStepValid) {
+      methods.clearErrors();
+
       const nextIndex = currentIndex + 1;
       setStep(STEPS_ORDER[nextIndex]);
 
@@ -94,10 +103,10 @@ export const CheckoutPage = () => {
         isStepValid = await methods.trigger(['firstName', 'lastName', 'email', 'phone']);
       } else if (step === 'delivery') {
         isStepValid = await methods.trigger([
-          'deliveryMethod', 'country', 'city', 'street', 'housenumber', 'postcode'
+          'deliveryMethodId', 'deliveryMethodCode', 'country', 'city', 'street', 'housenumber', 'postcode'
         ]);
       } else if (step === 'payment') {
-        isStepValid = await methods.trigger(['paymentMethod']);
+        isStepValid = await methods.trigger(['paymentMethodId']);
       }
 
       if (isStepValid) {
@@ -107,13 +116,41 @@ export const CheckoutPage = () => {
   };
 
 
-  const onSubmit = async (data: CheckoutFormValues) => {
-    console.log('Collected data from all steps:', data);
+  const onSubmit = async (formData: CheckoutFormValues) => {
+    if (!isLastStep) {
+      return;
+    }
+    const payload = {
+      p_shipping_address: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        country: isShippingRequired ? formData.country : 'N/A',
+        city: isShippingRequired ? formData.city : 'N/A',
+        street: isShippingRequired ? formData.street : 'N/A',
+        housenumber: isShippingRequired ? formData.housenumber : 'N/A',
+        postcode: isShippingRequired ? formData.postcode : 'N/A',
+      },
+      p_payment_method_id: formData.paymentMethodId,
+      p_delivery_method_id: formData.deliveryMethodId,
+      p_items: cartItems.map((item) => { return { product_id: item.id, quantity: item.quantity } })
+    };
+
+    try {
+      const orderId = await createOrder(payload).unwrap();
+      await clearServerCart().unwrap();
+      navigate('/checkout/success', {
+        state: { orderId },
+        replace: true
+      })
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const deliveryMethod = methods.watch('deliveryMethod');
 
-  const paymentMethod = methods.watch('paymentMethod')
+  const updatedDeliveryMethods = deliveryMethods?.map((opt) => {
 
     if (opt.code === 'standard' && totals.remainingForFreeShipping <= 0) {
       return { ...opt, price: 0 }
@@ -121,8 +158,15 @@ export const CheckoutPage = () => {
     
     return opt
   })
+  const selectedDeliveryMethod = updatedDeliveryMethods?.find(
+    (method) => method?.code === deliveryCode
+  );
 
-  const deliveryCost = remainingForFreeShipping <= 0 && selectedDelivery.id !== 'express' ? 0 : selectedDelivery.price;
+  const deliveryCost = selectedDeliveryMethod
+    ? (totals.remainingForFreeShipping <= 0 && selectedDeliveryMethod?.code !== 'express'
+      ? 0
+      : selectedDeliveryMethod.price)
+    : 0;
 
   const totalPrice = totals.total + deliveryCost;
 
@@ -151,16 +195,25 @@ export const CheckoutPage = () => {
                 />
 
                 {step === 'contacts' && (
-                  <CheckoutContacts user={user} />
+                  <CheckoutContacts />
                 )}
 
                 {step === 'delivery' && (
                   <CheckoutShipping
-                    deliveryOptions={updatedDeliveryOptions} />
+                    isLoading={isDeliveryLoading}
+                    selectedDelivery={selectedDeliveryMethod}
+                    deliveryOptions={updatedDeliveryMethods}
+                    isShippingRequiered={isShippingRequired}
+                    handleSelect={handleDeliverySelect}
+                  />
                 )}
 
                 {step === 'payment' && (
-                  <CheckoutPayments paymentMethods={PAYMENT_CONFIG} />
+                  <CheckoutPayments
+                    paymentMethods={paymentMethods}
+                    isLoading={isPaymentLoading}
+                    handleSelect={handlePaymentSelect}
+                  />
                 )}
               </section>
 

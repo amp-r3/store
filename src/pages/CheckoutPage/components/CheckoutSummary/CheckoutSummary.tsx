@@ -3,7 +3,7 @@ import style from './checkout-summary.module.scss';
 import { CartItem } from '@/types/products';
 import { FC } from 'react';
 import { CartProduct } from '@/store/selectors/cartSelectors';
-import { DeliveryOption, StepType } from '../../CheckoutPage';
+import { StepType } from '../../CheckoutPage';
 import { formatPrice } from '@/utils';
 import {
   HiLocationMarker,
@@ -11,6 +11,10 @@ import {
   HiArrowRight,
   HiCheckCircle
 } from "react-icons/hi";
+import { DeliveryMethod } from '@/types/checkout';
+import ProductItemSkeleton from '@/components/products/ProductItem/ProductItemSkeleton';
+import { CheckoutFormValues } from '@/schemas/checkoutMasterSchema';
+import { useFormContext } from 'react-hook-form';
 
 interface CheckoutSummaryProps {
   cartItems: CartProduct[];
@@ -23,9 +27,12 @@ interface CheckoutSummaryProps {
   shippingProgress: number;
   remainingForFreeShipping: number;
   step: StepType;
-  selectedDelivery: DeliveryOption;
-  isLastStep: boolean
+  selectedDelivery: DeliveryMethod;
+  isLastStep: boolean;
+  isCreating: boolean;
+  isLoading: boolean
   handleNextStep(): void;
+  onSubmit: (formData: CheckoutFormValues) => Promise<void>;
 }
 
 export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
@@ -40,11 +47,15 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   step,
   selectedDelivery,
   isLastStep,
+  isLoading,
+  isCreating,
   handleNextStep,
+  onSubmit,
 }) => {
+  const methods = useFormContext<CheckoutFormValues>()
   const hasDiscount = discountAmount > 0;
   const hasFreeShipping = deliveryCost === 0;
-  const almostFreeShipping = remainingForFreeShipping > 0 && selectedDelivery.id === 'standard';
+  const almostFreeShipping = remainingForFreeShipping > 0 && selectedDelivery?.code === 'standard';
 
   const getButtonText = () => {
     switch (step) {
@@ -77,12 +88,17 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
       <h2 className={style.summary__title}>Order Summary</h2>
 
       <div className={style.summary__items}>
-        {cartItems.map((item, index) => (
-          <ProductItem
-            key={item.id}
-            product={{ ...cartDetails[index], quantity: item.quantity }}
-          />
-        ))}
+        {
+          isLoading ? Array.from({ length: 3 }).map((_, index) => (
+            <ProductItemSkeleton key={`skeleton-mock-${index}`} />
+          )) :
+            cartItems.map((item, index) => (
+              <ProductItem
+                key={item.id}
+                product={{ ...cartDetails[index], quantity: item.quantity }}
+              />
+            ))
+        }
       </div>
 
       <div className={style.summary__divider} />
@@ -104,25 +120,29 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
             </span>
           </div>
         )}
+        {
+          !!selectedDelivery &&
+          <>
+            <div className={style['total-row']}>
+              <span className={style['total-row__label']}>Delivery</span>
+              <span className={`${style['total-row__value']} ${hasFreeShipping ? style['total-row__value--free'] : ''}`}>
+                {hasFreeShipping ? 'Free' : formatPrice(deliveryCost)}
+              </span>
+            </div>
 
-        <div className={style['total-row']}>
-          <span className={style['total-row__label']}>Delivery</span>
-          <span className={`${style['total-row__value']} ${hasFreeShipping ? style['total-row__value--free'] : ''}`}>
-            {hasFreeShipping ? 'Free' : formatPrice(deliveryCost)}
-          </span>
-        </div>
+            {almostFreeShipping && (
+              <p className={style['summary__shipping-hint']}>
+                Add {formatPrice(remainingForFreeShipping)} more for free shipping
+              </p>
+            )}
 
-        {almostFreeShipping && (
-          <p className={style['summary__shipping-hint']}>
-            Add {formatPrice(remainingForFreeShipping)} more for free shipping
-          </p>
-        )}
-
-        {hasFreeShipping && selectedDelivery.id === 'standard' && (
-          <p className={`${style['summary__shipping-hint']} ${style['summary__shipping-hint--active']}`}>
-            ✓ Free shipping applied
-          </p>
-        )}
+            {hasFreeShipping && selectedDelivery?.id.toLowerCase().includes('standard') && (
+              <p className={`${style['summary__shipping-hint']} ${style['summary__shipping-hint--active']}`}>
+                ✓ Free shipping applied
+              </p>
+            )}
+          </>
+        }
       </div>
 
       <div className={style.summary__divider} />
@@ -134,23 +154,25 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
 
       <button
         className={style.summary__cta}
-        form='checkout-form'
-        type={isLastStep ? 'submit' : 'button'}
-        onClick={isLastStep ? undefined : handleNextStep}
+        disabled={isCreating}
+        type="button"
+        onClick={isLastStep ? methods.handleSubmit(onSubmit) : handleNextStep}
       >
-        {getButtonIcon() && (
-          <span className={style.summary__cta__icon_step}>
-            {getButtonIcon()}
-          </span>
+        {isCreating ? 'Loading...' : (
+          <>
+            {getButtonIcon() && (
+              <span className={style.summary__cta__icon_step}>
+                {getButtonIcon()}
+              </span>
+            )}
+            <span className={style.summary__cta__label}>
+              {getButtonText()}
+            </span>
+            <span className={style.summary__cta__icon_arrow}>
+              <HiArrowRight />
+            </span>
+          </>
         )}
-
-        <span className={style.summary__cta__label}>
-          {getButtonText()}
-        </span>
-
-        <span className={style.summary__cta__icon_arrow}>
-          <HiArrowRight />
-        </span>
       </button>
 
       <p className={style.summary__policy}>
