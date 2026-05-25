@@ -1,0 +1,160 @@
+@use '@/styles/index' as *;
+
+.orderCard {
+  position: relative;
+  background: var(--background-component);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+
+  padding: $spacing-sm $spacing-md;
+  min-height: $touch-target-comfortable;
+
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
+
+  transition:
+    background $transition-base $ease-in-out-smooth,
+    border-color $transition-base $ease-in-out-smooth,
+    box-shadow $transition-base $ease-in-out-smooth;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 3px;
+    background: var(--primary-accent);
+    border-radius: 0 $radius-sm $radius-sm 0;
+    opacity: 0;
+    transform: scaleY(0.4);
+    transition:
+      opacity $transition-base $ease-out-expo,
+      transform $transition-base $ease-out-expo;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: var(--border-color-light);
+      box-shadow: var(--shadow-sm);
+      transform: $hover-lift;
+      transition:
+        background $transition-base $ease-in-out-smooth,
+        border-color $transition-base $ease-in-out-smooth,
+        box-shadow $transition-base $ease-in-out-smooth,
+        transform $transition-base $ease-out-expo;
+    }
+  }
+
+  &:active {
+    transform: scale($button-pressed-scale);
+    transition: transform $transition-pressed $ease-in-out-smooth;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  @media (min-width: 768px) {
+    padding: calc($spacing-md + $spacing-xxs);
+  }
+}
+
+.activeCard {
+  background: var(--background-glass-base);
+  border-color: var(--border-color-strong);
+  box-shadow: var(--shadow-accent-sm);
+
+  &::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+
+.mainInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.metaInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+
+.orderNumber {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  letter-spacing: $letter-spacing-wide;
+  color: var(--primary-accent-light);
+}
+
+.orderDate {
+  font-size: $fs-xs;
+  color: var(--text-muted);
+  letter-spacing: $letter-spacing-normal;
+}
+
+.orderTotal {
+  font-size: $fs-base;
+  font-weight: $fw-bold;
+  letter-spacing: $letter-spacing-tight;
+  color: var(--text-primary);
+}
+
+.orderStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  padding: $spacing-xxs $spacing-sm;
+  border-radius: $radius-pill;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  letter-spacing: $letter-spacing-wide;
+  text-transform: capitalize;
+  background: var(--border-color-subtle);
+  color: var(--text-secondary);
+  line-height: $lh-ui;
+
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-circle;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  &[data-status='delivering'] {
+    background: var(--success-background);
+    color: var(--success-color-dark);
+  }
+
+  &[data-status='pending'] {
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--rating-color);
+  }
+
+  &[data-status='processing'] {
+    background: rgba(var(--primary-accent-rgb), 0.10);
+    color: var(--primary-accent-light);
+  }
+
+  &[data-status='cancelled'] {
+    background: rgba(220, 38, 38, 0.10);
+    color: var(--error-color);
+  }
+}
