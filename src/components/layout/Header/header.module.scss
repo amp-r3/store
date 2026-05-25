@@ -40,7 +40,7 @@
   align-items: center;
 
   @media (max-width: 480px) {
-    span {
+    .optionalText {
       display: none;
     }
 
