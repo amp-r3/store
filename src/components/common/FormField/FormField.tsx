@@ -18,40 +18,56 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
     return (
       <div className={style.wrapper}>
 
-        <div className={style.labelRow}>
-          <label
-            htmlFor={inputId}
-            className={`${style.label} ${optional ? style.labelOptional : ''}`}
-          >
-            {label}
-          </label>
-          {optional && (
-            <span className={style.optionalBadge}>Optional</span>
-          )}
-        </div>
-
-        <div className={`${style.inputWrapper} ${error ? style.inputWrapperError : ''} ${props.disabled ? style.inputWrapperDisabled : ''}`}>
+        <div
+          className={[
+            style.inputWrapper,
+            error ? style.inputWrapperError : '',
+            props.disabled ? style.inputWrapperDisabled : '',
+          ].filter(Boolean).join(' ')}
+        >
           {icon && (
             <span className={style.iconSlot} aria-hidden="true">
               {icon}
             </span>
           )}
 
-          <input
-            id={inputId}
-            ref={ref}
-            placeholder={placeholder}
-            className={`
-              ${style.input}
-              ${icon ? style.inputWithIcon : ''}
-              ${error ? style.inputError : ''}
-              ${optional ? style.inputOptional : ''}
-              ${className || ''}
-            `}
-            aria-invalid={!!error}
-            aria-describedby={error ? errorId : undefined}
-            {...props}
-          />
+          <div className={style.floatGroup}>
+            <input
+              id={inputId}
+              ref={ref}
+              placeholder=" "
+              className={[
+                style.input,
+                icon ? style.inputWithIcon : '',
+                error ? style.inputError : '',
+                optional ? style.inputOptional : '',
+                className || '',
+              ].filter(Boolean).join(' ')}
+              aria-invalid={!!error}
+              aria-describedby={error ? errorId : undefined}
+              {...props}
+            />
+
+            <label
+              htmlFor={inputId}
+              className={[
+                style.label,
+                optional ? style.labelOptional : '',
+              ].filter(Boolean).join(' ')}
+            >
+              {label}
+            </label>
+
+            {placeholder && (
+              <span className={style.hint} aria-hidden="true">
+                {placeholder}
+              </span>
+            )}
+          </div>
+
+          {optional && (
+            <span className={style.optionalBadge}>Optional</span>
+          )}
         </div>
 
         {error && (

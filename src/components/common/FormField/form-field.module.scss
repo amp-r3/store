@@ -1,6 +1,21 @@
 @use '@/styles/index' as *;
 
-// ─── Wrapper ────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Константы плавающего лейбла
+// ─────────────────────────────────────────────────────────────────────────────
+
+$float-label-top-floated : 7px;
+$float-label-top-resting : 50%;
+$float-label-size-floated : $fs-xs; // ≈ 0.6875rem
+$float-label-size-resting : $fs-base; // 1rem
+$input-padding-top : 22px;
+$input-padding-bottom : 8px;
+$input-min-height : 56px;
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Wrapper
+// ─────────────────────────────────────────────────────────────────────────────
 
 .wrapper {
   display: flex;
@@ -9,51 +24,17 @@
   width: 100%;
 }
 
-// ─── Label row ──────────────────────────────────────────────────────────────
 
-.labelRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 $spacing-xs;
-}
-
-.label {
-  font-family: $font-primary;
-  font-size: $fs-sm;
-  font-weight: $fw-semibold;
-  line-height: $lh-ui;
-  color: var(--text-secondary);
-  transition: color $transition-fast $ease-in-out-smooth;
-}
-
-.labelOptional {
-  color: var(--text-muted);
-  font-weight: $fw-normal;
-  font-style: italic;
-}
-
-.optionalBadge {
-  font-family: $font-primary;
-  font-size: $fs-sm;
-  font-weight: $fw-normal;
-  line-height: $lh-ui;
-  letter-spacing: $letter-spacing-wide;
-  color: var(--text-muted);
-  background: var(--border-color-subtle);
-  border: 1px solid var(--border-color-light);
-  border-radius: $radius-pill;
-  padding: $spacing-xxs $spacing-xs;
-  user-select: none;
-}
-
-// ─── Input wrapper  ─────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Input wrapper
+// ─────────────────────────────────────────────────────────────────────────────
 
 .inputWrapper {
-  position: relative;
+  position: relative; 
   display: flex;
   align-items: center;
   width: 100%;
+  min-height: $input-min-height;
   background: var(--background-glass-base);
   border: 1px solid var(--border-color);
   border-radius: $radius-input;
@@ -90,7 +71,112 @@
   background: var(--border-color-subtle);
 }
 
-// ─── Icon slot ───────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Float group 
+// ─────────────────────────────────────────────────────────────────────────────
+
+.floatGroup {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Floating label
+// ─────────────────────────────────────────────────────────────────────────────
+
+.label {
+  position: absolute;
+  left: $spacing-md;
+  top: $float-label-top-resting;
+  transform: translateY(-50%);
+  transform-origin: left top;
+
+  font-family: $font-primary;
+  font-size: $float-label-size-resting;
+  font-weight: $fw-normal;
+  line-height: $lh-ui;
+  color: var(--text-muted);
+
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - #{$spacing-xl});
+
+  transition:
+    top $transition-fast $ease-out-expo,
+    transform $transition-fast $ease-out-expo,
+    font-size $transition-fast $ease-out-expo,
+    font-weight $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth,
+    letter-spacing $transition-fast $ease-in-out-smooth;
+}
+
+.labelOptional {
+  font-style: italic;
+}
+
+.floatGroup .input:not(:placeholder-shown)~.label {
+  top: $float-label-top-floated;
+  transform: translateY(0);
+  font-size: $float-label-size-floated;
+  font-weight: $fw-semibold;
+  letter-spacing: $letter-spacing-wider;
+  color: var(--text-secondary);
+}
+
+.floatGroup .input:focus~.label {
+  top: $float-label-top-floated;
+  transform: translateY(0);
+  font-size: $float-label-size-floated;
+  font-weight: $fw-semibold;
+  letter-spacing: $letter-spacing-wider;
+}
+
+.inputWrapper:focus-within:not(.inputWrapperError) .label {
+  color: var(--primary-accent);
+}
+
+.inputWrapperError .label {
+  color: var(--error-color);
+}
+
+.inputWithIcon~.label {
+  left: $spacing-xs;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Hint 
+// ─────────────────────────────────────────────────────────────────────────────
+
+.hint {
+  position: absolute;
+  left: $spacing-md;
+  bottom: $spacing-md;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transition: opacity $transition-fast $ease-in-out-smooth;
+
+  .floatGroup .input:focus:placeholder-shown~& {
+    opacity: 1;
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Icon slot
+// ─────────────────────────────────────────────────────────────────────────────
 
 .iconSlot {
   display: flex;
@@ -118,7 +204,10 @@
   }
 }
 
-// ─── Input ───────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Input
+// ─────────────────────────────────────────────────────────────────────────────
 
 .input {
   flex: 1;
@@ -133,11 +222,11 @@
   font-weight: $fw-normal;
   line-height: $lh-normal;
   color: var(--text-primary);
-  padding: $spacing-sm $spacing-md;
+
+  padding: $input-padding-top $spacing-md $input-padding-bottom;
 
   &::placeholder {
-    color: var(--text-muted);
-    font-weight: $fw-normal;
+    color: transparent;
   }
 
   &:disabled {
@@ -165,7 +254,35 @@
   }
 }
 
-// ─── Error message ────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Optional badge 
+// ─────────────────────────────────────────────────────────────────────────────
+
+.optionalBadge {
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: $spacing-xs;
+  margin-right: $spacing-sm;
+
+  font-family: $font-primary;
+  font-size: $fs-xs;
+  font-weight: $fw-normal;
+  line-height: $lh-ui;
+  letter-spacing: $letter-spacing-wide;
+  color: var(--text-muted);
+  background: var(--border-color-subtle);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-pill;
+  padding: $spacing-xxs $spacing-xs;
+  user-select: none;
+  pointer-events: none;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Error message
+// ─────────────────────────────────────────────────────────────────────────────
 
 .error {
   font-family: $font-primary;
