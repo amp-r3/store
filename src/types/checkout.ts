@@ -1,5 +1,3 @@
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-export type PaymentStatus = 'awaiting_payment' | 'paid' | 'failed' | 'refunded';
 export type PaymentOptions = 'cash_on_delivery' | 'online_card' | 'paypal' | 'sepa' | 'klarna';
 export type DeliveryOptions = 'standard' | 'express' | 'pickup';
 
@@ -30,22 +28,6 @@ export interface PaymentMethod {
   code: PaymentOptions;
   feePercentage: number;
   feeFixed: number
-}
-
-export interface Order {
-  id: string;
-  userId: string;
-  status: OrderStatus;
-  totalAmount: number;
-  shippingAddress: ShippingAddress;
-  createdAt: string;
-  updatedAt: string;
-  paymentMethod: PaymentOptions;
-  paymentStatus: PaymentStatus;
-  deliveryMethod_id: string | null;
-  deliveryCost: number;
-  paymentFee: number;
-  deliveryMethods: DeliveryMethod;
 }
 
 export interface CheckoutCartItem {
