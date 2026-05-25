@@ -26,7 +26,7 @@ export const CheckoutSuccessPage = () => {
         description={`Order №${orderId} has been confirmed. You can track its status on the orders page.`}
         icon={<TbShoppingCartCheck size={50} />}
         actionLabel="My Orders"
-        onAction={() => { navigate('/user', { replace: true }) }}
+        onAction={() => { navigate('/orders', { replace: true }) }}
         actionVariant='success'
       />
     </main>
