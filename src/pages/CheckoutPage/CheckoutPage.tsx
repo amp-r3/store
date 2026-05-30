@@ -50,6 +50,8 @@ export const CheckoutPage = () => {
   });
 
   const deliveryCode = methods.watch('deliveryMethodCode');
+  const paymentCode = methods.watch('paymentMethodCode')
+
   const isShippingRequired = deliveryCode !== 'pickup';
 
 
@@ -158,17 +160,9 @@ export const CheckoutPage = () => {
 
     return opt
   })
-  const selectedDeliveryMethod = updatedDeliveryMethods?.find(
-    (method) => method?.code === deliveryCode
-  );
+  const selectedDeliveryMethod = updatedDeliveryMethods?.find(method => method?.code === deliveryCode);
+  const selectedPaymentMethod = paymentMethods?.find(method => method.code === paymentCode)
 
-  const deliveryCost = selectedDeliveryMethod
-    ? (totals.remainingForFreeShipping <= 0 && selectedDeliveryMethod?.code !== 'express'
-      ? 0
-      : selectedDeliveryMethod.price)
-    : 0;
-
-  const totalPrice = totals.total + deliveryCost;
 
   return (
     <>
@@ -220,15 +214,17 @@ export const CheckoutPage = () => {
               <CheckoutSummary
                 cartDetails={cartDetails}
                 cartItems={cartItems}
-                deliveryCost={deliveryCost}
+
                 subtotal={totals.subtotal}
-                total={totalPrice}
+                cartTotal={totals.total}
                 discountAmount={totals.discountAmount}
                 discountPercent={totals.discountPercent}
                 remainingForFreeShipping={totals.remainingForFreeShipping}
-                shippingProgress={totals.shippingProgress}
-                step={step}
+
                 selectedDelivery={selectedDeliveryMethod}
+                selectedPayment={selectedPaymentMethod}
+
+                step={step}
                 isLastStep={isLastStep}
                 isLoading={isLoading || isFetching}
                 isCreating={isCreating || isClearing}

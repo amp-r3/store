@@ -185,7 +185,6 @@
   }
 }
 
-
 .total-row {
   display: flex;
   justify-content: space-between;
@@ -241,6 +240,10 @@
     &--free,
     &--discount {
       color: var(--primary-accent);
+    }
+    
+    &--fee {
+      color: var(--text-primary); 
     }
   }
 }

@@ -1,36 +1,38 @@
-import ProductItem from '@/components/products/ProductItem/ProductItem';
-import style from './checkout-summary.module.scss';
-import { CartItem } from '@/types/products';
 import { FC } from 'react';
-import { CartProduct } from '@/store/selectors/cartSelectors';
-import { StepType } from '../../CheckoutPage';
-import { formatPrice } from '@/utils';
+import { useFormContext } from 'react-hook-form';
 import {
   HiLocationMarker,
   HiCreditCard,
   HiArrowRight,
   HiCheckCircle
 } from "react-icons/hi";
-import { DeliveryMethod } from '@/types/checkout';
-import ProductItemSkeleton from '@/components/products/ProductItem/ProductItemSkeleton';
+
+import { CartItem } from '@/types/products';
+import { CartProduct } from '@/store/selectors/cartSelectors';
+import { StepType } from '../../CheckoutPage';
+import { DeliveryMethod, PaymentMethod } from '@/types/checkout';
 import { CheckoutFormValues } from '@/schemas/checkoutMasterSchema';
-import { useFormContext } from 'react-hook-form';
+import { formatPrice } from '@/utils';
+
+import ProductItem from '@/components/products/ProductItem/ProductItem';
+import ProductItemSkeleton from '@/components/products/ProductItem/ProductItemSkeleton';
+import style from './checkout-summary.module.scss';
+import { useCheckoutTotals } from '@/hooks';
 
 interface CheckoutSummaryProps {
   cartItems: CartProduct[];
   cartDetails: CartItem[];
-  deliveryCost: number;
   subtotal: number;
-  total: number;
+  cartTotal: number;
   discountAmount: number;
   discountPercent: number;
-  shippingProgress: number;
   remainingForFreeShipping: number;
   step: StepType;
   selectedDelivery: DeliveryMethod;
+  selectedPayment: PaymentMethod;
   isLastStep: boolean;
   isCreating: boolean;
-  isLoading: boolean
+  isLoading: boolean;
   handleNextStep(): void;
   onSubmit: (formData: CheckoutFormValues) => Promise<void>;
 }
@@ -38,48 +40,55 @@ interface CheckoutSummaryProps {
 export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   cartDetails,
   cartItems,
-  deliveryCost,
+  cartTotal,
   subtotal,
-  total,
   discountAmount,
   discountPercent,
   remainingForFreeShipping,
   step,
   selectedDelivery,
+  selectedPayment,
   isLastStep,
   isLoading,
   isCreating,
   handleNextStep,
   onSubmit,
 }) => {
-  const methods = useFormContext<CheckoutFormValues>()
+
+  const {
+    deliveryCost,
+    feePercentage,
+    feePercentageAmount,
+    feeFixed,
+    finalTotalPrice
+  } = useCheckoutTotals({
+    cartTotal,
+    freeShippingThreshold: remainingForFreeShipping <= 0 ? 0 : null,
+    selectedDelivery,
+    selectedPayment,
+  });
+
+  const methods = useFormContext<CheckoutFormValues>();
+
   const hasDiscount = discountAmount > 0;
   const hasFreeShipping = deliveryCost === 0;
   const almostFreeShipping = remainingForFreeShipping > 0 && selectedDelivery?.code === 'standard';
 
   const getButtonText = () => {
     switch (step) {
-      case 'contacts':
-        return 'Continue to Delivery';
-      case 'delivery':
-        return 'Continue to Payment';
-      case 'payment':
-        return 'Place Order';
-      default:
-        return 'Continue';
+      case 'contacts': return 'Continue to Delivery';
+      case 'delivery': return 'Continue to Payment';
+      case 'payment': return 'Place Order';
+      default: return 'Continue';
     }
   };
 
   const getButtonIcon = () => {
     switch (step) {
-      case 'contacts':
-        return <HiLocationMarker />;
-      case 'delivery':
-        return <HiCreditCard />;
-      case 'payment':
-        return <HiCheckCircle />;
-      default:
-        return null;
+      case 'contacts': return <HiLocationMarker />;
+      case 'delivery': return <HiCreditCard />;
+      case 'payment': return <HiCheckCircle />;
+      default: return null;
     }
   };
 
@@ -87,21 +96,21 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
     <aside className={style.summary}>
       <h2 className={style.summary__title}>Order Summary</h2>
 
-      <div className={style.summary__items}>
-        {
-          isLoading ? Array.from({ length: 3 }).map((_, index) => (
+      <div className={style.summary__items} aria-live="polite">
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
             <ProductItemSkeleton key={`skeleton-mock-${index}`} />
-          )) :
-            cartItems.map((item, index) => (
-              <ProductItem
-                key={item.id}
-                product={{ ...cartDetails[index], quantity: item.quantity }}
-              />
-            ))
+          ))
+          : cartItems.map((item, index) => (
+            <ProductItem
+              key={item.id}
+              product={{ ...cartDetails[index], quantity: item.quantity }}
+            />
+          ))
         }
       </div>
 
-      <div className={style.summary__divider} />
+      <div className={style.summary__divider} role="presentation" />
 
       <div className={style.summary__totals}>
         <div className={style['total-row']}>
@@ -120,13 +129,13 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
             </span>
           </div>
         )}
-        {
-          !!selectedDelivery &&
+
+        {!!selectedDelivery && (
           <>
             <div className={style['total-row']}>
               <span className={style['total-row__label']}>Delivery</span>
               <span className={`${style['total-row__value']} ${hasFreeShipping ? style['total-row__value--free'] : ''}`}>
-                {hasFreeShipping ? 'Free' : formatPrice(deliveryCost)}
+                {hasFreeShipping ? 'Free' : `+ ${formatPrice(deliveryCost)}`}
               </span>
             </div>
 
@@ -142,14 +151,48 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
               </p>
             )}
           </>
-        }
+        )}
+
+        {!!selectedPayment && (
+          <>
+            {feePercentage > 0 && (
+              <div className={style['total-row']}>
+                <span className={style['total-row__label']}>
+                  Payment fee
+                  <span className={style['total-row__badge']}>{feePercentage}%</span>
+                </span>
+                <span className={`${style['total-row__value']} ${style['total-row__value--fee']}`}>
+                  + {formatPrice(feePercentageAmount)}
+                </span>
+              </div>
+            )}
+
+            {feeFixed > 0 && (
+              <div className={style['total-row']}>
+                <span className={style['total-row__label']}>Fixed fee</span>
+                <span className={`${style['total-row__value']} ${style['total-row__value--fee']}`}>
+                  + {formatPrice(feeFixed)}
+                </span>
+              </div>
+            )}
+
+            {feePercentage === 0 && feeFixed === 0 && (
+              <div className={style['total-row']}>
+                <span className={style['total-row__label']}>Payment fee</span>
+                <span className={`${style['total-row__value']} ${style['total-row__value--free']}`}>
+                  Free
+                </span>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
-      <div className={style.summary__divider} />
+      <div className={style.summary__divider} role="presentation" />
 
       <div className={`${style['total-row']} ${style['total-row--final']}`}>
         <span className={style['total-row__label']}>Total</span>
-        <span className={style['total-row__value']}>{formatPrice(total)}</span>
+        <span className={style['total-row__value']}>{formatPrice(finalTotalPrice)}</span>
       </div>
 
       <button
