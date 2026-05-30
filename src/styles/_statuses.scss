@@ -1,0 +1,114 @@
+@use './variables' as *;
+@use "sass:map";
+
+// =============================================
+//   STATUS BADGE — MAP & MIXINS
+//
+//   Covers all three domain types:
+//     OrderStatus:    pending | processing | shipped | completed | cancelled
+//     PaymentStatus:  awaiting_payment | paid | failed | refunded
+//     DeliveryStatus: awaiting_dispatch | dispatched | in_transit |
+//                     delivered | returned | cancelled
+// =============================================
+
+$status-map: (
+    // ── Success ───────────────────────────────
+    // OrderStatus: completed
+    // PaymentStatus: paid
+    // DeliveryStatus: delivered
+    'completed': (bg: var(--success-background),
+        text: var(--success-color-dark),
+        border: rgba(var(--success-color-rgb), 0.12)),
+    'delivered': (bg: var(--success-background),
+        text: var(--success-color-dark),
+        border: rgba(var(--success-color-rgb), 0.12)),
+    'paid': (bg: var(--success-background),
+        text: var(--success-color-dark),
+        border: rgba(var(--success-color-rgb), 0.12)),
+
+    // ── Info (processing/in-motion) ───────────
+    // OrderStatus: processing | shipped
+    // DeliveryStatus: dispatched | in_transit
+    'processing': (bg: var(--status-info-bg),
+        text: var(--status-info-text),
+        border: var(--status-info-border)),
+    'shipped': (bg: var(--status-info-bg),
+        text: var(--status-info-text),
+        border: var(--status-info-border)),
+    'dispatched': (bg: var(--status-info-bg),
+        text: var(--status-info-text),
+        border: var(--status-info-border)),
+    'in_transit': (bg: var(--status-info-bg),
+        text: var(--status-info-text),
+        border: var(--status-info-border)),
+
+    // ── Warning (awaiting/pending) ────────────
+    // OrderStatus: pending
+    // PaymentStatus: awaiting_payment
+    // DeliveryStatus: awaiting_dispatch
+    'pending': (bg: var(--status-warning-bg),
+        text: var(--status-warning-text),
+        border: var(--status-warning-border)),
+    'awaiting_payment': (bg: var(--status-warning-bg),
+        text: var(--status-warning-text),
+        border: var(--status-warning-border)),
+    'awaiting_dispatch': (bg: var(--status-warning-bg),
+        text: var(--status-warning-text),
+        border: var(--status-warning-border)),
+
+    // ── Neutral / Purple (reversed) ───────────
+    // PaymentStatus: refunded
+    // DeliveryStatus: returned
+    'refunded': (bg: var(--status-neutral-bg),
+        text: var(--status-neutral-text),
+        border: var(--status-neutral-border)),
+    'returned': (bg: var(--status-neutral-bg),
+        text: var(--status-neutral-text),
+        border: var(--status-neutral-border)),
+
+    // ── Danger ────────────────────────────────
+    // OrderStatus: cancelled
+    // PaymentStatus: failed
+    // DeliveryStatus: cancelled
+    'failed': (bg: var(--status-danger-bg),
+        text: var(--status-danger-text),
+        border: var(--status-danger-border)),
+    'cancelled': (bg: var(--status-danger-bg),
+        text: var(--status-danger-text),
+        border: var(--status-danger-border)),
+);
+
+// ── Base badge layout ──────────────────────────────────────────────────────
+@mixin badge-base {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-pill;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    line-height: $lh-ui;
+    border: 1px solid transparent;
+    text-transform: capitalize;
+    box-shadow: var(--shadow-xs);
+
+    &::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: $radius-circle;
+        background: currentColor;
+        flex-shrink: 0;
+    }
+}
+
+// ── BEM modifier generator ─────────────────────────────────────────────────
+@mixin generate-modifiers {
+    @each $status-name, $theme in $status-map {
+        &--#{$status-name} {
+            background: map.get($theme, bg);
+            color: map.get($theme, text);
+            border-color: map.get($theme, border);
+        }
+    }
+}

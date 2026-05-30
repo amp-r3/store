@@ -44,6 +44,32 @@
   --success-background: rgba(22, 163, 74, 0.10);
   --shadow-success-sm: 0 4px 15px rgba(22, 163, 74, 0.18);
 
+  // --- Status Badge Colors ---
+
+  // Warning (pending / awaiting / in-transit)
+  --status-warning-rgb: 245, 158, 11;
+  --status-warning-text: #b45309;
+  --status-warning-bg: rgba(245, 158, 11, 0.08);
+  --status-warning-border: rgba(245, 158, 11, 0.18);
+
+  // Info (processing / shipped)
+  --status-info-rgb: 14, 165, 233;
+  --status-info-text: #0369a1;
+  --status-info-bg: rgba(14, 165, 233, 0.08);
+  --status-info-border: rgba(14, 165, 233, 0.18);
+
+  // Neutral / Purple (refunded / returned)
+  --status-neutral-rgb: 124, 109, 255;
+  --status-neutral-text: var(--primary-accent-dark);
+  --status-neutral-bg: rgba(124, 109, 255, 0.06);
+  --status-neutral-border: rgba(124, 109, 255, 0.14);
+
+  // Danger (failed / cancelled)
+  --status-danger-rgb: 220, 38, 38;
+  --status-danger-text: #b91c1c;
+  --status-danger-bg: rgba(220, 38, 38, 0.06);
+  --status-danger-border: rgba(220, 38, 38, 0.12);
+
   // --- Gradient Colors (Logo & Decorative) ---
   --gradient-logo-start: #a78bfa;
   --gradient-logo-mid-1: #c4b5fd;
