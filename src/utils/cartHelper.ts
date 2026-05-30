@@ -1,3 +1,4 @@
+import { DeliveryMethod, PaymentMethod } from '@/types/checkout';
 import { CartItem } from '@/types/products';
 
 const roundPrice = (num: number) => Number(Math.round(Number(num + 'e2')) + 'e-2');
@@ -42,5 +43,37 @@ export const calculateCartTotals = (items: CartItem[], freeShippingThreshold: nu
         discountPercent,
         shippingProgress,
         remainingForFreeShipping,
+    };
+};
+
+export interface OrderTotalsParams {
+    cartTotal: number;
+    deliveryCost: number;
+    isDeliveryFree: boolean;
+    paymentFeePercentage: number;
+    paymentFeeFixed: number;
+}
+
+export const calculateOrderTotals = ({
+    cartTotal,
+    deliveryCost = 0,
+    isDeliveryFree = false,
+    paymentFeePercentage = 0,
+    paymentFeeFixed = 0,
+}: OrderTotalsParams) => {
+    const finalDeliveryCost = isDeliveryFree ? 0 : deliveryCost;
+
+    const feePercentageAmount = roundPrice(cartTotal * (paymentFeePercentage / 100));
+    const totalPaymentFee = roundPrice(feePercentageAmount + paymentFeeFixed);
+
+    const finalTotalPrice = roundPrice(cartTotal + finalDeliveryCost + totalPaymentFee);
+
+    return {
+        deliveryCost: finalDeliveryCost,
+        feePercentage: paymentFeePercentage,
+        feeFixed: paymentFeeFixed,
+        feePercentageAmount,
+        totalPaymentFee,
+        finalTotalPrice,
     };
 };

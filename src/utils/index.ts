@@ -1,7 +1,7 @@
 export { scrollToTop } from './scrollToTop'
 export { sortingOptions } from './sortingOptions'
 export { getErrorMessage } from './getErrorMessage'
-export { calculateCartTotals } from './cartHelper'
+export { calculateCartTotals, calculateOrderTotals } from './cartHelper'
 export { formatPrice } from './priceHelper'
 export { HAPTIC_PRESETS } from './hapticPresets'
 export { getItemsToRender } from './formatters'
