@@ -39,6 +39,7 @@ export const CheckoutPayments: FC<CheckoutPaymentsProps> = ({ paymentMethods, is
                 const isSelected = currentPaymentMethod === opt.id
                 return (
                   <PaymentOption
+                    key={opt.id}
                     option={opt}
                     icon={ui.icon}
                     label={ui.label}
