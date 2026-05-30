@@ -38,7 +38,7 @@
   padding-block: $spacing-xl $spacing-xxl;
   animation: fade-up $transition-layout $ease-out-expo both;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     padding-block: $spacing-md $spacing-lg;
   }
 }
@@ -58,7 +58,7 @@
   letter-spacing: $letter-spacing-tight;
   line-height: $lh-tight;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     margin: 0 0 $spacing-lg;
     font-size: $fs-lg;
   }
@@ -72,9 +72,8 @@
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: $spacing-lg;
-  align-items: start;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: $spacing-md;
   }
@@ -88,12 +87,20 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
-  max-height: 80vh;
+
+  padding: $spacing-xs;
+  margin: -$spacing-xs;
+
+  height: 0;
+  min-height: 100%;
   overflow-y: auto;
-  padding-right: $spacing-xxs;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
 
   &::-webkit-scrollbar-track {
@@ -101,35 +108,21 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background-color: var(--border-color);
     border-radius: $radius-pill;
+
+    &:hover {
+      background-color: var(--border-color-strong);
+    }
   }
 
-  &::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted);
-  }
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: auto;
+    overflow-y: visible;
+    overflow-x: visible;
 
-  @media (max-width: 1024px) {
-    flex-direction: row; 
-    overflow-y: hidden;
-    overflow-x: auto; 
-    max-height: none; 
-    padding-right: 0;
-    padding-bottom: $spacing-sm; 
-
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    &>* {
-      flex: 0 0 85%;
-      max-width: 320px;
-      scroll-snap-align: center; 
-    }
+    padding: 0;
+    margin: 0;
   }
 }

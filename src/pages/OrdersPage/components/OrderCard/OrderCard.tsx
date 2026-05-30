@@ -1,51 +1,59 @@
 import { FC } from 'react';
-import { Order } from '@/types/order';
+import { OrderStatus } from '@/types/order';
 import style from './order-card.module.scss';
 import { formatPrice } from '@/utils';
 
 interface OrderCardProps {
-  order: Order;
+  orderId: string;
+  orderNumber: string;
+  orderStatus: OrderStatus;
+  orderDate: string;
+  orderTotalAmount: number;
   isActive: boolean;
-  setSelectedOrderId(id: string): void;
-  formatOrderDate(dateStr: string): string;
+  onClick(id: string): void;
 }
 
 export const OrderCard: FC<OrderCardProps> = ({
-  order,
+  orderId,
+  orderNumber,
+  orderStatus,
+  orderDate,
+  orderTotalAmount,
   isActive,
-  setSelectedOrderId,
-  formatOrderDate
+  onClick,
 }) => {
   return (
     <article
-      key={order.id}
       role="option"
       aria-selected={isActive}
       tabIndex={0}
       className={`${style.orderCard} ${isActive ? style.activeCard : ''}`}
-      onClick={() => setSelectedOrderId(order.id)}
+      onClick={() => onClick(orderId)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          setSelectedOrderId(order.id);
+          onClick(orderId);
         }
       }}
     >
       <div className={style.mainInfo}>
-        <div className={style.orderStatus} data-status={order.status}>
-          {order.status}
+        <div
+          className={`${style['orderStatus']} ${style[`orderStatus--${orderStatus}`]}`}
+          aria-label={`Order status: ${orderStatus}`}
+          data-status={orderStatus}>
+          {orderStatus}
         </div>
         <div className={style.orderTotal}>
-          {formatPrice(order.totalAmount)}
+          {formatPrice(orderTotalAmount)}
         </div>
       </div>
 
       <div className={style.metaInfo}>
         <span className={style.orderNumber}>
-          #{order.id.slice(0, 8).toUpperCase()}
+          #{orderNumber}
         </span>
         <span className={style.orderDate}>
-          {formatOrderDate(order.createdAt)}
+          {orderDate}
         </span>
       </div>
     </article>

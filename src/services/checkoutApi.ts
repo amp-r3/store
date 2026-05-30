@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CreateOrderPayload, DeliveryMethod, DeliveryOptions, PaymentMethod, PaymentOptions, ShippingAddress } from '@/types/checkout';
 import { supabase } from '@/supabase';
-import { Order, OrderStatus, PaymentStatus } from '@/types/order';
+import { DeliveryStatus, Order, OrderStatus, PaymentStatus } from '@/types/order';
 
 interface DeliveryMethodResponse {
   id: string;
@@ -24,6 +24,7 @@ interface PaymentMethodResponse {
 
 interface OrderResponse {
   id: string;
+  order_number: string;
   user_id: string;
   status: OrderStatus;
   total_amount: number;
@@ -32,6 +33,7 @@ interface OrderResponse {
   updated_at: string;
   payment_methods: PaymentMethodResponse;
   payment_status: PaymentStatus;
+  delivery_status: DeliveryStatus;
   delivery_method_id: string | null;
   delivery_cost: number;
   payment_fee: number;
@@ -44,6 +46,11 @@ interface OrderResponse {
     price_at_purchase: number;
     created_at: string;
   }[];
+}
+
+interface CreateOrderResponse {
+  id: string;
+  order_number: string;
 }
 
 export const checkoutApi = createApi({
@@ -126,8 +133,6 @@ export const checkoutApi = createApi({
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
-        console.log(data);
-
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
@@ -135,15 +140,17 @@ export const checkoutApi = createApi({
         const orders: Order[] = (data as OrderResponse[]).map((order) => {
           return {
             id: order.id,
+            orderId: order.order_number,
             userId: order.user_id,
             status: order.status,
             totalAmount: Number(order.total_amount),
             shippingAddress: order.shipping_address,
             createdAt: order.created_at,
             updatedAt: order.updated_at,
-            paymentMethod: order.payment_methods.name,
+            paymentMethod: order.payment_methods.code,
             paymentStatus: order.payment_status,
-            deliveryMethod_id: order.delivery_method_id ? String(order.delivery_method_id) : null,
+            deliveryStatus: order.delivery_status,
+            deliveryMethod_id: order.delivery_methods.id,
             deliveryCost: Number(order.delivery_cost),
             paymentFee: Number(order.payment_fee),
             deliveryMethods: {
@@ -171,7 +178,7 @@ export const checkoutApi = createApi({
       providesTags: ['Order']
     }),
 
-    createOrder: builder.mutation<string, CreateOrderPayload>({
+    createOrder: builder.mutation<CreateOrderResponse, CreateOrderPayload>({
       queryFn: async (payload) => {
         const { data: { user } } = await supabase.auth.getUser();
 

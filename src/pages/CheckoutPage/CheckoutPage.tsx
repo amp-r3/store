@@ -138,8 +138,8 @@ export const CheckoutPage = () => {
     };
 
     try {
-      const orderId = await createOrder(payload).unwrap();
-      await clearServerCart().unwrap();
+      const { order_number: orderId } = await createOrder(payload).unwrap();
+      await clearServerCart(undefined).unwrap();
       navigate('/checkout/success', {
         state: { orderId },
         replace: true
@@ -155,7 +155,7 @@ export const CheckoutPage = () => {
     if (opt.code === 'standard' && totals.remainingForFreeShipping <= 0) {
       return { ...opt, price: 0 }
     }
-    
+
     return opt
   })
   const selectedDeliveryMethod = updatedDeliveryMethods?.find(

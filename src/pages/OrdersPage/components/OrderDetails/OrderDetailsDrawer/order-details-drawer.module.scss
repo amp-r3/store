@@ -1,0 +1,65 @@
+@use '@/styles/index' as *;
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.75);
+    }
+}
+
+.order-drawer {
+
+    &__overlay {
+        position: fixed;
+        inset: 0;
+        z-index: $z-index-modal-backdrop;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: $backdrop-blur-sm;
+    }
+
+    &__content {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: $z-index-modal;
+        display: flex;
+        flex-direction: column;
+        height: 86dvh;
+        background: var(--background-component);
+        border-top-left-radius: $radius-xl;
+        border-top-right-radius: $radius-xl;
+        border: 1px solid var(--border-color-subtle);
+        border-bottom: none;
+        box-shadow: var(--shadow-modal);
+        outline: none;
+    }
+
+    &__handle {
+        margin: $spacing-sm auto $spacing-xs;
+        width: 36px;
+        height: 4px;
+        flex-shrink: 0;
+        border-radius: $radius-pill;
+        background: var(--border-color-strong);
+        opacity: 0.6;
+
+        @media (max-width: 400px) {
+            margin: $spacing-xs auto $spacing-xxs;
+        }
+    }
+
+    &__layout {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+    }
+}

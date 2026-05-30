@@ -1,4 +1,5 @@
 @use '@/styles/index' as *;
+@use '@/styles/statuses' as status;
 
 .orderCard {
   position: relative;
@@ -7,7 +8,7 @@
   border-radius: $radius-md;
 
   padding: $spacing-sm $spacing-md;
-  min-height: $touch-target-comfortable;
+  min-height: max-content;
 
   cursor: pointer;
   overflow: hidden;
@@ -115,46 +116,6 @@
 }
 
 .orderStatus {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-xxs;
-  padding: $spacing-xxs $spacing-sm;
-  border-radius: $radius-pill;
-  font-size: $fs-xs;
-  font-weight: $fw-semibold;
-  letter-spacing: $letter-spacing-wide;
-  text-transform: capitalize;
-  background: var(--border-color-subtle);
-  color: var(--text-secondary);
-  line-height: $lh-ui;
-
-
-  &::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: $radius-circle;
-    background: currentColor;
-    flex-shrink: 0;
-  }
-
-  &[data-status='delivering'] {
-    background: var(--success-background);
-    color: var(--success-color-dark);
-  }
-
-  &[data-status='pending'] {
-    background: rgba(245, 158, 11, 0.12);
-    color: var(--rating-color);
-  }
-
-  &[data-status='processing'] {
-    background: rgba(var(--primary-accent-rgb), 0.10);
-    color: var(--primary-accent-light);
-  }
-
-  &[data-status='cancelled'] {
-    background: rgba(220, 38, 38, 0.10);
-    color: var(--error-color);
-  }
+  @include status.badge-base;
+  @include status.generate-modifiers;
 }

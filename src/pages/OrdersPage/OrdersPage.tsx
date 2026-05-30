@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useGetOrdersQuery } from '@/services/checkoutApi';
 import style from './orders-page.module.scss';
-import { useEnrichedOrderItems } from '@/hooks';
+import { useEnrichedOrderItems, useMediaQuery } from '@/hooks';
 import { BackButton, Loader } from '@/components/common';
 import { useNavigate } from 'react-router';
 import { OrderCard } from './components/OrderCard/OrderCard';
-import { OrderDetails } from './components/OrderDetails/OrderDetails';
 import { OrderEmpty } from './components/OrderEmpty/OrderEmpty';
+import { OrderDetailsCard } from './components/OrderDetails/OrderDetailsCard/OrderDetailsCard';
+import { OrderDetailsDrawer } from './components/OrderDetails/OrderDetailsDrawer/OrderDetailsDrawer';
 
 export const OrdersPage = () => {
   const navigate = useNavigate()
   const { data: orders, isLoading, isFetching } = useGetOrdersQuery();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
   useEffect(() => {
     if (orders?.length && !selectedOrderId) {
@@ -57,10 +60,21 @@ export const OrdersPage = () => {
     Number(activeOrder.deliveryCost) -
     Number(activeOrder.paymentFee);
 
+  const onOpenChange = () => {
+    setIsOpen(prev => !prev)
+  }
+
+  const onCardClick = (id: string) => {
+    if (isMobile) {
+      onOpenChange()
+    }
+    setSelectedOrderId(id)
+  }
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
-    <main className={`container ${style.pageWrapper}`}>
+    <main className={`${style.pageWrapper} container`}>
       <div className={style.header__wrapper}>
         <BackButton onClick={() => navigate(-1)} />
         <h1 className={style.pageTitle}>My Orders</h1>
@@ -75,23 +89,40 @@ export const OrdersPage = () => {
 
             return (
               <OrderCard
-                order={order}
+                orderId={order.id}
+                orderNumber={order.orderId}
+                orderDate={formatOrderDate(order.createdAt)}
+                orderStatus={order.status}
+                orderTotalAmount={order.totalAmount}
                 isActive={isActive}
-                formatOrderDate={formatOrderDate}
-                setSelectedOrderId={setSelectedOrderId}
+                onClick={onCardClick}
                 key={order.id} />
             );
           })}
         </aside>
 
         {/* ── Right: order details ─────────────────────────────────────────── */}
-        <OrderDetails
-          order={activeOrder}
-          isFetching={isFetching}
-          items={items}
-          isItemsFetching={isItemsFetching}
-          isItemsLoading={isItemsLoading}
-          goodsTotal={goodsTotal} />
+
+        {
+          isMobile ? <OrderDetailsDrawer
+            open={isOpen}
+            order={activeOrder}
+            isFetching={isFetching}
+            items={items}
+            isItemsFetching={isItemsFetching}
+            isItemsLoading={isItemsLoading}
+            goodsTotal={goodsTotal}
+            onOpenChange={onOpenChange}
+            formatOrderDate={formatOrderDate} /> :
+            <OrderDetailsCard
+              order={activeOrder}
+              isFetching={isFetching}
+              items={items}
+              isItemsFetching={isItemsFetching}
+              isItemsLoading={isItemsLoading}
+              goodsTotal={goodsTotal}
+              formatOrderDate={formatOrderDate} />
+        }
       </div>
     </main>
   );
