@@ -1,4 +1,5 @@
 export { useCartDetails, useCartActions } from './features/cart'
+export { useCheckoutTotals } from './features/checkout'
 export { useWishlistDetails, useWishlistActions } from './features/wishlist'
 export { useProduct, useProductCatalog, useSearch } from './features/product'
 export { useAuthSync } from './features/auth'
