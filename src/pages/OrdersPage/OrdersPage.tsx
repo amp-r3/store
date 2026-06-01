@@ -4,10 +4,10 @@ import style from './orders-page.module.scss';
 import { useEnrichedOrderItems, useMediaQuery } from '@/hooks';
 import { BackButton, Loader } from '@/components/common';
 import { useNavigate } from 'react-router';
-import { OrderCard } from './components/OrderCard/OrderCard';
 import { OrderEmpty } from './components/OrderEmpty/OrderEmpty';
 import { OrderDetailsCard } from './components/OrderDetails/OrderDetailsCard/OrderDetailsCard';
 import { OrderDetailsDrawer } from './components/OrderDetails/OrderDetailsDrawer/OrderDetailsDrawer';
+import { OrdersList } from './components/OrdersList/OrderList';
 
 export const OrdersPage = () => {
   const navigate = useNavigate()
@@ -83,23 +83,13 @@ export const OrdersPage = () => {
       <div className={style.layoutGrid}>
 
         {/* ── Left: orders list ────────────────────────────────────────────── */}
-        <aside className={style.ordersList} role="listbox" aria-label="Orders">
-          {orders.map((order) => {
-            const isActive = order.id === selectedOrderId;
 
-            return (
-              <OrderCard
-                orderId={order.id}
-                orderNumber={order.orderId}
-                orderDate={formatOrderDate(order.createdAt)}
-                orderStatus={order.status}
-                orderTotalAmount={order.totalAmount}
-                isActive={isActive}
-                onClick={onCardClick}
-                key={order.id} />
-            );
-          })}
-        </aside>
+        <OrdersList
+          orders={orders}
+          formatOrderDate={formatOrderDate}
+          onCardClick={onCardClick}
+          selectedOrderId={selectedOrderId}
+        />
 
         {/* ── Right: order details ─────────────────────────────────────────── */}
 
