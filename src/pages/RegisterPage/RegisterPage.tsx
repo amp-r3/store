@@ -3,12 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { RegisterSchema, registerSchema } from "@/schemas/registerSchema"
 import { useRegisterMutation, useSignInWithGoogleMutation, useSignInWithTelegramMutation } from "@/services/authApi"
-import '@/styles/auth-page.scss'
 import { FormField, Loader, SignInButton } from "@/components/common"
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
+import style from '@/components/layout/Layout/AuthLayout/auth-layout.module.scss'
 import { useState } from "react"
 import { LuMail } from "react-icons/lu";
-import { RiLockPasswordLine, RiShieldCheckLine } from "react-icons/ri"
+import { RiLockPasswordLine, RiShieldCheckLine, RiUserAddLine } from "react-icons/ri"
 
 export const RegisterPage = () => {
   const navigate = useNavigate()
@@ -86,11 +86,12 @@ export const RegisterPage = () => {
     <AuthLayout
       title="Create an Account"
       subtitle="Join us to start managing your orders"
+      icon={<RiUserAddLine />}
     >
-      <form className='auth' onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className={style.auth} onSubmit={handleSubmit(onSubmit)} noValidate>
 
         {errors.root && (
-          <div className='auth__root-message' role="alert">
+          <div className={style['auth__root-message']} role="alert">
             {errors.root.message}
           </div>
         )}
@@ -124,16 +125,16 @@ export const RegisterPage = () => {
                 error={errors.confirm?.message}
                 {...registerField('confirm')}
               />
-              <div className='auth__actions'>
+              <div className={style.auth__actions}>
                 <button
                   type="button"
-                  className='auth__cancelBtn'
+                  className={style.auth__cancelBtn}
                   onClick={() => setIsEmail(false)}>
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className='auth__submitBtn'
+                  className={style.auth__submitBtn}
                   disabled={isLoading}
                 >
                   {isLoading ? <Loader size="sm" /> : 'Register'}
@@ -151,8 +152,8 @@ export const RegisterPage = () => {
 
 
 
-        <p className='auth__footer-text'>
-          Already have an account? <Link to="/login" className='auth__link'>Log in</Link>
+        <p className={style['auth__footer-text']}>
+          Already have an account? <Link to="/login" className={style.auth__link}>Log in</Link>
         </p>
 
       </form>

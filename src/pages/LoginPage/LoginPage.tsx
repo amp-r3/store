@@ -3,9 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { LoginSchema, loginSchema } from "@/schemas/loginSchema"
 import { useLoginMutation, useSignInWithGoogleMutation, useSignInWithTelegramMutation } from "@/services/authApi"
-import '@/styles/auth-page.scss'
 import { FormField, Loader, SignInButton } from "@/components/common"
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
+import style from '@/components/layout/Layout/AuthLayout/auth-layout.module.scss'
 import { useState } from "react"
 import { LuMail } from "react-icons/lu";
 import { RiLockPasswordLine } from "react-icons/ri"
@@ -67,11 +67,12 @@ export const LoginPage = () => {
     <AuthLayout
       title="Welcome Back"
       subtitle="Log in to access your orders and settings"
+      icon={<RiLockPasswordLine />}
     >
-      <form className='auth' onSubmit={handleSubmit(onSubmit)}>
+      <form className={style.auth} onSubmit={handleSubmit(onSubmit)}>
 
         {errors.root && (
-          <div className='auth__root-message' role="alert">
+          <div className={style['auth__root-message']} role="alert">
             {errors.root.message}
           </div>
         )}
@@ -96,16 +97,16 @@ export const LoginPage = () => {
                 error={errors.password?.message}
                 {...register('password')}
               />
-              <div className='auth__actions'>
+              <div className={style.auth__actions}>
                 <button
                   type="button"
                   onClick={() => setIsEmail(false)}
-                  className='auth__cancelBtn'>
+                  className={style.auth__cancelBtn}>
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className='auth__submitBtn'
+                  className={style.auth__submitBtn}
                   disabled={isLoading}
                 >
                   {isLoading ? <Loader size="sm" /> : 'Log in'}
@@ -118,8 +119,8 @@ export const LoginPage = () => {
               <SignInButton provider="Telegram" onClick={handleTelegramLogin} />
             </>
         }
-        <p className='auth__footer-text'>
-          Don't have an account? <Link to="/register" className='auth__link'>Sign up</Link>
+        <p className={style['auth__footer-text']}>
+          Don't have an account? <Link to="/register" className={style.auth__link}>Sign up</Link>
         </p>
       </form>
     </AuthLayout>
