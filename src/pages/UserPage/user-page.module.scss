@@ -7,38 +7,3 @@
   justify-content: center;
   padding: $spacing-xl $container-padding;
 }
-
-.card {
-  width: 100%;
-  max-width: 480px;
-  padding: $spacing-xl;
-  background: var(--glass-background-strong);
-  backdrop-filter: $backdrop-blur;
-  -webkit-backdrop-filter: $backdrop-blur;
-  border: 1px solid var(--glass-border);
-  border-radius: $radius-xl;
-  box-shadow: var(--shadow-default);
-
-  @media (max-width: 560px) {
-    padding: $spacing-lg $spacing-md;
-  }
-}
-
-.header {
-  text-align: center;
-  margin-bottom: $spacing-xl;
-}
-
-.title {
-  font-family: $font-display;
-  font-size: $fs-xl;
-  font-weight: $fw-bold;
-  color: var(--text-primary);
-  margin-bottom: $spacing-xs;
-}
-
-.subtitle {
-  font-family: $font-primary;
-  font-size: $fs-sm;
-  color: var(--text-muted);
-}
