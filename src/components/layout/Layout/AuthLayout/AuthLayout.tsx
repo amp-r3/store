@@ -7,26 +7,44 @@ interface AuthLayoutProps {
   title: string
   subtitle?: string
   children: ReactNode
+  icon?: ReactNode
+  isFullPage?: boolean
 }
 
-export const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => {
-  return (
-    <main className={style.root}>
-      <div className={style.card}>
+export const AuthLayout = ({ 
+  title, 
+  subtitle, 
+  children, 
+  icon = <FaRegUser />, 
+  isFullPage = true 
+}: AuthLayoutProps) => {
+  const content = (
+    <div className={style.card}>
+      {isFullPage && (
         <div className={style.card__header}>
           <Logo />
           <ThemeToggle />
         </div>
-        <div className={style.card__body}>
-          <span className={style.card__icon}>
-            <FaRegUser />
-          </span>
-          <h1 className={style.card__title}>{title}</h1>
-          <p className={style.card__subtitle}>{subtitle}</p>
-        </div>
-
-        {children}
+      )}
+      <div className={style.card__body}>
+        <span className={style.card__icon}>
+          {icon}
+        </span>
+        <h1 className={style.card__title}>{title}</h1>
+        <p className={style.card__subtitle}>{subtitle}</p>
       </div>
+
+      {children}
+    </div>
+  )
+
+  if (!isFullPage) {
+    return content;
+  }
+
+  return (
+    <main className={style.root}>
+      {content}
 
       <footer className={style.footer}>
         <p>
