@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useGetOrdersQuery } from '@/services/checkoutApi';
 import style from './orders-page.module.scss';
-import { useEnrichedOrderItems, useMediaQuery } from '@/hooks';
+import { useEnrichedOrderItems } from '@/hooks';
 import { BackButton, Loader } from '@/components/common';
 import { useNavigate } from 'react-router';
 import { OrderEmpty } from './components/OrderEmpty/OrderEmpty';
-import { OrderDetailsCard } from './components/OrderDetails/OrderDetailsCard/OrderDetailsCard';
-import { OrderDetailsDrawer } from './components/OrderDetails/OrderDetailsDrawer/OrderDetailsDrawer';
 import { OrdersList } from './components/OrdersList/OrderList';
+import { OrderDetails } from './components/OrderDetails/OrderDetails';
 
 export const OrdersPage = () => {
   const navigate = useNavigate()
   const { data: orders, isLoading, isFetching } = useGetOrdersQuery();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 768px)')
 
   useEffect(() => {
     if (orders?.length && !selectedOrderId) {
@@ -65,9 +63,7 @@ export const OrdersPage = () => {
   }
 
   const onCardClick = (id: string) => {
-    if (isMobile) {
-      onOpenChange()
-    }
+    onOpenChange()
     setSelectedOrderId(id)
   }
 
@@ -93,26 +89,17 @@ export const OrdersPage = () => {
 
         {/* ── Right: order details ─────────────────────────────────────────── */}
 
-        {
-          isMobile ? <OrderDetailsDrawer
-            open={isOpen}
-            order={activeOrder}
-            isFetching={isFetching}
-            items={items}
-            isItemsFetching={isItemsFetching}
-            isItemsLoading={isItemsLoading}
-            goodsTotal={goodsTotal}
-            onOpenChange={onOpenChange}
-            formatOrderDate={formatOrderDate} /> :
-            <OrderDetailsCard
-              order={activeOrder}
-              isFetching={isFetching}
-              items={items}
-              isItemsFetching={isItemsFetching}
-              isItemsLoading={isItemsLoading}
-              goodsTotal={goodsTotal}
-              formatOrderDate={formatOrderDate} />
-        }
+        <OrderDetails
+          open={isOpen}
+          onOpenChange={onOpenChange}
+          order={activeOrder}
+          isFetching={isFetching}
+          items={items}
+          isItemsFetching={isItemsFetching}
+          isItemsLoading={isItemsLoading}
+          goodsTotal={goodsTotal}
+          formatOrderDate={formatOrderDate} />
+
       </div>
     </main>
   );

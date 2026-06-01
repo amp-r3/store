@@ -1,27 +1,21 @@
 import { FC } from 'react';
 import { Drawer } from 'vaul';
-import { EnrichedOrderItem, Order } from '@/types/order';
 import style from './order-details-drawer.module.scss';
 
 import { OrderDetailsHeader } from '../components/OrderDetailsHeader/OrderDetailsHeader';
 import { OrderDetailsBody } from '../components/OrderDetailsBody/OrderDetailsBody';
 import { OrderDetailsFooter } from '../components/OrderDetailsFooter/OrderDetailsFooter';
+import { OrderDetailsProps } from '../OrderDetails';
 
 const ITEMS_PREVIEW_COUNT = 3;
 
-interface OrderDetailsProps {
-    open: boolean;
-    order: Order;
-    isFetching: boolean;
-    items: EnrichedOrderItem[];
-    isItemsLoading: boolean;
-    isItemsFetching: boolean;
-    goodsTotal: number;
-    onOpenChange(): void;
-    formatOrderDate(date: string): string;
+interface OrderDetailsDrawerProps extends OrderDetailsProps {
+
 }
 
-export const OrderDetailsDrawer: FC<OrderDetailsProps> = ({
+
+
+export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
     open,
     order,
     isFetching,

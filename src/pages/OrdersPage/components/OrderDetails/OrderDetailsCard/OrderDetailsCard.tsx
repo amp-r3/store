@@ -1,25 +1,16 @@
 import { FC } from 'react';
-import { EnrichedOrderItem, Order } from '@/types/order';
 import style from './order-details-card.module.scss';
-
 
 import { OrderDetailsHeader } from '../components/OrderDetailsHeader/OrderDetailsHeader';
 import { OrderDetailsBody } from '../components/OrderDetailsBody/OrderDetailsBody';
 import { OrderDetailsFooter } from '../components/OrderDetailsFooter/OrderDetailsFooter';
+import { OrderDetailsProps } from '../OrderDetails';
 
 const ITEMS_PREVIEW_COUNT = 3;
 
-interface OrderDetailsProps {
-    order: Order;
-    isFetching: boolean;
-    items: EnrichedOrderItem[];
-    isItemsLoading: boolean;
-    isItemsFetching: boolean;
-    goodsTotal: number;
-    formatOrderDate(date: string): string;
-}
+type OrderDetailsCardProps = Omit<OrderDetailsProps, 'open' | 'onOpenChange'>
 
-export const OrderDetailsCard: FC<OrderDetailsProps> = ({
+export const OrderDetailsCard: FC<OrderDetailsCardProps> = ({
     order,
     isFetching,
     items,
