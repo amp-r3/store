@@ -18,6 +18,7 @@ import wishlistReducer from '@/store/slices/wishlistSlice';
 import { cartApi } from '@/services/cartApi';
 import { wishlistApi } from '@/services/wishlistApi';
 import { checkoutApi } from '@/services/checkoutApi';
+import { orderApi } from '@/services/orderApi';
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     [cartApi.reducerPath]: cartApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
     [checkoutApi.reducerPath]: checkoutApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
     auth: authReducer,
     cart: cartReducer,
     theme: themeSlice,
@@ -36,7 +38,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(productsApi.middleware).concat(authApi.middleware).concat(cartApi.middleware).concat(wishlistApi.middleware).concat(checkoutApi.middleware)
+    }).concat(productsApi.middleware).concat(authApi.middleware).concat(cartApi.middleware).concat(wishlistApi.middleware).concat(checkoutApi.middleware).concat(orderApi.middleware)
 });
 
 export const persistor = persistStore(store);

@@ -13,7 +13,8 @@ import { CheckoutPayments } from "./components/CheckoutPayments/CheckoutPayments
 import { CheckoutSummary } from "./components/CheckoutSummary/CheckoutSummary"
 import { Header } from "@/components/layout/Header/Header"
 import { CheckoutStepBar } from "./components/CheckoutStepBar/CheckoutStepBar"
-import { useCreateOrderMutation, useGetDeliveryMethodsQuery, useGetPaymentMethodsQuery } from "@/services/checkoutApi"
+import { useGetDeliveryMethodsQuery, useGetPaymentMethodsQuery } from "@/services/checkoutApi"
+import { useCreateOrderMutation } from "@/services/orderApi"
 import { DeliveryOptions, PaymentOptions } from "@/types/checkout"
 import { useClearCartMutation } from "@/services/cartApi"
 

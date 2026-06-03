@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useGetOrdersPaginationQuery, useGetOrdersScrollQuery } from '@/services/checkoutApi';
+import { useGetOrdersPaginationQuery, useGetOrdersScrollQuery } from '@/services/orderApi';
 import style from './orders-page.module.scss';
 import { useEnrichedOrderItems, useMediaQuery } from '@/hooks';
 import { BackButton, Loader } from '@/components/common';
