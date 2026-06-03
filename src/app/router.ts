@@ -95,15 +95,16 @@ export const router = createBrowserRouter([
               return { Component: module.CheckoutPage }
             }
           },
+          {
+            path: 'success',
+            lazy: async () => {
+              const module = await import("@/pages/CheckoutSuccessPage/CheckoutSuccessPage")
+              return { Component: module.CheckoutSuccessPage }
+            }
+          },
         ],
       },
-      {
-        path: '/checkout/success',
-        lazy: async () => {
-          const module = await import("@/pages/CheckoutSuccessPage/CheckoutSuccessPage")
-          return { Component: module.CheckoutSuccessPage }
-        }
-      },
+
     ]
   }
 ])

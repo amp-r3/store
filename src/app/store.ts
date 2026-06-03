@@ -8,13 +8,14 @@ import {
   REGISTER,
 } from 'redux-persist';
 
-import { productsApi } from '@/services/productsApi';
-import cartReducer from '@/store/slices/cartSlice';
-import themeSlice from '@/store/slices/themeSlice';
-import { authApi } from '@/services/authApi';
-import { persistStore } from 'redux-persist';
 import authReducer from "@/store/slices/authSlice"
 import wishlistReducer from '@/store/slices/wishlistSlice';
+import cartReducer from '@/store/slices/cartSlice';
+import checkoutReducer from '@/store/slices/checkoutSlice'
+import themeSlice from '@/store/slices/themeSlice';
+import { productsApi } from '@/services/productsApi';
+import { authApi } from '@/services/authApi';
+import { persistStore } from 'redux-persist';
 import { cartApi } from '@/services/cartApi';
 import { wishlistApi } from '@/services/wishlistApi';
 import { checkoutApi } from '@/services/checkoutApi';
@@ -31,7 +32,8 @@ export const store = configureStore({
     auth: authReducer,
     cart: cartReducer,
     theme: themeSlice,
-    wishlist: wishlistReducer
+    wishlist: wishlistReducer,
+    checkout: checkoutReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

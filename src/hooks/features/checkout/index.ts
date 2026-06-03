@@ -1,1 +1,2 @@
-export { useCheckoutTotals } from './useCheckoutTotals'
+export { useCheckoutTotals } from './useCheckoutTotals';
+export { useCheckoutDetails } from './useCheckoutDetails';

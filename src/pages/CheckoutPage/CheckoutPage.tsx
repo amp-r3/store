@@ -1,6 +1,6 @@
 import { BackButton } from "@/components/common"
-import { useAppSelector, useCartDetails } from "@/hooks"
-import { useState } from "react"
+import { useAppDispatch, useAppSelector, useCheckoutDetails } from "@/hooks"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import styles from './checkout-page.module.scss'
 import { selectUser } from "@/store/selectors/authSelectors"
@@ -17,6 +17,8 @@ import { useGetDeliveryMethodsQuery, useGetPaymentMethodsQuery } from "@/service
 import { useCreateOrderMutation } from "@/services/orderApi"
 import { DeliveryOptions, PaymentOptions } from "@/types/checkout"
 import { useClearCartMutation } from "@/services/cartApi"
+import { addToCheckout } from "@/store/slices/checkoutSlice"
+import { selectCartItemsArray } from "@/store"
 
 const STEPS_ORDER = ['contacts', 'delivery', 'payment'] as const;
 
@@ -25,7 +27,9 @@ export type StepType = typeof STEPS_ORDER[number];
 
 export const CheckoutPage = () => {
   const navigate = useNavigate()
-  const { cartDetails, totals, isLoading, isFetching, cartItems } = useCartDetails()
+  const dispatch = useAppDispatch()
+  const { checkoutDetails, totals, isLoading, isFetching, checkoutItems, isEmpty } = useCheckoutDetails()
+  const cartItems = useAppSelector(selectCartItemsArray)
   const { data: deliveryMethods, isLoading: isDeliveryLoading } = useGetDeliveryMethodsQuery();
   const { data: paymentMethods, isLoading: isPaymentLoading } = useGetPaymentMethodsQuery();
   const [clearServerCart, { isLoading: isClearing }] = useClearCartMutation();
@@ -36,6 +40,12 @@ export const CheckoutPage = () => {
 
   const currentIndex = STEPS_ORDER.indexOf(step);
   const isLastStep = currentIndex === STEPS_ORDER.length - 1;
+
+  useEffect(() => {
+    if (isEmpty && cartItems.length > 0) {
+      dispatch(addToCheckout(cartItems))
+    }
+  }, [isEmpty, cartItems, dispatch])
 
 
   const methods = useForm<CheckoutFormValues>({
@@ -137,16 +147,17 @@ export const CheckoutPage = () => {
       },
       p_payment_method_id: formData.paymentMethodId,
       p_delivery_method_id: formData.deliveryMethodId,
-      p_items: cartItems.map((item) => { return { product_id: item.id, quantity: item.quantity } })
+      p_items: checkoutItems.map((item) => { return { product_id: item.id, quantity: item.quantity } })
     };
 
     try {
       const { order_number: orderId } = await createOrder(payload).unwrap();
       await clearServerCart(undefined).unwrap();
+      
       navigate('/checkout/success', {
         state: { orderId },
         replace: true
-      })
+      });
     } catch (err) {
       console.error(err);
     }
@@ -213,8 +224,8 @@ export const CheckoutPage = () => {
               </section>
 
               <CheckoutSummary
-                cartDetails={cartDetails}
-                cartItems={cartItems}
+                cartDetails={checkoutDetails}
+                cartItems={checkoutItems}
 
                 subtotal={totals.subtotal}
                 cartTotal={totals.total}

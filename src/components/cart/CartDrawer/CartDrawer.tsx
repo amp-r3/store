@@ -6,7 +6,7 @@ import { IoWarningOutline } from "react-icons/io5";
 
 import styles from './cart-drawer.module.scss';
 
-import { useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 
 import { CartItem } from '../CartItem/CartItem';
 import { CartItemSkeleton } from '../CartItem/CartItemSkeleton';
@@ -17,6 +17,7 @@ import { Modal } from '@/components/common';
 
 import { useCartActions, useCartDetails, useHaptics } from '@/hooks';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
+import { addToCheckout } from '@/store/slices/checkoutSlice';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
   const { soft, success } = useHaptics();
+  const dispatch = useAppDispatch()
 
   const { onIncrease, onDecrease, onRemove, onClearCart, isUpdating } = useCartActions()
 
@@ -43,6 +45,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error("Error reconciling cart:", error);
     }
+    dispatch(addToCheckout(cartItems))
     navigate('/checkout');
     onClose();
   };

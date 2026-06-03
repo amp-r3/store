@@ -47,7 +47,7 @@ interface OrderResponse {
   }[];
 }
 
-interface CreateOrderResponse {
+export interface CreateOrderResponse {
   id: string;
   order_number: string;
 }

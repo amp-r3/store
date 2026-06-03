@@ -10,11 +10,8 @@ export const CheckoutSuccessPage = () => {
   useEffect(() => {
     if (!orderId) {
       navigate('/', { replace: true })
-      return
     }
-
-    window.history.replaceState({}, '')
-  }, [])
+  }, [orderId, navigate])
 
   if (!orderId) return null
   return (
