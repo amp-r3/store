@@ -17,23 +17,35 @@
 }
 
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 // ─────────────────────────────────────────────
 // Block: checkout
 // ─────────────────────────────────────────────
 
 .checkout {
   min-height: 100dvh;
+  --checkout-footer-height: 100px;
 
   &__container {
-    // padding-block: $spacing-xl $spacing-xxl;
-    // width: $container-width-fluid;
-    // margin-inline: auto;
     padding-bottom: $spacing-xl;
     padding-top: $spacing-xl;
     display: flex;
     flex-direction: column;
     gap: $spacing-xl;
     animation: fade-up $transition-layout $ease-out-expo both;
+
+    @media (max-width: 860px) {
+      padding-bottom: calc(var(--checkout-footer-height) + $spacing-md);
+      animation: fade-in $transition-layout $ease-out-expo both;
+    }
   }
 
   // ── Header ──────────────────────────────────
@@ -74,6 +86,10 @@
 
     @media (max-width: 860px) {
       grid-template-columns: 1fr;
+
+      aside {
+        order: -1;
+      }
     }
   }
 
@@ -84,6 +100,10 @@
     flex-direction: column;
     gap: $spacing-lg;
     animation: fade-up $transition-layout $ease-out-expo 80ms both;
+
+    @media (max-width: 860px) {
+      animation: fade-in $transition-layout $ease-out-expo 80ms both;
+    }
   }
 }
 
