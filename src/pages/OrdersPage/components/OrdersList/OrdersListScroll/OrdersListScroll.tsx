@@ -1,26 +1,70 @@
 import style from './orders-list-scroll.module.scss'
 import { OrderCard } from '../../OrderCard/OrderCard';
 import { OrdersListProps } from '../OrderList';
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
+import { OrderCardSkeleton } from '../../OrderCard/OrderCardSkeleton';
 
-export const OrdersListScroll: FC<OrdersListProps> = ({ orders, selectedOrderId, formatOrderDate, onCardClick }) => {
+export const OrdersListScroll: FC<OrdersListProps> = ({
+    orders,
+    selectedOrderId,
+    formatOrderDate,
+    onCardClick,
+    onLoadMore,
+    hasMore,
+    isLoading,
+    isFetching
+}) => {
+    const triggerRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && hasMore && !isFetching) {
+                    onLoadMore();
+                }
+            },
+            { rootMargin: '100px' }
+        );
+
+        if (triggerRef.current) {
+            observer.observe(triggerRef.current);
+        }
+
+        return () => {
+            if (triggerRef.current) {
+                observer.unobserve(triggerRef.current);
+            }
+        };
+    }, [hasMore, isFetching, onLoadMore]);
+
     return (
-        <section className={style['order-list']} role="listbox" aria-label="Orders">
-            {orders.map((order) => {
-                const isActive = order.id === selectedOrderId;
+        <section
+            className={`${style['order-list']} ${isFetching ? 'scroll-loader' : ''}`}
+            role="listbox"
+            aria-label="Orders"
+        >
+            {orders.map((order) => (
+                <OrderCard
+                    orderId={order.id}
+                    orderNumber={order.orderId}
+                    orderDate={formatOrderDate(order.createdAt)}
+                    orderStatus={order.status}
+                    orderTotalAmount={order.totalAmount}
+                    isActive={order.id === selectedOrderId}
+                    onClick={onCardClick}
+                    key={order.id}
+                />
+            ))}
 
-                return (
-                    <OrderCard
-                        orderId={order.id}
-                        orderNumber={order.orderId}
-                        orderDate={formatOrderDate(order.createdAt)}
-                        orderStatus={order.status}
-                        orderTotalAmount={order.totalAmount}
-                        isActive={isActive}
-                        onClick={onCardClick}
-                        key={order.id} />
-                );
-            })}
+            {isFetching && (
+                <OrderCardSkeleton count={3} />
+            )}
+
+            <div ref={triggerRef} className={style['scroll-trigger']} />
+
+            {!hasMore && orders.length > 0 && (
+                <p className={style['end-of-list']}>All orders have been loaded.</p>
+            )}
         </section>
     )
 }

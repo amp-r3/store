@@ -1,4 +1,3 @@
-import { useMediaQuery } from "@/hooks"
 import { OrdersListPagination } from './OrdersListPagination/OrdersListPagination'
 import { OrdersListScroll } from "./OrdersListScroll/OrdersListScroll"
 import { Order } from "@/types/order";
@@ -6,12 +5,20 @@ import { FC } from "react";
 
 export interface OrdersListProps {
     orders: Order[];
+    totalItems: number;
     selectedOrderId: string;
+    currentPage: number;
+    itemsPerPage: number;
     formatOrderDate(dateStr: string): string;
     onCardClick(id: string): void;
+    onPageChange(newPage: number): void;
+    onLoadMore(): void;
+    hasMore: boolean;
+    isMobile: boolean;
+    isLoading: boolean;
+    isFetching: boolean;
 }
 
 export const OrdersList: FC<OrdersListProps> = (props) => {
-    const isMobile = useMediaQuery('(max-width: 768px)')
-    return isMobile ? <OrdersListPagination {...props} /> : <OrdersListScroll {...props} />;
+    return props.isMobile ? <OrdersListPagination {...props} /> : <OrdersListScroll {...props} />;
 }

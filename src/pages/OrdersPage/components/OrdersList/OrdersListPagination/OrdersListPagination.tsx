@@ -3,34 +3,48 @@ import { FC } from 'react';
 import { OrderCard } from '../../OrderCard/OrderCard';
 import { OrdersListProps } from '../OrderList';
 import { Pagination } from '@/components/products';
+import { OrderCardSkeleton } from '../../OrderCard/OrderCardSkeleton';
 
-
-
-export const OrdersListPagination: FC<OrdersListProps> = ({ orders, selectedOrderId, formatOrderDate, onCardClick }) => {
+export const OrdersListPagination: FC<OrdersListProps> = ({
+    orders,
+    totalItems,
+    currentPage,
+    itemsPerPage,
+    onPageChange,
+    selectedOrderId,
+    formatOrderDate,
+    onCardClick,
+    isLoading
+}) => {
     return (
         <section className={style['order-list']} role="listbox" aria-label="Orders">
-            {orders.map((order) => {
-                const isActive = order.id === selectedOrderId;
-
-                return (
+            {isLoading ? (
+                <OrderCardSkeleton count={itemsPerPage} />
+            ) : (
+                orders.map((order) => (
                     <OrderCard
                         orderId={order.id}
                         orderNumber={order.orderId}
                         orderDate={formatOrderDate(order.createdAt)}
                         orderStatus={order.status}
                         orderTotalAmount={order.totalAmount}
-                        isActive={isActive}
+                        isActive={order.id === selectedOrderId}
                         onClick={onCardClick}
-                        key={order.id} />
-                );
-            })}
+                        key={order.id}
+                    />
+                ))
+            )}
 
-            <Pagination
-                totalItems={50}
-                currentPage={1}
-                itemsPerPage={10}
-                onPageChange={() => { }}
-            />
+            {totalItems > itemsPerPage && (
+                <div className={style['pagination-wrapper']}>
+                    <Pagination
+                        totalItems={totalItems}
+                        currentPage={currentPage}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={onPageChange}
+                    />
+                </div>
+            )}
         </section>
     )
 }

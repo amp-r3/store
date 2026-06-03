@@ -9,7 +9,7 @@ interface ProductPurchaseBoxProps {
     quantity: number;
     hasDiscount: boolean;
     originalPrice: number;
-    discountedPriceFormatted: number;
+    discountedPrice: number;
     handleCart(id: number, type: 'inc' | 'dec'): void;
     inStock: boolean;
     stock: number;
@@ -20,7 +20,7 @@ export const ProductPurchaseBox = ({
     quantity,
     hasDiscount,
     originalPrice,
-    discountedPriceFormatted,
+    discountedPrice,
     handleCart,
     inStock,
     stock,
@@ -33,7 +33,7 @@ export const ProductPurchaseBox = ({
                     hasDiscount ?
                         <>
                             <p className={style['price']}>{formatPrice(originalPrice)}</p>
-                            <p className={style['discount-price']}>{discountedPriceFormatted}</p>
+                            <p className={style['discount-price']}>{formatPrice(discountedPrice)}</p>
                         </> :
                         <p className={style['discount-price']}>{formatPrice(originalPrice)}</p>
                 }

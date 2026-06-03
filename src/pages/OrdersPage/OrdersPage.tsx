@@ -1,24 +1,52 @@
 import { useState, useEffect } from 'react';
-import { useGetOrdersQuery } from '@/services/checkoutApi';
+import { useGetOrdersPaginationQuery, useGetOrdersScrollQuery } from '@/services/checkoutApi';
 import style from './orders-page.module.scss';
-import { useEnrichedOrderItems } from '@/hooks';
+import { useEnrichedOrderItems, useMediaQuery } from '@/hooks';
 import { BackButton, Loader } from '@/components/common';
 import { useNavigate } from 'react-router';
 import { OrderEmpty } from './components/OrderEmpty/OrderEmpty';
 import { OrdersList } from './components/OrdersList/OrderList';
 import { OrderDetails } from './components/OrderDetails/OrderDetails';
+import { scrollToTop } from '@/utils';
 
 export const OrdersPage = () => {
   const navigate = useNavigate()
-  const { data: orders, isLoading, isFetching } = useGetOrdersQuery();
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [page, setPage] = useState(1);
+  const limit = isMobile ? 5 : 10;
+
+  const scrollResult = useGetOrdersScrollQuery(
+    { page, limit },
+    { skip: isMobile }
+  );
+
+  const paginationResult = useGetOrdersPaginationQuery(
+    { page, limit },
+    { skip: !isMobile }
+  );
+
+  const ordersResponse = isMobile ? paginationResult.data : scrollResult.data;
+  const isLoading = isMobile ? paginationResult.isLoading : scrollResult.isLoading;
+  const isFetching = isMobile ? paginationResult.isFetching : scrollResult.isFetching;
+
+  const orders = ordersResponse?.items || [];
+  const totalCount = ordersResponse?.totalCount || 0;
+
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (orders?.length && !selectedOrderId) {
+    if (!isMobile && orders?.length > 0 && !selectedOrderId) {
       setSelectedOrderId(orders[0].id);
     }
-  }, [orders, selectedOrderId]);
+  }, [orders, selectedOrderId, isMobile]);
+
+  const loadMore = () => setPage((prev) => prev + 1);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    scrollToTop()
+  };
 
   const activeOrder = orders?.find((o) => o.id === selectedOrderId) ?? orders?.[0];
 
@@ -30,19 +58,17 @@ export const OrdersPage = () => {
 
   // ── States ──────────────────────────────────────────────────────────────────
 
-  if (isLoading) {
+  if (isLoading && page === 1) {
     return (
       <Loader />
     );
   }
 
-  if (!orders || orders.length === 0) {
+  if (!isLoading && orders.length === 0) {
     return (
       <OrderEmpty />
     );
   }
-
-  if (!activeOrder) return null;
 
   const formatOrderDate = (dateStr: string) =>
     new Date(dateStr).toLocaleString('en-US', {
@@ -53,10 +79,11 @@ export const OrdersPage = () => {
       minute: '2-digit',
     });
 
-  const goodsTotal =
+  const goodsTotal = activeOrder ? (
     Number(activeOrder.totalAmount) -
     Number(activeOrder.deliveryCost) -
-    Number(activeOrder.paymentFee);
+    Number(activeOrder.paymentFee)
+  ) : 0;
 
   const onOpenChange = () => {
     setIsOpen(prev => !prev)
@@ -82,23 +109,34 @@ export const OrdersPage = () => {
 
         <OrdersList
           orders={orders}
+          totalItems={totalCount}
+          selectedOrderId={selectedOrderId || ''}
+          currentPage={page}
+          itemsPerPage={limit}
           formatOrderDate={formatOrderDate}
           onCardClick={onCardClick}
-          selectedOrderId={selectedOrderId}
+          onPageChange={handlePageChange}
+          onLoadMore={loadMore}
+          hasMore={orders.length < totalCount}
+          isMobile={isMobile}
+          isLoading={isLoading}
+          isFetching={isFetching}
         />
 
         {/* ── Right: order details ─────────────────────────────────────────── */}
 
-        <OrderDetails
-          open={isOpen}
-          onOpenChange={onOpenChange}
-          order={activeOrder}
-          isFetching={isFetching}
-          items={items}
-          isItemsFetching={isItemsFetching}
-          isItemsLoading={isItemsLoading}
-          goodsTotal={goodsTotal}
-          formatOrderDate={formatOrderDate} />
+        {activeOrder && (
+          <OrderDetails
+            open={isOpen}
+            onOpenChange={onOpenChange}
+            order={activeOrder}
+            isFetching={isFetching}
+            items={items}
+            isItemsFetching={isItemsFetching}
+            isItemsLoading={isItemsLoading}
+            goodsTotal={goodsTotal}
+            formatOrderDate={formatOrderDate} />
+        )}
 
       </div>
     </main>

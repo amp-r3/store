@@ -103,7 +103,7 @@ export const ProductPage = () => {
                             handleCart={handleCart}
                             hasDiscount={hasDiscount}
                             originalPrice={basePrice}
-                            discountedPriceFormatted={price}
+                            discountedPrice={price}
                             inStock={inStock}
                             stock={stock}
                         />

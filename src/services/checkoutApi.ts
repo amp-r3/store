@@ -53,6 +53,90 @@ interface CreateOrderResponse {
   order_number: string;
 }
 
+export interface PaginatedOrders {
+  items: Order[];
+  totalCount: number;
+}
+
+const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
+  id: order.id,
+  orderId: order.order_number,
+  userId: order.user_id,
+  status: order.status,
+  totalAmount: Number(order.total_amount),
+  shippingAddress: order.shipping_address,
+  createdAt: order.created_at,
+  updatedAt: order.updated_at,
+  paymentMethod: order.payment_methods.code,
+  paymentStatus: order.payment_status,
+  deliveryStatus: order.delivery_status,
+  deliveryMethod_id: order.delivery_methods.id,
+  deliveryCost: Number(order.delivery_cost),
+  paymentFee: Number(order.payment_fee),
+  deliveryMethods: {
+    id: order.delivery_methods.id,
+    code: order.delivery_methods.code,
+    label: order.delivery_methods.name,
+    isActive: order.delivery_methods.is_active,
+    duration: order.delivery_methods.estimated_time,
+    price: order.delivery_methods.price,
+    freeFromPrice: order.delivery_methods.free_from_price,
+  },
+  orderItems: (order.order_items || []).map((item) => ({
+    id: item.id,
+    orderId: item.order_id,
+    productId: Number(item.product_id),
+    quantity: item.quantity,
+    priceAtPurchase: Number(item.price_at_purchase),
+    createdAt: item.created_at,
+  })),
+});
+
+const fetchOrders = async (page: number, limit: number) => {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: { status: 401, data: 'The user is not authorized' } };
+  }
+
+  const from = (page - 1) * limit;
+  const to = page * limit - 1;
+
+  const { data, error, count } = await supabase
+    .from('orders')
+    .select(`
+            *,
+            delivery_methods (
+              *
+            ),
+            payment_methods (
+              *
+            ),
+            order_items (
+              id,
+              order_id,
+              product_id,
+              quantity,
+              price_at_purchase,
+              created_at
+            )
+          `, { count: 'exact' })
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    return { error: { status: 400, data: error.message } };
+  }
+
+  return {
+    data: {
+      items: (data as OrderResponse[]).map(mapOrderResponseToOrder),
+      totalCount: count || 0
+    }
+  };
+};
+
 export const checkoutApi = createApi({
   reducerPath: 'checkoutApi',
   baseQuery: fakeBaseQuery(),
@@ -103,77 +187,22 @@ export const checkoutApi = createApi({
         return { data: methods as PaymentMethod[] };
       },
     }),
-    getOrders: builder.query<Order[], void>({
-      queryFn: async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+    getOrdersPagination: builder.query<PaginatedOrders, { page: number; limit: number }>({
+      queryFn: ({ page, limit }) => fetchOrders(page, limit),
+      providesTags: ['Order']
+    }),
 
-        if (!user) {
-          return { error: { status: 401, data: 'The user is not authorized' } };
-        }
-
-        const { data, error } = await supabase
-          .from('orders')
-          .select(`
-            *,
-            delivery_methods (
-              *
-            ),
-            payment_methods (
-              *
-            ),
-            order_items (
-              id,
-              order_id,
-              product_id,
-              quantity,
-              price_at_purchase,
-              created_at
-            )
-          `)
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          return { error: { status: 400, data: error.message } };
-        }
-
-        const orders: Order[] = (data as OrderResponse[]).map((order) => {
-          return {
-            id: order.id,
-            orderId: order.order_number,
-            userId: order.user_id,
-            status: order.status,
-            totalAmount: Number(order.total_amount),
-            shippingAddress: order.shipping_address,
-            createdAt: order.created_at,
-            updatedAt: order.updated_at,
-            paymentMethod: order.payment_methods.code,
-            paymentStatus: order.payment_status,
-            deliveryStatus: order.delivery_status,
-            deliveryMethod_id: order.delivery_methods.id,
-            deliveryCost: Number(order.delivery_cost),
-            paymentFee: Number(order.payment_fee),
-            deliveryMethods: {
-              id: order.delivery_methods.id,
-              code: order.delivery_methods.code,
-              label: order.delivery_methods.name,
-              isActive: order.delivery_methods.is_active,
-              duration: order.delivery_methods.estimated_time,
-              price: order.delivery_methods.price,
-              freeFromPrice: order.delivery_methods.free_from_price
-            },
-            orderItems: (order.order_items || []).map((item) => ({
-              id: item.id,
-              orderId: item.order_id,
-              productId: Number(item.product_id),
-              quantity: item.quantity,
-              priceAtPurchase: Number(item.price_at_purchase),
-              createdAt: item.created_at,
-            })),
-          };
-        });
-
-        return { data: orders };
+    getOrdersScroll: builder.query<PaginatedOrders, { page: number; limit: number }>({
+      queryFn: ({ page, limit }) => fetchOrders(page, limit),
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      merge: (currentCache, newResponse) => {
+        currentCache.items.push(...newResponse.items);
+        currentCache.totalCount = newResponse.totalCount;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
       },
       providesTags: ['Order']
     }),
@@ -204,6 +233,7 @@ export const checkoutApi = createApi({
 export const {
   useGetDeliveryMethodsQuery,
   useGetPaymentMethodsQuery,
-  useGetOrdersQuery,
+  useGetOrdersPaginationQuery,
+  useGetOrdersScrollQuery,
   useCreateOrderMutation
 } = checkoutApi;

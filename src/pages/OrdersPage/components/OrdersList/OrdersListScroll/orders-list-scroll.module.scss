@@ -32,4 +32,20 @@
             background-color: var(--border-color-strong);
         }
     }
+
+    .scroll-loader {
+        margin-top: $spacing-xs;
+    }
+}
+
+.scroll-trigger {
+    height: 20px;
+    width: 100%;
+}
+
+.end-of-list {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: $fs-sm;
+    padding: $spacing-md 0;
 }
