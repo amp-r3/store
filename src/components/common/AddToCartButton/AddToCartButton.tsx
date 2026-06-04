@@ -9,7 +9,6 @@ interface AddToCartButtonProps {
   onDecrement: () => void;
   inStock?: boolean;
   isMaxReached?: boolean;
-  size?: 'small' | 'large';
   className?: string;
   isLoading?: boolean;
   buttonText?: string;
@@ -23,13 +22,11 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   onDecrement,
   inStock = true,
   isMaxReached = false,
-  size = 'large',
   className = '',
   isLoading = false,
   buttonText = 'Add to Cart',
   outOfStockText = 'Out of Stock',
 }) => {
-  const isSmall = size === 'small';
   const isActive = quantity > 0;
   const [animateQty, setAnimateQty] = useState(false);
 
@@ -51,7 +48,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
 
   return (
     <div
-      className={`${styles.container} ${isActive ? styles['is-active'] : ''} ${isSmall ? styles['is-small'] : ''} ${className}`}
+      className={`${styles.container} ${isActive ? styles['is-active'] : ''} ${className}`}
     >
       <button
         type="button"

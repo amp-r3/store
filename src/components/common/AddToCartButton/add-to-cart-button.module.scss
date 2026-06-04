@@ -37,10 +37,6 @@
     box-shadow: var(--shadow-accent-sm);
   }
 
-  &.is-small {
-    border-radius: $radius-md;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     &, .add-btn, .counter, .counter-btn, .spinning, .counter-qty.qty-pop {
       transition: none !important;
@@ -186,33 +182,6 @@
   40%  { transform: scale(1.18); }
   70%  { transform: scale(0.95); }
   100% { transform: scale(1); }
-}
-
-.container.is-small {
-  .add-btn {
-    padding: $spacing-sm $spacing-lg;
-    font-size: $fs-sm;
-    gap: $spacing-xs;
-
-    .icon, .spinning {
-      font-size: $fs-icon-sm;
-    }
-  }
-
-  .counter {
-    padding: $spacing-xxs;
-  }
-
-  .counter-btn {
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: $radius-sm;
-    font-size: $fs-icon-sm;
-  }
-
-  .counter-qty {
-    font-size: $fs-base;
-  }
 }
 
 .spinning {

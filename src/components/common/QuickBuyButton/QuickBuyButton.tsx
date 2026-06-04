@@ -7,7 +7,6 @@ interface QuickBuyButtonProps {
   onClick: () => void;
   isLoading?: boolean;
   disabled?: boolean;
-  size?: 'small' | 'large';
   className?: string;
   text?: string;
 }
@@ -16,12 +15,10 @@ export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
   onClick,
   isLoading = false,
   disabled = false,
-  size = 'large',
   className = '',
   text = 'Buy Now',
 }) => {
   const { light } = useHaptics();
-  const isSmall = size === 'small';
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,7 +32,7 @@ export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
   return (
     <button
       type="button"
-      className={`${styles.button} ${isSmall ? styles['is-small'] : ''} ${className}`}
+      className={`${styles.button} ${className}`}
       onClick={handleClick}
       disabled={disabled || isLoading}
       aria-label={text}

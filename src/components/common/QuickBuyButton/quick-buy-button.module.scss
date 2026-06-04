@@ -56,17 +56,6 @@
       color: var(--text-muted);
     }
   }
-
-  &.is-small {
-    padding: $spacing-sm $spacing-lg;
-    border-radius: $radius-md;
-    font-size: $fs-sm;
-    gap: $spacing-xs;
-
-    .icon {
-      font-size: $fs-icon-sm;
-    }
-  }
 }
 
 .spinning {
