@@ -1,6 +1,5 @@
 import Skeleton from 'react-loading-skeleton'
 import style from './productCard.module.scss'
-import { AddToCartButtonSkeleton } from '@/components/common'
 
 
 export const ProductCardSkeleton = () => {
@@ -11,22 +10,17 @@ export const ProductCardSkeleton = () => {
         <Skeleton height={241} />
       </div>
       <div className={style.card__body}>
-        <Skeleton width={130} height={16} />
-
-        <div className={style.card__meta}>
-          <div className={style.card__rating}>
-            <Skeleton width={15} height={15} circle />
-            <Skeleton width={45} height={10} />
-          </div>
-          <Skeleton width={70} height={8} />
-        </div>
-
+        <Skeleton width="130px" height="16px" />
+        <Skeleton width="70px" height="12px" style={{ marginTop: 'auto' }} />
       </div>
       <div className={style.card__footer}>
         <div className={style.card__price_wrapper}>
-          <Skeleton width={70} height={22} />
+          <Skeleton width="70px" height="22px" />
         </div>
-        <AddToCartButtonSkeleton size='small' />
+        <div className={style.card__rating}>
+          <Skeleton width="15px" height="15px" circle />
+          <Skeleton width="45px" height="12px" />
+        </div>
       </div>
     </article>
   )

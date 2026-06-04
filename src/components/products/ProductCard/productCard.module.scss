@@ -168,34 +168,11 @@
     }
 }
 
-.card__meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: $spacing-xs;
-    margin-top: auto;
-    padding-top: $spacing-xs;
-}
-
-.card__rating {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xxs;
-    font-size: $fs-sm;
-    font-weight: $fw-semibold;
-    color: var(--rating-color);
-}
-
-.card__ratingCount {
-    font-size: $fs-sm;
-    font-weight: $fw-normal;
-    color: var(--text-muted);
-}
-
 .card__stock {
     font-size: $fs-sm;
     color: var(--text-muted);
     white-space: nowrap;
+    margin-top: auto;
 }
 
 .card__stock--low {
@@ -210,11 +187,27 @@
 
 .card__footer {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: $spacing-sm;
     padding: $spacing-sm $spacing-md $spacing-md;
     border-top: 1px solid var(--border-color-subtle);
+}
+
+.card__rating {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xxs;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--rating-color);
+    padding-bottom: 2px;
+}
+
+.card__ratingCount {
+    font-size: $fs-sm;
+    font-weight: $fw-normal;
+    color: var(--text-muted);
 }
 
 .card__price_wrapper {

@@ -1,29 +1,22 @@
 import { FC } from 'react';
-import { Product } from '@/types/products';
+import { FaStar } from 'react-icons/fa';
 import style from '../productCard.module.scss';
 import { formatPrice } from '@/utils';
-import { AddToCartButton } from '@/components/common';
 
 interface ProductCardFooterProps {
-    productId: number;
     basePrice: number;
     price: number;
     hasDiscount: boolean;
-    handleCart: (id: number, type: 'inc' | 'dec') => void;
-    inStock: boolean;
-    isMaxReached: boolean;
-    quantity: number;
+    rating: number;
+    reviewsCount: number;
 }
 
 export const ProductCardFooter: FC<ProductCardFooterProps> = ({
-    productId,
     basePrice,
     price,
-    quantity,
     hasDiscount,
-    handleCart,
-    inStock,
-    isMaxReached,
+    rating,
+    reviewsCount,
 }) => {
     return (
         <div className={style.card__footer}>
@@ -34,15 +27,11 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
                 <span className={style.card__price}>{formatPrice(price)}</span>
             </div>
 
-            <AddToCartButton
-                quantity={quantity}
-                onAddToCart={() => handleCart(productId, 'inc')}
-                onIncrement={() => handleCart(productId, 'inc')}
-                onDecrement={() => handleCart(productId, 'dec')}
-                inStock={inStock}
-                isMaxReached={isMaxReached}
-                size="small"
-            />
+            <div className={style.card__rating}>
+                <FaStar size={12} />
+                <span>{rating}</span>
+                <span className={style.card__ratingCount}>({reviewsCount})</span>
+            </div>
         </div>
     );
 };
