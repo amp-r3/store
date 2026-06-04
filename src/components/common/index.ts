@@ -1,5 +1,7 @@
 export { AddToCartButton } from './AddToCartButton/AddToCartButton'
 export { AddToCartButtonSkeleton } from './AddToCartButton/AddToCartButtonSkeleton'
+export { QuickBuyButton } from './QuickBuyButton/QuickBuyButton'
+export { QuickBuyButtonSkeleton } from './QuickBuyButton/QuickBuyButtonSkeleton'
 export { BackButton } from './BackButton/BackButton'
 export { ErrorView } from './ErrorView/ErrorView'
 export { FormField } from './FormField/FormField'
