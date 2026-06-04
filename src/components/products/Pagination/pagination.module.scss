@@ -30,7 +30,7 @@ $_item-transition:
         background: var(--glass-background-fallback);
     }
 
-    @media (width < 640px) {
+    @media (width < 768px) {
         padding: $spacing-xs $spacing-sm;
         gap: $spacing-xxs;
     }

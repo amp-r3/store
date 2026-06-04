@@ -18,7 +18,7 @@ export const Pagination = ({
 }: PaginationProps) => {
 
     const { soft } = useHaptics();
-    const isMobile = useMediaQuery('(max-width: 640px)');
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const siblingCount = isMobile ? 0 : 1;
 
     const { paginationRange, totalPages } = usePagination({
