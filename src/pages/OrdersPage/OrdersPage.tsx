@@ -8,12 +8,13 @@ import { OrderEmpty } from './components/OrderEmpty/OrderEmpty';
 import { OrdersList } from './components/OrdersList/OrderList';
 import { OrderDetails } from './components/OrderDetails/OrderDetails';
 import { scrollToTop } from '@/utils';
+import { CartProduct } from '@/store/selectors/cartSelectors';
 
 export const OrdersPage = () => {
   const navigate = useNavigate()
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [page, setPage] = useState(1);
-  const limit = isMobile ? 5 : 10;
+  const limit = isMobile ? 8 : 10;
 
   const scrollResult = useGetOrdersScrollQuery(
     { page, limit },
@@ -55,6 +56,10 @@ export const OrdersPage = () => {
     isLoading: isItemsLoading,
     isFetching: isItemsFetching,
   } = useEnrichedOrderItems(activeOrder?.orderItems ?? []);
+
+  const orderCartProduct: CartProduct[] = items.map((item) => (
+    { id: item.product.id, quantity: item.quantity }
+  ))
 
   // ── States ──────────────────────────────────────────────────────────────────
 
@@ -135,7 +140,8 @@ export const OrdersPage = () => {
             isItemsFetching={isItemsFetching}
             isItemsLoading={isItemsLoading}
             goodsTotal={goodsTotal}
-            formatOrderDate={formatOrderDate} />
+            formatOrderDate={formatOrderDate}
+            orderCartProduct={orderCartProduct} />
         )}
 
       </div>

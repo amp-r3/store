@@ -24,6 +24,7 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
     isItemsLoading,
     goodsTotal,
     onOpenChange,
+    orderCartProduct,
     formatOrderDate,
 }) => {
 
@@ -58,6 +59,7 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
 
                         {/* ── MODERN STICKY FOOTER ── */}
                         <OrderDetailsFooter
+                            orderCartProduct={orderCartProduct}
                             goodsTotal={goodsTotal}
                             deliveryCost={order.deliveryCost}
                             paymentFee={order.paymentFee}

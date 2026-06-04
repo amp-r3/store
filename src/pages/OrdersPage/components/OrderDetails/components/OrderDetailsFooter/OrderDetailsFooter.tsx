@@ -1,8 +1,13 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
-import { LuMessageSquareQuote } from 'react-icons/lu';
+import { LuMessageSquareQuote, LuCopyCheck } from 'react-icons/lu';
 import { formatPrice } from '@/utils';
 import style from './order-details-footer.module.scss';
+import { useAppDispatch } from '@/hooks';
+import { addToCheckout, clearCheckout } from '@/store/slices/checkoutSlice';
+import { CartProduct } from '@/store/selectors/cartSelectors';
+import { useNavigate } from 'react-router';
+import { Modal } from '@/components/common';
 
 interface OrderDetailsFooterProps {
     goodsTotal: number;
@@ -10,6 +15,7 @@ interface OrderDetailsFooterProps {
     paymentFee: number;
     totalAmount: number;
     variant: 'drawer' | 'card';
+    orderCartProduct: CartProduct[]
 }
 
 export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
@@ -17,8 +23,20 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
     deliveryCost,
     paymentFee,
     totalAmount,
+    orderCartProduct,
     variant,
 }) => {
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+    const [modal, setModal] = useState(false);
+    const onOpenChange = () => {
+        setModal((prev) => !prev)
+    }
+    const handleRepeat = () => {
+        dispatch(clearCheckout())
+        dispatch(addToCheckout(orderCartProduct))
+        navigate('/checkout')
+    }
     return (
         <footer className={`${style['footer']} ${style[`footer--${variant}`]}`}>
             <div className={style['footer__summary']}>
@@ -51,7 +69,7 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
             </div>
 
             <div className={style['footer__btn-container']}>
-                <button className={style['footer__repeat-btn']}>
+                <button className={style['footer__repeat-btn']} onClick={() => { setModal(true) }}>
                     <FiRefreshCcw />
                     Repeat order
                 </button>
@@ -60,6 +78,16 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
                     Support
                 </button>
             </div>
+            <Modal
+                isOpen={modal}
+                onOpenChange={onOpenChange}
+                title="Repeat this order?"
+                description="You will go straight to payment for these items. Your current cart will not change."
+                icon={<LuCopyCheck size={48} />}
+                actionLabel="Buy Again"
+                onAction={handleRepeat}
+                actionVariant="default"
+            />
         </footer>
     );
 };

@@ -17,6 +17,7 @@ export const OrderDetailsCard: FC<OrderDetailsCardProps> = ({
     isItemsFetching,
     isItemsLoading,
     goodsTotal,
+    orderCartProduct,
     formatOrderDate
 }) => {
 
@@ -43,6 +44,7 @@ export const OrderDetailsCard: FC<OrderDetailsCardProps> = ({
 
             {/* ── FOOTER ── */}
             <OrderDetailsFooter
+                orderCartProduct={orderCartProduct}
                 goodsTotal={goodsTotal}
                 deliveryCost={order.deliveryCost}
                 paymentFee={order.paymentFee}

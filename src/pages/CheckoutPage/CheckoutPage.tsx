@@ -38,6 +38,8 @@ export const CheckoutPage = () => {
   const [step, setStep] = useState<StepType>('contacts')
   const [highestStepIndex, setHighestStepIndex] = useState<number>(0);
 
+  console.log(checkoutItems);
+
   const currentIndex = STEPS_ORDER.indexOf(step);
   const isLastStep = currentIndex === STEPS_ORDER.length - 1;
 

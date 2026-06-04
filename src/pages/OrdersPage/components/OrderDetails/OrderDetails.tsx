@@ -3,12 +3,14 @@ import { FC } from "react";
 import { OrderDetailsDrawer } from "./OrderDetailsDrawer/OrderDetailsDrawer";
 import { OrderDetailsCard } from "./OrderDetailsCard/OrderDetailsCard";
 import { EnrichedOrderItem, Order } from "@/types/order";
+import { CartProduct } from "@/store/selectors/cartSelectors";
 
 export interface OrderDetailsProps {
     open: boolean;
     order: Order;
     isFetching: boolean;
     items: EnrichedOrderItem[];
+    orderCartProduct: CartProduct[];
     isItemsLoading: boolean;
     isItemsFetching: boolean;
     goodsTotal: number;
@@ -27,6 +29,7 @@ export const OrderDetails: FC<OrderDetailsProps> = ({
     isItemsFetching,
     isItemsLoading,
     formatOrderDate,
+    orderCartProduct,
     onOpenChange
 }) => {
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -39,7 +42,8 @@ export const OrderDetails: FC<OrderDetailsProps> = ({
         isItemsFetching={isItemsFetching}
         isItemsLoading={isItemsLoading}
         goodsTotal={goodsTotal}
-        formatOrderDate={formatOrderDate} /> :
+        formatOrderDate={formatOrderDate}
+        orderCartProduct={orderCartProduct} /> :
         <OrderDetailsCard
             order={order}
             isFetching={isFetching}
@@ -47,6 +51,7 @@ export const OrderDetails: FC<OrderDetailsProps> = ({
             isItemsFetching={isItemsFetching}
             isItemsLoading={isItemsLoading}
             goodsTotal={goodsTotal}
-            formatOrderDate={formatOrderDate} />
+            formatOrderDate={formatOrderDate}
+            orderCartProduct={orderCartProduct} />
 
 }
