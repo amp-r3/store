@@ -19,36 +19,34 @@ export const WishListPage = () => {
         onClick={() => { navigate(-1) }}
       />
 
-      {
-        isLoading || isFetching ? (
-          isEmpty
-            ? Array.from({ length: 8 }).map((_, index) => (
-              <ProductCardSkeleton key={`skeleton-mock-${index}`} />
-            ))
-            : wishlistItems.map((item) => (
-              <ProductCardSkeleton key={`skeleton-${item.id}`} />
-            ))
+      <h1>Your Favorites</h1>
+      <div className={`content ${isFetching && !isLoading ? 'fetching-state' : ''}`}>
+        {
+          isLoading ? (
+            isEmpty
+              ? Array.from({ length: 8 }).map((_, index) => (
+                <ProductCardSkeleton key={`skeleton-mock-${index}`} />
+              ))
+              : wishlistItems.map((item) => (
+                <ProductCardSkeleton key={`skeleton-${item.id}`} />
+              ))
 
-        ) : isEmpty ? (
-          <WishlistEmpty />
+          ) : isEmpty ? (
+            <WishlistEmpty />
 
-        ) : (
-          <>
-            <h1>Your Favorites</h1>
-            <div className={`content ${isFetching && !isLoading ? 'fetching-state' : ''}`}>
-              {
-                wishlistItems.map((item, index) => (
-                  <ProductCard
-                    key={item.id}
-                    product={wishlistDetails[index]}
-                    priority={index < 8}
-                  />
-                ))
-              }
-            </div>
-          </>
-        )
-      }
+          ) :
+            (
+              wishlistItems.map((item, index) => (
+                <ProductCard
+                  key={item.id}
+                  product={wishlistDetails[index]}
+                  priority={index < 8}
+                />
+              ))
+
+            )
+        }
+      </div>
     </main>
   )
 }
