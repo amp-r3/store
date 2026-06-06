@@ -71,28 +71,48 @@
     right: $spacing-md;
     display: grid;
     place-items: center;
+    width: $touch-target-comfortable;
+    height: $touch-target-comfortable;
     border-radius: $radius-circle;
-    transition: transform $transition-base $ease-out-expo;
+    border: none;
+    background: var(--glass-background);
+    backdrop-filter: $backdrop-blur-sm;
+    cursor: pointer;
+    transition: transform $transition-base $ease-out-expo,
+        background $transition-base $ease-in-out-smooth;
 
     &:hover {
-        .card__icon {
-            transform: scale(1.1);
-        }
-
         transform: scale(1.1);
+        background: var(--glass-background-strong);
     }
 
     &:active {
-        .card__icon {
-            transform: scale($button-pressed-scale);
-        }
-
         transform: scale($button-pressed-scale);
+    }
+
+    &:focus-visible {
+        outline: $focus-ring-width solid var(--focus-ring-color);
+        outline-offset: $focus-ring-offset;
+    }
+
+    @media (max-width: 768px) {
+        width: $touch-target-min;
+        height: $touch-target-min;
     }
 }
 
 .image-icon {
     font-size: $fs-icon-lg;
-    transition: transform $transition-base $ease-out-expo ;
-    color: var(--primary-accent)
+    transition: transform $transition-base $ease-out-expo;
+    color: var(--primary-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .image {
+        transition: none;
+    }
+
+    .image-add-to-favorites {
+        transition: none;
+    }
 }

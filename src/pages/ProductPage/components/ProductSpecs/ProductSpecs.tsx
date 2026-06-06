@@ -7,6 +7,7 @@ import {
   FaTruck,
   FaRotateLeft,
 } from 'react-icons/fa6';
+import { ExpandableContent } from '@/components/common';
 import style from './product-specs.module.scss';
 
 interface Dimensions {
@@ -54,47 +55,49 @@ export const ProductSpecs: FC<ProductSpecsProps> = ({
     <section className={style['specs-section']}>
       <h2 className={style['specs-title']}>Specifications</h2>
 
-      <div className={style['specs-grid']}>
-        {/* Product details */}
-        <div className={style['specs-group']}>
-          <span className={style['specs-group-label']}>Product</span>
-          <SpecRow
-            icon={<FaBarcode />}
-            label="SKU"
-            value={sku}
-          />
-          <SpecRow
-            icon={<FaWeightHanging />}
-            label="Weight"
-            value={weightFormatted}
-          />
-          <SpecRow
-            icon={<FaRulerCombined />}
-            label="Dimensions"
-            value={dimensionsFormatted}
-          />
-        </div>
+      <ExpandableContent maxHeight={160} disableAbove={640}>
+        <div className={style['specs-grid']}>
+          {/* Product details */}
+          <div className={style['specs-group']}>
+            <span className={style['specs-group-label']}>Product</span>
+            <SpecRow
+              icon={<FaBarcode />}
+              label="SKU"
+              value={sku}
+            />
+            <SpecRow
+              icon={<FaWeightHanging />}
+              label="Weight"
+              value={weightFormatted}
+            />
+            <SpecRow
+              icon={<FaRulerCombined />}
+              label="Dimensions"
+              value={dimensionsFormatted}
+            />
+          </div>
 
-        {/* Policies */}
-        <div className={style['specs-group']}>
-          <span className={style['specs-group-label']}>Policies</span>
-          <SpecRow
-            icon={<FaShield />}
-            label="Warranty"
-            value={warranty}
-          />
-          <SpecRow
-            icon={<FaTruck />}
-            label="Shipping"
-            value={shipping}
-          />
-          <SpecRow
-            icon={<FaRotateLeft />}
-            label="Returns"
-            value={returnPolicy}
-          />
+          {/* Policies */}
+          <div className={style['specs-group']}>
+            <span className={style['specs-group-label']}>Policies</span>
+            <SpecRow
+              icon={<FaShield />}
+              label="Warranty"
+              value={warranty}
+            />
+            <SpecRow
+              icon={<FaTruck />}
+              label="Shipping"
+              value={shipping}
+            />
+            <SpecRow
+              icon={<FaRotateLeft />}
+              label="Returns"
+              value={returnPolicy}
+            />
+          </div>
         </div>
-      </div>
+      </ExpandableContent>
     </section>
   );
 };

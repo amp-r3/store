@@ -1,4 +1,5 @@
 import Skeleton from 'react-loading-skeleton'
+import { ExpandableContent } from '@/components/common'
 import style from './product-info.module.scss'
 
 export const ProductInfoSkeleton = () => {
@@ -13,9 +14,13 @@ export const ProductInfoSkeleton = () => {
 
       <Skeleton width={123} height={26} borderRadius={999} />
       <Skeleton width={84} height={16} borderRadius={12} />
-      <p className={style['description']}>
-        <Skeleton borderRadius={8} count={14} />
-      </p>
+      
+      <ExpandableContent maxHeight={100} className={style['description-wrapper']}>
+        <p className={style['description']}>
+          <Skeleton borderRadius={8} count={3} />
+        </p>
+      </ExpandableContent>
     </div>
   )
 }
+

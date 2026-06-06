@@ -7,8 +7,12 @@
         padding: $spacing-xl 0;
     }
 
+    @media (max-width: 768px) {
+        padding: $spacing-lg 0 8rem;
+    }
+
     @media (max-width: 480px) {
-        padding: $spacing-lg 0;
+        padding: $spacing-lg 0 7.5rem;
     }
 }
 
@@ -41,6 +45,10 @@
 
 .details-column {
     animation: slide-in-right $transition-layout $ease-out-expo $transition-micro both;
+
+    @media (max-width: 768px) {
+        animation: none;
+    }
 }
 
 @keyframes slide-in-left {

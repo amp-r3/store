@@ -1,4 +1,5 @@
 import { FaStar } from 'react-icons/fa6';
+import { ExpandableContent } from '@/components/common';
 import style from './product-info.module.scss';
 
 interface ProductInfoProps {
@@ -52,7 +53,9 @@ export const ProductInfo = ({
 
             <span className={stockClass} data-stock={isOutOfStock ? 'empty' : isLowStock ? 'low' : 'in stock'}>{stockText}</span>
 
-            <p className={style['description']}>{description}</p>
+            <ExpandableContent maxHeight={100} className={style['description-wrapper']}>
+                <p className={style['description']}>{description}</p>
+            </ExpandableContent>
         </div>
     );
 };

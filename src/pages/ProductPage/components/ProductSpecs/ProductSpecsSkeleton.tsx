@@ -1,5 +1,6 @@
 
 import Skeleton from 'react-loading-skeleton'
+import { ExpandableContent } from '@/components/common'
 import style from './product-specs.module.scss'
 
 
@@ -18,25 +19,27 @@ export const ProductSpecsSkeleton = () => {
     <section className={style['specs-section']}>
       <h2 className={style['specs-title']}>Specifications</h2>
 
-      <div className={style['specs-grid']}>
-        <div className={style['specs-group']}>
-          <span className={style['specs-group-label']}>
-            <Skeleton width={80} />
-          </span>
-          <SpecRow />
-          <SpecRow />
-          <SpecRow />
-        </div>
+      <ExpandableContent maxHeight={160} disableAbove={640}>
+        <div className={style['specs-grid']}>
+          <div className={style['specs-group']}>
+            <span className={style['specs-group-label']}>
+              <Skeleton width={80} />
+            </span>
+            <SpecRow />
+            <SpecRow />
+            <SpecRow />
+          </div>
 
-        <div className={style['specs-group']}>
-          <span className={style['specs-group-label']}>
-            <Skeleton width={70} />
-          </span>
-          <SpecRow />
-          <SpecRow />
-          <SpecRow />
+          <div className={style['specs-group']}>
+            <span className={style['specs-group-label']}>
+              <Skeleton width={70} />
+            </span>
+            <SpecRow />
+            <SpecRow />
+            <SpecRow />
+          </div>
         </div>
-      </div>
+      </ExpandableContent>
     </section>
   )
 }

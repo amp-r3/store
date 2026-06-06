@@ -14,7 +14,7 @@ export const ProductGallery = ({ imageUrl, title, isFavorite, handleAddToWishlis
         <div className={style['image-column']}>
             <div className={style['image-wrapper']} onClick={onClick}>
                 <img src={imageUrl} alt={title} className={style['image']} />
-                <button className={style['image-add-to-favorites']} onClick={(e) => { e.stopPropagation(); handleAddToWishlist() }}>
+                <button className={style['image-add-to-favorites']} onClick={(e) => { e.stopPropagation(); handleAddToWishlist() }} aria-label={isFavorite ? 'Remove from wishlist' : 'Add to wishlist'}>
                     {
                         isFavorite ?
                             <FaHeart className={style['image-icon']} /> :
