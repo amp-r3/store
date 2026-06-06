@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { Navbar } from '../../Navbar/Navbar';
 import { CartDrawer } from '@/components/cart';
 import { MobileBar } from '../../MobileBar/MobileBar';
-import { Loader } from '@/components/common';
+import { Loader, TopBarLoader } from '@/components/common';
 import { Footer } from '../../Footer/Footer';
 import { Header } from '../../Header/Header';
 
@@ -39,9 +39,7 @@ export const MainLayout = () => {
                 <div className={style.header}>
                     <Navbar />
                 </div>
-                {
-                    isLoading && <Loader />
-                }
+                <TopBarLoader isLoading={isLoading} />
                 <Suspense fallback={<Loader />}>
                     <Outlet />
                     <CartDrawer
