@@ -1,8 +1,11 @@
 import style from './product-purchase-box.module.scss';
-import { useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import { AddToCartButton, QuickBuyButton } from '@/components/common';
 import { selectIsMaxReached } from '@/store';
 import { formatPrice } from '@/utils';
+import { CartProduct } from '@/store/selectors/cartSelectors';
+import { addToCheckout, clearCheckout } from '@/store/slices/checkoutSlice';
+import { useNavigate } from 'react-router';
 
 interface ProductPurchaseBoxProps {
     productId: number;
@@ -25,8 +28,15 @@ export const ProductPurchaseBox = ({
     inStock,
     stock,
 }: ProductPurchaseBoxProps) => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, stock ?? 0));
-
+    const cartProduct: CartProduct[] = [{ id: productId, quantity: 1 }]
+    const handleQuickBuy = () => {
+        dispatch(clearCheckout())
+        dispatch(addToCheckout(cartProduct))
+        navigate('/checkout')
+    }
     return (
         <div className={style['purchase-box']}>
             <div className={style['price-section']}>
@@ -43,7 +53,7 @@ export const ProductPurchaseBox = ({
                         )}
                     </div>
                 </div>
-                
+
                 {hasDiscount && (
                     <div className={style['discount-badge']}>
                         Save {formatPrice(originalPrice - discountedPrice)}
@@ -62,7 +72,7 @@ export const ProductPurchaseBox = ({
                     className={style['add-to-cart']}
                 />
                 <QuickBuyButton
-                    onClick={() => console.log('Quick buy', productId)}
+                    onClick={handleQuickBuy}
                     disabled={!inStock}
                     className={style['quick-buy']}
                 />

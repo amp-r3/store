@@ -1,21 +1,5 @@
 @use '@/styles/index' as *;
 
-.product-page {
-    padding: $spacing-xxl 0;
-
-    @media (max-width: 1024px) {
-        padding: $spacing-xl 0;
-    }
-
-    @media (max-width: 768px) {
-        padding: $spacing-lg 0 8rem;
-    }
-
-    @media (max-width: 480px) {
-        padding: $spacing-lg 0 7.5rem;
-    }
-}
-
 .layout {
     display: grid;
     grid-template-columns: 11fr 9fr;

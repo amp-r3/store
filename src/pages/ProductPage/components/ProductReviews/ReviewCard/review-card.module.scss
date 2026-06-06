@@ -1,4 +1,4 @@
-@use '@/styles/index'as *;
+@use '@/styles/index' as *;
 
 .review-card {
     position: relative;
@@ -9,7 +9,7 @@
     padding: $spacing-lg;
     display: flex;
     flex-direction: column;
-    gap: $spacing-sm;
+    gap: $spacing-md;
     overflow: hidden;
     transition:
         transform $transition-base $ease-out-expo,
@@ -30,49 +30,170 @@
 
     &:hover {
         transform: $hover-lift;
-        box-shadow: var(--shadow-default);
+        box-shadow: var(--shadow-card);
         border-color: var(--border-color);
 
         &::before {
             opacity: 1;
         }
+
+        .review-card__helpful-btn {
+            border-color: var(--border-color);
+            background: rgba(var(--primary-accent-rgb), 0.03);
+        }
     }
 }
 
-.review-header {
+.review-card__header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: $spacing-md;
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $spacing-xs;
+    }
 }
 
-.review-author {
+.review-card__user {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+}
+
+.review-card__avatar {
+    width: $touch-target-min;
+    height: $touch-target-min;
+    border-radius: $radius-circle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: $fw-bold;
+    font-size: $fs-base;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+    color: #fff;
+}
+
+.review-card__author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.review-card__author-name {
     font-size: $fs-md;
     font-weight: $fw-bold;
     letter-spacing: $letter-spacing-tight;
     color: var(--text-primary);
+    line-height: $lh-ui;
 }
 
-.review-rating {
+.review-card__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xxs;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    color: var(--success-color);
+    margin-top: 0.125rem;
+}
+
+.review-card__badge-icon {
+    font-size: $fs-xs;
+}
+
+.review-card__rating {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 0.125rem;
     font-size: $fs-icon-sm;
+    margin-top: $spacing-xxs;
+}
+
+.review-card__star--filled {
     color: var(--rating-color);
 }
 
-.review-meta {
+.review-card__star--empty {
+    color: var(--border-color-subtle);
+}
+
+.review-card__meta {
     display: flex;
     align-items: center;
     gap: $spacing-xs;
-    padding-bottom: $spacing-sm;
-    border-bottom: 1px solid var(--border-color-subtle);
-    font-size: $fs-sm;
+    font-size: $fs-xs;
     color: var(--text-muted);
 }
 
-.review-comment {
+.review-card__meta-icon {
+    font-size:  $fs-xs;
+}
+
+.review-card__date {
+    font-weight: $fw-semibold;
+}
+
+.review-card__comment {
     margin: 0;
     color: var(--text-secondary);
     font-size: $fs-sm;
     line-height: $lh-relaxed;
+}
+
+.review-card__footer {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: auto;
+    padding-top: $spacing-sm;
+    border-top: 1px solid var(--border-color-subtle);
+}
+
+.review-card__helpful-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-md;
+    background: transparent;
+    border: 1px solid var(--border-color-light);
+    border-radius: $radius-pill;
+    color: var(--text-muted);
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    cursor: pointer;
+    transition: all $transition-base $ease-in-out-smooth;
+
+    &:hover {
+        color: var(--primary-accent);
+        border-color: var(--primary-accent-light);
+        background: rgba(var(--primary-accent-rgb), 0.06);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(1px);
+        background: rgba(var(--primary-accent-rgb), 0.12);
+    }
+}
+
+.review-card__helpful-icon {
+    font-size: $fs-xs;
+}
+
+.review-card__helpful-count {
+    font-weight: $fw-semibold;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .review-card,
+    .review-card__helpful-btn {
+        transition: none !important;
+        transform: none !important;
+        animation: none !important;
+    }
 }
