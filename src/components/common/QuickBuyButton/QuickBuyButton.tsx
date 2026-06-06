@@ -8,7 +8,6 @@ interface QuickBuyButtonProps {
   isLoading?: boolean;
   disabled?: boolean;
   className?: string;
-  text?: string;
 }
 
 export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
@@ -16,7 +15,6 @@ export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
   isLoading = false,
   disabled = false,
   className = '',
-  text = 'Buy Now',
 }) => {
   const { light } = useHaptics();
 
@@ -35,14 +33,14 @@ export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
       className={`${styles.button} ${className}`}
       onClick={handleClick}
       disabled={disabled || isLoading}
-      aria-label={text}
+      aria-label="Buy Now"
     >
       {isLoading ? (
         <FaSpinner className={styles.spinning} />
       ) : (
         <FaBolt className={styles.icon} />
       )}
-      <span className={styles.text}>{text}</span>
+      <span className={styles.text}>Buy Now</span>
     </button>
   );
 };

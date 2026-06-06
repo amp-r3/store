@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   gap: $spacing-sm;
-  padding: $spacing-md $spacing-xl;
+  padding: 0 $spacing-xl;
   border-radius: $radius-lg;
   border: 1px solid var(--border-color);
   background: var(--glass-background-subtle);
@@ -19,11 +19,22 @@
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  height: 54px;
+
+  @media (max-width: 768px) {
+    padding: 0 $spacing-md;
+    font-size: $fs-sm;
+    height: $touch-target-min;
+  }
 
   .icon {
     font-size: $fs-icon-md;
     color: var(--primary-accent);
     transition: transform $transition-base $ease-spring;
+
+    @media (max-width: 768px) {
+      font-size: $fs-icon-sm;
+    }
   }
 
   @media (hover: hover) {
@@ -64,12 +75,20 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .button, .icon, .spinning {
+
+  .button,
+  .icon,
+  .spinning {
     transition: none !important;
     animation: none !important;
   }
