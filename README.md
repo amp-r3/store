@@ -471,17 +471,25 @@ The app will be available at: `http://localhost:5173`
 
 <div align="center">
 
-|                   Catalog Page (Main)                    |                   Product Detail Page                    |
-| :------------------------------------------------------: | :------------------------------------------------------: |
-| <img src="./docs/screenshots/catalog.png" width="440" /> | <img src="./docs/screenshots/product.png" width="440" /> |
+  <div style="display: inline-block; margin: 10px; vertical-align: top;">
+    <p>Catalog Page (Main)</p>
+    <img src="./docs/screenshots/catalog.png" height="450" alt="Catalog Page" />
+  </div>
+  <div style="display: inline-block; margin: 10px; vertical-align: top;">
+    <p>Mobile View</p>
+    <img src="./docs/screenshots/mobile-view.png" height="450" alt="Mobile View" />
+  </div>
 
-|                   Interactive Cart                    |
-| :---------------------------------------------------: |
-| <img src="./docs/screenshots/cart.png" width="900" /> |
+  <br><br>
 
-|                         Mobile View                          |
-| :----------------------------------------------------------: |
-| <img src="./docs/screenshots/mobile-view.png" width="280" /> |
+  <div style="display: inline-block; margin: 10px; vertical-align: top;">
+    <p>Interactive Cart</p>
+    <img src="./docs/screenshots/cart.png" height="450" alt="Interactive Cart" />
+  </div>
+  <div style="display: inline-block; margin: 10px; vertical-align: top;">
+    <p>Product Detail Page</p>
+    <img src="./docs/screenshots/product.png" height="450" alt="Product Detail Page" />
+  </div>
 
 </div>
 
