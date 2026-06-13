@@ -1,52 +1,61 @@
+<p align="right">
+  <a href="README.md">English</a> | <a href="README.ru.md">Русский</a>
+</p>
+
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,20,24&height=140&section=header&text=&fontSize=0" width="100%" />
 
 <br/>
 
-<h1>🛍️ Store</h1>
+<h1>🛍️ Store — E-Commerce SPA</h1>
 
 <p align="center">
-  <em>A modern, feature-rich e-commerce storefront</em>
+  <em>A modern, premium, and high-tech online store</em>
 </p>
 
 <br/>
 
 <p align="center">
   <a href="https://react.dev/">
-    <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&labelColor=0d0d1a" />
+    <img src="https://img.shields.io/badge/React_19-0d0d1a?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React 19" />
   </a>
   <a href="https://www.typescriptlang.org/">
-    <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white&labelColor=0d0d1a" />
+    <img src="https://img.shields.io/badge/TypeScript_5.9-0d0d1a?style=for-the-badge&logo=typescript&logoColor=3178C6" alt="TypeScript" />
   </a>
   <a href="https://redux-toolkit.js.org/">
-    <img src="https://img.shields.io/badge/Redux_Toolkit-2.9-764ABC?style=flat-square&logo=redux&logoColor=white&labelColor=0d0d1a" />
+    <img src="https://img.shields.io/badge/Redux_Toolkit_2.9-0d0d1a?style=for-the-badge&logo=redux&logoColor=764ABC" alt="Redux Toolkit" />
   </a>
   <a href="https://vitejs.dev/">
-    <img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white&labelColor=0d0d1a" />
+    <img src="https://img.shields.io/badge/Vite_8-0d0d1a?style=for-the-badge&logo=vite&logoColor=646CFF" alt="Vite" />
   </a>
   <a href="https://supabase.com/">
-    <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=flat-square&logo=supabase&logoColor=white&labelColor=0d0d1a" />
+    <img src="https://img.shields.io/badge/Supabase_Auth_&_DB-0d0d1a?style=for-the-badge&logo=supabase&logoColor=3ECF8E" alt="Supabase" />
   </a>
   <a href="https://sass-lang.com/">
-    <img src="https://img.shields.io/badge/SASS-Modules-CC6699?style=flat-square&logo=sass&logoColor=white&labelColor=0d0d1a" />
+    <img src="https://img.shields.io/badge/SASS_Modules-0d0d1a?style=for-the-badge&logo=sass&logoColor=CC6699" alt="SASS" />
   </a>
 </p>
 
 <br/>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/🎨_Glassmorphism_UI-1a1a2e?style=flat-square&color=7c6dff" />
-  <img src="https://img.shields.io/badge/🔍_Instant_Search-1a1a2e?style=flat-square&color=6d7cff" />
-  <img src="https://img.shields.io/badge/📦_Redux_Cart-1a1a2e?style=flat-square&color=764abc" />
-  <img src="https://img.shields.io/badge/📱_Responsive-1a1a2e?style=flat-square&color=5c6dff" />
-  <img src="https://img.shields.io/badge/🌙_Dark_&_Light_Theme-1a1a2e?style=flat-square&color=3d4fff" />
-  <img src="https://img.shields.io/badge/🔐_Supabase_Auth-1a1a2e?style=flat-square&color=3ecf8e" />
+  <img src="https://img.shields.io/badge/🎨_Glassmorphism_UI-7c6dff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Glassmorphism UI" />
+  <img src="https://img.shields.io/badge/🔍_Instant_Search-6d7cff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Real-time Search" />
+  <img src="https://img.shields.io/badge/📦_Redux_Cart-764abc?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Redux Cart" />
+  <img src="https://img.shields.io/badge/📱_Responsive-5c6dff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Responsive" />
+  <img src="https://img.shields.io/badge/🌙_Dark_&_Light_Theme-3d4fff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Dark and Light Theme" />
+  <img src="https://img.shields.io/badge/⚡_Vite_8_+_LightningCSS-25a4ff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Vite and LightningCSS" />
 </p>
 
 <br/>
 
-> A fully responsive, dual-themed e-commerce UI with glassmorphism aesthetics, real-time search, category filtering, smart pagination, a Redux-powered shopping cart with persistent storage, and a complete authentication system powered by Supabase — built as a portfolio project to demonstrate modern React architecture.
+> **Store** is a modern single-page application (SPA) for e-commerce, built on
+> top of **React 19**, **TypeScript 5.9**, and **Redux Toolkit 2.9**. The app
+> features a unique premium **Glassmorphism** design, full dark and light theme
+> support, URL-synced state, a responsive mobile layout, haptic feedback, and
+> deep **Supabase** integration for authentication, cart persistence, wishlists,
+> and order history.
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,20,24&height=80&section=footer" width="100%" />
 
@@ -54,232 +63,434 @@
 
 <br/>
 
-## ✨ Features
-
-| | Feature | Description |
-|:---:|---|---|
-| 🔍 | **Instant Product Search** | URL-synced search powered by query params — results are always shareable and bookmarkable |
-| 🗂️ | **Dynamic Product Catalog** | Paginated grid fetched from [DummyJSON](https://dummyjson.com) with normalized state via RTK Query |
-| ↕️ | **Advanced Sorting** | Sort by popularity, price, name, or stock level — persisted in the URL |
-| 🏷️ | **Category Filtering** | Filter products by 24 categories via an adaptive control — bottom sheet on mobile, popup on desktop |
-| 📄 | **Detailed Product Pages** | Routed pages with full description, image viewer, stock status, ratings, and reviews |
-| 🛒 | **Redux Shopping Cart** | Client-side cart with add/remove, quantity controls, discount calculation, and free-shipping progress bar |
-| 💾 | **Persistent Cart & Theme** | Cart items and selected theme are saved to `localStorage` via `redux-persist` |
-| 🌙 | **Dark / Light Theme** | Toggle between deep dark-purple and clean light themes, persisted across sessions |
-| 🔐 | **Authentication** | Full sign-up and sign-in flow backed by Supabase Auth with protected routes |
-| 👤 | **User Profile** | Personal account page with editable profile fields and secure logout |
-| 📱 | **Responsive & Mobile-First** | Adaptive layout for all screen sizes; mobile gets a floating search bar with hide-on-scroll |
-| 💎 | **Glassmorphism UI** | Dark & light themes built on a custom SCSS design token system with blur effects and consistent shadows |
-| ⚡ | **Performance** | Lazy routes, memoized selectors via Reselect, normalized API cache, and image lazy loading |
-| 📳 | **Haptic Feedback** | Vibration on key interactions via the `web-haptics` library |
-
-<br/>
-
-## 🔐 Authentication
-
-The project includes a complete auth system built on **[Supabase](https://supabase.com)** (PostgreSQL + Auth):
-
-- **Registration** — sign-up form with first name, last name, username, email, and password; validated with Zod + React Hook Form
-- **Login** — email/password authentication via Supabase Auth
-- **Protected routes** — the `/user` page is accessible only to authenticated users; unauthorized visitors are redirected to `/login`
-- **Public routes** — `/login` and `/register` redirect authenticated users back to the catalog
-- **Session persistence** — the auth token and user data are stored via `redux-persist`; the Supabase `onAuthStateChange` listener keeps Redux in sync with the real session state across tabs and page refreshes
-- **Profile editing** — users can update their name, username, and email from the account page; the current password is required to confirm any changes
-- **Logout** — confirmed via a modal dialog; clears both Redux state and the Supabase session
-
-<br/>
-
-## 🛠️ Tech Stack
-
-<div align="center">
-
-| Category | Technology |
-|:---|:---|
-| **UI Library** | React 19 |
-| **Language** | TypeScript 5.9 |
-| **State Management** | Redux Toolkit 2.9 + RTK Query |
-| **Persistence** | redux-persist |
-| **Routing** | React Router v7 |
-| **Styling** | SCSS Modules + custom design tokens |
-| **Backend / BaaS** | Supabase (PostgreSQL, Auth) |
-| **Form Validation** | React Hook Form + Zod |
-| **Build Tool** | Vite 8 |
-| **Data Source** | [DummyJSON API](https://dummyjson.com) |
-
-</div>
-
-<br/>
+---
 
 ## 🏗️ Project Architecture
 
-The project follows a **feature-based architecture** with clean separation of concerns:
+The project is designed with a strong emphasis on separation of concerns,
+modularity, and adherence to naming conventions (BEM, SCSS Modules). All key
+directories have a clear and consistent structure:
 
-```
+```text
 src/
-├── app/          # Redux store setup and React Router configuration with lazy routes
-├── components/   # Reusable UI components (cart drawer, product cards, navbar, modals, forms)
-├── hooks/        # Custom hooks encapsulating business logic (search, filters, theme, haptics, auth)
-├── pages/        # Page-level components (Catalog, Product, Login, Register, User, 404)
-├── schemas/      # Zod validation schemas for all forms (login, register, edit profile)
-├── services/     # RTK Query API slices — DummyJSON products API and Supabase auth API
-├── store/        # Redux slices (cart, theme, auth) and memoized selectors
-├── styles/       # Global SCSS — design tokens, dark/light theme CSS variables, resets
-├── types/        # Shared TypeScript interfaces (Product, CartItem, Auth types)
-└── utils/        # Pure helper functions (price formatting, cart totals, sorting options, haptic presets)
+├── app/            # Redux Store initialization and router config (React Router v7)
+├── components/     # Reusable UI components
+│   ├── common/     # Universal atomic components (buttons, skeletons, placeholders)
+│   ├── cart/       # Cart components (side drawer, cart items)
+│   ├── products/   # Product cards, filters, pagination elements
+│   └── layout/     # Layout components (Header, Navbar, Footer, page wrappers)
+├── config/         # Project and integration settings (Supabase client)
+├── hooks/          # Custom React hooks (business logic extracted from UI components)
+│   ├── common/     # General-purpose hooks (useTheme, useHaptics, usePagination)
+│   └── features/   # Feature-specific hooks (cart, checkout, order, product, wishlist, auth)
+├── pages/          # Application pages (CatalogPage, ProductPage, OrdersPage, etc.)
+├── schemas/        # Zod validation schemas for forms (login, registration, profile editing)
+├── services/       # Data layer — RTK Query API slices (products, cart, wishlist, orders)
+├── store/          # Redux slices, selectors (Reselect), and persistence configuration
+├── styles/         # Design system (SCSS variables, themes, global styles)
+├── types/          # Shared TypeScript types and interfaces
+└── utils/          # Pure utility helpers (price formatting, haptics presets)
 ```
 
 ### Key Architectural Decisions
 
-**🔗 URL as the single source of truth for UI state** — search query (`?q=`), sort (`?sortBy=`, `?order=`), category (`?category=`), and page (`?page=`) are all URL params. Makes the app fully shareable and back/forward navigation works correctly out of the box.
+1. **URL as the Single Source of Truth for the catalog**: Search query (`?q=`),
+   sort order (`?sortBy=`, `?order=`), category (`?category=`), and current page
+   (`?page=`) are all managed exclusively via URL (`useSearchParams`). This
+   enables shareable and bookmarkable links, as well as correct browser
+   Back/Forward navigation.
+2. **Thin components with logic in hooks**: All UI components are declarative.
+   API requests, router manipulation, derived state computation, and validation
+   are handled inside dedicated hooks (e.g. `useCartDetails`,
+   `useProductDetails`, `useWishlistDetails`).
+3. **Normalized cache in RTK Query**: API responses from DummyJSON are
+   transformed into a `{ ids: number[], items: Record<number, Product> }`
+   structure for O(1) lookups and reduced rendering overhead.
+4. **Selective LocalStorage caching (Redux Persist)**: Only the most critical
+   data is persisted: `cart.items`, `wishlistSlice` (for unauthenticated users),
+   `theme.theme`, and `auth` (user and token). RTK Query cache and transient UI
+   state are not persisted.
+5. **CSS Custom Properties-based theming**: Theme switching (`theme-dark` /
+   `theme-light`) is done by toggling a class on the `<html>` element. Component
+   styles rely on a unified CSS variable system, which eliminates unnecessary
+   React tree re-renders when switching themes.
 
-**⚡ Normalized API cache** — RTK Query responses are transformed into `{ ids: number[], items: Record<id, Product> }` for O(1) lookups and clean re-renders.
+---
 
-**🧩 Custom hooks as the logic layer** — components stay declarative and thin; all data fetching, URL manipulation, and derived state live in dedicated hooks.
+## 💎 Key Features & Highlights
 
-**💾 Selective persistence via redux-persist** — only `cart.items`, `theme.theme`, and `auth` (user + token) are whitelisted for `localStorage`. RTK Query cache and transient UI state are intentionally excluded.
+- 🎨 **Premium Glassmorphism Design**: A carefully curated color palette,
+  backdrop-filter blur, soft shadows, and smooth spring-physics-based
+  micro-animations.
+- 🌗 **Smart Theme Switching**: Full dark (deep cosmic purple) and light theme
+  support with instant automatic switching and persistent user preference.
+- ⚡ **Optimistic Updates**: When updating cart quantities or toggling wishlist
+  items, the UI responds instantly. Changes are sent to the server in the
+  background, and automatically rolled back (`patchResult.undo()`) on failure.
+- 📳 **Haptic Feedback**: Integration with the `web-haptics` library for
+  pleasant vibration on mobile when adding to cart (`soft()`), changing filters
+  (`light()`), or completing a purchase (`success()`).
+- 🚀 **Async & Lazy Loading**: All pages (except the main `CatalogPage`) are
+  lazy-loaded via `React.lazy`. Detailed animated skeletons
+  (`react-loading-skeleton`), styled with the active theme's CSS variables, are
+  shown during loading.
+- ⚙️ **Strict BEM Methodology**: CSS classes are written strictly following BEM
+  (`block__element--modifier`) and imported into JSX exclusively via typed SCSS
+  Modules: `className={style['cart-item__btn--remove']}`.
+- 🔄 **Two-stage Cart & Wishlist Sync**: Authenticated users work with the
+  Supabase cloud database. On login, the local cart and wishlist from
+  `localStorage` are merged with the server state (merge-on-login), preventing
+  any loss of selected items.
 
-**🌗 CSS-class-based theming** — the active theme class (`theme-dark` / `theme-light`) is applied to `<html>` by `useTheme`, keeping theme switching decoupled from component tree re-renders. All visual tokens are CSS custom properties defined per theme in dedicated SCSS files.
+---
 
-**🔐 Auth session sync** — `Layout` subscribes to Supabase's `onAuthStateChange` and dispatches `setSession` / `logout` to Redux, so the client always reflects the real server-side session — even after a token refresh or sign-out in another tab.
+## 🔌 Supabase Integration (Backend Requirements)
 
-<br/>
+Full functionality requires configured Supabase Auth and a PostgreSQL database.
+Below is the required table structure, triggers, and functions.
 
-## 🚀 Getting Started
+### 1. Database Tables
 
-### Prerequisites
+#### `profiles` Table (User Profiles)
+
+Stores extended user data linked to `auth.users`.
+
+```sql
+create table public.profiles (
+  id uuid references auth.users on delete cascade primary key,
+  first_name text,
+  last_name text,
+  username text unique,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- RLS Security Policies:
+alter table public.profiles enable row level security;
+create policy "Allow public read access to profiles" on public.profiles for select using (true);
+create policy "Allow users to update their own profiles" on public.profiles for update using (auth.uid() = id);
+```
+
+#### Automatic Profile Trigger
+
+Creates a profile automatically when a new user registers:
+
+```sql
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, first_name, last_name, username)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'firstName', ''),
+    coalesce(new.raw_user_meta_data->>'lastName', ''),
+    coalesce(new.raw_user_meta_data->>'username', new.email)
+  );
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+```
+
+#### `cart_items` Table (User Cart)
+
+```sql
+create table public.cart_items (
+  user_id uuid references auth.users on delete cascade not null,
+  product_id integer not null,
+  quantity integer not null check (quantity > 0),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  primary key (user_id, product_id)
+);
+
+alter table public.cart_items enable row level security;
+create policy "Users can manage their own cart items" on public.cart_items for all using (auth.uid() = user_id);
+```
+
+#### `wishlist_items` Table (Favorites)
+
+```sql
+create table public.wishlist_items (
+  user_id uuid references auth.users on delete cascade not null,
+  product_id integer not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  primary key (user_id, product_id)
+);
+
+alter table public.wishlist_items enable row level security;
+create policy "Users can manage their own wishlist items" on public.wishlist_items for all using (auth.uid() = user_id);
+```
+
+#### `delivery_methods` Table (Shipping Methods)
+
+```sql
+create table public.delivery_methods (
+  id uuid default gen_random_uuid() primary key,
+  code text unique not null,
+  name text not null,
+  price numeric not null,
+  estimated_time text not null,
+  is_active boolean default true not null,
+  free_from_price numeric,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.delivery_methods enable row level security;
+create policy "Allow public read access to delivery methods" on public.delivery_methods for select using (true);
+```
+
+#### `payment_methods` Table (Payment Methods)
+
+```sql
+create table public.payment_methods (
+  id uuid default gen_random_uuid() primary key,
+  code text unique not null,
+  name text not null,
+  fee_percentage numeric not null default 0,
+  fee_fixed numeric not null default 0,
+  is_active boolean default true not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.payment_methods enable row level security;
+create policy "Allow public read access to payment methods" on public.payment_methods for select using (true);
+```
+
+#### `orders` Table (Orders)
+
+```sql
+create table public.orders (
+  id uuid default gen_random_uuid() primary key,
+  order_number text unique not null,
+  user_id uuid references auth.users on delete cascade not null,
+  status text not null default 'pending',
+  total_amount numeric not null,
+  shipping_address jsonb not null,
+  payment_status text not null default 'pending',
+  delivery_status text not null default 'pending',
+  delivery_method_id uuid references public.delivery_methods on delete set null,
+  delivery_cost numeric not null default 0,
+  payment_fee numeric not null default 0,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.orders enable row level security;
+create policy "Users can view their own orders" on public.orders for select using (auth.uid() = user_id);
+```
+
+#### `order_items` Table (Order Line Items)
+
+```sql
+create table public.order_items (
+  id uuid default gen_random_uuid() primary key,
+  order_id uuid references public.orders on delete cascade not null,
+  product_id integer not null,
+  quantity integer not null check (quantity > 0),
+  price_at_purchase numeric not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.order_items enable row level security;
+create policy "Users can view their own order items" on public.order_items for select 
+using (exists (select 1 from public.orders where orders.id = order_items.order_id and orders.user_id = auth.uid()));
+```
+
+### 2. Stored Function (RPC) for Order Placement
+
+The frontend calls the `create_order` function to securely create an order on
+the server within a single transaction.
+
+```sql
+create or replace function public.create_order(
+  p_shipping_address jsonb,
+  p_payment_method_id uuid,
+  p_delivery_method_id uuid,
+  p_items jsonb
+)
+returns jsonb as $$
+declare
+  v_user_id uuid;
+  v_order_id uuid;
+  v_order_number text;
+  v_delivery_cost numeric := 0;
+  v_payment_fee numeric := 0;
+  v_total_amount numeric := 0;
+  v_item json;
+  v_payment_fee_pct numeric := 0;
+  v_payment_fee_fix numeric := 0;
+  v_free_from numeric;
+  v_delivery_price numeric;
+  v_response jsonb;
+begin
+  v_user_id := auth.uid();
+  if v_user_id is null then
+    raise exception 'Unauthorized' using errcode = '42501';
+  end if;
+
+  -- 1. Generate order number ORD-YYYYMMDD-XXXX
+  v_order_number := 'ORD-' || to_char(now(), 'YYYYMMDD') || '-' || lpad(floor(random() * 10000)::text, 4, '0');
+
+  -- 2. Fetch delivery method parameters
+  select price, free_from_price into v_delivery_price, v_free_from
+  from public.delivery_methods
+  where id = p_delivery_method_id and is_active = true;
+
+  -- 3. Fetch payment method parameters
+  select fee_percentage, fee_fixed into v_payment_fee_pct, v_payment_fee_fix
+  from public.payment_methods
+  where id = p_payment_method_id and is_active = true;
+
+  -- 4. Insert order into the orders table
+  -- Note: since the product catalog (DummyJSON) is external,
+  -- for demonstration purposes the total cost calculation may use
+  -- the passed parameters or be computed client-side.
+  -- For reliability, the record is created with delivery and fee calculations:
+  insert into public.orders (
+    order_number, user_id, status, total_amount, shipping_address, 
+    payment_status, delivery_status, delivery_method_id, delivery_cost, payment_fee
+  ) values (
+    v_order_number, v_user_id, 'pending', 0, p_shipping_address,
+    'pending', 'pending', p_delivery_method_id, coalesce(v_delivery_price, 0), coalesce(v_payment_fee_fix, 0)
+  ) returning id into v_order_id;
+
+  -- 5. Insert line items into order_items
+  for v_item in select * from jsonb_array_elements(p_items) loop
+    insert into public.order_items (order_id, product_id, quantity, price_at_purchase)
+    values (
+      v_order_id, 
+      (v_item->>'product_id')::integer, 
+      (v_item->>'quantity')::integer, 
+      coalesce((v_item->>'price_at_purchase')::numeric, 99.99) -- Fallback or passed price
+    );
+  end loop;
+
+  -- Return the order number and its ID
+  return jsonb_build_object(
+    'id', v_order_id,
+    'order_number', v_order_number
+  );
+end;
+$$ language plpgsql security definer;
+```
+
+---
+
+## 🚦 Current Status & Roadmap
+
+### ✅ Completed (Done)
+
+- [x] **Architectural foundation**: React 19, TS 5.9, Vite 8, LightningCSS, RTK
+      Query.
+- [x] **Style system**: SCSS Modules following BEM, variables, and theme
+      switcher (Light / Dark).
+- [x] **Product catalog (SB DB)**: Search, category filtering, pagination,
+      product detail pages, ratings. Loading skeletons.
+- [x] **Supabase Auth integration**: Registration, login, profile editing,
+      session sync via `onAuthStateChange`.
+- [x] **Cart**: Local persistence, optimistic updates, merge of local cart with
+      cloud on login.
+- [x] **Wishlist**: Supabase sync, optimistic mutations.
+- [x] **Checkout**: Address collection (Zod + React Hook Form), delivery and
+      payment method selection, fee calculation.
+- [x] **Order history**: Browsing past orders with pagination and infinite
+      scroll, custom statuses and badges (SCSS mixins).
+- [x] **Haptic feedback**: `web-haptics` library integration for UI
+      interactions.
+
+### 🚀 Upcoming (Backlog / Future)
+
+- [ ] **Architecture migration (Next.js)**: Move the project to Next.js for full
+      SSR/SSG, SEO optimization, and improved Core Web Vitals.
+- [ ] **Review system**: Allow users to leave text reviews and ratings for each
+      product (linked to purchase history to prevent abuse).
+- [ ] **Account linking**: Support for Linking Identities in Supabase Auth
+      (connecting multiple providers — Google, GitHub, Email — into one
+      account).
+- [ ] **Interactive notifications (Toast / Push)**: UI notification system for
+      key actions (add/remove from cart, order status updates).
+- [ ] **Support chat**: Integration of a live chat widget for contacting
+      administrators (e.g. via Supabase Realtime or a third-party widget).
+- [ ] **Admin panel**: Role-based access model in Supabase (admin/customer) for
+      managing order statuses and deliveries.
+- [ ] **Localization (i18n)**: Multi-language support (Russian, English) using
+      `react-i18next`.
+- [ ] **Unit & integration testing**: Adding Vitest and React Testing Library
+      for testing reducers and custom hooks.
+- [ ] **E2E testing**: Purchase and authentication scenarios in Cypress or
+      Playwright.
+
+---
+
+## 🚀 Quick Start
+
+### Requirements
 
 - Node.js `>= 20`
-- [pnpm](https://pnpm.io/) *(recommended)* or npm
-- A [Supabase](https://supabase.com) project (free tier is sufficient)
+- Package manager **pnpm** (recommended) or npm
 
-### Installation
+### 1. Install Dependencies
 
 ```bash
-# Clone the repository
 git clone https://github.com/amp-r3/store.git
 cd store
-
-# Install dependencies
 pnpm install
 ```
 
-### Environment Variables
+### 2. Configure Environment Variables
 
-Create a `.env.local` file in the project root and add your Supabase credentials:
+Create a `.env` file in the project root:
 
 ```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-You can find these values in your Supabase dashboard under **Project Settings → API**.
-
-### Running the Dev Server
+### 3. Start the Dev Server
 
 ```bash
 pnpm dev
 ```
 
-The app will be available at `http://localhost:5173`
+The app will be available at: `http://localhost:5173`
 
-### Available Scripts
+### 4. Available Commands
 
-```bash
-pnpm dev        # Start dev server with HMR
-pnpm build      # Type-check + production build
-pnpm preview    # Preview the production build locally
-pnpm lint       # Run ESLint
-pnpm tsc        # Run TypeScript type checking only
-```
+- `pnpm dev` — start the local development server.
+- `pnpm build` — build for production (type check + Vite compile).
+- `pnpm preview` — locally serve the production build.
+- `pnpm lint` — run the ESLint linter.
+- `pnpm tsc` — compile and type-check with TypeScript.
 
-<br/>
+---
 
-## 📐 Design System
-
-The UI is built on a custom SCSS token system covering every visual dimension:
+## 📸 UI Gallery
 
 <div align="center">
 
-| Token Category | Examples |
-|:---|:---|
-| **Colors** | `$primary-accent`, `$text-primary`, `$glass-background` |
-| **Typography** | `$fs-sm` → `$fs-display` · `$fw-normal` → `$fw-black` |
-| **Spacing** | `$spacing-xxs` (0.25rem) → `$spacing-xxl` (3rem) |
-| **Border Radius** | `$radius-sm` (8px) → `$radius-pill` (999px) |
-| **Shadows** | `$shadow-xs` → `$shadow-accent-hover` |
-| **Transitions** | `$transition-fast` (200ms) → `$transition-smooth` (600ms) |
-| **Easing** | `$ease-spring` · `$ease-out-expo` · `$ease-in-out-smooth` |
-| **Z-Index** | Hierarchical from `$z-index-base` to `$z-index-toast` |
-
-</div>
-
-Both `theme-dark` and `theme-light` override the same set of CSS custom properties, so every component automatically adapts to the active theme without conditional logic.
-
-<br/>
-
-## 🔌 API Integration
-
-All product data is sourced from the **[DummyJSON API](https://dummyjson.com)** — a free, public REST API for prototyping.
-
-<div align="center">
-
-| Endpoint | Usage |
-|:---|:---|
-| `GET /products` | Paginated catalog with sort support |
-| `GET /products/search?q=` | Real-time search results |
-| `GET /products/category/:slug` | Category-filtered product listing |
-| `GET /products/:id` | Product detail page |
-| `GET /products/categories` | Category list for the filter panel |
-
-</div>
-
-RTK Query handles caching, loading states, and deduplication automatically. Responses are normalized in `transformResponse` before hitting the Redux store.
-
-<br/>
-
-## 📸 Screenshots
-
-<div align="center">
-
-| Catalog Page | Product Page |
-|:---:|:---:|
+|                   Catalog Page (Main)                    |                   Product Detail Page                    |
+| :------------------------------------------------------: | :------------------------------------------------------: |
 | <img src="./docs/screenshots/catalog.png" width="440" /> | <img src="./docs/screenshots/product.png" width="440" /> |
 
-| Shopping Cart |
-|:---:|
+|                   Interactive Cart                    |
+| :---------------------------------------------------: |
 | <img src="./docs/screenshots/cart.png" width="900" /> |
 
-| Mobile View |
-|:---:|
+|                         Mobile View                          |
+| :----------------------------------------------------------: |
 | <img src="./docs/screenshots/mobile-view.png" width="280" /> |
 
 </div>
 
 <br/>
 
-## 🗺️ Roadmap
-
-- [x] Dark / Light theme toggle with persistence
-- [x] Product category filtering
-- [x] Persistent cart via `localStorage`
-- [x] Supabase Auth — registration and login
-- [x] Protected routes and user profile page
-- [ ] Wishlist / saved items feature
-- [ ] Checkout flow (UI-only)
-- [ ] Unit tests with Vitest + React Testing Library
-
-<br/>
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-<br/>
-
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,20,24&height=80&section=footer" width="100%" />
 
-<sub>Made with ☕ and a lot of <code>git commit -m "ship it"</code></sub>
+<sub>Made with ☕ and a love for quality code.</sub>
 
 </div>
