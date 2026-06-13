@@ -2,9 +2,12 @@ import {
     RiSearchLine,
     RiShoppingCartLine,
     RiArrowUpDownLine,
-    RiFileTextLine,
     RiSmartphoneLine,
     RiFlashlightLine,
+    RiShieldUserLine,
+    RiHeartLine,
+    RiHistoryLine,
+    RiPaletteLine,
 } from 'react-icons/ri';
 import { ComponentType } from 'react';
 
@@ -20,11 +23,13 @@ export interface TechItem {
 
 export const FEATURES: Feature[] = [
     { Icon: RiSearchLine, label: 'Instant URL-synced Search' },
-    { Icon: RiShoppingCartLine, label: 'Redux Shopping Cart' },
-    { Icon: RiArrowUpDownLine, label: 'Advanced Sorting' },
-    { Icon: RiFileTextLine, label: 'Product Detail Pages' },
+    { Icon: RiShoppingCartLine, label: 'Redux Cart with Cloud Sync' },
+    { Icon: RiShieldUserLine, label: 'Supabase Auth & Profiles' },
+    { Icon: RiHeartLine, label: 'Cloud-synced Wishlist' },
+    { Icon: RiHistoryLine, label: 'Secure Checkout & Order History' },
     { Icon: RiSmartphoneLine, label: 'Responsive & Mobile-First' },
-    { Icon: RiFlashlightLine, label: 'Lazy Routes & Memoized Selectors' },
+    { Icon: RiPaletteLine, label: 'Dual Theme (Dark / Light)' },
+    { Icon: RiFlashlightLine, label: 'Tactile Haptic Feedback' },
 ];
 
 export const TECH_STACK: TechItem[] = [
@@ -33,6 +38,7 @@ export const TECH_STACK: TechItem[] = [
     { name: 'Redux Toolkit', version: '2.9' },
     { name: 'RTK Query', version: '' },
     { name: 'React Router', version: 'v7' },
-    { name: 'Vite', version: '7' },
-    { name: 'SCSS Modules', version: '' },
+    { name: 'Vite', version: '8' },
+    { name: 'Supabase', version: 'v2' },
+    { name: 'LightningCSS', version: '1.32' },
 ];
