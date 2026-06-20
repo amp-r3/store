@@ -146,7 +146,7 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
             <div className={style['total-row']}>
               <span className={style['total-row__label']}>
                 Discount
-                <span className={style['total-row__badge']}>{discountPercent}% off</span>
+                <span className={`${style['total-row__badge']} ${style['total-row__badge--discount']}`}>{discountPercent}% off</span>
               </span>
               <span className={`${style['total-row__value']} ${style['total-row__value--discount']}`}>
                 − {formatPrice(discountAmount)}

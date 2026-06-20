@@ -95,7 +95,7 @@
 
 .card__discount {
     padding: $spacing-xxs $spacing-sm;
-    background: var(--error-color);
+    background: var(--secondary-accent-dark);
     color: #ffffff;
     border-radius: $radius-pill;
     text-align: center;
@@ -176,7 +176,7 @@
 }
 
 .card__stock--low {
-    color: var(--rating-color);
+    color: var(--secondary-accent);
     font-weight: $fw-semibold;
 }
 

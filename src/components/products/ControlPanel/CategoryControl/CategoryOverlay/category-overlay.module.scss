@@ -31,7 +31,6 @@
         display: flex;
         flex-direction: column;
 
-        height: 92vh;
         outline: none;
     }
 
@@ -67,45 +66,5 @@
         padding: $spacing-md $spacing-sm;
         padding-bottom: $spacing-md;
         overscroll-behavior: contain;
-    }
-
-    &__footer {
-        flex-shrink: 0;
-        padding: $spacing-md;
-        padding-bottom: calc($spacing-md + env(safe-area-inset-bottom));
-        background: var(--background-component);
-        border-top: 1px solid var(--border-color-strong);
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
-        z-index: 2;
-    }
-
-    &__submit-btn {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: $touch-target-comfortable;
-        background: var(--primary-accent);
-        color: var(--text-inverse);
-        border: none;
-        border-radius: $radius-md;
-        font-family: $font-primary;
-        font-size: $fs-md;
-        font-weight: $fw-semibold;
-        box-shadow: var(--shadow-accent-sm);
-        transition: all $transition-fast $ease-in-out-smooth;
-        cursor: pointer;
-
-        @media (hover: hover) {
-            &:hover {
-                background: var(--primary-accent-dark);
-                box-shadow: var(--shadow-accent-hover);
-            }
-        }
-
-        &:active {
-            transform: scale($button-pressed-scale);
-            box-shadow: none;
-        }
     }
 }

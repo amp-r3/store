@@ -75,15 +75,12 @@
     height: $touch-target-comfortable;
     border-radius: $radius-circle;
     border: none;
-    background: var(--glass-background);
-    backdrop-filter: $backdrop-blur-sm;
     cursor: pointer;
     transition: transform $transition-base $ease-out-expo,
         background $transition-base $ease-in-out-smooth;
 
     &:hover {
         transform: scale(1.1);
-        background: var(--glass-background-strong);
     }
 
     &:active {

@@ -13,6 +13,16 @@
   --primary-accent-light: #9d8fff;
   --primary-accent-light-rgb: 157, 143, 255;
 
+  --secondary-accent: #FF7A60;
+  --secondary-accent-rgb: 255, 122, 96;
+
+  --secondary-accent-dark: #E65D46;
+  --secondary-accent-dark-rgb: 230, 93, 70;
+
+  --secondary-accent-light: #FF9B85;
+  --secondary-accent-light-rgb: 255, 155, 133;
+
+
   // --- Text Colors  ---
   --text-primary: #e8e6f5;
   --text-inverse: #121026;
@@ -36,8 +46,8 @@
   --border-color-strong: rgba(124, 109, 255, 0.37);
 
   // --- Semantic Colors ---
-  --rating-color: #f59e0b;
-  --error-color: #b91c1c;
+  --rating-color: #fbbf24;
+  --error-color: #ef4444;
   --success-color: #22c55e;
   --success-color-rgb: 34, 197, 94;
   --success-color-dark: #16a34a;

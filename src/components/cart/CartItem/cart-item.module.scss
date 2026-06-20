@@ -186,11 +186,11 @@
         font-size: 0.7rem;
         font-weight: $fw-bold;
         color: #fff;
-        background: rgba(var(--primary-accent-rgb), 0.75);
+        background: rgba(var(--secondary-accent-rgb), 0.85);
         padding: 3px 6px;
         border-radius: $radius-pill;
         line-height: 1;
-        border: 1px solid rgba(var(--rating-color-rgb), 0.2);
+        border: 1px solid rgba(var(--secondary-accent-rgb), 0.2);
     }
 
     // =============================================

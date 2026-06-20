@@ -7,9 +7,8 @@
   gap: $spacing-sm;
   padding: 0 $spacing-xl;
   border-radius: $radius-lg;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(var(--secondary-accent-rgb), 0.2);
   background: var(--glass-background-subtle);
-  backdrop-filter: $backdrop-blur-sm;
   color: var(--text-secondary);
   font-size: $fs-md;
   font-weight: $fw-semibold;
@@ -29,7 +28,7 @@
 
   .icon {
     font-size: $fs-icon-md;
-    color: var(--primary-accent);
+    color: var(--secondary-accent);
     transition: transform $transition-base $ease-spring;
 
     @media (max-width: 768px) {
@@ -39,14 +38,15 @@
 
   @media (hover: hover) {
     &:hover:not(:disabled) {
-      background: var(--glass-background-strong);
-      border-color: var(--border-color-strong);
+      background: rgba(var(--secondary-accent-rgb), 0.15);
+      border-color: var(--secondary-accent);
       color: var(--text-primary);
       transform: $hover-lift;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 12px rgba(var(--secondary-accent-rgb), 0.12);
 
       .icon {
         transform: scale(1.2) rotate(10deg);
+        color: var(--secondary-accent-light);
       }
     }
   }

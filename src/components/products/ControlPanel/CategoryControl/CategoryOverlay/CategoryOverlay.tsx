@@ -41,15 +41,6 @@ export const CategoryOverlay: FC<ICategoryProps> = ({
                         />
                     </div>
 
-                    <div className={style['category-overlay__footer']}>
-                        <button
-                            type="button"
-                            className={style['category-overlay__submit-btn']}
-                            onClick={onClose}
-                        >
-                            Done
-                        </button>
-                    </div>
                 </Drawer.Content>
             </Drawer.Portal>
         </Drawer.Root>

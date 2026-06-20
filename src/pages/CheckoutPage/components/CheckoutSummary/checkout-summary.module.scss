@@ -377,6 +377,11 @@
     font-weight: $fw-semibold;
     letter-spacing: $letter-spacing-wide;
     line-height: $lh-ui;
+
+    &--discount {
+      background-color: rgba(var(--secondary-accent-rgb), 0.12);
+      color: var(--secondary-accent);
+    }
   }
 
   &__value {
@@ -385,9 +390,12 @@
     font-weight: $fw-semibold;
     color: var(--text-primary);
 
-    &--free,
-    &--discount {
+    &--free {
       color: var(--primary-accent);
+    }
+
+    &--discount {
+      color: var(--secondary-accent);
     }
 
     &--fee {

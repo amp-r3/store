@@ -219,8 +219,8 @@
         transition: all $transition-fast ease;
 
         &:hover {
-            background: rgba(var(--primary-accent-rgb), 0.1);
-            border-color: rgba(var(--primary-accent-rgb), 0.3);
+            background: rgba(var(--secondary-accent-rgb), 0.1);
+            border-color: rgba(var(--secondary-accent-rgb), 0.3);
             color: var(--text-primary);
             transform: translateY(-1px);
         }
@@ -229,7 +229,7 @@
     &__chipIcon {
         display: flex;
         align-items: center;
-        color: var(--primary-accent-light);
+        color: var(--secondary-accent-light);
     }
 
     // --- Responsive Tweaks ---
