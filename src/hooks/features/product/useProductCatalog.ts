@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useGetCategoriesQuery, useGetProductsQuery } from "@/services/productsApi";
 import { useFilters } from "./useFilters";
@@ -14,7 +14,14 @@ export function useProductCatalog() {
 
     const query = searchParams.get('q');
     const categoryId = filters.activeCategoryOption?.slug;
+    const categoryName = filters.activeCategoryOption?.name;
 
+    const filterKey = `${query || ''}-${categoryId || 'all'}-${filters.activeSortOption?.id || 'default'}`;
+    const [lastKnownTotal, setLastKnownTotal] = useState<number | null>(null);
+
+    useEffect(() => {
+        setLastKnownTotal(null);
+    }, [filterKey]);
 
     const params = useMemo(() => {
         const p: Record<string, any> = { page: filters.page };
@@ -23,19 +30,28 @@ export function useProductCatalog() {
             p.sortBy = filters.activeSortOption.sortBy;
             p.order = filters.activeSortOption.order;
         }
-        if (categoryId !== 'all') p.category = categoryId;
+        if (categoryId !== 'all' && categoryName) p.category = categoryName;
 
         return p;
-    }, [filters.page, query, filters.activeSortOption, categoryId]);
+    }, [filters.page, query, filters.activeSortOption, categoryId, categoryName]);
+
+    const totalPages = lastKnownTotal !== null ? Math.ceil(lastKnownTotal / ITEMS_PER_PAGE) : null;
+    const shouldSkip = lastKnownTotal !== null && totalPages !== null && totalPages > 0 && filters.page > totalPages;
 
     const {
         data: productsResponse,
         isFetching: productsFetching,
         isLoading: productsLoading,
         error: productsError
-    } = useGetProductsQuery(params);
+    } = useGetProductsQuery(params, { skip: shouldSkip });
 
-    const totalItems = productsResponse?.total || 0;
+    useEffect(() => {
+        if (productsResponse?.total !== undefined) {
+            setLastKnownTotal(productsResponse.total);
+        }
+    }, [productsResponse?.total]);
+
+    const totalItems = productsResponse?.total ?? lastKnownTotal ?? 0;
 
     usePaginationBounds(
         filters.page,
@@ -45,13 +61,14 @@ export function useProductCatalog() {
         productsError
     );
 
-    const isOutOfBoundsError = productsError && (
-        (productsError as any).status === 416 ||
-        (productsError as any).status === 'PGRST103'
-    );
+    const isOutOfBoundsError =
+        productsError &&
+        typeof productsError === 'object' &&
+        'status' in productsError &&
+        (productsError.status === 416 || productsError.status === 'PGRST103');
 
-    const displayLoading = productsLoading || isOutOfBoundsError;
-    const displayFetching = productsFetching || isOutOfBoundsError;
+    const displayLoading = productsLoading || isOutOfBoundsError || shouldSkip;
+    const displayFetching = productsFetching || isOutOfBoundsError || shouldSkip;
     const displayError = isOutOfBoundsError ? null : productsError;
 
     const isEmpty = Boolean(
