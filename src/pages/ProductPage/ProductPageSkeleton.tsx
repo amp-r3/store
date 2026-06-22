@@ -1,6 +1,5 @@
 import style from './productPage.module.scss'
 import { ProductHeader } from './components/ProductHeader/ProductHeader'
-import { ProductReviewsSkeleton } from './components/ProductReviews/ProductReviewsSkeleton'
 import { ProductSpecsSkeleton } from './components/ProductSpecs/ProductSpecsSkeleton'
 import { ProductPurchaseBoxSkeleton } from './components/ProductPurchaseBox/ProductPurchaseBoxSkeleton'
 import { ProductInfoSkeleton } from './components/ProductInfo/ProductInfoSkeleton'
@@ -22,7 +21,6 @@ export const ProductPageSkeleton = () => {
         </div>
 
         <ProductSpecsSkeleton />
-        <ProductReviewsSkeleton />
       </div>
     </main>
   )

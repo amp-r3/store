@@ -1,15 +1,18 @@
 import { FaComments } from 'react-icons/fa';
-import { ReviewCard, type Review } from './ReviewCard/ReviewCard';
+import { ReviewCard } from './ReviewCard/ReviewCard';
 import { ReviewsStats } from './ReviewsStats/ReviewsStats';
 import { ReviewsControls } from './ReviewsControls/ReviewsControls';
 import style from './product-reviews.module.scss';
+import { ProductReview } from '@/types/products';
+import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 
 interface ProductReviewsProps {
-    reviews: Review[];
+    reviews: ProductReview[];
+    rating: number;
 }
 
-export const ProductReviews = ({ reviews }: ProductReviewsProps) => {
-    if (!reviews || reviews.length === 0) return null;
+export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
+    if (!reviews || reviews.length === 0) return <ProductReviewsSkeleton />;
 
     return (
         <section id="reviews" className={style['reviews']}>
@@ -25,7 +28,7 @@ export const ProductReviews = ({ reviews }: ProductReviewsProps) => {
 
             <div className={style['reviews__layout']}>
                 {/* Decomposed Left Column: Rating Statistics Summary */}
-                <ReviewsStats />
+                <ReviewsStats reviews={reviews} rating={rating} />
 
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>

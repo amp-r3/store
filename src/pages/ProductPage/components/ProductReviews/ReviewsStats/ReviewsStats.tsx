@@ -1,34 +1,42 @@
-import { FaStar } from 'react-icons/fa';
+import { FaRegStar, FaStar } from 'react-icons/fa';
 import { useHaptics } from '@/hooks';
 import style from './reviews-stats.module.scss';
+import { ProductReview } from '@/types/products';
+import { FC } from 'react';
+import { calculateRatingStats } from '@/utils';
 
-export const ReviewsStats = () => {
+interface ReviewStatsProps {
+    reviews: ProductReview[];
+    rating: number;
+}
+
+export const ReviewsStats: FC<ReviewStatsProps> = ({ reviews, rating }) => {
     const { light } = useHaptics();
 
-    const totalReviews = 128;
-    const averageRating = 4.8;
-    const distribution = [
-        { stars: 5, percentage: 74, count: 96 },
-        { stars: 4, percentage: 16, count: 21 },
-        { stars: 3, percentage: 6, count: 8 },
-        { stars: 2, percentage: 3, count: 4 },
-        { stars: 1, percentage: 1, count: 1 },
-    ];
-
+    const totalReviews = reviews.length;
+    const distribution = calculateRatingStats(reviews)
     const handleRowClick = () => {
         light();
+    };
+
+    const renderStars = (rating: number) => {
+        return Array.from({ length: 5 }, (_, i) =>
+            i < Math.round(rating) ? (
+                <FaStar key={i} className={style['reviews-stats__average-star']} />
+            ) : (
+                <FaRegStar key={i} className={style['reviews-stats__average-star']} />
+            )
+        );
     };
 
     return (
         <div className={style['reviews-stats']}>
             <div className={style['reviews-stats__average-card']}>
                 <div className={style['reviews-stats__average-score']}>
-                    {averageRating}
+                    {Math.round(rating * 10) / 10}
                 </div>
                 <div className={style['reviews-stats__average-stars']}>
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <FaStar key={i} className={style['reviews-stats__average-star']} />
-                    ))}
+                    {renderStars(rating)}
                 </div>
                 <div className={style['reviews-stats__average-text']}>
                     Based on {totalReviews} global ratings
@@ -37,8 +45,8 @@ export const ReviewsStats = () => {
 
             <div className={style['reviews-stats__distribution']}>
                 {distribution.map((dist) => (
-                    <div 
-                        key={dist.stars} 
+                    <div
+                        key={dist.stars}
                         className={style['reviews-stats__dist-row']}
                         onClick={handleRowClick}
                     >
@@ -46,8 +54,8 @@ export const ReviewsStats = () => {
                             {dist.stars}★
                         </span>
                         <div className={style['reviews-stats__dist-bar-wrap']}>
-                            <div 
-                                className={style['reviews-stats__dist-bar-fill']} 
+                            <div
+                                className={style['reviews-stats__dist-bar-fill']}
                                 style={{ width: `${dist.percentage}%` }}
                             />
                         </div>

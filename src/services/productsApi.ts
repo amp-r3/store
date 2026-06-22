@@ -1,5 +1,5 @@
 import { supabase } from "@/supabase";
-import { Product } from "@/types/products";
+import { Product, ProductReview } from "@/types/products";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface Category {
@@ -23,18 +23,30 @@ export interface ProductsResponse {
     total: number;
 }
 
+interface ProductReviewResponse {
+    id: number;
+    product_id: number;
+    rating: number;
+    comment: string | null;
+    date: string;
+    user_id: string | null;
+    helpful_count: number;
+    reviewer_name: string | null;
+    reviewer_email: string | null;
+}
+
 export const productsApi = createApi({
     reducerPath: 'productsApi',
-    baseQuery: fakeBaseQuery(), 
+    baseQuery: fakeBaseQuery(),
     tagTypes: ['Product', 'Category'],
     endpoints: (builder) => ({
-        
+
         getProducts: builder.query<ProductsResponse, ProductParams>({
             async queryFn(params) {
                 try {
                     const { page = 1, search, sortBy, order, category } = params;
                     const limit = params.limit ?? 12;
-                    
+
                     const from = (page - 1) * limit;
                     const to = from + limit - 1;
 
@@ -47,7 +59,7 @@ export const productsApi = createApi({
                     }
 
                     if (category && category !== 'all') {
-                        query = query.eq('category', category); 
+                        query = query.eq('category', category);
                     }
 
                     if (sortBy && order) {
@@ -61,8 +73,8 @@ export const productsApi = createApi({
                     const { data, error, count } = await query;
 
                     if (error) {
-                        return { 
-                            error: { status: error.code, data: error.message } 
+                        return {
+                            error: { status: error.code, data: error.message }
                         };
                     }
 
@@ -81,43 +93,43 @@ export const productsApi = createApi({
                         }
                     };
                 } catch (err: any) {
-                    return { 
-                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: err.message }
                     };
                 }
             },
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.ids.map((id) => ({ type: 'Product' as const, id })),
-                          { type: 'Product', id: 'LIST' },
-                      ]
+                        ...result.ids.map((id) => ({ type: 'Product' as const, id })),
+                        { type: 'Product', id: 'LIST' },
+                    ]
                     : [{ type: 'Product', id: 'LIST' }],
         }),
-        
+
         getCategories: builder.query<Categories, void>({
             async queryFn() {
                 try {
                     const { data, error } = await supabase
                         .from('categories')
                         .select('slug, name');
-        
+
                     if (error) {
-                        return { 
-                            error: { status: error.code, data: error.message } 
+                        return {
+                            error: { status: error.code, data: error.message }
                         };
                     }
-        
+
                     const defaultCategory: Category = {
                         slug: 'all',
                         name: 'All Products',
                     };
-        
+
                     return { data: [defaultCategory, ...(data || [])] as Categories };
-                    
+
                 } catch (err: any) {
-                    return { 
-                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: err.message }
                     };
                 }
             },
@@ -133,16 +145,16 @@ export const productsApi = createApi({
                         .eq('id', id)
                         .single();
 
-                        if (error) {
-                            return { 
-                                error: { status: error.code, data: error.message } 
-                            };
-                        }
+                    if (error) {
+                        return {
+                            error: { status: error.code, data: error.message }
+                        };
+                    }
 
                     return { data: data as Product };
                 } catch (err: any) {
-                    return { 
-                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: err.message }
                     };
                 }
             },
@@ -157,26 +169,63 @@ export const productsApi = createApi({
                         .select('*')
                         .in('id', ids);
 
-                        if (error) {
-                            return { 
-                                error: { status: error.code, data: error.message } 
-                            };
-                        }
+                    if (error) {
+                        return {
+                            error: { status: error.code, data: error.message }
+                        };
+                    }
 
                     return { data: data as Product[] };
                 } catch (err: any) {
-                    return { 
-                        error: { status: 'CUSTOM_ERROR', data: err.message } 
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: err.message }
                     };
+                }
+            }
+        }),
+        getReviews: builder.query<ProductReview[], number>({
+            async queryFn(id) {
+                try {
+                    const { data, error } = await supabase
+                        .from('product_reviews')
+                        .select('*')
+                        .eq('product_id', id)
+                        .order('date', { ascending: false });
+
+                    if (error) {
+                        return {
+                            error: { status: error.code, data: error.message }
+                        };
+                    }
+
+                    const reviews: ProductReview[] = (data as ProductReviewResponse[]).map((review) => (
+                        {
+                            id: review.id,
+                            productId: review.product_id,
+                            rating: review.rating,
+                            comment: review.comment,
+                            date: review.date,
+                            userId: review.user_id,
+                            helpfulCount: review.helpful_count,
+                            reviewerName: review.reviewer_name,
+                            reviewerEmail: review.reviewer_email,
+                        }
+                    )
+                    )
+
+                    return { data: reviews as ProductReview[] }
+                } catch (error) {
+
                 }
             }
         })
     }),
 });
 
-export const { 
-    useGetProductsQuery, 
-    useGetProductByIdQuery, 
-    useGetCategoriesQuery, 
-    useGetProductArrayByIdQuery 
+export const {
+    useGetProductsQuery,
+    useGetProductByIdQuery,
+    useGetCategoriesQuery,
+    useGetProductArrayByIdQuery,
+    useGetReviewsQuery,
 } = productsApi;

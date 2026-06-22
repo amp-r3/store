@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
-    const { id, title, price, basePrice, category, thumbnail, rating, reviews, discountPercentage, stock } = product;
+    const { id, title, price, basePrice, category, thumbnail, rating, reviewsCount, discountPercentage, stock } = product;
     const { wishlistItems } = useWishlistDetails()
     const isFavorite = wishlistItems.some(item => item?.id === id)
     const { onWishlist } = useWishlistActions()
@@ -49,7 +49,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
                 price={price}
                 hasDiscount={hasDiscount}
                 rating={rating}
-                reviewsCount={reviews.length}
+                reviewsCount={reviewsCount}
             />
         </article>
     );

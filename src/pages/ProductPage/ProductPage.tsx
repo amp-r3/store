@@ -10,7 +10,6 @@ import { ProductHeader } from './components/ProductHeader/ProductHeader';
 import { ProductGallery } from './components/ProductGallery/ProductGallery';
 import { ProductInfo } from './components/ProductInfo/ProductInfo';
 import { ProductPurchaseBox } from './components/ProductPurchaseBox/ProductPurchaseBox';
-import { ProductReviews } from './components/ProductReviews/ProductReviews';
 import { ProductSpecs } from './components/ProductSpecs/ProductSpecs';
 import { ProductImageModal } from './components/ProductImageModal/ProductImageModal';
 import { ProductPageSkeleton } from './ProductPageSkeleton';
@@ -24,6 +23,8 @@ import { useCartActions, useCartDetails, useProduct, useWishlistActions, useWish
 
 // Styles
 import style from './productPage.module.scss';
+import { useGetReviewsQuery } from '@/services/productsApi';
+import { ProductReviews } from './components/ProductReviews/ProductReviews';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ export const ProductPage = () => {
     const isFavorite = wishlistItems.some(item => item?.id === +id)
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
+    const { data: reviews, isLoading: isReviewsLoading, isFetching: isReviewsFetching, isError: isReviewsError } = useGetReviewsQuery(+id)
     const { cartItems } = useCartDetails()
 
     const onImageClick = (): void => {
@@ -63,7 +65,7 @@ export const ProductPage = () => {
     if (isNotFound) return <Navigate to="/404" replace />;
 
     const { id: productId, title, basePrice, price, description, category, brand, images,
-        rating, reviews, discountPercentage, stock, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
+        rating, reviewsCount, discountPercentage, stock, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
     const hasDiscount = discountPercentage > 0;
     const inStock = (stock ?? 0) > 0;
     const itemInCart = cartItems.find(item => item?.id === product.id)
@@ -94,7 +96,7 @@ export const ProductPage = () => {
                             title={title}
                             stock={stock}
                             rating={rating}
-                            reviewsCount={reviews.length}
+                            reviewsCount={reviewsCount}
                             description={description}
                         />
                         <ProductPurchaseBox
@@ -119,7 +121,7 @@ export const ProductPage = () => {
                     returnPolicy={returnPolicy}
                 />
 
-                <ProductReviews reviews={reviews} />
+                <ProductReviews reviews={reviews} rating={rating} />
             </div>
         </main>
     );

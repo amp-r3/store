@@ -20,8 +20,8 @@ export interface Product {
     warrantyInformation: string;
     shippingInformation: string;
     availabilityStatus: string;
-    reviews: Review[];
     returnPolicy: string;
+    reviewsCount: number;
     minimumOrderQuantity: number;
     meta: {
         createdAt: string;
@@ -36,12 +36,24 @@ export interface Product {
     colors: ProductColor[];
 }
 
-export interface Review {
+export interface ProductReview {
+    id: number;
+    productId: number;
     rating: number;
-    comment: string;
+    comment: string | null;
     date: string;
-    reviewerName: string;
-    reviewerEmail: string;
+    helpfulCount: number;
+
+    reviewerName: string | null;
+    reviewerEmail: string | null;
+
+    userId: string | null;
+
+    author?: {
+        name: string;
+        avatarUrl?: string;
+    };
+
 }
 
 export interface ProductColor {

@@ -1,16 +1,12 @@
 import { FaStar, FaRegStar, FaCalendarDay, FaUserCheck, FaThumbsUp } from 'react-icons/fa';
 import { useHaptics } from '@/hooks';
 import style from './review-card.module.scss';
+import { ProductReview } from '@/types/products';
 
-export interface Review {
-    reviewerName: string;
-    rating: number;
-    date: string | Date;
-    comment: string;
-}
+
 
 interface ReviewCardProps {
-    review: Review;
+    review: ProductReview;
 }
 
 const getAvatarStyle = (name: string) => {
@@ -47,8 +43,6 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
             )
         );
     };
-
-    const helpfulCount = (review.reviewerName.length * 7 + review.comment.length) % 11;
 
     const handleHelpfulClick = () => {
         soft();
@@ -105,7 +99,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
                     <FaThumbsUp className={style['review-card__helpful-icon']} />
                     <span>Helpful</span>
                     <span className={style['review-card__helpful-count']}>
-                        ({helpfulCount})
+                        ({review.helpfulCount})
                     </span>
                 </button>
             </div>
