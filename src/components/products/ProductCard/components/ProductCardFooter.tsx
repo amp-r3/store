@@ -30,7 +30,9 @@ export const ProductCardFooter: FC<ProductCardFooterProps> = ({
             <div className={style.card__rating}>
                 <FaStar size={12} />
                 <span>{rating}</span>
-                <span className={style.card__ratingCount}>({reviewsCount})</span>
+                <span className={style.card__ratingCount}>
+                    • {reviewsCount} {reviewsCount === 1 ? 'review' : 'reviews'}
+                </span>
             </div>
         </div>
     );

@@ -9,6 +9,7 @@ interface ProductCardImageProps {
     discountPercentage: number;
     handleAddToWishlist(): void;
     isFavorite: boolean;
+    stock: number;
     priority?: boolean
 }
 
@@ -19,9 +20,13 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
     discountPercentage,
     handleAddToWishlist,
     isFavorite,
+    stock,
     priority = false
 
 }) => {
+    const isLowStock = stock > 0 && stock <= 10;
+    const isOutOfStock = stock === 0;
+
     return (
         <div className={style.card__imageWrapper}>
             <img
@@ -42,6 +47,18 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
                     </span>
                 )}
             </div>
+
+            {isLowStock && (
+                <span className={`${style['card__stock-badge']} ${style['card__stock-badge--low']}`}>
+                    Only {stock} Left
+                </span>
+            )}
+            {isOutOfStock && (
+                <span className={`${style['card__stock-badge']} ${style['card__stock-badge--out']}`}>
+                    Out of Stock
+                </span>
+            )}
+
             <button className={style['card__add-to-favorites']} onClick={handleAddToWishlist}>
                 {
                     isFavorite ?

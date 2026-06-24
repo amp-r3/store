@@ -37,11 +37,11 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
                 priority={priority}
                 handleAddToWishlist={handleAddToWishlist}
                 isFavorite={isFavorite}
+                stock={stock}
             />
 
             <ProductCardBody
                 title={title}
-                stock={stock}
             />
 
             <ProductCardFooter

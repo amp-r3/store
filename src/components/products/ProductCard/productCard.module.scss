@@ -77,20 +77,22 @@
 
 .card__category {
     padding: $spacing-xxs $spacing-sm;
-    background: var(--border-color-light);
-    color: var(--primary-accent-dark);
+    background: var(--glass-background);
+    border: 1px solid var(--border-color-light);
+    backdrop-filter: $backdrop-blur-sm;
+    color: var(--text-secondary);
     border-radius: $radius-pill;
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     letter-spacing: $letter-spacing-wide;
     text-transform: capitalize;
     z-index: 2;
-
 }
 
 :global(.theme-dark) .card__category {
-    background-color: var(--border-color);
-    color: var(--primary-accent-light);
+    background-color: var(--glass-background);
+    border-color: var(--border-color-light);
+    color: var(--text-secondary);
 }
 
 .card__discount {
@@ -168,21 +170,31 @@
     }
 }
 
-.card__stock {
-    font-size: $fs-sm;
-    color: var(--text-muted);
-    white-space: nowrap;
-    margin-top: auto;
+.card__stock-badge {
+    position: absolute;
+    bottom: $spacing-sm;
+    left: $spacing-sm;
+    padding: $spacing-xxs $spacing-sm;
+    border-radius: $radius-pill;
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    letter-spacing: $letter-spacing-wide;
+    backdrop-filter: $backdrop-blur-sm;
+    z-index: 2;
+    box-shadow: var(--shadow-xs);
+    border: 1px solid transparent;
 }
 
-.card__stock--low {
-    color: var(--secondary-accent);
-    font-weight: $fw-semibold;
+.card__stock-badge--low {
+    background: rgba(var(--status-warning-rgb), 0.12);
+    border-color: rgba(var(--status-warning-rgb), 0.25);
+    color: var(--status-warning-text);
 }
 
-.card__stock--out {
-    color: var(--error-color);
-    font-weight: $fw-semibold;
+.card__stock-badge--out {
+    background: rgba(var(--status-danger-rgb), 0.09);
+    border-color: rgba(var(--status-danger-rgb), 0.22);
+    color: var(--status-danger-text);
 }
 
 .card__footer {
@@ -218,7 +230,7 @@
 }
 
 .card__price {
-    font-size: $fs-lg;
+    font-size: 1.625rem;
     font-weight: $fw-black;
     color: var(--text-primary);
     letter-spacing: $letter-spacing-tight;
@@ -229,6 +241,7 @@
     font-size: $fs-sm;
     font-weight: $fw-normal;
     color: var(--text-muted);
+    opacity: 0.55;
     text-decoration: line-through;
     line-height: $lh-ui;
 }
@@ -243,7 +256,8 @@
     }
 
     .card__category,
-    .card__discount {
+    .card__discount,
+    .card__stock-badge {
         padding: 2px $spacing-xs;
         font-size: $fs-xs;
         letter-spacing: 0;
@@ -273,7 +287,7 @@
     }
 
     .card__price {
-        font-size: $fs-md;
+        font-size: 1.25rem;
     }
 
 }
@@ -288,7 +302,8 @@
     }
 
     .card__category,
-    .card__discount {
+    .card__discount,
+    .card__stock-badge {
         font-size: 0.625rem;
         padding: 2px 6px;
     }
@@ -309,8 +324,8 @@
         font-size: $fs-xs;
     }
 
-    .card__stock {
-        font-size: $fs-xs;
+    .card__stock-badge {
+        font-size: 0.625rem;
     }
 
     .card__footer {
@@ -318,7 +333,7 @@
     }
 
     .card__price {
-        font-size: $fs-base;
+        font-size: 1.0625rem;
     }
 
     .card__oldPrice {
