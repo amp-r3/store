@@ -4,8 +4,8 @@ import { OrderItem } from '../../../OrderItem/OrderItem';
 import { OrderItemSkeleton } from '../../../OrderItem/OrderItemSkeleton';
 import { OrderDetailsInfoCard } from '../OrderDetailsInfoCard/OrderDetailsInfoCard';
 import style from './order-details-body.module.scss';
-
-
+import { formatPrice } from '@/utils';
+import { LuStar } from 'react-icons/lu';
 
 interface OrderDetailsBodyProps {
     order: Order;
@@ -14,9 +14,10 @@ interface OrderDetailsBodyProps {
     isFetching: boolean;
     ITEMS_PREVIEW_COUNT: number;
     variant: 'card' | 'drawer';
+    goodsTotal: number;
     onClose?(): void;
-
 }
+
 export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
     order,
     orderItems,
@@ -24,6 +25,7 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
     isFetching,
     ITEMS_PREVIEW_COUNT,
     variant,
+    goodsTotal,
     onClose
 }) => {
     return (
@@ -51,9 +53,15 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
                     <h3 className={style['body__section-title']}>
                         Goods
                     </h3>
-                    <span className={style['body__items-count']}>
-                        {orderItems.length} {orderItems.length === 1 ? 'item' : 'items'}
-                    </span>
+                    <div className={style['body__header-actions']}>
+                        <span className={style['body__items-count']}>
+                            {orderItems.length} {orderItems.length === 1 ? 'item' : 'items'}
+                        </span>
+                        <button type="button" className={style['body__rate-btn']}>
+                            <LuStar />
+                            Rate this order
+                        </button>
+                    </div>
                 </div>
 
                 <div className={style['body__scroll-area']}>
@@ -67,6 +75,25 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
                         )}
                     </div>
                 </div>
+            </div>
+
+            <div className={style['body__receipt']}>
+                <div className={style['body__receipt-row']}>
+                    <span className={style['body__receipt-label']}>Cost of goods</span>
+                    <span className={style['body__receipt-value']}>{formatPrice(goodsTotal)}</span>
+                </div>
+
+                <div className={style['body__receipt-row']}>
+                    <span className={style['body__receipt-label']}>Delivery</span>
+                    <span className={style['body__receipt-value']}>{formatPrice(order.deliveryCost)}</span>
+                </div>
+
+                {order.paymentFee > 0 && (
+                    <div className={style['body__receipt-row']}>
+                        <span className={style['body__receipt-label']}>Payment commission</span>
+                        <span className={style['body__receipt-value']}>{formatPrice(order.paymentFee)}</span>
+                    </div>
+                )}
             </div>
         </div>
     );

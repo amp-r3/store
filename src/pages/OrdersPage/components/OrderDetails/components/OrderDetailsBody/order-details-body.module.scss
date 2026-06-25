@@ -46,6 +46,47 @@
         border-radius: $radius-pill;
     }
 
+    &__header-actions {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+    }
+
+    &__rate-btn {
+        background: transparent;
+        border: none;
+        padding: 0;
+        color: var(--primary-accent);
+        font-family: $font-primary;
+        font-size: $fs-xs;
+        font-weight: $fw-semibold;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-xxs;
+        transition: color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-spring;
+
+        svg {
+            width: $icon-size-sm;
+            height: $icon-size-sm;
+            color: var(--rating-color);
+            transition: transform $transition-fast $ease-spring;
+        }
+
+        &:hover {
+            color: var(--primary-accent-dark);
+            text-decoration: underline;
+
+            svg {
+                transform: rotate(15deg) scale($scale-up-sm);
+            }
+        }
+
+        &:active {
+            transform: scale($scale-down-sm);
+        }
+    }
+
     &__list {
         display: flex;
         flex-direction: column;
@@ -54,6 +95,36 @@
         >* {
             flex-shrink: 0;
         }
+    }
+
+    &__receipt {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+        padding: $spacing-md;
+        background: var(--glass-background-subtle);
+        border: 1px solid var(--border-color-subtle);
+        border-radius: $radius-md;
+        margin-top: $spacing-md;
+    }
+
+    &__receipt-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: $fs-sm;
+        line-height: $lh-ui;
+    }
+
+    &__receipt-label {
+        color: var(--text-muted);
+        letter-spacing: $letter-spacing-normal;
+    }
+
+    &__receipt-value {
+        font-weight: $fw-normal;
+        color: var(--text-secondary);
+        font-variant-numeric: tabular-nums;
     }
 }
 

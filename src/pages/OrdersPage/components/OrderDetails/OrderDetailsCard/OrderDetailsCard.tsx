@@ -40,14 +40,12 @@ export const OrderDetailsCard: FC<OrderDetailsCardProps> = ({
                 isLoading={isItemsLoading}
                 isFetching={isItemsFetching}
                 ITEMS_PREVIEW_COUNT={ITEMS_PREVIEW_COUNT}
+                goodsTotal={goodsTotal}
             />
 
             {/* ── FOOTER ── */}
             <OrderDetailsFooter
                 orderCartProduct={orderCartProduct}
-                goodsTotal={goodsTotal}
-                deliveryCost={order.deliveryCost}
-                paymentFee={order.paymentFee}
                 totalAmount={order.totalAmount}
                 variant='card'
             />
