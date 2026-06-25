@@ -93,14 +93,16 @@
 
         @media (hover: hover) {
             &:hover {
-                background: rgba(var(--text-primary-rgb), 0.06);
-                color: var(--text-primary);
-                border-color: var(--border-color);
+                background: rgba(var(--primary-accent-rgb), 0.08);
+                color: var(--primary-accent);
+                border-color: rgba(var(--primary-accent-rgb), 0.3);
+                transform: rotate(90deg);
+                box-shadow: var(--shadow-accent-sm);
             }
         }
 
         &:active {
-            transform: scale($button-pressed-scale);
+            transform: rotate(90deg) scale($button-pressed-scale);
         }
     }
 

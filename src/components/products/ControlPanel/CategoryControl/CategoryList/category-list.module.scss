@@ -32,10 +32,12 @@
         transition: all $transition-fast $ease-in-out-smooth;
 
         @media (hover: hover) {
-
             &:hover:not([aria-pressed="true"]) {
-                border-color: var(--border-color-strong);
-                color: var(--primary-accent-light);
+                background: rgba(var(--primary-accent-rgb), 0.05);
+                border-color: rgba(var(--primary-accent-rgb), 0.25);
+                color: var(--text-primary);
+                transform: $hover-lift;
+                box-shadow: var(--shadow-accent-sm);
             }
         }
 
@@ -48,7 +50,7 @@
         }
 
         &:active {
-            transform: scale($button-pressed-scale);
+            transform: translateY(0) scale($button-pressed-scale);
         }
 
         &:focus-visible {

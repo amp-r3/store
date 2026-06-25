@@ -28,9 +28,16 @@
 
     @media (hover: hover) {
       &:hover:not(.sort-options-list__item--active) {
-        background: rgba(var(--border-color-light-rgb), 0.1);
-        border-color: var(--border-color-light);
+        background: rgba(var(--primary-accent-rgb), 0.05);
+        border-color: rgba(var(--primary-accent-rgb), 0.25);
         color: var(--text-primary);
+        transform: $hover-lift;
+        box-shadow: var(--shadow-accent-sm);
+
+        .sort-options-list__item-icon {
+          color: var(--primary-accent);
+          transform: scale(1.1);
+        }
       }
     }
 
@@ -43,7 +50,7 @@
     }
 
     &:active {
-      transform: scale($button-pressed-scale);
+      transform: translateY(0) scale($button-pressed-scale);
     }
 
     &:focus-visible {
