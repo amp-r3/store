@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { IoCartOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 // Custom Hooks
-import { useCartDetails, useHaptics, useNavbarScroll, useSearch } from '@/hooks';
+import { useCartDetails, useHaptics, useNavbarScroll, useSearch, useWishlistDetails } from '@/hooks';
 // Redux Hooks
 import { useAppDispatch, } from '@/hooks';
 // Custom Components
@@ -20,10 +20,12 @@ export const Navbar = () => {
   const { soft } = useHaptics()
   const navRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const { totalQuantity } = useCartDetails()
+  const { totalQuantity: cartTotals } = useCartDetails()
+  const { totalQuantity: wishlistTotals } = useWishlistDetails()
   useNavbarScroll(navRef);
 
-  const isCartLoaded = totalQuantity >= 1
+  const isCartLoaded = cartTotals >= 1
+  const isWishlistLoaded = wishlistTotals >= 1
 
   return (
     <nav ref={navRef} className={style.nav}>
@@ -41,12 +43,15 @@ export const Navbar = () => {
       <div className={style.nav__main_actions}>
 
         <Link to={'/wishlist'} aria-label='open wishlist' className={style.nav__btn}>
+          {
+            isWishlistLoaded && <span className={style.nav__btn__count}>{wishlistTotals}</span>
+          }
           <FaRegHeart />
         </Link>
 
         <button onClick={() => { dispatch(openCart()); soft() }} type='button' aria-label='open cart' className={style.nav__btn}>
           {
-            isCartLoaded && <span className={style.nav__btn__count}>{totalQuantity}</span>
+            isCartLoaded && <span className={style.nav__btn__count}>{cartTotals}</span>
           }
           <IoCartOutline />
         </button>

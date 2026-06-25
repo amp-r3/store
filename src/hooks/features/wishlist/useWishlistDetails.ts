@@ -9,6 +9,7 @@ import { useProductsByIds } from '../product';
 interface WishlistDetailsReturn {
   wishlistDetails: Product[];
   wishlistItems: WishlistData[];
+  totalQuantity: number;
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -48,5 +49,6 @@ export const useWishlistDetails = (): WishlistDetailsReturn => {
     isFetching: isWishlistFetching || isProductsFetching,
     isError: isWishlistError || isProductsError,
     isEmpty: unifiedWishlistItems.length === 0,
+    totalQuantity: unifiedWishlistItems.length,
   };
 };
