@@ -1,5 +1,13 @@
 @use "index" as *;
 
+::selection {
+    background-color: var(--selection-bg);
+}
+
+::-moz-selection {
+    background-color: var(--selection-bg);
+}
+
 html {
     scroll-behavior: smooth;
 }

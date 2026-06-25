@@ -114,6 +114,9 @@
   --shadow-focus-input: 0 0 16px rgba(var(--primary-accent-rgb), 0.16);
   --shadow-focus-button: 0 0 0 3px rgba(var(--primary-accent-rgb), 0.26);
 
+  // --- Selection ---
+  --selection-bg: rgba(var(--primary-accent-rgb), 0.28);
+
   // --- Skeleton ---
   --skeleton-base: #1e1a38;
   --skeleton-highlight: #272245;
