@@ -32,6 +32,7 @@ export interface PaymentMethod {
 
 export interface CheckoutCartItem {
   product_id: number;
+  size_id: number;
   quantity: number;
 }
 

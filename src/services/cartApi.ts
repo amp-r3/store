@@ -24,7 +24,13 @@ export const cartApi = createApi({
 
           const { data, error } = await supabase
             .from('cart_items')
-            .select('product_id, quantity')
+            .select(`
+              size_id, 
+              quantity,
+              product_sizes (
+                product_id
+              )
+            `)
             .eq('user_id', user.id);
 
           if (error) {
@@ -34,8 +40,11 @@ export const cartApi = createApi({
           const formattedCart: Record<number, CartData> = {};
 
           if (data) {
-            data.forEach((item) => {
-              formattedCart[item.product_id] = { quantity: item.quantity };
+            data.forEach((item: any) => {
+              formattedCart[item.size_id] = {
+                quantity: item.quantity,
+                productId: item.product_sizes?.product_id || item.product_sizes?.[0]?.product_id
+              };
             });
           }
 
@@ -47,8 +56,8 @@ export const cartApi = createApi({
       providesTags: ['Cart']
     }),
 
-    upsertCartItem: builder.mutation<null, { productId: number; action: QuantityAction }>({
-      queryFn: async ({ productId, action }, { getState }) => {
+    upsertCartItem: builder.mutation<null, { sizeId: number; productId: number; action: QuantityAction }>({
+      queryFn: async ({ sizeId, productId, action }, { getState }) => {
         try {
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
@@ -56,28 +65,35 @@ export const cartApi = createApi({
             return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
           }
 
-          const state = getState() as RootState;
-          const cartData = cartApi.endpoints.getCart.select()(state).data;
+          const { data: currentItem } = await supabase
+            .from('cart_items')
+            .select('quantity')
+            .match({ user_id: user.id, size_id: sizeId })
+            .maybeSingle();
 
-          const targetQty = cartData?.[productId]?.quantity;
+          const targetQty = currentItem?.quantity || 0;
 
-          if (action === 'dec' && !targetQty) {
+          if (action === 'dec' && targetQty <= 1) {
             const { error } = await supabase
               .from('cart_items')
               .delete()
-              .match({ user_id: user.id, product_id: productId });
+              .match({ user_id: user.id, size_id: sizeId });
 
             if (error) return { error: { status: error.code, data: error.message } };
             return { data: null };
           }
 
-          const finalQty = targetQty || 1;
+          const finalQty = targetQty ? calcQty(targetQty, action) : (action === 'inc' ? 1 : 0);
+
+          if (finalQty === 0) {
+            return { data: null };
+          }
 
           const { error } = await supabase
             .from('cart_items')
             .upsert(
-              { user_id: user.id, product_id: productId, quantity: finalQty },
-              { onConflict: 'user_id, product_id' }
+              { user_id: user.id, size_id: sizeId, quantity: finalQty },
+              { onConflict: 'user_id, size_id' }
             );
 
           if (error) {
@@ -90,15 +106,15 @@ export const cartApi = createApi({
         }
       },
 
-      async onQueryStarted({ productId, action }, { dispatch, queryFulfilled, getState }) {
+      async onQueryStarted({ sizeId, productId, action }, { dispatch, queryFulfilled, getState }) {
         const state = getState() as unknown as RootState;
         const cartData = cartApi.endpoints.getCart.select()(state).data;
-        const currentQty = cartData?.[productId]?.quantity ?? 0;
+        const currentQty = cartData?.[sizeId]?.quantity ?? 0;
 
         if (action === 'dec' && currentQty <= 1) {
           const patchResult = dispatch(
-            cartApi.util.updateQueryData('getCart', undefined as never, (draft: CartItem) => {
-              delete draft[productId];
+            cartApi.util.updateQueryData('getCart', undefined as never, (draft: Record<number, CartData>) => {
+              delete draft[sizeId];
             })
           );
           try {
@@ -112,8 +128,8 @@ export const cartApi = createApi({
         const newQuantity = calcQty(currentQty, action);
 
         const patchResult = dispatch(
-          cartApi.util.updateQueryData('getCart', undefined as never, (draft: CartItem) => {
-            draft[productId] = { quantity: newQuantity };
+          cartApi.util.updateQueryData('getCart', undefined as never, (draft) => {
+            draft[sizeId] = { quantity: newQuantity, productId };
           })
         );
         try {
@@ -125,7 +141,7 @@ export const cartApi = createApi({
     }),
 
     deleteCartItem: builder.mutation<null, number>({
-      queryFn: async (productId) => {
+      queryFn: async (sizeId) => {
         try {
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
@@ -136,7 +152,7 @@ export const cartApi = createApi({
           const { error } = await supabase
             .from('cart_items')
             .delete()
-            .match({ user_id: user.id, product_id: productId });
+            .match({ user_id: user.id, size_id: sizeId });
 
           if (error) {
             return { error: { status: error.code, data: error.message } };
@@ -148,10 +164,10 @@ export const cartApi = createApi({
         }
       },
 
-      async onQueryStarted(productId, { dispatch, queryFulfilled }) {
+      async onQueryStarted(sizeId, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           cartApi.util.updateQueryData('getCart', undefined as never, (draft) => {
-            delete draft[productId];
+            delete draft[sizeId];
           })
         );
         try {
@@ -171,9 +187,9 @@ export const cartApi = createApi({
             return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
           }
 
-          const itemsToSync = Object.entries(localCart).map(([productId, data]) => ({
+          const itemsToSync = Object.entries(localCart).map(([sizeId, data]) => ({
             user_id: user.id,
-            product_id: Number(productId),
+            size_id: Number(sizeId),
             quantity: data.quantity
           }));
 
@@ -183,7 +199,7 @@ export const cartApi = createApi({
 
           const { error } = await supabase
             .from('cart_items')
-            .upsert(itemsToSync, { onConflict: 'user_id, product_id' });
+            .upsert(itemsToSync, { onConflict: 'user_id, size_id' });
 
           if (error) {
             return { error: { status: error.code, data: error.message } };

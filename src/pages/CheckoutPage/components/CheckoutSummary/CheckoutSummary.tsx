@@ -5,7 +5,8 @@ import {
   HiCreditCard,
   HiArrowRight,
   HiCheckCircle,
-  HiChevronDown
+  HiChevronDown,
+  HiExclamationCircle
 } from "react-icons/hi";
 
 import { CartItem } from '@/types/products';
@@ -31,6 +32,7 @@ interface CheckoutSummaryProps {
   step: StepType;
   selectedDelivery: DeliveryMethod;
   selectedPayment: PaymentMethod;
+  error?: string;
   isLastStep: boolean;
   isCreating: boolean;
   isLoading: boolean;
@@ -53,6 +55,7 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   isLoading,
   isCreating,
   handleNextStep,
+  error,
   onSubmit,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -70,6 +73,7 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
     selectedDelivery,
     selectedPayment,
   });
+
 
   const methods = useFormContext<CheckoutFormValues>();
 
@@ -127,7 +131,7 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
             ))
             : cartItems.map((item, index) => (
               <ProductItem
-                key={item.id}
+                key={`${item.productId} ${item.sizeId}`}
                 product={{ ...cartDetails[index], quantity: item.quantity }}
               />
             ))
@@ -220,6 +224,13 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
           <a href="#" className={style.summary__link}>Privacy Policy</a>.
         </p>
       </div>
+
+      {error && (
+        <div className={style.summary__error} role="alert">
+          <HiExclamationCircle className={style['summary__error-icon']} />
+          <span className={style['summary__error-text']}>{error}</span>
+        </div>
+      )}
 
       {/* Footer: Contains final total and CTA, becomes sticky on mobile */}
       <div className={style.summary__footer}>

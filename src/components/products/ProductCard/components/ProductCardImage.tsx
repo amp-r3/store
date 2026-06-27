@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import style from '../productCard.module.scss';
+import { ProductSize } from '@/types/products';
+import { ProductStockBadge } from './ProductStockBadge';
 
 interface ProductCardImageProps {
     title: string;
@@ -9,7 +11,8 @@ interface ProductCardImageProps {
     discountPercentage: number;
     handleAddToWishlist(): void;
     isFavorite: boolean;
-    stock: number;
+    sizes: ProductSize[];
+    isSizesLoading: boolean;
     priority?: boolean
 }
 
@@ -20,12 +23,12 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
     discountPercentage,
     handleAddToWishlist,
     isFavorite,
-    stock,
+    sizes,
+    isSizesLoading,
     priority = false
 
 }) => {
-    const isLowStock = stock > 0 && stock <= 10;
-    const isOutOfStock = stock === 0;
+
 
     return (
         <div className={style.card__imageWrapper}>
@@ -48,16 +51,10 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
                 )}
             </div>
 
-            {isLowStock && (
-                <span className={`${style['card__stock-badge']} ${style['card__stock-badge--low']}`}>
-                    Only {stock} Left
-                </span>
-            )}
-            {isOutOfStock && (
-                <span className={`${style['card__stock-badge']} ${style['card__stock-badge--out']}`}>
-                    Out of Stock
-                </span>
-            )}
+            <ProductStockBadge
+                sizes={sizes}
+                isLoading={isSizesLoading}
+            />
 
             <button className={style['card__add-to-favorites']} onClick={handleAddToWishlist}>
                 {

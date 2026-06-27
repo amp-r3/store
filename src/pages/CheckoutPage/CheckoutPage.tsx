@@ -37,8 +37,7 @@ export const CheckoutPage = () => {
   const user = useAppSelector(selectUser)
   const [step, setStep] = useState<StepType>('contacts')
   const [highestStepIndex, setHighestStepIndex] = useState<number>(0);
-
-  console.log(checkoutItems);
+  const [error, setError] = useState('')
 
   const currentIndex = STEPS_ORDER.indexOf(step);
   const isLastStep = currentIndex === STEPS_ORDER.length - 1;
@@ -135,6 +134,7 @@ export const CheckoutPage = () => {
     if (!isLastStep) {
       return;
     }
+    setError('')
     const payload = {
       p_shipping_address: {
         firstName: formData.firstName,
@@ -149,7 +149,7 @@ export const CheckoutPage = () => {
       },
       p_payment_method_id: formData.paymentMethodId,
       p_delivery_method_id: formData.deliveryMethodId,
-      p_items: checkoutItems.map((item) => { return { product_id: item.id, quantity: item.quantity } })
+      p_items: checkoutItems.map((item) => { return { product_id: item.productId, size_id: item.sizeId, quantity: item.quantity } })
     };
 
     try {
@@ -161,7 +161,7 @@ export const CheckoutPage = () => {
         replace: true
       });
     } catch (err) {
-      console.error(err);
+      setError(err.data);
     }
   };
 
@@ -243,6 +243,7 @@ export const CheckoutPage = () => {
                 isLoading={isLoading || isFetching}
                 isCreating={isCreating || isClearing}
                 handleNextStep={handleNextStep}
+                error={error}
                 onSubmit={onSubmit}
               />
 

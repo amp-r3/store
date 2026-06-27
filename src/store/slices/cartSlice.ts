@@ -24,15 +24,17 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         removeFromCart: (state, action: PayloadAction<number>) => {
-            const id = action.payload;
-            delete state.items[id];
+            const sizeId = action.payload;
+            delete state.items[sizeId];
         },
-        changeQuantity: (state, action: PayloadAction<{ id: number; type: 'inc' | 'dec' }>) => {
-            const { id, type } = action.payload;
-            const item = state.items[id];
+        changeQuantity: (state, action: PayloadAction<{ sizeId: number; productId: number; type: 'inc' | 'dec' }>) => {
+            const { sizeId, productId, type } = action.payload;
+            const item = state.items[sizeId];
             if (!item) {
-                state.items[id] = { quantity: 1 };
-                return
+                if (type === 'inc') {
+                    state.items[sizeId] = { productId, quantity: 1 };
+                }
+                return;
             };
 
             if (type === 'inc') {
@@ -41,7 +43,7 @@ export const cartSlice = createSlice({
                 if (item.quantity > 1) {
                     item.quantity--;
                 } else {
-                    delete state.items[id];
+                    delete state.items[sizeId];
                 }
             }
         },

@@ -4,7 +4,12 @@ import { ProductSpecsSkeleton } from './components/ProductSpecs/ProductSpecsSkel
 import { ProductPurchaseBoxSkeleton } from './components/ProductPurchaseBox/ProductPurchaseBoxSkeleton'
 import { ProductInfoSkeleton } from './components/ProductInfo/ProductInfoSkeleton'
 import { ProductGallerySkeleton } from './components/ProductGallery/ProductGallerySkeleton'
+import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton'
+import { useMediaQuery } from '@/hooks'
+
 export const ProductPageSkeleton = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   return (
     <main className={style['product-page']}>
       <div className="container">
@@ -16,6 +21,7 @@ export const ProductPageSkeleton = () => {
           </div>
           <div className={style['details-column']}>
             <ProductInfoSkeleton />
+            {isMobile && <ProductSizesSkeleton isCompact={false} />}
             <ProductPurchaseBoxSkeleton />
           </div>
         </div>

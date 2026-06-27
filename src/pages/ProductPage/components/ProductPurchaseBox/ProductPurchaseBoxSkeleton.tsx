@@ -1,8 +1,12 @@
 import Skeleton from 'react-loading-skeleton';
 import style from './product-purchase-box.module.scss';
 import { AddToCartButtonSkeleton, QuickBuyButtonSkeleton } from '@/components/common';
+import { useMediaQuery } from '@/hooks';
+import { ProductSizesSkeleton } from '../ProductSizes/ProductSizesSkeleton';
 
 export const ProductPurchaseBoxSkeleton = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   return (
     <div className={style['purchase-box']}>
       <div className={style['price-section']}>
@@ -32,6 +36,12 @@ export const ProductPurchaseBoxSkeleton = () => {
           <Skeleton width={90} height={28} borderRadius="var(--radius-pill)" style={{ display: 'block' }} />
         </div>
       </div>
+
+      {!isMobile && (
+        <div className={style['purchase-box__sizes-container']}>
+          <ProductSizesSkeleton isCompact={true} />
+        </div>
+      )}
 
       <div className={style['actions']}>
         <AddToCartButtonSkeleton className={style['add-to-cart']} />

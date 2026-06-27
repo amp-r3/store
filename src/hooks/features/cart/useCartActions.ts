@@ -6,9 +6,9 @@ import { selectIsAuth } from "@/store/selectors/authSelectors";
 import { useClearCartMutation, useDeleteCartItemMutation, useUpsertCartItemMutation } from "@/services/cartApi";
 
 interface UseCartActionsReturn {
-  onIncrease(id: number): void;
-  onDecrease(id: number): void;
-  onRemove(id: number): void;
+  onIncrease(sizeId: number, productId: number): void;
+  onDecrease(sizeId: number, productId: number): void;
+  onRemove(sizeId: number): void;
   onClearCart(): void;
   isUpdating: boolean;
 }
@@ -23,27 +23,27 @@ export const useCartActions = (): UseCartActionsReturn => {
 
   const isUpdating = isUpserting || isDeleting || isClearing;
 
-  const onIncrease = useCallback((id: number) => {
+  const onIncrease = useCallback((sizeId: number, productId: number) => {
     if (isAuth) {
-      upsertItem({ productId: id, action: 'inc' });
+      upsertItem({ sizeId, productId, action: 'inc' });
     } else {
-      dispatch(changeQuantity({ id, type: 'inc' }));
+      dispatch(changeQuantity({ sizeId, productId, type: 'inc' }));
     }
   }, [isAuth, upsertItem, dispatch])
 
-  const onDecrease = useCallback((id: number) => {
+  const onDecrease = useCallback((sizeId: number, productId: number) => {
     if (isAuth) {
-      upsertItem({ productId: id, action: 'dec' });
+      upsertItem({ sizeId, productId, action: 'dec' });
     } else {
-      dispatch(changeQuantity({ id, type: 'dec' }));
+      dispatch(changeQuantity({ sizeId, productId, type: 'dec' }));
     }
   }, [isAuth, upsertItem, dispatch]);
 
-  const onRemove = useCallback((id: number) => {
+  const onRemove = useCallback((sizeId: number) => {
     if (isAuth) {
-      deleteItem(id);
+      deleteItem(sizeId);
     } else {
-      dispatch(removeFromCart(id));
+      dispatch(removeFromCart(sizeId));
     }
   }, [isAuth, deleteItem, dispatch]);
 

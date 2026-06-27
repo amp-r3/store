@@ -24,8 +24,8 @@ export const checkoutSlice = createSlice({
     reducers: {
         addToCheckout: (state, action: PayloadAction<CartProduct[]>) => {
             state.items = {};
-            action.payload.forEach(({ id, quantity }) => {
-                state.items[id] = { quantity };
+            action.payload.forEach(({ sizeId, productId, quantity }) => {
+                state.items[sizeId] = { productId, quantity };
             });
         },
         clearCheckout: (state) => {

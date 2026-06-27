@@ -1,0 +1,164 @@
+@use '@/styles/index' as *;
+
+.product-sizes {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    margin: $spacing-lg 0;
+    padding: $spacing-md;
+    
+    // Prevent expanding in flex and grid parents
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    
+    // Glassmorphism panel styling
+    background: var(--glass-background-subtle);
+    backdrop-filter: $backdrop-blur;
+    -webkit-backdrop-filter: $backdrop-blur;
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: $radius-md;
+    box-shadow: var(--shadow-xs);
+    transition: all $transition-base $ease-out-expo;
+
+    @media (max-width: 768px) {
+        padding: $spacing-xs;
+        margin: 0;
+        border-radius: $radius-sm;
+        gap: $spacing-xs;
+    }
+
+    &__title {
+        color: var(--text-secondary);
+        font-size: $fs-sm;
+        font-weight: $fw-semibold;
+        margin: 0;
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        max-width: 100%;
+        scrollbar-width: none; // Firefox
+        -ms-overflow-style: none; // IE/Edge
+        &::-webkit-scrollbar {
+            display: none; // Chrome/Safari
+        }
+        gap: $spacing-xs;
+        padding-top: $spacing-xs;
+        margin: 0;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+
+        li {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            scroll-snap-type: x mandatory;
+            -webkit-mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+            mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+            padding-right: $spacing-md;
+        }
+
+        @media (max-width: 480px) {
+            gap: $spacing-xxs;
+        }
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: $touch-target-min;
+        flex-shrink: 0;
+        height: $touch-target-min;
+        padding: 0 $spacing-sm;
+        border: 1px solid var(--border-color-light);
+        border-radius: $radius-sm;
+        background-color: var(--background-component);
+        color: var(--text-primary);
+        font-size: $fs-base;
+        font-weight: $fw-semibold;
+        cursor: pointer;
+        transition: all $transition-base $ease-out-expo;
+
+        @media (prefers-reduced-motion: reduce) {
+            transition: none;
+        }
+
+        &:focus-visible {
+            outline: none;
+            border-color: var(--focus-ring-color);
+            box-shadow: var(--shadow-focus-button);
+        }
+
+        @media (hover: hover) {
+            &:hover:not(:disabled) {
+                border-color: var(--primary-accent);
+                color: var(--primary-accent);
+                transform: $hover-lift;
+            }
+        }
+
+        &--active {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
+            color: var(--text-inverse);
+
+            @media (hover: hover) {
+                &:hover:not(:disabled) {
+                    color: var(--text-inverse);
+                    transform: none;
+                }
+            }
+        }
+
+        &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            text-decoration: line-through;
+            color: var(--text-muted);
+            border-color: var(--border-color-subtle);
+            background-color: transparent;
+        }
+    }
+
+    &__skeleton-item {
+        width: $touch-target-min;
+        height: $touch-target-min;
+    }
+
+    &--compact {
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        gap: $spacing-xs;
+
+        @media (max-width: 1024px) {
+            gap: $spacing-xxs;
+
+            .product-sizes__title {
+                font-size: $fs-xs;
+            }
+
+            .product-sizes__list {
+                gap: 4px;
+            }
+
+            .product-sizes__item {
+                font-size: $fs-sm;
+                min-width: 36px; // Premium compact fit for tablet columns
+                height: 36px;
+                padding: 0 4px;
+            }
+        }
+    }
+}

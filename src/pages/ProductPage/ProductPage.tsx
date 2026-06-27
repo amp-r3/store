@@ -1,11 +1,11 @@
 // React
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // Router
 import { useNavigate, useParams, Navigate, useSearchParams } from 'react-router';
 
 // Components
-import { ErrorView } from '@/components/common';
+import { ErrorView, ExpandableContent } from '@/components/common';
 import { ProductHeader } from './components/ProductHeader/ProductHeader';
 import { ProductGallery } from './components/ProductGallery/ProductGallery';
 import { ProductInfo } from './components/ProductInfo/ProductInfo';
@@ -18,13 +18,15 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 import { getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
-import { useCartActions, useCartDetails, useProduct, useWishlistActions, useWishlistDetails } from '@/hooks';
+import { useCartActions, useCartDetails, useMediaQuery, useProduct, useWishlistActions, useWishlistDetails } from '@/hooks';
 
 
 // Styles
 import style from './productPage.module.scss';
-import { useGetReviewsQuery } from '@/services/productsApi';
+import { useGetReviewsQuery, useGetSizesQuery } from '@/services/productsApi';
 import { ProductReviews } from './components/ProductReviews/ProductReviews';
+import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton';
+import { ProductSizes } from './components/ProductSizes/ProductSizes';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
@@ -33,11 +35,17 @@ export const ProductPage = () => {
     const { onIncrease, onDecrease } = useCartActions()
     const { onWishlist } = useWishlistActions()
     const { wishlistItems } = useWishlistDetails()
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const [selectedSizeId, setSelectedSizeId] = useState<number | undefined>(undefined);
     const isFavorite = wishlistItems.some(item => item?.id === +id)
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const { data: reviews, isLoading: isReviewsLoading, isFetching: isReviewsFetching, isError: isReviewsError } = useGetReviewsQuery(+id)
+    const { data: sizes, isLoading: isSizesLoading } = useGetSizesQuery(+id)
     const { cartItems } = useCartDetails()
+    const hasSizes = sizes && sizes.length > 0;
+
+
 
     const onImageClick = (): void => {
         searchParams[1]({ view: 'true' }, { replace: true })
@@ -56,8 +64,8 @@ export const ProductPage = () => {
     }, []);
 
 
-    const handleCart = (id: number, type: 'inc' | 'dec') => {
-        type === 'inc' ? onIncrease(id) : onDecrease(id)
+    const handleCart = (sizeId: number, type: 'inc' | 'dec') => {
+        type === 'inc' ? onIncrease(sizeId, product.id) : onDecrease(sizeId, product.id)
     }
 
     if (isLoading || !product) return <ProductPageSkeleton />;
@@ -65,11 +73,10 @@ export const ProductPage = () => {
     if (isNotFound) return <Navigate to="/404" replace />;
 
     const { id: productId, title, basePrice, price, description, category, brand, images,
-        rating, reviewsCount, discountPercentage, stock, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
+        rating, reviewsCount, discountPercentage, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
     const hasDiscount = discountPercentage > 0;
-    const inStock = (stock ?? 0) > 0;
-    const itemInCart = cartItems.find(item => item?.id === product.id)
-    const quantity = itemInCart?.quantity
+    const itemInCart = cartItems.find(item => item?.productId === product.id && item?.sizeId === selectedSizeId)
+    const quantity = itemInCart?.quantity || 0
 
 
     return (
@@ -94,10 +101,8 @@ export const ProductPage = () => {
                             category={category}
                             brand={brand}
                             title={title}
-                            stock={stock}
                             rating={rating}
                             reviewsCount={reviewsCount}
-                            description={description}
                         />
                         <ProductPurchaseBox
                             quantity={quantity}
@@ -106,11 +111,35 @@ export const ProductPage = () => {
                             hasDiscount={hasDiscount}
                             originalPrice={basePrice}
                             discountedPrice={price}
-                            inStock={inStock}
-                            stock={stock}
+                            sizes={sizes}
+                            hasSizes={hasSizes}
+                            selectedSizeId={selectedSizeId}
+                            setSelectedSizeId={setSelectedSizeId}
+                            isMobile={isMobile}
+                            isSizesLoading={isSizesLoading}
                         />
                     </div>
+                    {(isSizesLoading || (sizes && sizes.length > 0)) && isMobile ? (
+                        <>
+                            {isSizesLoading ? (
+                                <ProductSizesSkeleton isCompact={!isMobile} />
+                            ) : (
+                                sizes && (
+                                    <ProductSizes
+                                        sizes={sizes}
+                                        activeSizeId={selectedSizeId}
+                                        onSizeSelect={setSelectedSizeId}
+                                        isCompact={!isMobile}
+                                    />
+                                )
+                            )}
+                        </>
+                    ) : ''}
                 </div>
+
+                <ExpandableContent maxHeight={100} className={style['description-wrapper']}>
+                    <p className={style['description']}>{description}</p>
+                </ExpandableContent>
 
                 <ProductSpecs
                     sku={sku}

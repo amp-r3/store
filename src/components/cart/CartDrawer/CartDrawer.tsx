@@ -101,7 +101,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                     ))
                     :
                     cartItems.map((item) => (
-                      <CartItemSkeleton key={`skeleton-${item.id}`} />
+                      <CartItemSkeleton key={`skeleton-${item.sizeId}`} />
                     ))
 
                 ) : isEmpty ? (
@@ -110,8 +110,8 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 ) : (
                   cartItems.map((item, index) => (
                     <CartItem
-                      key={item.id}
-                      product={cartDetails[index]}
+                      key={item.sizeId}
+                      product={cartDetails[index] as any}
                       onIncrease={onIncrease}
                       onDecrease={onDecrease}
                       onRemove={onRemove}

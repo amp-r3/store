@@ -1,5 +1,5 @@
 import { supabase } from "@/supabase";
-import { Product, ProductReview } from "@/types/products";
+import { Product, ProductReview, ProductSize } from "@/types/products";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface Category {
@@ -214,8 +214,34 @@ export const productsApi = createApi({
                     )
 
                     return { data: reviews as ProductReview[] }
-                } catch (error) {
+                } catch (error: any) {
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: error.message }
+                    };
+                }
+            }
+        }),
 
+        getSizes: builder.query<ProductSize[], number>({
+            async queryFn(id) {
+                try {
+                    const { data: sizes, error } = await supabase
+                        .from('product_sizes')
+                        .select('id, value, stock')
+                        .eq('product_id', id)
+                        .order('id', { ascending: true });
+
+                    if (error) {
+                        return {
+                            error: { status: error.code, data: error.message }
+                        };
+                    }
+
+                    return { data: sizes as ProductSize[]}
+                } catch (error: any) {
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: error.message }
+                    };
                 }
             }
         })
@@ -228,4 +254,5 @@ export const {
     useGetCategoriesQuery,
     useGetProductArrayByIdQuery,
     useGetReviewsQuery,
+    useGetSizesQuery,
 } = productsApi;

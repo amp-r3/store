@@ -7,7 +7,6 @@ export interface Product {
     price: number;
     discountPercentage: number;
     rating: number;
-    stock: number;
     tags: string[];
     brand: string;
     sku: string;
@@ -31,9 +30,6 @@ export interface Product {
     };
     thumbnail: string;
     images: string[];
-
-    sizes: string[];
-    colors: ProductColor[];
 }
 
 export interface ProductReview {
@@ -56,9 +52,11 @@ export interface ProductReview {
 
 }
 
-export interface ProductColor {
-    name: string;
-    hex: string;
+
+export interface ProductSize {
+    id: number;
+    value: string;
+    stock: number;
 }
 
 export type LoadingStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
@@ -71,9 +69,11 @@ export interface ProductStateType {
 }
 
 export interface CartItem extends Product {
+    sizeId: number;
     quantity: number;
 }
 
 export interface CartData {
+    productId: number;
     quantity: number;
 }

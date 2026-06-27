@@ -6,6 +6,7 @@ import { ProductCardImage } from './components/ProductCardImage';
 import { ProductCardBody } from './components/ProductCardBody';
 import { ProductCardFooter } from './components/ProductCardFooter';
 import { useWishlistActions, useWishlistDetails, useHaptics } from '@/hooks';
+import { useGetSizesQuery } from '@/services/productsApi';
 
 
 interface ProductCardProps {
@@ -14,7 +15,8 @@ interface ProductCardProps {
 }
 
 export const ProductCard: FC<ProductCardProps> = ({ product, priority = false }) => {
-    const { id, title, price, basePrice, category, thumbnail, rating, reviewsCount, discountPercentage, stock } = product;
+    const { id, title, price, basePrice, category, thumbnail, rating, reviewsCount, discountPercentage } = product;
+    const { data: sizes, isLoading: isSizesLoading } = useGetSizesQuery(+id)
     const { wishlistItems } = useWishlistDetails()
     const isFavorite = wishlistItems.some(item => item?.id === id)
     const { onWishlist } = useWishlistActions()
@@ -37,7 +39,8 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false })
                 priority={priority}
                 handleAddToWishlist={handleAddToWishlist}
                 isFavorite={isFavorite}
-                stock={stock}
+                sizes={sizes}
+                isSizesLoading={isSizesLoading}
             />
 
             <ProductCardBody

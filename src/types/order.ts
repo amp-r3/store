@@ -9,6 +9,7 @@ export type OrderItemProduct = Pick<Product, 'id' | 'title' | 'thumbnail' | 'cat
 export interface EnrichedOrderItem {
   id: string;
   orderId: string;
+  sizeId: number;
   quantity: number;
   priceAtPurchase: number;
   createdAt: string;
@@ -19,6 +20,7 @@ export interface OrderItem {
   id: string;
   orderId: string;
   productId: number;
+  sizeId: number;
   quantity: number;
   priceAtPurchase: number;
   createdAt: string;

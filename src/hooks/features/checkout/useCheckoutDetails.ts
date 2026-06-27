@@ -26,7 +26,7 @@ export const useCheckoutDetails = (): CheckoutDetailsReturn => {
   )?.freeFromPrice ?? null;
 
   const productIds = useMemo(
-    () => checkoutItems.map(item => item.id),
+    () => checkoutItems.map(item => item.productId),
     [checkoutItems]
   );
 
@@ -40,11 +40,12 @@ export const useCheckoutDetails = (): CheckoutDetailsReturn => {
     }, {});
 
     return checkoutItems.map((item) => {
-      const serverProduct = productsMap[item.id];
+      const serverProduct = productsMap[item.productId];
       if (!serverProduct) return null;
 
       return {
         ...serverProduct,
+        sizeId: item.sizeId,
         quantity: item.quantity,
       };
     });

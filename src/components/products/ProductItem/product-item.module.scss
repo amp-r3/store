@@ -94,6 +94,30 @@
     text-overflow: ellipsis;
   }
 
+  &__size {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    background: rgba(var(--primary-accent-rgb), 0.05);
+    border: 1px solid rgba(var(--primary-accent-rgb), 0.15);
+    border-radius: $radius-sm;
+    align-self: flex-start;
+  }
+
+  &__size-label {
+    font-family: $font-primary;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+  }
+
+  &__size-value {
+    font-family: $font-primary;
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+  }
+
   &__pricing {
     display: flex;
     align-items: baseline;

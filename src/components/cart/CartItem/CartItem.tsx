@@ -9,12 +9,13 @@ import { formatPrice } from '@/utils';
 import { useAppSelector } from '@/hooks';
 import { selectIsMaxReached } from '@/store';
 import { Link } from 'react-router';
+import { useGetSizesQuery } from '@/services/productsApi';
 
 interface CartItemProps {
     product: CartItemType;
-    onIncrease: (id: number) => void;
-    onDecrease: (id: number) => void;
-    onRemove: (id: number) => void;
+    onIncrease: (sizeId: number, productId: number) => void;
+    onDecrease: (sizeId: number, productId: number) => void;
+    onRemove: (sizeId: number) => void;
     onClose: () => void;
 }
 
@@ -26,7 +27,10 @@ export const CartItem = memo<CartItemProps>(({
     onClose,
 }) => {
 
-    const { id, title, price, thumbnail, quantity, discountPercentage, stock } = product;
+    const { id, title, price, thumbnail, quantity, discountPercentage, sizeId } = product;
+    const { data: sizes, isLoading } = useGetSizesQuery(id)
+    const selectedSize = sizes?.find((size) => size.id === sizeId)
+    const stock = selectedSize?.stock
 
     const totalPrice = price * quantity;
 
@@ -83,7 +87,7 @@ export const CartItem = memo<CartItemProps>(({
                     <div className={styles['cart-item__quantity-ctrl']}>
                         <button
                             className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
-                            onClick={() => onDecrease(id)}
+                            onClick={() => onDecrease(sizeId, id)}
                             aria-label="Decrease quantity"
                         >
                             {quantity === 1 ? <IoTrashOutline size={16} /> : <IoRemove size={18} />}
@@ -93,7 +97,7 @@ export const CartItem = memo<CartItemProps>(({
 
                         <button
                             className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
-                            onClick={() => onIncrease(id)}
+                            onClick={() => onIncrease(sizeId, id)}
                             aria-label="Increase quantity"
                             disabled={isMaxReached}
                             aria-disabled={isMaxReached}
@@ -101,6 +105,13 @@ export const CartItem = memo<CartItemProps>(({
                             <IoAdd size={18} />
                         </button>
                     </div>
+
+                    {(selectedSize?.value && selectedSize?.value !== 'One Size') && (
+                        <div className={styles['cart-item__size']}>
+                            <span className={styles['cart-item__size-label']}>Size:</span>
+                            <span className={styles['cart-item__size-value']}>{selectedSize.value}</span>
+                        </div>
+                    )}
 
                     {isMaxReached && (
                         <div className={styles['cart-item__stock-hint']} role="status" aria-live="polite">
@@ -111,7 +122,7 @@ export const CartItem = memo<CartItemProps>(({
 
                     <button
                         className={`${styles['cart-item__btn']} ${styles['cart-item__btn--remove']}`}
-                        onClick={() => onRemove(id)}
+                        onClick={() => onRemove(sizeId)}
                         aria-label="Remove item"
                     >
                         <IoTrashOutline size={24} />

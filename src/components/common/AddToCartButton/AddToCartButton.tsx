@@ -54,7 +54,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         type="button"
         className={styles['add-btn']}
         onClick={(e) => handleAction(e, onAddToCart)}
-        disabled={!inStock || isMaxReached || isLoading}
+        disabled={isLoading || (!isActive && (!inStock || isMaxReached))}
         inert={isActive ? true : undefined}
       >
         {isLoading ? (

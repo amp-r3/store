@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { selectCartItemsArray } from '@/store';
-import { CartItem, Product } from '@/types/products';
+import { CartItem, Product, CartData } from '@/types/products';
 import { CartProduct } from '@/store/selectors/cartSelectors';
 import { useAppSelector } from '../../common/redux';
 import { selectIsAuth } from '@/store/selectors/authSelectors';
@@ -40,9 +40,10 @@ export const useCartDetails = (
 
   const unifiedCartItems = useMemo(() => {
     if (isAuth && data) {
-      return (Object.entries(data) as [string, { quantity: number }][]).map(
-        ([id, info]) => ({
-          id: Number(id),
+      return (Object.entries(data) as [string, CartData][]).map(
+        ([sizeId, info]) => ({
+          sizeId: Number(sizeId),
+          productId: info.productId,
           quantity: info.quantity,
         })
       );
@@ -51,7 +52,7 @@ export const useCartDetails = (
   }, [isAuth, data, localCartItems]);
 
   const productIds = useMemo(
-    () => unifiedCartItems.map(item => item.id),
+    () => unifiedCartItems.map(item => item.productId),
     [unifiedCartItems]
   );
 
@@ -65,11 +66,12 @@ export const useCartDetails = (
     }, {});
 
     return unifiedCartItems.map((item) => {
-      const serverProduct = productsMap[item.id];
+      const serverProduct = productsMap[item.productId];
       if (!serverProduct) return null;
 
       return {
         ...serverProduct,
+        sizeId: item.sizeId,
         quantity: item.quantity,
       };
     });

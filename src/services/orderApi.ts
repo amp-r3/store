@@ -41,6 +41,7 @@ interface OrderResponse {
     id: string;
     order_id: string;
     product_id: number;
+    size_id: number;
     quantity: number;
     price_at_purchase: number;
     created_at: string;
@@ -85,6 +86,7 @@ const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
     id: item.id,
     orderId: item.order_id,
     productId: Number(item.product_id),
+    sizeId: Number(item.size_id),
     quantity: item.quantity,
     priceAtPurchase: Number(item.price_at_purchase),
     createdAt: item.created_at,
@@ -115,6 +117,7 @@ const fetchOrders = async (page: number, limit: number) => {
               id,
               order_id,
               product_id,
+              size_id,
               quantity,
               price_at_purchase,
               created_at
