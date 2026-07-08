@@ -1,11 +1,9 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { JSX } from 'react'
+import { Navigate, Outlet, useLocation } from 'react-router'
+import { useAppSelector } from '@/hooks'
 import { selectIsAuth } from '@/store/selectors/authSelectors'
 
-
-export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuth = useSelector(selectIsAuth)
+export const ProtectedRoute = () => {
+  const isAuth = useAppSelector(selectIsAuth)
   const location = useLocation()
 
   if (!isAuth) {

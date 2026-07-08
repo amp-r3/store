@@ -1,4 +1,4 @@
-import { useNavigate, Link } from "react-router"
+import { useNavigate, Link, useLocation } from "react-router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { LoginSchema, loginSchema } from "@/schemas/loginSchema"
@@ -6,16 +6,21 @@ import { useLoginMutation, useSignInWithGoogleMutation, useSignInWithTelegramMut
 import { FormField, Loader, SignInButton } from "@/components/common"
 import { AuthLayout } from "@/components/layout/Layout/AuthLayout/AuthLayout"
 import style from '@/components/layout/Layout/AuthLayout/auth-layout.module.scss'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { LuMail } from "react-icons/lu";
 import { RiLockPasswordLine } from "react-icons/ri"
+import { useAuthUrlError } from "@/hooks"
 
 export const LoginPage = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = (location.state as any)?.from || '/'
   const [isEmail, setIsEmail] = useState(false)
   const [login, { isLoading }] = useLoginMutation()
   const [signInWithGoogle] = useSignInWithGoogleMutation()
   const [signInWithTelegram] = useSignInWithTelegramMutation()
+
+  const { errorMsg, blockedProviders } = useAuthUrlError()
 
   const {
     register,
@@ -27,10 +32,19 @@ export const LoginPage = () => {
     mode: 'onTouched'
   })
 
+  useEffect(() => {
+    if (errorMsg) {
+      setError('root', {
+        type: 'server',
+        message: errorMsg
+      })
+    }
+  }, [errorMsg, setError])
+
   const onSubmit = async (data: LoginSchema) => {
     try {
       await login(data).unwrap()
-      navigate('/', { replace: true })
+      navigate(from, { replace: true })
     } catch (err: any) {
       if (err?.status === 401) {
         setError('email', { message: 'Invalid email or password' })
@@ -41,24 +55,26 @@ export const LoginPage = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithGoogle()
-    } catch (err) {
+      sessionStorage.setItem('oauth_provider', 'Google')
+      await signInWithGoogle().unwrap()
+    } catch (err: any) {
       const errorMessage = err?.data || err?.message || '';
       setError('root', {
         type: 'server',
-        message: errorMessage || 'An error occurred while registering. Please try again later.'
+        message: errorMessage || 'An error occurred while logging in. Please try again later.'
       });
     }
   }
 
   const handleTelegramLogin = async () => {
     try {
-      await signInWithTelegram()
-    } catch (err) {
+      sessionStorage.setItem('oauth_provider', 'Telegram')
+      await signInWithTelegram().unwrap()
+    } catch (err: any) {
       const errorMessage = err?.data || err?.message || '';
       setError('root', {
         type: 'server',
-        message: errorMessage || 'An error occurred while registering. Please try again later.'
+        message: errorMessage || 'An error occurred while logging in. Please try again later.'
       });
     }
   }
@@ -115,8 +131,8 @@ export const LoginPage = () => {
             </> :
             <>
               <SignInButton provider="Email" onClick={() => setIsEmail(true)} />
-              <SignInButton provider="Google" onClick={handleGoogleLogin} />
-              <SignInButton provider="Telegram" onClick={handleTelegramLogin} />
+              <SignInButton provider="Google" onClick={handleGoogleLogin} disabled={blockedProviders.includes('Google')} />
+              <SignInButton provider="Telegram" onClick={handleTelegramLogin} disabled={blockedProviders.includes('Telegram')} />
             </>
         }
         <p className={style['auth__footer-text']}>

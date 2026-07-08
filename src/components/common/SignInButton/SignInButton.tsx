@@ -9,12 +9,14 @@ interface SignInButtonProps {
   provider: Provider;
   onClick(): void;
   className?: string;
+  disabled?: boolean;
 }
 
 export const SignInButton = ({
   provider,
   className,
   onClick,
+  disabled,
 }: SignInButtonProps) => {
   const label = `Continue with ${provider}`;
 
@@ -39,6 +41,7 @@ export const SignInButton = ({
       type="button"
       aria-label={label}
       onClick={onClick}
+      disabled={disabled}
     >
       <span className={style['sign-in__icon']}>
         {icon}
