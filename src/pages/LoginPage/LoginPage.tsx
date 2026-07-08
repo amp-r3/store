@@ -56,6 +56,7 @@ export const LoginPage = () => {
   const handleGoogleLogin = async () => {
     try {
       sessionStorage.setItem('oauth_provider', 'Google')
+      sessionStorage.setItem('auth_redirect_from', from)
       await signInWithGoogle().unwrap()
     } catch (err: any) {
       const errorMessage = err?.data || err?.message || '';
@@ -69,6 +70,7 @@ export const LoginPage = () => {
   const handleTelegramLogin = async () => {
     try {
       sessionStorage.setItem('oauth_provider', 'Telegram')
+      sessionStorage.setItem('auth_redirect_from', from)
       await signInWithTelegram().unwrap()
     } catch (err: any) {
       const errorMessage = err?.data || err?.message || '';

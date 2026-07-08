@@ -7,7 +7,13 @@ export const PublicRoute = () => {
   const location = useLocation()
 
   if (isAuth) {
-    const from = (location.state as any)?.from || '/'
+    const storedFrom = sessionStorage.getItem('auth_redirect_from')
+    const from = storedFrom || (location.state as any)?.from || '/'
+    
+    if (storedFrom) {
+      sessionStorage.removeItem('auth_redirect_from')
+    }
+
     return <Navigate to={from} replace />
   }
 
