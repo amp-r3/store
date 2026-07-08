@@ -58,7 +58,7 @@ export const OrdersPage = () => {
   } = useEnrichedOrderItems(activeOrder?.orderItems ?? []);
 
   const orderCartProduct: CartProduct[] = items.map((item) => (
-    { id: item.product.id, quantity: item.quantity }
+    { quantity: item.quantity, productId: item.product.id, sizeId: item.sizeId }
   ))
 
   // ── States ──────────────────────────────────────────────────────────────────
