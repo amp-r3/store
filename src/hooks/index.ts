@@ -6,6 +6,6 @@ export { useAuthSync, useAuthUrlError } from './features/auth'
 export { useEnrichedOrderItems } from './features/order'
 export {
   useMediaQuery, useNavbarScroll, useHaptics,
-  useImageView, usePagination, useTheme, DOTS
+  useImageView, usePagination, DOTS
 } from './common'
 export { useAppDispatch, useAppSelector } from './common/redux'

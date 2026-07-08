@@ -58,7 +58,7 @@ $_item-transition:
         @media (hover: hover) {
             &:hover {
                 background-color: var(--primary-accent);
-                color: var(--text-inverse);
+                color: var(--text-on-accent, var(--text-inverse));
                 border-color: transparent;
                 transform: scale($scale-up-md);
                 box-shadow: var(--shadow-accent-sm);
@@ -67,7 +67,7 @@ $_item-transition:
 
         &--active {
             background-color: var(--primary-accent);
-            color: var(--text-inverse);
+            color: var(--text-on-accent, var(--text-inverse));
             border-color: transparent;
             text-shadow: var(--shadow-text-accent);
             box-shadow: var(--shadow-accent-sm);

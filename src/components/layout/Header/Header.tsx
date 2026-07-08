@@ -4,7 +4,6 @@ import { FaBox, FaBoxOpen, FaGithub } from 'react-icons/fa';
 import { selectIsAuth, selectUserName } from '@/store/selectors/authSelectors';
 import { useAppSelector } from '@/hooks';
 import style from './header.module.scss';
-import { ThemeToggle } from '@/components/common';
 
 export const Header = () => {
   const isAuth = useAppSelector(selectIsAuth);
@@ -37,9 +36,6 @@ export const Header = () => {
         </span>
 
         <div className={style.actionsGroup}>
-          <ThemeToggle variant="switch" />
-
-          <div className={style.divider} />
 
           {isAuth ?
             <Link to={'/user'} className={style.primaryButton}>

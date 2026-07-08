@@ -61,9 +61,7 @@
         }
     }
 
-    :global(.theme-light) & {
-        mix-blend-mode: multiply;
-    }
+
 }
 
 .card__promo-block {
@@ -89,11 +87,7 @@
     z-index: 2;
 }
 
-:global(.theme-dark) .card__category {
-    background-color: var(--glass-background);
-    border-color: var(--border-color-light);
-    color: var(--text-secondary);
-}
+
 
 .card__discount {
     padding: $spacing-xxs $spacing-sm;

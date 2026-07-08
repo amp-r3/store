@@ -1,10 +1,10 @@
 @use '@/styles/index' as *;
 
 .container {
-  --button-text: #fff;
-  --button-overlay: rgba(255, 255, 255, 0.15);
-  --button-overlay-hover: rgba(255, 255, 255, 0.25);
-  --button-overlay-active: rgba(255, 255, 255, 0.35);
+  --button-text: var(--text-on-accent, #fff);
+  --button-overlay: rgba(var(--text-on-accent-rgb, 255, 255, 255), 0.12);
+  --button-overlay-hover: rgba(var(--text-on-accent-rgb, 255, 255, 255), 0.20);
+  --button-overlay-active: rgba(var(--text-on-accent-rgb, 255, 255, 255), 0.28);
 
   position: relative;
   z-index: 1;

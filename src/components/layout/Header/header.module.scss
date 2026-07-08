@@ -64,17 +64,6 @@
   gap: $spacing-xs;
 }
 
-.divider {
-  width: 1px;
-  height: 24px;
-  background-color: var(--border-color);
-  margin: 0 $spacing-xs;
-
-  @media (max-width: 600px) {
-    display: none;
-  }
-}
-
 .buttonBase {
   display: inline-flex;
   align-items: center;

@@ -12,7 +12,6 @@ import authReducer from "@/store/slices/authSlice"
 import wishlistReducer from '@/store/slices/wishlistSlice';
 import cartReducer from '@/store/slices/cartSlice';
 import checkoutReducer from '@/store/slices/checkoutSlice'
-import themeSlice from '@/store/slices/themeSlice';
 import { productsApi } from '@/services/productsApi';
 import { authApi } from '@/services/authApi';
 import { persistStore } from 'redux-persist';
@@ -31,7 +30,6 @@ export const store = configureStore({
     [orderApi.reducerPath]: orderApi.reducer,
     auth: authReducer,
     cart: cartReducer,
-    theme: themeSlice,
     wishlist: wishlistReducer,
     checkout: checkoutReducer,
   },

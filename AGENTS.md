@@ -126,14 +126,6 @@ direct import in router.ts; exception `pages/index.ts` exports non-lazy
 - `SIGNED_OUT`: reset RTK Query cache (`cartApi`, `wishlistApi`),
   cart/wishlist/auth Redux slices.
 
-## Theming
-
-- Theme class (`theme-dark`/`theme-light`) on `document.documentElement`;
-  components theme-agnostic.
-- Only access via `useTheme()` → `{theme, toggleTheme, setTheme}`.
-- No JS conditional styling by theme — use CSS custom properties. SCSS exception
-  allowed: `:global(.theme-dark) .selector {}`.
-
 ## Performance
 
 - Lazy-load all routes except `CatalogPage`.

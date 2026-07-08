@@ -142,7 +142,7 @@
         min-height: $touch-target-comfortable;
 
         background: var(--primary-accent);
-        color: var(--text-inverse);
+        color: var(--text-on-accent, var(--text-inverse));
 
         font-family: $font-display;
         font-weight: $fw-semibold;

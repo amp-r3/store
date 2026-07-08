@@ -1,13 +1,11 @@
 import {
     RiSearchLine,
     RiShoppingCartLine,
-    RiArrowUpDownLine,
     RiSmartphoneLine,
     RiFlashlightLine,
     RiShieldUserLine,
     RiHeartLine,
     RiHistoryLine,
-    RiPaletteLine,
 } from 'react-icons/ri';
 import { ComponentType } from 'react';
 
@@ -28,7 +26,6 @@ export const FEATURES: Feature[] = [
     { Icon: RiHeartLine, label: 'Cloud-synced Wishlist' },
     { Icon: RiHistoryLine, label: 'Secure Checkout & Order History' },
     { Icon: RiSmartphoneLine, label: 'Responsive & Mobile-First' },
-    { Icon: RiPaletteLine, label: 'Dual Theme (Dark / Light)' },
     { Icon: RiFlashlightLine, label: 'Tactile Haptic Feedback' },
 ];
 

@@ -25,9 +25,7 @@
   }
 }
 
-:global(.theme-light) .content--collapsed::after {
-  background: linear-gradient(to bottom, transparent, var(--glass-background-subtle) 90%);
-}
+
 
 .toggle-btn {
   display: flex;

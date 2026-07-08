@@ -44,7 +44,7 @@
   <img src="https://img.shields.io/badge/🔍_Instant_Search-6d7cff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Real-time Search" />
   <img src="https://img.shields.io/badge/📦_Redux_Cart-764abc?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Redux Cart" />
   <img src="https://img.shields.io/badge/📱_Responsive-5c6dff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Responsive" />
-  <img src="https://img.shields.io/badge/🌙_Dark_&_Light_Theme-3d4fff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Dark and Light Theme" />
+  <img src="https://img.shields.io/badge/🎨_Lavender_&_Graphite_Theme-b8a7f0?style=for-the-badge&color=17171c&logoColor=white" alt="Lavender and Graphite Theme" />
   <img src="https://img.shields.io/badge/⚡_Vite_8_+_LightningCSS-25a4ff?style=for-the-badge&color=1a1a2e&logoColor=white" alt="Vite and LightningCSS" />
 </p>
 
@@ -52,8 +52,8 @@
 
 > **Store** is a modern single-page application (SPA) for e-commerce, built on
 > top of **React 19**, **TypeScript 5.9**, and **Redux Toolkit 2.9**. The app
-> features a unique premium **Glassmorphism** design, full dark and light theme
-> support, URL-synced state, a responsive mobile layout, haptic feedback, and
+> features a unique premium **Glassmorphism** design, custom **Lavender & Graphite** theme,
+> URL-synced state, a responsive mobile layout, haptic feedback, and
 > deep **Supabase** integration for authentication, cart persistence, wishlists,
 > and order history.
 
@@ -81,7 +81,7 @@ src/
 │   └── layout/     # Layout components (Header, Navbar, Footer, page wrappers)
 ├── config/         # Project and integration settings (Supabase client)
 ├── hooks/          # Custom React hooks (business logic extracted from UI components)
-│   ├── common/     # General-purpose hooks (useTheme, useHaptics, usePagination)
+│   ├── common/     # General-purpose hooks (useHaptics, usePagination)
 │   └── features/   # Feature-specific hooks (cart, checkout, order, product, wishlist, auth)
 ├── pages/          # Application pages (CatalogPage, ProductPage, OrdersPage, etc.)
 ├── schemas/        # Zod validation schemas for forms (login, registration, profile editing)
@@ -108,22 +108,15 @@ src/
    structure for O(1) lookups and reduced rendering overhead.
 4. **Selective LocalStorage caching (Redux Persist)**: Only the most critical
    data is persisted: `cart.items`, `wishlistSlice` (for unauthenticated users),
-   `theme.theme`, and `auth` (user and token). RTK Query cache and transient UI
+    and `auth` (user and token). RTK Query cache and transient UI
    state are not persisted.
-5. **CSS Custom Properties-based theming**: Theme switching (`theme-dark` /
-   `theme-light`) is done by toggling a class on the `<html>` element. Component
-   styles rely on a unified CSS variable system, which eliminates unnecessary
-   React tree re-renders when switching themes.
-
 ---
 
 ## 💎 Key Features & Highlights
 
-- 🎨 **Premium Glassmorphism Design**: A carefully curated color palette,
+- 🎨 **Premium Glassmorphism & Lavender-Graphite Design**: A carefully curated Lavender & Graphite color palette,
   backdrop-filter blur, soft shadows, and smooth spring-physics-based
   micro-animations.
-- 🌗 **Smart Theme Switching**: Full dark (deep cosmic purple) and light theme
-  support with instant automatic switching and persistent user preference.
 - ⚡ **Optimistic Updates**: When updating cart quantities or toggling wishlist
   items, the UI responds instantly. Changes are sent to the server in the
   background, and automatically rolled back (`patchResult.undo()`) on failure.
@@ -132,7 +125,7 @@ src/
   (`light()`), or completing a purchase (`success()`).
 - 🚀 **Async & Lazy Loading**: All pages (except the main `CatalogPage`) are
   lazy-loaded via `React.lazy`. Detailed animated skeletons
-  (`react-loading-skeleton`), styled with the active theme's CSS variables, are
+  (`react-loading-skeleton`), styled with the theme's CSS variables, are
   shown during loading.
 - ⚙️ **Strict BEM Methodology**: CSS classes are written strictly following BEM
   (`block__element--modifier`) and imported into JSX exclusively via typed SCSS
@@ -385,8 +378,8 @@ $$ language plpgsql security definer;
 
 - [x] **Architectural foundation**: React 19, TS 5.9, Vite 8, LightningCSS, RTK
       Query.
-- [x] **Style system**: SCSS Modules following BEM, variables, and theme
-      switcher (Light / Dark).
+- [x] **Style system**: SCSS Modules following BEM, variables, and custom
+      Lavender & Graphite theme.
 - [x] **Product catalog (SB DB)**: Search, category filtering, pagination,
       product detail pages, ratings. Loading skeletons.
 - [x] **Supabase Auth integration**: Registration, login, profile editing,

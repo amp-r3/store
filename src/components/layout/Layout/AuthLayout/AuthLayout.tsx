@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import style from './auth-layout.module.scss'
-import { Logo, ThemeToggle } from '@/components/common'
+import { Logo } from '@/components/common'
 import { FaRegUser } from "react-icons/fa";
 
 interface AuthLayoutProps {
@@ -23,7 +23,6 @@ export const AuthLayout = ({
       {isFullPage && (
         <div className={style.card__header}>
           <Logo />
-          <ThemeToggle />
         </div>
       )}
       <div className={style.card__body}>
