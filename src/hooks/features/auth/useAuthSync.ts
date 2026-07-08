@@ -7,15 +7,37 @@ import { logout, setSession } from "@/store/slices/authSlice";
 import { store } from "@/app/store";
 import { clearCart } from "@/store/slices/cartSlice";
 import { clearFavorite } from "@/store/slices/wishlistSlice";
+import { useNavigate } from "react-router";
 
 export const useAuthSync = () => {
   const [syncCart] = useSyncCartMutation();
   const [syncWishlist] = useSyncWishlistMutation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const errorFromSearch = searchParams.get('error');
+
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const errorFromHash = hashParams.get('error');
+
+    if ((errorFromSearch || errorFromHash) && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+      navigate('/login' + window.location.search + window.location.hash, { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+
+        if (event === 'SIGNED_IN') {
+          const storedFrom = sessionStorage.getItem('auth_redirect_from');
+          if (storedFrom) {
+            sessionStorage.removeItem('auth_redirect_from');
+            navigate(storedFrom, { replace: true });
+          }
+        }
 
         if (session?.user) {
           dispatch(setSession({
