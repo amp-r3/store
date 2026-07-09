@@ -154,12 +154,18 @@ export const orderApi = createApi({
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
-      merge: (currentCache, newResponse) => {
-        currentCache.items.push(...newResponse.items);
+      merge: (currentCache, newResponse, { arg }) => {
+        if (arg?.page === 1) {
+          currentCache.items = newResponse.items;
+        } else {
+          const existingIds = new Set(currentCache.items.map((item) => item.id));
+          const uniqueNewItems = newResponse.items.filter((item) => !existingIds.has(item.id));
+          currentCache.items.push(...uniqueNewItems);
+        }
         currentCache.totalCount = newResponse.totalCount;
       },
       forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg;
+        return currentArg?.page !== previousArg?.page || currentArg?.limit !== previousArg?.limit;
       },
       providesTags: ['Order']
     }),
