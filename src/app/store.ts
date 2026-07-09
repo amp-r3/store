@@ -13,6 +13,7 @@ import wishlistReducer from '@/store/slices/wishlistSlice';
 import cartReducer from '@/store/slices/cartSlice';
 import checkoutReducer from '@/store/slices/checkoutSlice'
 import { productsApi } from '@/services/productsApi';
+import { reviewApi } from '@/services/reviewApi';
 import { authApi } from '@/services/authApi';
 import { persistStore } from 'redux-persist';
 import { cartApi } from '@/services/cartApi';
@@ -23,6 +24,7 @@ import { orderApi } from '@/services/orderApi';
 export const store = configureStore({
   reducer: {
     [productsApi.reducerPath]: productsApi.reducer,
+    [reviewApi.reducerPath]: reviewApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
@@ -38,7 +40,14 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(productsApi.middleware).concat(authApi.middleware).concat(cartApi.middleware).concat(wishlistApi.middleware).concat(checkoutApi.middleware).concat(orderApi.middleware)
+    })
+      .concat(productsApi.middleware)
+      .concat(reviewApi.middleware)
+      .concat(authApi.middleware)
+      .concat(cartApi.middleware)
+      .concat(wishlistApi.middleware)
+      .concat(checkoutApi.middleware)
+      .concat(orderApi.middleware)
 });
 
 export const persistor = persistStore(store);

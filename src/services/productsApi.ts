@@ -23,17 +23,7 @@ export interface ProductsResponse {
     total: number;
 }
 
-interface ProductReviewResponse {
-    id: number;
-    product_id: number;
-    rating: number;
-    comment: string | null;
-    date: string;
-    user_id: string | null;
-    helpful_count: number;
-    reviewer_name: string | null;
-    reviewer_email: string | null;
-}
+
 
 export const productsApi = createApi({
     reducerPath: 'productsApi',
@@ -183,44 +173,7 @@ export const productsApi = createApi({
                 }
             }
         }),
-        getReviews: builder.query<ProductReview[], number>({
-            async queryFn(id) {
-                try {
-                    const { data, error } = await supabase
-                        .from('product_reviews')
-                        .select('*')
-                        .eq('product_id', id)
-                        .order('date', { ascending: false });
 
-                    if (error) {
-                        return {
-                            error: { status: error.code, data: error.message }
-                        };
-                    }
-
-                    const reviews: ProductReview[] = (data as ProductReviewResponse[]).map((review) => (
-                        {
-                            id: review.id,
-                            productId: review.product_id,
-                            rating: review.rating,
-                            comment: review.comment,
-                            date: review.date,
-                            userId: review.user_id,
-                            helpfulCount: review.helpful_count,
-                            reviewerName: review.reviewer_name,
-                            reviewerEmail: review.reviewer_email,
-                        }
-                    )
-                    )
-
-                    return { data: reviews as ProductReview[] }
-                } catch (error: any) {
-                    return {
-                        error: { status: 'CUSTOM_ERROR', data: error.message }
-                    };
-                }
-            }
-        }),
 
         getSizes: builder.query<ProductSize[], number>({
             async queryFn(id) {
@@ -253,6 +206,5 @@ export const {
     useGetProductByIdQuery,
     useGetCategoriesQuery,
     useGetProductArrayByIdQuery,
-    useGetReviewsQuery,
     useGetSizesQuery,
 } = productsApi;

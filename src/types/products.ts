@@ -44,6 +44,7 @@ export interface ProductReview {
     reviewerEmail: string | null;
 
     userId: string | null;
+    isLiked?: boolean;
 
     author?: {
         name: string;

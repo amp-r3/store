@@ -23,7 +23,8 @@ import { useCartActions, useCartDetails, useMediaQuery, useProduct, useWishlistA
 
 // Styles
 import style from './productPage.module.scss';
-import { useGetReviewsQuery, useGetSizesQuery } from '@/services/productsApi';
+import { useGetSizesQuery } from '@/services/productsApi';
+import { useGetReviewsQuery } from '@/services/reviewApi';
 import { ProductReviews } from './components/ProductReviews/ProductReviews';
 import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton';
 import { ProductSizes } from './components/ProductSizes/ProductSizes';
