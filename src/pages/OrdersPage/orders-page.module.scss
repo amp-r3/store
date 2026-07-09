@@ -78,3 +78,9 @@
     gap: $spacing-md;
   }
 }
+
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}

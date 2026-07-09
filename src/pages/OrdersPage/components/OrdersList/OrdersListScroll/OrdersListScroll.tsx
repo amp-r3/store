@@ -43,26 +43,30 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
             role="listbox"
             aria-label="Orders"
         >
-            {orders.map((order) => (
-                <OrderCard
-                    orderId={order.id}
-                    orderNumber={order.orderId}
-                    orderDate={formatOrderDate(order.createdAt)}
-                    orderStatus={order.status}
-                    orderTotalAmount={order.totalAmount}
-                    isActive={order.id === selectedOrderId}
-                    onClick={onCardClick}
-                    key={order.orderId}
-                />
-            ))}
+            {isLoading ? (
+                <OrderCardSkeleton count={4} />
+            ) : (
+                orders.map((order) => (
+                    <OrderCard
+                        orderId={order.id}
+                        orderNumber={order.orderId}
+                        orderDate={formatOrderDate(order.createdAt)}
+                        orderStatus={order.status}
+                        orderTotalAmount={order.totalAmount}
+                        isActive={order.id === selectedOrderId}
+                        onClick={onCardClick}
+                        key={order.orderId}
+                    />
+                ))
+            )}
 
-            {isFetching && (
+            {!isLoading && isFetching && (
                 <OrderCardSkeleton count={3} />
             )}
 
             <div ref={triggerRef} className={style['scroll-trigger']} />
 
-            {!hasMore && orders.length > 0 && (
+            {!isLoading && !hasMore && orders.length > 0 && (
                 <p className={style['end-of-list']}>All orders have been loaded.</p>
             )}
         </section>

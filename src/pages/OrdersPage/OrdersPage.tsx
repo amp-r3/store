@@ -5,6 +5,7 @@ import { useEnrichedOrderItems, useMediaQuery } from '@/hooks';
 import { BackButton, Loader } from '@/components/common';
 import { useNavigate } from 'react-router';
 import { OrderEmpty } from './components/OrderEmpty/OrderEmpty';
+import { OrderDetailsSkeleton } from './components/OrderDetails/OrderDetailsSkeleton';
 import { OrdersList } from './components/OrdersList/OrderList';
 import { OrderDetails } from './components/OrderDetails/OrderDetails';
 import { scrollToTop } from '@/utils';
@@ -63,11 +64,7 @@ export const OrdersPage = () => {
 
   // ── States ──────────────────────────────────────────────────────────────────
 
-  if (isLoading && page === 1) {
-    return (
-      <Loader />
-    );
-  }
+
 
   if (!isLoading && orders.length === 0) {
     return (
@@ -130,18 +127,22 @@ export const OrdersPage = () => {
 
         {/* ── Right: order details ─────────────────────────────────────────── */}
 
-        {activeOrder && (
-          <OrderDetails
-            open={isOpen}
-            onOpenChange={onOpenChange}
-            order={activeOrder}
-            isFetching={isFetching}
-            items={items}
-            isItemsFetching={isItemsFetching}
-            isItemsLoading={isItemsLoading}
-            goodsTotal={goodsTotal}
-            formatOrderDate={formatOrderDate}
-            orderCartProduct={orderCartProduct} />
+        {!isMobile && (isLoading || isItemsLoading) ? (
+          <OrderDetailsSkeleton />
+        ) : (
+          activeOrder && (
+            <OrderDetails
+              open={isOpen}
+              onOpenChange={onOpenChange}
+              order={activeOrder}
+              isFetching={isFetching}
+              items={items}
+              isItemsFetching={isItemsFetching}
+              isItemsLoading={isItemsLoading}
+              goodsTotal={goodsTotal}
+              formatOrderDate={formatOrderDate}
+              orderCartProduct={orderCartProduct} />
+          )
         )}
 
       </div>
