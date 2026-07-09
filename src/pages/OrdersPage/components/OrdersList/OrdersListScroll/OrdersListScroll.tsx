@@ -55,7 +55,7 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
                         orderTotalAmount={order.totalAmount}
                         isActive={order.id === selectedOrderId}
                         onClick={onCardClick}
-                        key={order.orderId}
+                        key={order.id}
                     />
                 ))
             )}

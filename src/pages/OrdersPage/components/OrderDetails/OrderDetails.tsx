@@ -16,6 +16,7 @@ export interface OrderDetailsProps {
     goodsTotal: number;
     formatOrderDate(date: string): string;
     onOpenChange(): void;
+    onRateClick(): void;
 }
 
 
@@ -30,7 +31,8 @@ export const OrderDetails: FC<OrderDetailsProps> = ({
     isItemsLoading,
     formatOrderDate,
     orderCartProduct,
-    onOpenChange
+    onOpenChange,
+    onRateClick,
 }) => {
     const isMobile = useMediaQuery('(max-width: 768px)');
     return isMobile ? <OrderDetailsDrawer
@@ -43,7 +45,8 @@ export const OrderDetails: FC<OrderDetailsProps> = ({
         isItemsLoading={isItemsLoading}
         goodsTotal={goodsTotal}
         formatOrderDate={formatOrderDate}
-        orderCartProduct={orderCartProduct} /> :
+        orderCartProduct={orderCartProduct}
+        onRateClick={onRateClick} /> :
         <OrderDetailsCard
             order={order}
             isFetching={isFetching}
@@ -52,6 +55,7 @@ export const OrderDetails: FC<OrderDetailsProps> = ({
             isItemsLoading={isItemsLoading}
             goodsTotal={goodsTotal}
             formatOrderDate={formatOrderDate}
-            orderCartProduct={orderCartProduct} />
+            orderCartProduct={orderCartProduct}
+            onRateClick={onRateClick} />
 
 }

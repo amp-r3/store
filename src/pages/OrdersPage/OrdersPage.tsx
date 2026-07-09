@@ -8,6 +8,7 @@ import { OrderEmpty } from './components/OrderEmpty/OrderEmpty';
 import { OrderDetailsSkeleton } from './components/OrderDetails/OrderDetailsSkeleton';
 import { OrdersList } from './components/OrdersList/OrderList';
 import { OrderDetails } from './components/OrderDetails/OrderDetails';
+import { OrderReviewModal } from './components/OrderDetails/components/OrderReviewModal/OrderReviewModal';
 import { scrollToTop } from '@/utils';
 import { CartProduct } from '@/store/selectors/cartSelectors';
 
@@ -36,6 +37,14 @@ export const OrdersPage = () => {
 
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+
+  const handleRateClick = () => {
+    if (isMobile) {
+      setIsOpen(false);
+    }
+    setIsReviewOpen(true);
+  };
 
   useEffect(() => {
     if (!isMobile && orders?.length > 0 && !selectedOrderId) {
@@ -141,11 +150,23 @@ export const OrdersPage = () => {
               isItemsLoading={isItemsLoading}
               goodsTotal={goodsTotal}
               formatOrderDate={formatOrderDate}
-              orderCartProduct={orderCartProduct} />
+              orderCartProduct={orderCartProduct}
+              onRateClick={handleRateClick} />
           )
         )}
 
       </div>
+
+      {activeOrder && (
+        <OrderReviewModal
+          isOpen={isReviewOpen}
+          onOpenChange={setIsReviewOpen}
+          orderItems={items}
+          isLoading={isItemsLoading}
+          onClose={() => setIsReviewOpen(false)}
+          onAction={() => {}}
+        />
+      )}
     </main>
   );
 };

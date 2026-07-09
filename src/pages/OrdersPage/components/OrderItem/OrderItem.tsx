@@ -7,7 +7,7 @@ import { useGetSizesQuery } from '@/services/productsApi';
 
 interface OrderItemProps {
   item: EnrichedOrderItem;
-  onClose(): void;
+  onClose?(): void;
 }
 
 export const OrderItem: React.FC<OrderItemProps> = ({ item, onClose }) => {

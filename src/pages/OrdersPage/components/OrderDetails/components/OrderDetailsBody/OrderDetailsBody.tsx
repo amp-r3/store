@@ -16,6 +16,7 @@ interface OrderDetailsBodyProps {
     variant: 'card' | 'drawer';
     goodsTotal: number;
     onClose?(): void;
+    onRateClick(): void;
 }
 
 export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
@@ -26,7 +27,8 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
     ITEMS_PREVIEW_COUNT,
     variant,
     goodsTotal,
-    onClose
+    onClose,
+    onRateClick,
 }) => {
     return (
         <div className={`${style['body']} ${style[`body--${variant}`]}`}>
@@ -57,7 +59,7 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
                         <span className={style['body__items-count']}>
                             {orderItems.length} {orderItems.length === 1 ? 'item' : 'items'}
                         </span>
-                        <button type="button" className={style['body__rate-btn']}>
+                        <button onClick={onRateClick} type="button" className={style['body__rate-btn']}>
                             <LuStar />
                             Rate this order
                         </button>
@@ -97,4 +99,4 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
             </div>
         </div>
     );
-};
+}

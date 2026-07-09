@@ -18,7 +18,8 @@ export const OrderDetailsCard: FC<OrderDetailsCardProps> = ({
     isItemsLoading,
     goodsTotal,
     orderCartProduct,
-    formatOrderDate
+    formatOrderDate,
+    onRateClick,
 }) => {
 
     return (
@@ -41,6 +42,7 @@ export const OrderDetailsCard: FC<OrderDetailsCardProps> = ({
                 isFetching={isItemsFetching}
                 ITEMS_PREVIEW_COUNT={ITEMS_PREVIEW_COUNT}
                 goodsTotal={goodsTotal}
+                onRateClick={onRateClick}
             />
 
             {/* ── FOOTER ── */}

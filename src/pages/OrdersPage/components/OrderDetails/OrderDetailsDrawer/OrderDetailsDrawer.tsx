@@ -26,6 +26,7 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
     onOpenChange,
     orderCartProduct,
     formatOrderDate,
+    onRateClick,
 }) => {
 
     return (
@@ -56,6 +57,7 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
                             ITEMS_PREVIEW_COUNT={ITEMS_PREVIEW_COUNT}
                             goodsTotal={goodsTotal}
                             onClose={onOpenChange}
+                            onRateClick={onRateClick}
                         />
 
                         {/* ── MODERN STICKY FOOTER ── */}
