@@ -61,7 +61,6 @@
     color: var(--text-primary);
     line-height: $lh-tight;
     letter-spacing: $letter-spacing-tight;
-    margin: $spacing-xxs 0 0;
 
     @media (max-width: 1024px) {
         font-size: $fs-xl;
@@ -87,7 +86,6 @@
     background: var(--glass-background-subtle);
     backdrop-filter: $backdrop-blur-sm;
     color: var(--rating-color);
-    margin-top: $spacing-xxs;
 }
 
 .rating-star {

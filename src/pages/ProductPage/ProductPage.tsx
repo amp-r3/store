@@ -18,12 +18,14 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 import { getErrorMessage, scrollToTop } from '@/utils';
 
 // Custom Hooks
-import { useCartActions, useCartDetails, useMediaQuery, useProduct, useWishlistActions, useWishlistDetails } from '@/hooks';
+import { useCartActions, useCartDetails, useMediaQuery, useProduct, useWishlistActions, useWishlistDetails, useAppSelector } from '@/hooks';
 
 
 // Styles
 import style from './productPage.module.scss';
-import { useGetSizesQuery } from '@/services/productsApi';
+import { useGetSizesQuery, useCheckPurchaseStatusQuery } from '@/services/productsApi';
+import { selectIsAuth } from '@/store';
+import { PurchaseStatusBadge } from '@/components/products';
 import { useGetReviewsQuery } from '@/services/reviewApi';
 import { ProductReviews } from './components/ProductReviews/ProductReviews';
 import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton';
@@ -45,6 +47,10 @@ export const ProductPage = () => {
     const { data: sizes, isLoading: isSizesLoading } = useGetSizesQuery(+id)
     const { cartItems } = useCartDetails()
     const hasSizes = sizes && sizes.length > 0;
+    const isAuth = useAppSelector(selectIsAuth);
+    const { data: lastPurchaseDate } = useCheckPurchaseStatusQuery(+id, {
+        skip: !isAuth || !id
+    });
 
 
 
@@ -105,6 +111,12 @@ export const ProductPage = () => {
                             rating={rating}
                             reviewsCount={reviewsCount}
                         />
+                        {lastPurchaseDate && (
+                            <PurchaseStatusBadge 
+                                productId={product.id} 
+                                purchaseDate={lastPurchaseDate} 
+                            />
+                        )}
                         <ProductPurchaseBox
                             quantity={quantity}
                             productId={product.id}

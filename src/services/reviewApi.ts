@@ -1,6 +1,7 @@
 import { supabase } from "@/supabase";
 import { ProductReview } from "@/types/products";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import { productsApi } from "./productsApi";
 
 const pendingLikes = new Set<number>();
 
@@ -160,6 +161,7 @@ export const reviewApi = createApi({
 
                 try {
                     await queryFulfilled;
+                    dispatch(productsApi.util.invalidateTags(['PurchaseHistory']));
                 } catch {
                     patchResult.undo();
                 }
@@ -260,6 +262,7 @@ export const reviewApi = createApi({
 
                 try {
                     await queryFulfilled;
+                    dispatch(productsApi.util.invalidateTags(['PurchaseHistory']));
                 } catch {
                     patchResult.undo();
                 }

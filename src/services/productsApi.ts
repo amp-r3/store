@@ -28,7 +28,7 @@ export interface ProductsResponse {
 export const productsApi = createApi({
     reducerPath: 'productsApi',
     baseQuery: fakeBaseQuery(),
-    tagTypes: ['Product', 'Category'],
+    tagTypes: ['Product', 'Category', 'PurchaseHistory'],
     endpoints: (builder) => ({
 
         getProducts: builder.query<ProductsResponse, ProductParams>({
@@ -197,6 +197,19 @@ export const productsApi = createApi({
                     };
                 }
             }
+        }),
+
+        checkPurchaseStatus: builder.query<string | null, number>({
+            async queryFn(productId) {
+                try {
+                    const { data, error } = await supabase.rpc('get_last_purchase_date', { p_product_id: productId });
+                    if (error) throw error;
+                    return { data: data as string | null };
+                } catch (error: any) {
+                    return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+                }
+            },
+            providesTags: ['PurchaseHistory']
         })
     }),
 });
@@ -207,4 +220,5 @@ export const {
     useGetCategoriesQuery,
     useGetProductArrayByIdQuery,
     useGetSizesQuery,
+    useCheckPurchaseStatusQuery,
 } = productsApi;

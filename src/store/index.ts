@@ -2,3 +2,4 @@ export { selectCartItemsArray, selectIsMaxReached, selectCartTotalQuantity } fro
 export { selectCheckoutItemsArray, selectCheckoutItemsMap } from './selectors/checkoutSelectors'
 export { openReviewModal, closeReviewModal } from './slices/reviewModalSlice'
 export { selectIsReviewModalOpen, selectReviewModalProductId } from './selectors/reviewModalSelectors'
+export { selectIsAuth } from './selectors/authSelectors'
