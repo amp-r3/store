@@ -3,7 +3,7 @@ import { useWebHaptics } from "web-haptics/react";
 
 type PresetTriggers = Record<HapticPresetName, () => void>;
 
-interface UseHapticsReturn extends PresetTriggers {
+export interface UseHapticsReturn extends PresetTriggers {
     trigger: (pattern: HapticStep[], options?: HapticOptions) => void;
 }
 

@@ -58,7 +58,9 @@ export const OrderReviewModal: FC<OrderReviewModalProps> = ({
                                 <OrderItemSkeleton count={3} />
                             ) : (
                                 orderItems.map((product) => (
-                                    <OrderItem key={product.id} item={product} onClose={onClose} />
+                                    <div key={product.id} onClick={() => onAction(product)}>
+                                        <OrderItem item={product} onClose={onClose} />
+                                    </div>
                                 ))
                             )}
                         </div>
@@ -97,7 +99,9 @@ export const OrderReviewModal: FC<OrderReviewModalProps> = ({
                             <OrderItemSkeleton count={3} />
                         ) : (
                             orderItems.map((product) => (
-                                <OrderItem key={product.id} item={product} onClose={onClose} />
+                                <div key={product.id} onClick={() => onAction(product)}>
+                                    <OrderItem item={product} onClose={onClose} />
+                                </div>
                             ))
                         )}
                     </div>

@@ -2,6 +2,8 @@ import { supabase } from "@/supabase";
 import { ProductReview } from "@/types/products";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const pendingLikes = new Set<number>();
+
 interface ProductReviewResponse {
     id: number;
     product_id: number;
@@ -12,6 +14,7 @@ interface ProductReviewResponse {
     helpful_count: number;
     reviewer_name: string | null;
     reviewer_email: string | null;
+    is_edited: boolean;
 }
 
 export const reviewApi = createApi({
@@ -22,20 +25,54 @@ export const reviewApi = createApi({
         getReviews: builder.query<ProductReview[], number>({
             async queryFn(id) {
                 try {
-                    const { data, error } = await supabase
+                    const { data: reviewsData, error: reviewsError } = await supabase
                         .from('product_reviews')
-                        .select('*')
+                        .select(`
+                    *,
+                    profiles (
+                        first_name,
+                        last_name,
+                        username,
+                        avatar_url
+                    )
+                `)
                         .eq('product_id', id)
                         .order('date', { ascending: false });
 
-                    if (error) {
-                        return {
-                            error: { status: error.code, data: error.message }
-                        };
+                    if (reviewsError) throw reviewsError;
+                    if (!reviewsData) return { data: [] };
+
+                    const { data: { user } } = await supabase.auth.getUser();
+
+                    let userLikes = new Set<number>();
+
+                    if (user && reviewsData.length > 0) {
+                        const reviewIds = (reviewsData as ProductReviewResponse[]).map(r => r.id);
+
+                        const { data: likesData } = await supabase
+                            .from('review_likes')
+                            .select('review_id')
+                            .eq('user_id', user.id)
+                            .in('review_id', reviewIds);
+
+                        if (likesData) {
+                            likesData.forEach(like => userLikes.add(like.review_id));
+                        }
                     }
 
-                    const reviews: ProductReview[] = (data as ProductReviewResponse[]).map((review) => (
-                        {
+                    const reviews: ProductReview[] = reviewsData.map((review: any) => {
+                        let finalName = review.reviewer_name || 'Anonymous';
+
+                        if (review.profiles) {
+                            const { first_name, last_name, username } = review.profiles;
+                            if (first_name || last_name) {
+                                finalName = `${first_name || ''} ${last_name || ''}`.trim();
+                            } else if (username) {
+                                finalName = username;
+                            }
+                        }
+
+                        return {
                             id: review.id,
                             productId: review.product_id,
                             rating: review.rating,
@@ -43,11 +80,12 @@ export const reviewApi = createApi({
                             date: review.date,
                             userId: review.user_id,
                             helpfulCount: review.helpful_count,
-                            reviewerName: review.reviewer_name,
+                            reviewerName: finalName,
                             reviewerEmail: review.reviewer_email,
-                            isLiked: false, // We can initialize as false or fetch user-specific liked status if DB schema supports it
-                        }
-                    ));
+                            isLiked: userLikes.has(review.id),
+                            isEdited: review.is_edited,
+                        };
+                    });
 
                     return { data: reviews };
                 } catch (error: any) {
@@ -85,7 +123,7 @@ export const reviewApi = createApi({
             async onQueryStarted({ productId, rating, comment, reviewerName, userId }, { dispatch, queryFulfilled, getState }) {
                 const state = getState() as any;
                 const authUser = state.auth?.user;
-                
+
                 const resolvedUserId = userId || authUser?.id || 'temp-user-id';
                 const resolvedName = reviewerName || (authUser ? `${authUser.firstName || ''} ${authUser.lastName || ''}`.trim() : null) || authUser?.username || 'Anonymous';
                 const resolvedEmail = authUser?.email || null;
@@ -99,11 +137,12 @@ export const reviewApi = createApi({
                                 ...draft[existingIndex],
                                 rating,
                                 comment,
-                                date: new Date().toISOString()
+                                date: new Date().toISOString(),
+                                isEdited: true
                             };
                         } else {
                             draft.unshift({
-                                id: Date.now(), // Temporary numeric ID
+                                id: Date.now(),
                                 productId,
                                 rating,
                                 comment,
@@ -112,7 +151,8 @@ export const reviewApi = createApi({
                                 helpfulCount: 0,
                                 reviewerName: resolvedName,
                                 reviewerEmail: resolvedEmail,
-                                isLiked: false
+                                isLiked: false,
+                                isEdited: false
                             });
                         }
                     })
@@ -128,6 +168,10 @@ export const reviewApi = createApi({
 
         toggleReviewLike: builder.mutation<boolean, { reviewId: number; productId: number }>({
             async queryFn({ reviewId }) {
+                if (pendingLikes.has(reviewId)) {
+                    return { error: { status: 'CUSTOM_ERROR', data: 'Request already in progress' } };
+                }
+                pendingLikes.add(reviewId);
                 try {
                     const { data, error } = await supabase.rpc('toggle_review_like', {
                         p_review_id: reviewId
@@ -144,9 +188,13 @@ export const reviewApi = createApi({
                     return {
                         error: { status: 'CUSTOM_ERROR', data: error.message }
                     };
+                } finally {
+                    pendingLikes.delete(reviewId);
                 }
             },
             async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled }) {
+                if (pendingLikes.has(reviewId)) return;
+
                 const patchResult = dispatch(
                     reviewApi.util.updateQueryData('getReviews', productId, (draft) => {
                         const review = draft.find((r) => r.id === reviewId);

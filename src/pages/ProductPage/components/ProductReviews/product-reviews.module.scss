@@ -108,3 +108,14 @@
         transition: none !important;
     }
 }
+
+.reviews__empty {
+    padding: $spacing-xl;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: $fs-md;
+    font-weight: $fw-normal;
+    background: var(--glass-background-subtle);
+    border-radius: $radius-lg;
+    border: 1px dashed var(--border-color-subtle);
+}

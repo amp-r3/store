@@ -1,10 +1,12 @@
 import { FaComments } from 'react-icons/fa';
-import { ReviewCard } from './ReviewCard/ReviewCard';
+
 import { ReviewsStats } from './ReviewsStats/ReviewsStats';
 import { ReviewsControls } from './ReviewsControls/ReviewsControls';
 import style from './product-reviews.module.scss';
 import { ProductReview } from '@/types/products';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
+import { useProductReviews } from '@/hooks/features/product';
+import { ReviewCard } from './ReviewCard/ReviewCard';
 
 interface ProductReviewsProps {
     reviews: ProductReview[];
@@ -12,7 +14,9 @@ interface ProductReviewsProps {
 }
 
 export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
-    if (!reviews || reviews.length === 0) return <ProductReviewsSkeleton />;
+    const { sortedReviews, user } = useProductReviews(reviews);
+
+    if (!reviews) return <ProductReviewsSkeleton />;
 
     return (
         <section id="reviews" className={style['reviews']}>
@@ -32,14 +36,20 @@ export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
 
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>
-                    {/* Decomposed Row: Filters Bar and Sorting Dropdown */}
                     <ReviewsControls />
-
-                    <div className={style['reviews__list']}>
-                        {reviews.map((review, index) => (
-                            <ReviewCard key={index} review={review} />
-                        ))}
-                    </div>
+                        {sortedReviews.length === 0 ? (
+                            <div className={style['reviews__empty']}>No reviews yet. Be the first to write one!</div>
+                        ) : (
+                            <div className={style['reviews__list']} aria-live="polite">
+                                {sortedReviews.map((review) => (
+                                    <ReviewCard
+                                        key={review.id}
+                                        review={review}
+                                        isCurrentUser={user?.id === review.userId}
+                                    />
+                                ))}
+                            </div>
+                        )}
                 </div>
             </div>
         </section>

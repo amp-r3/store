@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import { FaStar, FaRegStar, FaCalendarDay, FaUserCheck, FaThumbsUp } from 'react-icons/fa';
-import { useHaptics } from '@/hooks';
+import { useHaptics, useAppDispatch, useAppSelector } from '@/hooks';
+import { openReviewModal } from '@/store';
+import { useDeleteReviewMutation, useToggleReviewLikeMutation } from '@/services/reviewApi';
 import style from './review-card.module.scss';
 import { ProductReview } from '@/types/products';
-
-
+import { ReviewMenu } from './components/ReviewMenu/ReviewMenu';
 
 interface ReviewCardProps {
     review: ProductReview;
+    isCurrentUser?: boolean;
 }
 
 const getAvatarStyle = (name: string) => {
@@ -31,8 +34,26 @@ const getInitials = (name: string) => {
     return parts[0][0].toUpperCase();
 };
 
-export const ReviewCard = ({ review }: ReviewCardProps) => {
+export const ReviewCard = ({ review, isCurrentUser }: ReviewCardProps) => {
     const { soft } = useHaptics();
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(state => state.auth.user);
+    const [deleteReview] = useDeleteReviewMutation();
+    const [toggleLike, { isLoading: isToggleLikeLoading }] = useToggleReviewLikeMutation();
+    const [likeError, setLikeError] = useState<string | null>(null);
+
+    const handleEdit = () => {
+        dispatch(openReviewModal(review.productId.toString()));
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteReview({ reviewId: review.id, productId: review.productId }).unwrap();
+            soft();
+        } catch (error) {
+            console.error('Failed to delete review:', error);
+        }
+    };
 
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }, (_, i) =>
@@ -44,13 +65,32 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
         );
     };
 
-    const handleHelpfulClick = () => {
+    const handleHelpfulClick = async () => {
+        if (!user) {
+            setLikeError('Only registered users can like');
+            return;
+        }
+
+        if (isToggleLikeLoading) return;
+
         soft();
+        setLikeError(null);
+        try {
+            await toggleLike({ reviewId: review.id, productId: review.productId }).unwrap();
+        } catch (error) {
+            console.error('Failed to toggle helpful:', error);
+        }
     };
 
     return (
-        <article className={style['review-card']}>
-            <div className={style['review-card__header']}>
+        <article className={`${style['review-card']} ${isCurrentUser ? style['review-card--current-user'] : ''}`}>
+            {isCurrentUser && (
+                <div className={style['review-card__menu']}>
+                    <ReviewMenu onEdit={handleEdit} onDelete={handleDelete} />
+                </div>
+            )}
+
+            <div className={`${style['review-card__header']} ${isCurrentUser ? style['review-card__header--with-menu'] : ''}`}>
                 <div className={style['review-card__user']}>
                     <div
                         className={style['review-card__avatar']}
@@ -60,20 +100,29 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
                     </div>
                     <div className={style['review-card__author-info']}>
                         <span className={style['review-card__author-name']}>
-                            {review.reviewerName}
+                            {review.reviewerName || 'Anonymous'}
                         </span>
-                        <span className={style['review-card__badge']}>
-                            <FaUserCheck className={style['review-card__badge-icon']} />
-                            Verified Purchase
-                        </span>
+                        {isCurrentUser ? (
+                            <span className={`${style['review-card__badge']} ${style['review-card__badge--own']}`}>
+                                <FaUserCheck className={style['review-card__badge-icon']} />
+                                Your Review
+                            </span>
+                        ) : (
+                            <span className={style['review-card__badge']}>
+                                <FaUserCheck className={style['review-card__badge-icon']} />
+                                Verified Purchase
+                            </span>
+                        )}
                     </div>
                 </div>
 
-                <div
-                    className={style['review-card__rating']}
-                    aria-label={`Rated ${review.rating} out of 5 stars`}
-                >
-                    {renderStars(review.rating)}
+                <div className={style['review-card__actions']}>
+                    <div
+                        className={style['review-card__rating']}
+                        aria-label={`Rated ${review.rating} out of 5 stars`}
+                    >
+                        {renderStars(review.rating)}
+                    </div>
                 </div>
             </div>
 
@@ -86,22 +135,30 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
                         day: 'numeric',
                     })}
                 </time>
+                {review.isEdited && <span className={style['review-card__edited']}>(edited)</span>}
             </div>
 
             <p className={style['review-card__comment']}>{review.comment}</p>
 
             <div className={style['review-card__footer']}>
-                <button
-                    type="button"
-                    className={style['review-card__helpful-btn']}
-                    onClick={handleHelpfulClick}
-                >
-                    <FaThumbsUp className={style['review-card__helpful-icon']} />
-                    <span>Helpful</span>
-                    <span className={style['review-card__helpful-count']}>
-                        ({review.helpfulCount})
-                    </span>
-                </button>
+                <div className={style['review-card__helpful-wrapper']}>
+                    <button
+                        type="button"
+                        className={`${style['review-card__helpful-btn']} ${review.isLiked ? style['review-card__helpful-btn--liked'] : ''}`}
+                        onClick={handleHelpfulClick}
+                    >
+                        <FaThumbsUp className={style['review-card__helpful-icon']} />
+                        <span>Helpful</span>
+                        <span className={style['review-card__helpful-count']}>
+                            ({review.helpfulCount})
+                        </span>
+                    </button>
+                    {likeError && (
+                        <span className={style['review-card__error-msg']}>
+                            {likeError}
+                        </span>
+                    )}
+                </div>
             </div>
         </article>
     );

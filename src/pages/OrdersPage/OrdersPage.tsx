@@ -11,9 +11,12 @@ import { OrderDetails } from './components/OrderDetails/OrderDetails';
 import { OrderReviewModal } from './components/OrderDetails/components/OrderReviewModal/OrderReviewModal';
 import { scrollToTop } from '@/utils';
 import { CartProduct } from '@/store/selectors/cartSelectors';
+import { useAppDispatch } from '@/hooks';
+import { openReviewModal } from '@/store';
 
 export const OrdersPage = () => {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [page, setPage] = useState(1);
   const limit = isMobile ? 8 : 10;
@@ -164,7 +167,10 @@ export const OrdersPage = () => {
           orderItems={items}
           isLoading={isItemsLoading}
           onClose={() => setIsReviewOpen(false)}
-          onAction={() => {}}
+          onAction={(item) => {
+            setIsReviewOpen(false);
+            dispatch(openReviewModal(item.product.id.toString()));
+          }}
         />
       )}
     </main>

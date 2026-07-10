@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { Navbar } from '../../Navbar/Navbar';
 import { CartDrawer } from '@/components/cart';
 import { MobileBar } from '../../MobileBar/MobileBar';
-import { Loader, TopBarLoader } from '@/components/common';
+import { Loader, TopBarLoader, ReviewModal } from '@/components/common';
 import { Footer } from '../../Footer/Footer';
 import { Header } from '../../Header/Header';
 
@@ -46,6 +46,7 @@ export const MainLayout = () => {
                         isOpen={isOpen}
                         onClose={handleClose}
                     />
+                    <ReviewModal />
                     <div className={style.mobileBar}>
                         <MobileBar />
                     </div>

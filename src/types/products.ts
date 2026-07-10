@@ -44,11 +44,12 @@ export interface ProductReview {
     reviewerEmail: string | null;
 
     userId: string | null;
-    isLiked?: boolean;
+    isLiked: boolean;
+    isEdited: boolean;
 
     author?: {
         name: string;
-        avatarUrl?: string;
+        avatarUrl: string;
     };
 
 }

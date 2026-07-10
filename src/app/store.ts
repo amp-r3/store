@@ -12,6 +12,7 @@ import authReducer from "@/store/slices/authSlice"
 import wishlistReducer from '@/store/slices/wishlistSlice';
 import cartReducer from '@/store/slices/cartSlice';
 import checkoutReducer from '@/store/slices/checkoutSlice'
+import reviewModalReducer from '@/store/slices/reviewModalSlice';
 import { productsApi } from '@/services/productsApi';
 import { reviewApi } from '@/services/reviewApi';
 import { authApi } from '@/services/authApi';
@@ -34,6 +35,7 @@ export const store = configureStore({
     cart: cartReducer,
     wishlist: wishlistReducer,
     checkout: checkoutReducer,
+    reviewModal: reviewModalReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
