@@ -59,10 +59,13 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
                         <span className={style['body__items-count']}>
                             {orderItems.length} {orderItems.length === 1 ? 'item' : 'items'}
                         </span>
-                        <button onClick={onRateClick} type="button" className={style['body__rate-btn']}>
-                            <LuStar />
-                            Rate this order
-                        </button>
+                        {
+                            order.status === 'completed' &&
+                            <button onClick={onRateClick} type="button" className={style['body__rate-btn']}>
+                                <LuStar />
+                                Rate this order
+                            </button>
+                        }
                     </div>
                 </div>
 
