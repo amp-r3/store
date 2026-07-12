@@ -1,4 +1,4 @@
-import style from './errorView.module.scss';
+import style from './error-view.module.scss';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { useNavigate } from 'react-router';
 import { FC } from 'react';

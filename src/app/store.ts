@@ -6,8 +6,10 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
+  persistReducer
 } from 'redux-persist';
 import { persistStore } from 'redux-persist';
+import storage from '@/app/providers/store/storage';
 import { productsApi } from '@/entities/product';
 import { reviewApi } from '@/entities/review';
 import { authApi, authReducer } from '@/entities/session';
@@ -17,6 +19,14 @@ import { checkoutApi } from '@/features/checkout-process';
 import { checkoutReducer } from '@/features/checkout-process';
 import { orderApi } from '@/entities/order';
 import { reviewModalReducer } from '@/features/order-review';
+
+const checkoutPersistConfig = {
+  key: 'checkout',
+  storage,
+  whitelist: ['items']
+};
+
+const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutReducer);
 
 export const store = configureStore({
   reducer: {
@@ -30,7 +40,7 @@ export const store = configureStore({
     auth: authReducer,
     cart: cartReducer,
     wishlist: wishlistReducer,
-    checkout: checkoutReducer,
+    checkout: persistedCheckoutReducer,
     reviewModal: reviewModalReducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -52,3 +62,8 @@ export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+declare global {
+  type GlobalRootState = RootState;
+  type GlobalAppDispatch = AppDispatch;
+}

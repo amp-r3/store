@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import style from '../productCard.module.scss'
+import style from './product-card.module.scss';
 import { ProductSize } from '@/entities/product/model/types';
 
 interface ProductStockBadgeProps {

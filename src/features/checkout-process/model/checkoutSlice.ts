@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { persistReducer } from "redux-persist";
-import storage from "@/app/providers/store/storage";
 import { CartProduct } from "../../../entities/cart/model/cartSelectors";
 import { CartData } from "@/entities/cart";
 
@@ -12,11 +10,6 @@ const initialState: CheckoutState = {
     items: {},
 }
 
-const checkoutPersistConfig = {
-    key: 'checkout',
-    storage,
-    whitelist: ['items']
-}
 
 export const checkoutSlice = createSlice({
     name: 'checkout',
@@ -34,8 +27,6 @@ export const checkoutSlice = createSlice({
     },
 })
 
-const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutSlice.reducer)
-
 export const { addToCheckout, clearCheckout } = checkoutSlice.actions
-export const checkoutReducer = persistedCheckoutReducer;
-export default persistedCheckoutReducer;
+export const checkoutReducer = checkoutSlice.reducer;
+export default checkoutSlice.reducer;

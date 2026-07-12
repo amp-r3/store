@@ -13,6 +13,7 @@ import { Product } from "@/entities/product";
 import { useProductCatalog } from "@/entities/product";
 import { Pagination } from "@/shared/ui";
 import { ProductCard } from "@/entities/product";
+import { WishlistToggleButton } from "@/features/wishlist-toggle";
 
 export const CatalogPage = () => {
   const { products, status, filters } = useProductCatalog();
@@ -57,6 +58,7 @@ export const CatalogPage = () => {
                 key={product.id}
                 product={product as Product}
                 priority={index < 8}
+                actionSlot={<WishlistToggleButton productId={product.id} />}
               />
           )
         })}

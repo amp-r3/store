@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
-import style from '../productCard.module.scss';
+import style from './product-card.module.scss';
 import { ProductSize } from '@/entities/product/model/types';
 import { ProductStockBadge } from './ProductStockBadge';
 
@@ -9,11 +9,10 @@ interface ProductCardImageProps {
     thumbnail: string;
     category: string;
     discountPercentage: number;
-    handleAddToWishlist(): void;
-    isFavorite: boolean;
     sizes: ProductSize[];
     isSizesLoading: boolean;
-    priority?: boolean
+    priority?: boolean;
+    actionSlot?: React.ReactNode;
 }
 
 export const ProductCardImage: FC<ProductCardImageProps> = ({
@@ -21,12 +20,10 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
     thumbnail,
     category,
     discountPercentage,
-    handleAddToWishlist,
-    isFavorite,
     sizes,
     isSizesLoading,
-    priority = false
-
+    priority = false,
+    actionSlot
 }) => {
 
 
@@ -56,13 +53,7 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
                 isLoading={isSizesLoading}
             />
 
-            <button className={style['card__add-to-favorites']} onClick={handleAddToWishlist}>
-                {
-                    isFavorite ?
-                        <FaHeart className={style['card__icon']} /> :
-                        <FaRegHeart className={style['card__icon']} />
-                }
-            </button>
+            {actionSlot}
         </div>
     );
 };

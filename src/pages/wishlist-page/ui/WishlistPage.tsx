@@ -4,6 +4,7 @@ import { BackButton, ErrorView } from "@/shared/ui";
 import { useWishlistDetails } from "@/entities/wishlist";
 import { ProductCard } from "@/entities/product";
 import { WishlistEmpty } from "@/entities/wishlist";
+import { WishlistToggleButton } from "@/features/wishlist-toggle";
 
 export const WishListPage = () => {
   const { wishlistDetails, isEmpty, isError, isLoading, isFetching, wishlistItems } = useWishlistDetails()
@@ -39,6 +40,7 @@ export const WishListPage = () => {
                 key={item.id}
                 product={wishlistDetails[index]}
                 priority={index < 8}
+                actionSlot={<WishlistToggleButton productId={item.id} />}
               />
             ))
           }

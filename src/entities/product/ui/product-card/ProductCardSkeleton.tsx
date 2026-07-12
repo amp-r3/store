@@ -1,5 +1,5 @@
 import Skeleton from 'react-loading-skeleton'
-import style from './productCard.module.scss'
+import style from './product-card.module.scss';
 
 
 export const ProductCardSkeleton = () => {

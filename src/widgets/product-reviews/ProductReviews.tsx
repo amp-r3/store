@@ -1,7 +1,7 @@
 import { FaComments } from 'react-icons/fa';
 
-import { ReviewsStats } from './ReviewsStats/ReviewsStats';
-import { ReviewsControls } from './ReviewsControls/ReviewsControls';
+import { ReviewsStats } from '@/entities/review/ui/reviews-stats/ReviewsStats';
+import { ReviewsControls } from '@/entities/review/ui/reviews-controls/ReviewsControls';
 import style from './product-reviews.module.scss';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 import { ReviewCard } from '@/entities/review';

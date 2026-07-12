@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { FaStar } from 'react-icons/fa';
-import style from '../productCard.module.scss';
+import style from './product-card.module.scss';
 import { formatPrice } from '@/shared/lib';
 
 interface ProductCardFooterProps {

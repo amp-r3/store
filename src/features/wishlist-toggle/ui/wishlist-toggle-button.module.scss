@@ -1,0 +1,31 @@
+@use '@/app/styles/index' as *;
+
+.wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: $spacing-xs;
+    border-radius: $radius-circle;
+    background-color: var(--glass-background-subtle);
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color $transition-base $ease-out-expo, transform $transition-base $ease-out-expo;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: var(--glass-background-strong);
+        transform: scale(1.1);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+
+    &__icon {
+        font-size: 20px;
+        color: var(--error-color);
+    }
+}
