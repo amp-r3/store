@@ -25,11 +25,11 @@ import { useCartActions, useCartDetails, useMediaQuery, useProduct, useWishlistA
 import style from './productPage.module.scss';
 import { useGetSizesQuery, useCheckPurchaseStatusQuery } from '@/services/productsApi';
 import { selectIsAuth } from '@/store';
-import { PurchaseStatusBadge } from '@/components/products';
 import { useGetReviewsQuery } from '@/services/reviewApi';
 import { ProductReviews } from './components/ProductReviews/ProductReviews';
 import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton';
 import { ProductSizes } from './components/ProductSizes/ProductSizes';
+import { ProductPurchaseStatusBadge } from './components/ProductPurchaseStatusBadge/ProductPurchaseStatusBadge';
 
 export const ProductPage = () => {
     const navigate = useNavigate();
@@ -112,7 +112,7 @@ export const ProductPage = () => {
                             reviewsCount={reviewsCount}
                         />
                         {lastPurchaseDate && (
-                            <PurchaseStatusBadge 
+                            <ProductPurchaseStatusBadge
                                 productId={product.id} 
                                 purchaseDate={lastPurchaseDate} 
                             />
