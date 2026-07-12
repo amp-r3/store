@@ -1,0 +1,93 @@
+@use '@/app/styles/index' as *;
+
+.sort-bottom-sheet {
+    background: var(--glass-background-fallback);
+    
+    @supports (backdrop-filter: blur(1px)) {
+        background: var(--glass-background-strong);
+        backdrop-filter: $backdrop-blur;
+    }
+
+    border: 1px solid var(--glass-border);
+    position: fixed;
+    z-index: $z-index-modal;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: $radius-lg $radius-lg 0 0;
+    border-bottom: none;
+    padding-bottom: $safe-area-bottom;
+    box-shadow: 
+        0 -8px 32px rgba(0, 0, 0, 0.5),
+        0 0 0 1px var(--glass-border-subtle);
+    outline: none;
+    display: flex;
+    flex-direction: column;
+
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: $z-index-modal-backdrop;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: $backdrop-blur-sm;
+        transition: opacity $transition-base $ease-in-out-smooth;
+    }
+
+    &__drag-handle {
+        width: 42px;
+        height: 5px;
+        background: var(--border-color-strong);
+        border-radius: $radius-pill;
+        margin: $spacing-xs auto;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 $spacing-md $spacing-sm;
+        border-bottom: 1px solid var(--border-color-subtle);
+        margin-bottom: $spacing-xs;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: $fs-md;
+        font-weight: $fw-bold;
+        color: var(--text-primary);
+        letter-spacing: $letter-spacing-tight;
+        margin: 0;
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: var(--background-component);
+        border: 1px solid var(--border-color-light);
+        border-radius: $radius-circle;
+        color: var(--text-muted);
+        font-size: $fs-md;
+        transition: all $transition-fast $ease-in-out-smooth;
+
+        @media (hover: hover) {
+            &:hover {
+                background: rgba(var(--primary-accent-rgb), 0.08);
+                color: var(--primary-accent);
+                border-color: rgba(var(--primary-accent-rgb), 0.3);
+                transform: rotate(90deg);
+                box-shadow: var(--shadow-accent-sm);
+            }
+        }
+
+        &:active {
+            transform: rotate(90deg) scale($button-pressed-scale);
+        }
+    }
+
+    &__content {
+        padding: 0 $spacing-xs;
+    }
+}

@@ -7,20 +7,16 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-
-import authReducer from "@/store/slices/authSlice"
-import wishlistReducer from '@/store/slices/wishlistSlice';
-import cartReducer from '@/store/slices/cartSlice';
-import checkoutReducer from '@/store/slices/checkoutSlice'
-import reviewModalReducer from '@/store/slices/reviewModalSlice';
-import { productsApi } from '@/services/productsApi';
-import { reviewApi } from '@/services/reviewApi';
-import { authApi } from '@/services/authApi';
 import { persistStore } from 'redux-persist';
-import { cartApi } from '@/services/cartApi';
-import { wishlistApi } from '@/services/wishlistApi';
-import { checkoutApi } from '@/services/checkoutApi';
-import { orderApi } from '@/services/orderApi';
+import { productsApi } from '@/entities/product';
+import { reviewApi } from '@/entities/review';
+import { authApi, authReducer } from '@/entities/session';
+import { cartApi, cartReducer } from '@/entities/cart';
+import { wishlistApi, wishlistReducer } from '@/entities/wishlist';
+import { checkoutApi } from '@/features/checkout-process';
+import { checkoutReducer } from '@/features/checkout-process';
+import { orderApi } from '@/entities/order';
+import { reviewModalReducer } from '@/features/order-review';
 
 export const store = configureStore({
   reducer: {

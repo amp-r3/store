@@ -1,0 +1,40 @@
+@use '@/app/styles/index' as *;
+
+.navbar {
+    position: fixed;
+    bottom: $spacing-md;
+    z-index: calc($z-index-fixed + 1);
+
+    width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
+    inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
+    margin-inline: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-xs;
+
+    background: var(--glass-background-strong);
+    backdrop-filter: $backdrop-blur;
+    border: 1px solid var(--glass-border);
+    border-radius: $radius-pill;
+    box-shadow: var(--shadow-default), var(--shadow-card);
+
+    will-change: transform, opacity;
+    transition: transform 0.4s $ease-in-out-smooth, opacity 0.3s ease;
+
+    opacity: 1;
+
+    &--hidden {
+        transform: translateY(calc(100% + #{$spacing-xl} + #{$spacing-md}));
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: $z-index-fixed;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}

@@ -1,0 +1,30 @@
+@use '@/app/styles/index' as *;
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.75);
+    }
+}
+
+.order-card {
+    position: relative;
+    background: var(--background-component);
+    border: 1px solid var(--border-color-subtle);
+    border-radius: $radius-lg;
+    box-shadow: var(--shadow-default);
+    animation: fade-up $transition-layout $ease-out-expo $transition-micro both;
+
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+
+}

@@ -1,0 +1,165 @@
+@use '@/app/styles/index' as *;
+
+.header {
+    flex-shrink: 0;
+    padding: $spacing-lg;
+    border-bottom: 1px solid var(--glass-border);
+    border-radius: 0;
+
+    @media (min-width: 480px) {
+        border-radius: $radius-xl 0 0 0;
+    }
+
+    background: var(--glass-background-strong);
+    backdrop-filter: $backdrop-blur;
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.titleWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    font-family: $font-display;
+    font-size: $fs-xl;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    margin: 0;
+
+    svg {
+        color: var(--primary-accent);
+    }
+}
+
+.count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-accent);
+    color: var(--text-inverse);
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    height: 1.5rem;
+    min-width: 1.5rem;
+    padding: 0 0.4rem;
+    border-radius: $radius-pill;
+    transition: background-color $transition-fast ease, color $transition-fast ease;
+
+    &.empty {
+        background: var(--background-component);
+        color: var(--text-muted);
+    }
+
+    &.bump {
+        animation: bump 300ms ease-out;
+    }
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+}
+
+.clearBtn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xxs;
+    background: rgba(var(--primary-accent-rgb), 0.08);
+    border: 1px solid rgba(var(--primary-accent-rgb), 0.18);
+    color: var(--text-muted);
+    font-size: $fs-sm;
+    font-family: $font-primary;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-pill;
+    cursor: pointer;
+    transition: all $transition-fast ease;
+
+    &:hover {
+        color: var(--error-color);
+        background: rgba(var(--error-color-rgb), 0.1);
+    }
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: $spacing-xs;
+    border-radius: $radius-circle;
+    cursor: pointer;
+    transition: all $transition-fast ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background: var(--border-color-subtle);
+        color: var(--text-primary);
+        transform: rotate(90deg);
+    }
+}
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+@keyframes bump {
+    0%   { transform: scale(1); }
+    10%  { transform: scale(0.9); }
+    30%  { transform: scale(1.15); }
+    50%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+// =============================================
+//               RESPONSIVE
+// =============================================
+
+@media (max-width: 480px) {
+    .header {
+        padding: $spacing-md;
+    }
+
+    .title {
+        font-size: $fs-lg;
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+}
+
+@media (min-width: 1440px) {
+    .header {
+        padding: $spacing-xl;
+    }
+
+    .title {
+        font-size: $fs-xxl;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .header {
+        padding: $spacing-sm $spacing-md;
+    }
+}

@@ -1,10 +1,10 @@
-import { ErrorView } from "@/components/common";
-import { CheckoutGuard } from "@/components/layout/CheckoutGuard/CheckoutGuard";
-import { MainLayout } from "@/components/layout/Layout/MainLayout/MainLayout";
-import RootLayout from "@/components/layout/Layout/RootLayout/RootLayout";
-import { ProtectedRoute } from "@/components/layout/ProtectedRoute/ProtectedRoute";
-import { PublicRoute } from "@/components/layout/PublicRoute/PublicRoute";
-import { CatalogPage } from "@/pages";
+import { ErrorView } from "@/shared/ui";
+import { CheckoutGuard } from "@/app/providers/CheckoutGuard/CheckoutGuard";
+import { MainLayout } from "@/app/layouts/MainLayout/MainLayout";
+import RootLayout from "@/app/layouts/RootLayout/RootLayout";
+import { ProtectedRoute } from "@/app/providers/ProtectedRoute/ProtectedRoute";
+import { PublicRoute } from "@/app/providers/PublicRoute/PublicRoute";
+import CatalogPage from "@/pages/catalog-page";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
@@ -24,15 +24,15 @@ export const router = createBrowserRouter([
           {
             path: 'product/:id',
             lazy: async () => {
-              const module = await import("@/pages/ProductPage/ProductPage");
-              return { Component: module.ProductPage }
+              const module = await import("@/pages/product-page");
+              return { Component: module.default }
             },
           },
           {
             path: 'wishlist',
             lazy: async () => {
-              const module = await import("@/pages/WishlistPage/WishlistPage")
-              return { Component: module.WishListPage }
+              const module = await import("@/pages/wishlist-page")
+              return { Component: module.default }
             }
           },
           {
@@ -41,15 +41,15 @@ export const router = createBrowserRouter([
               {
                 path: 'user',
                 lazy: async () => {
-                  const module = await import("@/pages/UserPage/UserPage")
-                  return { Component: module.UserPage }
+                  const module = await import("@/pages/user-page")
+                  return { Component: module.default }
                 }
               },
               {
                 path: 'orders',
                 lazy: async () => {
-                  const module = await import("@/pages/OrdersPage/OrdersPage")
-                  return { Component: module.OrdersPage }
+                  const module = await import("@/pages/orders-page")
+                  return { Component: module.default }
                 }
               }
             ]
@@ -57,8 +57,8 @@ export const router = createBrowserRouter([
           {
             path: '*',
             lazy: async () => {
-              const module = await import("@/pages/Page404/Page404");
-              return { Component: module.Page404 }
+              const module = await import("@/pages/not-found-page");
+              return { Component: module.default }
             }
           },
         ]
@@ -71,15 +71,15 @@ export const router = createBrowserRouter([
           {
             path: 'login',
             lazy: async () => {
-              const module = await import("@/pages/LoginPage/LoginPage")
-              return { Component: module.LoginPage }
+              const module = await import("@/pages/login-page")
+              return { Component: module.default }
             }
           },
           {
             path: 'register',
             lazy: async () => {
-              const module = await import("@/pages/RegisterPage/RegisterPage")
-              return { Component: module.RegisterPage }
+              const module = await import("@/pages/register-page")
+              return { Component: module.default }
             }
           }
         ]
@@ -91,15 +91,15 @@ export const router = createBrowserRouter([
           {
             index: true,
             lazy: async () => {
-              const module = await import("@/pages/CheckoutPage/CheckoutPage")
-              return { Component: module.CheckoutPage }
+              const module = await import("@/pages/checkout-page")
+              return { Component: module.default }
             }
           },
           {
             path: 'success',
             lazy: async () => {
-              const module = await import("@/pages/CheckoutSuccessPage/CheckoutSuccessPage")
-              return { Component: module.CheckoutSuccessPage }
+              const module = await import("@/pages/checkout-success-page")
+              return { Component: module.default }
             }
           },
         ],

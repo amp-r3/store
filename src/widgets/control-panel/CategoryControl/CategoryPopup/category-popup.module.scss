@@ -1,0 +1,161 @@
+@use '@/app/styles/index' as *;
+
+.category-popup {
+
+    &__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: $z-index-modal;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: $backdrop-blur-sm;
+
+        &[data-state='open'] {
+            animation: overlayFadeIn 200ms ease-out;
+        }
+
+        &[data-state='closed'] {
+            animation: overlayFadeOut 200ms ease-in forwards;
+        }
+    }
+
+    &__window {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: calc($z-index-modal + 1);
+
+        width: min(550px, 92vw);
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+
+        background: var(--glass-background-fallback);
+
+        @supports (backdrop-filter: blur(1px)) {
+            background: var(--glass-background-strong);
+            backdrop-filter: $backdrop-blur;
+        }
+
+        border: 1px solid var(--glass-border);
+        border-radius: $radius-lg;
+        box-shadow: var(--shadow-default),
+        0 16px 48px rgba(0, 0, 0, 0.45),
+        0 0 0 1px var(--glass-border-subtle);
+
+        &:focus {
+            outline: none;
+        }
+
+        &[data-state='open'] {
+            animation: modalFadeIn 200ms ease-out;
+          }
+        
+          &[data-state='closed'] {
+            animation: modalFadeOut 200ms ease-in;
+          }
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: $spacing-md $spacing-lg;
+        border-bottom: 1px solid var(--border-color-subtle);
+        flex-shrink: 0;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: $fs-md;
+        font-weight: $fw-bold;
+        color: var(--text-primary);
+        letter-spacing: $letter-spacing-tight;
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        background: transparent;
+        border: 1px solid var(--border-color-light);
+        border-radius: $radius-circle;
+        color: var(--text-muted);
+        font-size: $fs-icon-md;
+        cursor: pointer;
+        transition:
+            background $transition-fast $ease-in-out-smooth,
+            color $transition-fast $ease-in-out-smooth,
+            border-color $transition-fast $ease-in-out-smooth,
+            transform $transition-fast $ease-in-out-smooth;
+
+        @media (hover: hover) {
+            &:hover {
+                background: rgba(var(--primary-accent-rgb), 0.08);
+                color: var(--primary-accent);
+                border-color: rgba(var(--primary-accent-rgb), 0.3);
+                transform: rotate(90deg);
+                box-shadow: var(--shadow-accent-sm);
+            }
+        }
+
+        &:active {
+            transform: rotate(90deg) scale($button-pressed-scale);
+        }
+    }
+
+    &__body {
+        padding: $spacing-sm $spacing-xs $spacing-xs;
+        overflow-y: auto;
+
+        &>ul {
+            padding-bottom: 0 !important;
+        }
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+    }
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayFadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}

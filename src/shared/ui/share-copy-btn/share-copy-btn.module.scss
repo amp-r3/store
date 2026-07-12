@@ -1,0 +1,24 @@
+@use '@/app/styles/index' as *;
+
+.share-copy-btn {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-sm;
+  border: 1px solid var(--border-color-light);
+  background: var(--glass-background);
+  backdrop-filter: $backdrop-blur-sm;
+
+  &__icon {
+    color: var(--primary-accent);
+    font-size: $fs-icon-md;
+  }
+}
+
+@media (max-width: 576px) {
+  .share-copy-btn {
+    width: 42px;
+    height: 42px;
+  }
+}

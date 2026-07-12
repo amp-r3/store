@@ -1,0 +1,96 @@
+@use '@/app/styles/index' as *;
+
+.sign-in {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  width: 100%;
+  min-height: $touch-target-comfortable;
+  padding: $spacing-xs $spacing-lg;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $fs-base;
+  font-weight: $fw-semibold;
+  line-height: $lh-button;
+  cursor: pointer;
+  transition: all $transition-fast $ease-in-out-smooth;
+
+  @media (min-width: 768px) {
+    width: auto;
+    min-width: 280px;
+  }
+
+  &:active {
+    transform: scale($button-pressed-scale);
+    opacity: $button-pressed-opacity;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus-button);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none !important;
+    background-color: var(--background-component);
+    color: var(--text-muted);
+    border-color: var(--border-color-subtle);
+    box-shadow: none !important;
+  }
+
+  &--google {
+    background-color: var(--provider-google-bg);
+    color: var(--provider-google-text);
+    border: 1px solid var(--provider-google-border);
+    box-shadow: var(--shadow-xs);
+
+    &:hover {
+      background-color: var(--provider-google-hover);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &--email {
+    background-color: var(--provider-email-bg);
+    color: var(--provider-email-text);
+    border: 1px solid var(--provider-email-border);
+    box-shadow: var(--shadow-xs);
+
+    &:hover {
+      background-color: var(--provider-email-hover);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &--telegram {
+    background-color: var(--provider-telegram-bg);
+    color: var(--provider-telegram-text);
+    border: 1px solid var(--provider-telegram-border);
+    box-shadow: var(--shadow-xs);
+
+    &:hover {
+      background-color: var(--provider-telegram-hover);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+
+    svg {
+      display: block;
+    }
+  }
+
+  &__label {
+    letter-spacing: $letter-spacing-normal;
+  }
+}

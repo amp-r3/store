@@ -1,0 +1,15 @@
+@use '@/app/styles/index' as *;
+
+.layout {
+    padding-top: $header-height;
+    min-height: 100vh;
+    padding-bottom: $header-height;
+}
+
+.mobileBar {
+    display: none;
+
+    @media (max-width: 525px) {
+        display: block;
+    }
+}

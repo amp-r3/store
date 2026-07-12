@@ -1,0 +1,42 @@
+@use '@/app/styles/index' as *;
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  background-color: var(--background-component);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-xl;
+  box-shadow: var(--shadow-sm);
+
+  @media (max-width: 768px) {
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+  }
+
+  @media (max-width: 480px) {
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    gap: $spacing-sm;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-display;
+    font-size: $fs-base;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+    letter-spacing: $letter-spacing-tight;
+  }
+}

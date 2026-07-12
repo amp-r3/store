@@ -1,0 +1,86 @@
+@use '@/app/styles/index' as *;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Keyframes
+// ─────────────────────────────────────────────────────────────────────────────
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY($spacing-md);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.75);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Page shell
+// ─────────────────────────────────────────────────────────────────────────────
+
+.pageWrapper {
+  padding-block: $spacing-xl $spacing-xxl;
+  animation: fade-up $transition-layout $ease-out-expo both;
+
+  @media (max-width: 768px) {
+    padding-block: $spacing-md $spacing-lg;
+  }
+}
+
+.header__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: $spacing-xs;
+}
+
+.pageTitle {
+  margin: 0 0 $spacing-xl;
+  font-family: $font-display;
+  font-size: $fs-xl;
+  font-weight: $fw-black;
+  letter-spacing: $letter-spacing-tight;
+  line-height: $lh-tight;
+
+  @media (max-width: 768px) {
+    margin: 0 0 $spacing-lg;
+    font-size: $fs-lg;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Layout
+// ─────────────────────────────────────────────────────────────────────────────
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: $spacing-lg;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+  }
+}
+
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}

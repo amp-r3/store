@@ -1,0 +1,9 @@
+@use '@/app/styles/index' as *;
+
+.pageWrapper {
+  min-height: calc(100vh - $header-height - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl $container-padding;
+}

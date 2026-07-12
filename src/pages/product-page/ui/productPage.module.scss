@@ -1,0 +1,86 @@
+@use '@/app/styles/index' as *;
+
+.layout {
+    display: grid;
+    grid-template-columns: 11fr 9fr;
+    gap: $spacing-xxl;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: minmax(380px, 1.25fr) 1fr;
+        gap: $spacing-lg;
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: $spacing-lg;
+    }
+}
+
+.details-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: $spacing-lg;
+}
+
+.gallery-column {
+    animation: slide-in-left $transition-layout $ease-out-expo both;
+}
+
+.details-column {
+    animation: slide-in-right $transition-layout $ease-out-expo $transition-micro both;
+
+    @media (max-width: 768px) {
+        animation: none;
+    }
+}
+
+.description-wrapper {
+    margin-top: $spacing-xs;
+    padding-top: $spacing-md;
+    border-top: 1px solid var(--border-color-subtle);
+}
+
+.description {
+    margin: 0;
+    font-size: $fs-base;
+    color: var(--text-secondary);
+    line-height: $lh-relaxed;
+
+    @media (max-width: 480px) {
+        line-height: $lh-normal;
+    }
+}
+
+@keyframes slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .gallery-column,
+    .details-column {
+        animation: none;
+    }
+}

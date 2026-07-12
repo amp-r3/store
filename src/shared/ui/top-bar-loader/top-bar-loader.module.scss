@@ -1,0 +1,76 @@
+@use '@/app/styles/index' as *;
+
+.top-bar-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 9999; // Position above all header elements and drawer overlays
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity $transition-fast $ease-in-out-smooth;
+
+  &--hidden {
+    opacity: 0;
+  }
+
+  &__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--loader-grad-start) 0%,
+      var(--loader-grad-end) 100%
+    );
+    border-radius: 0 $radius-sm $radius-sm 0;
+    box-shadow: 0 1px 12px rgba(var(--primary-accent-rgb), 0.4);
+
+    &--pulsing {
+      animation: top-bar-pulse 1.4s ease-in-out infinite alternate;
+    }
+  }
+
+  &__glow {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 120px;
+    background: transparent;
+    box-shadow: 
+      0 0 15px var(--loader-grad-end), 
+      0 0 8px var(--loader-grad-end),
+      0 0 24px var(--loader-grad-start);
+    opacity: 1;
+    transform: rotate(3deg) translateY(-2px);
+    border-radius: $radius-circle;
+  }
+}
+
+@keyframes top-bar-pulse {
+  0% {
+    opacity: 0.65;
+    filter: brightness(0.9);
+    box-shadow: 0 1px 6px rgba(var(--primary-accent-rgb), 0.3);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1.15);
+    box-shadow: 0 1px 18px rgba(var(--primary-accent-rgb), 0.65);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-bar-loader {
+    transition: none !important;
+
+    &__bar {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
