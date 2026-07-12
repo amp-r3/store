@@ -3,7 +3,7 @@ import { Product } from '@/entities/product/model/types';
 import { CartData, CartItemDetails as CartItem } from '@/entities/cart/model/types';
 import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
-import { calculateCartTotals } from '@/shared/lib/priceHelper';
+import { calculateCartTotals } from '../lib/cartHelper';
 import { selectCartItemsArray, useGetCartQuery } from "@/entities/cart";
 import { CartProduct } from "@/entities/cart/model/cartSelectors";
 import { selectIsAuth } from "@/entities/session";

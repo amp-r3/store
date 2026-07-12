@@ -1,8 +1,11 @@
-import { ReviewsSort } from '@/features/product-reviews-sort';
 import style from './reviews-controls.module.scss';
 import { useHaptics } from "@/shared/lib/hooks";
 
-export const ReviewsControls = () => {
+interface ReviewsControlsProps {
+    sortSlot?: React.ReactNode;
+}
+
+export const ReviewsControls = ({ sortSlot }: ReviewsControlsProps) => {
     const { light } = useHaptics();
 
     const mockFilters = [
@@ -38,7 +41,7 @@ export const ReviewsControls = () => {
                 ))}
             </div>
 
-            <ReviewsSort />
+            {sortSlot}
         </div>
     );
 };

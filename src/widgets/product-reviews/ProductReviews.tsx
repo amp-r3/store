@@ -2,6 +2,7 @@ import { FaComments } from 'react-icons/fa';
 
 import { ReviewsStats } from '@/entities/review/ui/reviews-stats/ReviewsStats';
 import { ReviewsControls } from '@/entities/review/ui/reviews-controls/ReviewsControls';
+import { ReviewsSort } from '@/features/product-reviews-sort';
 import style from './product-reviews.module.scss';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 import { ReviewCard } from '@/entities/review';
@@ -36,7 +37,7 @@ export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
 
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>
-                    <ReviewsControls />
+                    <ReviewsControls sortSlot={<ReviewsSort />} />
                         {sortedReviews.length === 0 ? (
                             <div className={style['reviews__empty']}>No reviews yet. Be the first to write one!</div>
                         ) : (

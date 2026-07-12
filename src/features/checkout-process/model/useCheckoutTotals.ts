@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { DeliveryMethod, PaymentMethod } from '@/features/checkout-process/model/types';
-import { calculateOrderTotals } from '@/shared/lib/priceHelper';
+import { calculateOrderTotals } from '@/entities/cart';
 
 interface UseCheckoutTotalsProps {
     cartTotal: number;

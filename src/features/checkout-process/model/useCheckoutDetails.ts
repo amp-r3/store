@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Product } from '@/entities/product';
 import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
-import { calculateCartTotals } from '@/shared/lib/priceHelper';
+import { calculateCartTotals } from '@/entities/cart';
 import { selectCheckoutItemsArray } from "@/features/checkout-process";
 import { CartItemDetails, CartProduct } from "@/entities/cart";
 import { useGetDeliveryMethodsQuery } from '../api/checkoutApi';

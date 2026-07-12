@@ -1,7 +1,7 @@
 export * from './api/cartApi';
 export * from './model/cartSlice';
 export * from './model/cartSelectors';
-
+export * from './lib/cartHelper';
 export * from './model/types';
 export * from './model/useCartDetails';
 
