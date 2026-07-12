@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+
 import style from './product-card.module.scss';
 import { ProductSize } from '@/entities/product/model/types';
 import { ProductStockBadge } from './ProductStockBadge';

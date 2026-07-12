@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { IoClose } from 'react-icons/io5';
-import { ICategoryProps } from '../../../../features/product-filter/ui/category-control/CategoryControl';
-import { CategoryList } from '../../../../features/product-filter/ui/category-list/CategoryList';
+import { ICategoryProps } from '../CategoryControl';
+import { CategoryList } from '../../category-list/CategoryList';
 import style from './category-popup.module.scss';
 import { Dialog } from 'radix-ui';
 

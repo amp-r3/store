@@ -1,7 +1,7 @@
 import { FC } from 'react';
 // Components
-import { CategoryOverlay } from '../../../../widgets/control-panel/CategoryControl/CategoryOverlay/CategoryOverlay';
-import { CategoryPopup } from '../../../../widgets/control-panel/CategoryControl/CategoryPopup/CategoryPopup';
+import { CategoryOverlay } from './CategoryOverlay/CategoryOverlay';
+import { CategoryPopup } from './CategoryPopup/CategoryPopup';
 // Hooks
 // Types
 import { Categories, Category } from '@/entities/product';

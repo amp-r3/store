@@ -1,4 +1,4 @@
-import { ReviewsSort } from '@/features/product-reviews-sort/ui/ReviewsSort/ReviewsSort';
+import { ReviewsSort } from '@/features/product-reviews-sort';
 import style from './reviews-controls.module.scss';
 import { useHaptics } from "@/shared/lib/hooks";
 

@@ -5,8 +5,6 @@ import style from './product-card.module.scss';
 import { useGetSizesQuery } from '@/entities/product';
 import { useHaptics } from "@/shared/lib/hooks";
 import { Product } from "@/entities/product";
-import { useWishlistActions } from "@/features/wishlist-toggle";
-import { useWishlistDetails } from "@/entities/wishlist";
 
 interface ProductCardProps {
     product: Product;

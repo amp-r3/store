@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Drawer } from 'vaul';
-import { ICategoryProps } from '../../../../features/product-filter/ui/category-control/CategoryControl';
-import { CategoryList } from '../../../../features/product-filter/ui/category-list/CategoryList';
+import { ICategoryProps } from '../CategoryControl';
+import { CategoryList } from '../../category-list/CategoryList';
 import style from './category-overlay.module.scss';
 
 export const CategoryOverlay: FC<ICategoryProps> = ({

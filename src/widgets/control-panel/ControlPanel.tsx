@@ -2,7 +2,7 @@ import { FC, useState, useRef, useEffect, useCallback } from 'react';
 import { IoSwapVertical, IoGrid } from 'react-icons/io5';
 import style from './control-panel.module.scss';
 import { SortingOption } from '@/features/product-sort';
-import { SortControl } from './SortControl/SortControl';
+import { SortControl } from '@/features/product-sort/ui/SortControl';
 import { CategoryControl } from '../../features/product-filter/ui/category-control/CategoryControl';
 import { Categories, Category } from '@/entities/product';
 import { DropdownMenu } from 'radix-ui'
