@@ -31,13 +31,15 @@
     "reselect": "^5.1.1",
     "vaul": "^1.1.2",
     "web-haptics": "^0.0.6",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@types/node": "^25.0.3",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "@types/zxcvbn": "^4.4.5",
     "@vitejs/plugin-react": "^6.0.1",
     "baseline-browser-mapping": "^2.9.11",
     "eslint": "^9.33.0",

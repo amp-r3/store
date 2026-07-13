@@ -1,19 +1,24 @@
-import { InputHTMLAttributes, ReactNode, forwardRef, useId } from "react";
+import { InputHTMLAttributes, ReactNode, forwardRef, useId, useState } from "react";
+import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import style from './form-field.module.scss';
 
 interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  error?: string;
+  error?: string | boolean;
   optional?: boolean;
   icon?: ReactNode;
   placeholder?: string;
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, id, className, optional, icon, placeholder, ...props }, ref) => {
+  ({ label, error, id, className, optional, icon, placeholder, type = 'text', ...props }, ref) => {
     const generatedId = useId();
     const inputId = id || generatedId;
     const errorId = `${inputId}-error`;
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const isPasswordType = type === 'password';
+    const inputType = isPasswordType ? (isPasswordVisible ? 'text' : 'password') : type;
 
     return (
       <div className={style.wrapper}>
@@ -45,6 +50,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
               ].filter(Boolean).join(' ')}
               aria-invalid={!!error}
               aria-describedby={error ? errorId : undefined}
+              type={inputType}
               {...props}
             />
 
@@ -65,12 +71,23 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             )}
           </div>
 
+          {isPasswordType && (
+            <button
+              type="button"
+              className={style.passwordToggle}
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            >
+              {isPasswordVisible ? <RiEyeOffLine /> : <RiEyeLine />}
+            </button>
+          )}
+
           {optional && (
             <span className={style.optionalBadge}>Optional</span>
           )}
         </div>
 
-        {error && (
+        {typeof error === 'string' && error && (
           <span id={errorId} className={style.error} role="alert">
             {error}
           </span>

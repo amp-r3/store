@@ -11,7 +11,7 @@ import { RiLockPasswordLine, RiShieldCheckLine, RiUserAddLine } from "react-icon
 import { FormField, Loader } from "@/shared/ui";
 import { useAuthUrlError } from "@/entities/session";
 import { SignInButton } from "@/features/auth";
-
+import { PasswordRequirements } from "./password-requirements/PasswordRequirements";
 export const RegisterPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -27,11 +27,14 @@ export const RegisterPage = () => {
     register: registerField,
     handleSubmit,
     setError,
-    formState: { errors }
+    watch,
+    formState: { errors, touchedFields, isSubmitted }
   } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     mode: 'onTouched'
   })
+
+  const passwordValue = watch('password') || '';
 
   useEffect(() => {
     if (errorMsg) {
@@ -132,8 +135,13 @@ export const RegisterPage = () => {
                 type='password'
                 icon={<RiLockPasswordLine />}
                 placeholder="At least 6 characters"
-                error={errors.password?.message}
+                error={!!errors.password}
                 {...registerField('password')}
+              />
+
+              <PasswordRequirements 
+                password={passwordValue} 
+                hasError={touchedFields.password || isSubmitted} 
               />
 
               <FormField

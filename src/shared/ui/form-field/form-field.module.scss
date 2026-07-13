@@ -1,16 +1,15 @@
 @use '@/app/styles/index' as *;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Константы плавающего лейбла
+// Floating Label Constants
 // ─────────────────────────────────────────────────────────────────────────────
 
-$float-label-top-floated : 7px;
-$float-label-top-resting : 50%;
 $float-label-size-floated : $fs-xs; // ≈ 0.6875rem
 $float-label-size-resting : $fs-base; // 1rem
-$input-padding-top : 22px;
-$input-padding-bottom : 8px;
+$input-padding-y : $spacing-sm;
+$input-padding-x : $spacing-md;
 $input-min-height : 56px;
+$label-notch-padding : $spacing-xxs;
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -30,16 +29,17 @@ $input-min-height : 56px;
 // ─────────────────────────────────────────────────────────────────────────────
 
 .inputWrapper {
-  position: relative; 
+  --field-bg: var(--background-glass-base);
+
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
   min-height: $input-min-height;
-  background: var(--background-glass-base);
+  background: var(--field-bg);
   border: 1px solid var(--border-color);
   border-radius: $radius-input;
   box-shadow: var(--shadow-xs);
-  overflow: hidden;
   transition:
     border-color $transition-fast $ease-in-out-smooth,
     box-shadow $transition-fast $ease-in-out-smooth,
@@ -50,30 +50,30 @@ $input-min-height : 56px;
   }
 
   &:focus-within:not(.inputWrapperError) {
+    --field-bg: var(--background-component);
     border-color: var(--primary-accent);
     box-shadow: var(--shadow-focus-input);
-    background: var(--background-component);
   }
 }
 
 .inputWrapperError {
-  border-color: var(--error-color);
+  border-color: rgba(var(--status-danger-rgb), 0.5);
 
   &:focus-within {
-    border-color: var(--error-color);
-    box-shadow: 0 0 16px rgba(220, 38, 38, 0.15);
+    border-color: rgba(var(--status-danger-rgb), 0.65);
+    box-shadow: 0 0 0 3px rgba(var(--status-danger-rgb), 0.08);
   }
 }
 
 .inputWrapperDisabled {
+  --field-bg: var(--border-color-subtle);
   opacity: 0.6;
   cursor: not-allowed;
-  background: var(--border-color-subtle);
 }
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Float group 
+// Float group
 // ─────────────────────────────────────────────────────────────────────────────
 
 .floatGroup {
@@ -92,9 +92,9 @@ $input-min-height : 56px;
 .label {
   position: absolute;
   left: $spacing-md;
-  top: $float-label-top-resting;
+  top: 50%;
   transform: translateY(-50%);
-  transform-origin: left top;
+  transform-origin: left center;
 
   font-family: $font-primary;
   font-size: $float-label-size-resting;
@@ -111,49 +111,45 @@ $input-min-height : 56px;
 
   transition:
     top $transition-fast $ease-out-expo,
+    left $transition-fast $ease-out-expo,
     transform $transition-fast $ease-out-expo,
     font-size $transition-fast $ease-out-expo,
     font-weight $transition-fast $ease-in-out-smooth,
     color $transition-fast $ease-in-out-smooth,
-    letter-spacing $transition-fast $ease-in-out-smooth;
+    letter-spacing $transition-fast $ease-in-out-smooth,
+    background-color $transition-fast $ease-in-out-smooth,
+    padding $transition-fast $ease-out-expo;
 }
 
 .labelOptional {
   font-style: italic;
 }
 
-.floatGroup .input:not(:placeholder-shown)~.label {
-  top: $float-label-top-floated;
-  transform: translateY(0);
+.inputWithIcon ~ .label {
+  left: $spacing-xs;
+}
+
+.floatGroup .input:not(:placeholder-shown) ~ .label,
+.floatGroup .input:focus ~ .label {
+  top: -$spacing-xxs;
+  left: $spacing-sm;
+  transform: translateY(-50%);
   font-size: $float-label-size-floated;
   font-weight: $fw-semibold;
   letter-spacing: $letter-spacing-wider;
   color: var(--text-secondary);
-}
-
-.floatGroup .input:focus~.label {
-  top: $float-label-top-floated;
-  transform: translateY(0);
-  font-size: $float-label-size-floated;
-  font-weight: $fw-semibold;
-  letter-spacing: $letter-spacing-wider;
+  background: var(--field-bg);
+  padding: 0 $label-notch-padding;
+  border-radius: $radius-sm;
 }
 
 .inputWrapper:focus-within:not(.inputWrapperError) .label {
   color: var(--primary-accent);
 }
 
-.inputWrapperError .label {
-  color: var(--error-color);
-}
-
-.inputWithIcon~.label {
-  left: $spacing-xs;
-}
-
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Hint 
+// Hint
 // ─────────────────────────────────────────────────────────────────────────────
 
 .hint {
@@ -168,7 +164,7 @@ $input-min-height : 56px;
   opacity: 0;
   transition: opacity $transition-fast $ease-in-out-smooth;
 
-  .floatGroup .input:focus:placeholder-shown~& {
+  .floatGroup .input:focus:placeholder-shown ~ & {
     opacity: 1;
   }
 }
@@ -194,13 +190,48 @@ $input-min-height : 56px;
     color: var(--primary-accent);
   }
 
-  .inputWrapperError & {
-    color: var(--error-color);
-  }
-
   svg {
     width: 100%;
     height: 100%;
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Password toggle
+// ─────────────────────────────────────────────────────────────────────────────
+
+.passwordToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-right: $spacing-sm;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: $radius-sm;
+  transition:
+    color $transition-fast $ease-in-out-smooth,
+    background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--background-glass-strong);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: -2px;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -223,7 +254,7 @@ $input-min-height : 56px;
   line-height: $lh-normal;
   color: var(--text-primary);
 
-  padding: $input-padding-top $spacing-md $input-padding-bottom;
+  padding: $input-padding-y $input-padding-x;
 
   &::placeholder {
     color: transparent;
@@ -256,7 +287,7 @@ $input-min-height : 56px;
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Optional badge 
+// Optional badge
 // ─────────────────────────────────────────────────────────────────────────────
 
 .optionalBadge {
@@ -285,6 +316,9 @@ $input-min-height : 56px;
 // ─────────────────────────────────────────────────────────────────────────────
 
 .error {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xxs;
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--error-color);

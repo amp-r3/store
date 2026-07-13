@@ -71,6 +71,9 @@ importers:
       zod:
         specifier: ^4.3.6
         version: 4.3.6
+      zxcvbn:
+        specifier: ^4.4.2
+        version: 4.4.2
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
@@ -84,6 +87,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.7
         version: 19.2.1(@types/react@19.2.2)
+      '@types/zxcvbn':
+        specifier: ^4.4.5
+        version: 4.4.5
       '@vitejs/plugin-react':
         specifier: ^6.0.1
         version: 6.0.1(vite@8.0.0(@types/node@25.0.3)(jiti@2.7.0)(sass-embedded@1.93.2)(sass@1.93.2))
@@ -1227,6 +1233,9 @@ packages:
 
   '@types/use-sync-external-store@0.0.6':
     resolution: {integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==}
+
+  '@types/zxcvbn@4.4.5':
+    resolution: {integrity: sha512-FZJgC5Bxuqg7Rhsm/bx6gAruHHhDQ55r+s0JhDh8CQ16fD7NsJJ+p8YMMQDhSQoIrSmjpqqYWA96oQVMNkjRyA==}
 
   '@typescript-eslint/eslint-plugin@8.52.0':
     resolution: {integrity: sha512-okqtOgqu2qmZJ5iN4TWlgfF171dZmx2FzdOv2K/ixL2LZWDStL8+JgQerI2sa8eAEfoydG9+0V96m7V+P8yE1Q==}
@@ -2426,6 +2435,9 @@ packages:
   zod@4.3.6:
     resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
+  zxcvbn@4.4.2:
+    resolution: {integrity: sha512-Bq0B+ixT/DMyG8kgX2xWcI5jUvCwqrMxSFam7m0lAf78nf04hv6lNCsyLYdyYTrCVMqNDY/206K7eExYCeSyUQ==}
+
 snapshots:
 
   '@bufbuild/protobuf@2.9.0': {}
@@ -3518,6 +3530,8 @@ snapshots:
 
   '@types/use-sync-external-store@0.0.6': {}
 
+  '@types/zxcvbn@4.4.5': {}
+
   '@typescript-eslint/eslint-plugin@8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.37.0(jiti@2.7.0))(typescript@5.9.3))(eslint@9.37.0(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
@@ -4570,3 +4584,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@4.3.6: {}
+
+  zxcvbn@4.4.2: {}
