@@ -1,4 +1,5 @@
-import { ProductHeader, ProductSpecsSkeleton, ProductSummaryBoxSkeleton } from "./components";
+import { ProductHeader, ProductSpecsSkeleton } from "./components";
+import { ProductSummarySkeleton } from "@/widgets/product-summary";
 import style from './productPage.module.scss'
 import { ProductGallerySkeleton } from '@/widgets/product-gallery'
 export const ProductPageSkeleton = () => {
@@ -13,7 +14,7 @@ export const ProductPageSkeleton = () => {
             <ProductGallerySkeleton />
           </div>
           <div className={style['details-column']}>
-            <ProductSummaryBoxSkeleton />
+            <ProductSummarySkeleton />
           </div>
         </div>
 

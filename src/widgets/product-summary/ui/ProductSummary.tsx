@@ -1,10 +1,10 @@
-import style from './product-summary-box.module.scss';
-import { ProductSizes } from '../ProductSizes/ProductSizes';
-import { ProductSizesSkeleton } from '../ProductSizes/ProductSizesSkeleton';
+import style from './product-summary.module.scss';
+import { ProductSizes } from './components/ProductSizes/ProductSizes';
+import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton';
 import { ProductSize } from "@/entities/product";
 import { ProductInfo, ProductPurchaseStatusBadge, ProductPurchaseBox } from './components';
 
-interface ProductSummaryBoxProps {
+interface ProductSummaryProps {
     productId: number;
     category: string;
     brand: string;
@@ -24,7 +24,7 @@ interface ProductSummaryBoxProps {
     isSizesLoading?: boolean;
 }
 
-export const ProductSummaryBox = ({
+export const ProductSummary = ({
     productId,
     category,
     brand,
@@ -42,11 +42,11 @@ export const ProductSummaryBox = ({
     selectedSizeId,
     hasSizes,
     isSizesLoading = false,
-}: ProductSummaryBoxProps) => {
+}: ProductSummaryProps) => {
 
     return (
-        <div className={style['summary-box']}>
-            <div className={style['summary-box__top']}>
+        <div className={style.summary}>
+            <div className={style.top}>
                 <ProductInfo 
                     category={category}
                     brand={brand}
@@ -63,7 +63,7 @@ export const ProductSummaryBox = ({
                 )}
 
                 {(isSizesLoading || (sizes && sizes.length > 0)) && (
-                    <div className={style['summary-box__sizes-container']}>
+                    <div className={style.sizesContainer}>
                         {isSizesLoading ? (
                             <ProductSizesSkeleton />
                         ) : (
@@ -79,7 +79,7 @@ export const ProductSummaryBox = ({
                 )}
             </div>
 
-            <div className={style['summary-box__bottom']}>
+            <div className={style.bottom}>
                 <ProductPurchaseBox 
                     productId={productId}
                     quantity={quantity}

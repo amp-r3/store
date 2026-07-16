@@ -1,4 +1,5 @@
-import { ProductHeader, ProductSummaryBox, ProductSpecs, ProductImageModal } from "./components";
+import { ProductHeader, ProductSpecs, ProductImageModal } from "./components";
+import { ProductSummary } from "@/widgets/product-summary";
 // React
 import { useEffect, useState } from 'react';
 
@@ -102,9 +103,9 @@ export const ProductPage = () => {
                     </div>
 
                     <div className={style['details-column']}>
-                        <ProductSummaryBox
-                            productId={product.id}
-                            category={category}
+                        <ProductSummary
+                            productId={productId}
+                            category={product.category}
                             brand={brand}
                             title={title}
                             rating={rating}

@@ -1,6 +1,6 @@
 @use '@/app/styles/index' as *;
 
-.summary-box {
+.summary {
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
@@ -27,16 +27,16 @@
     }
 }
 
-.summary-box__top {
+.top {
     display: flex;
     flex-direction: column;
 }
 
-.summary-box__sizes-container {
+.sizesContainer {
     margin-top: $spacing-xs;
 }
 
-.summary-box__bottom {
+.bottom {
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
