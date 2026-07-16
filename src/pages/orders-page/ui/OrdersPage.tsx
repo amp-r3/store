@@ -1,5 +1,5 @@
 import { OrderEmpty } from "./components";
-import { OrderReviewModal } from "@/features/order-review";
+import { ReviewTargetPicker } from "@/features/order-review";
 import { useState, useEffect } from 'react';
 import { useGetOrdersPaginationQuery, useGetOrdersScrollQuery } from '@/entities/order';
 import style from './orders-page.module.scss';
@@ -12,6 +12,7 @@ import { scrollToTop } from "@/shared/lib";
 import { useEnrichedOrderItems } from "@/entities/order";
 import { useAppDispatch } from "@/shared/model";
 import { openReviewModal } from "@/features/order-review";
+import { EnrichedOrderItem } from "@/entities/order";
 
 export const OrdersPage = () => {
   const dispatch = useAppDispatch()
@@ -159,13 +160,13 @@ export const OrdersPage = () => {
       </div>
 
       {activeOrder && (
-        <OrderReviewModal
+        <ReviewTargetPicker
           isOpen={isReviewOpen}
           onOpenChange={setIsReviewOpen}
           orderItems={items}
           isLoading={isItemsLoading}
           onClose={() => setIsReviewOpen(false)}
-          onAction={(item: any) => {
+          onAction={(item: EnrichedOrderItem) => {
             setIsReviewOpen(false);
             dispatch(openReviewModal(item.product.id.toString()));
           }}

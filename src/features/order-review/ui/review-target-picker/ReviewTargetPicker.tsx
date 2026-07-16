@@ -4,12 +4,12 @@ import { FC } from "react";
 import { IoClose } from "react-icons/io5";
 import { LuStar } from 'react-icons/lu';
 import { EnrichedOrderItem } from "@/entities/order";
-import style from './order-review-modal.module.scss'
+import style from './review-target-picker.module.scss'
 import { useMediaQuery } from "@/shared/lib/hooks";
 import { OrderItem } from "@/entities/order";
 import { OrderItemSkeleton } from "@/entities/order";
 
-interface OrderReviewModalProps {
+interface ReviewTargetPickerProps {
     orderItems: EnrichedOrderItem[]
     onOpenChange(open: boolean): void;
     onAction(item: EnrichedOrderItem): void;
@@ -18,7 +18,7 @@ interface OrderReviewModalProps {
     isOpen: boolean;
 }
 
-export const OrderReviewModal: FC<OrderReviewModalProps> = ({
+export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
     orderItems,
     isOpen,
     onOpenChange,
