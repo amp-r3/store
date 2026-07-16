@@ -1,127 +1,91 @@
-@use '@/app/styles/index'as *;
-
-// =============================================
-//               BREAKPOINTS
-// $bp-xl   : > 1024px  — 4 columns (desktop)
-// $bp-lg   : 768–1024px — 2×2 grid (tablet landscape)
-// $bp-md   : 600–768px  — About full-width + 3 cols below
-// $bp-sm   : < 600px    — 2 columns (compact tablet / large phone)
-// $bp-xs   : < 400px    — 1 column (small phone)
-// =============================================
-
-// =============================================
-//               FOOTER
-// =============================================
+@use '@/app/styles/index' as *;
 
 .footer {
     position: relative;
-    background: var(--background-glass-base);
-    border-top: 1px solid var(--border-color);
+    background: var(--glass-background-strong);
+    border: 1px solid var(--border-color-light);
+    border-radius: $radius-xl;
+    backdrop-filter: blur(24px) saturate(120%);
+    -webkit-backdrop-filter: blur(24px) saturate(120%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--shadow-sm);
     overflow: hidden;
+    max-width: $container-width;
+    margin: $spacing-xl auto;
+    width: calc(100% - 2 * #{$spacing-xl});
 
-    // Decorative top glow line
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60%;
-        height: 1px;
-        background: linear-gradient(90deg,
-                transparent,
-                var(--primary-accent-light),
-                var(--primary-accent),
-                var(--primary-accent-light),
-                transparent);
-        opacity: 0.6;
+    @media (max-width: 1024px) {
+        margin: $spacing-lg auto;
+        width: calc(100% - 2 * #{$spacing-lg});
     }
 
-    // Ambient background glow
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: -80px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 500px;
-        height: 200px;
-        background: radial-gradient(ellipse, rgba(var(--primary-accent-rgb), 0.07) 0%, transparent 70%);
-        pointer-events: none;
+    @media (max-width: 768px) {
+        border-radius: $radius-lg;
+    }
+
+    @media (max-width: 600px) {
+        margin: $spacing-md auto;
+        width: calc(100% - 2 * #{$spacing-md});
     }
 }
 
 .footer__container {
     position: relative;
     z-index: $z-index-base + 1;
-    max-width: $container-width;
-    margin: 0 auto;
-    // Увеличенный горизонтальный padding на средних экранах
-    padding: $spacing-xxl $spacing-xl $spacing-xl;
+    width: 100%;
+    padding: $spacing-xl $spacing-xxl;
+
+    @media (max-width: 1024px) {
+        padding: $spacing-xl;
+    }
 
     @media (max-width: 768px) {
-        padding: $spacing-xl $spacing-lg $spacing-lg;
+        padding: $spacing-lg;
     }
 
     @media (max-width: 400px) {
-        padding: $spacing-lg $spacing-md $spacing-md;
+        padding: $spacing-md;
     }
 }
 
-// =============================================
-//               GRID LAYOUT
-// =============================================
-
 .footer__content {
     display: grid;
-    padding-bottom: $spacing-xxl;
-    border-bottom: 1px solid var(--border-color-light);
-
-    // Desktop: 4 колонки, About немного шире
-    grid-template-columns: 1.6fr 1.2fr 1fr 1fr;
+    padding-bottom: $spacing-xl;
+    border-bottom: 1px solid var(--border-color-subtle);
+    grid-template-columns: 2fr 1fr 1fr 1.2fr;
     gap: $spacing-xxl;
 
-    // Tablet landscape (768–1024px): 2×2, About занимает обе колонки верхней строки
     @media (max-width: 1024px) {
         grid-template-columns: 1fr 1fr;
         gap: $spacing-xl;
 
         .footer__about {
-            grid-column: 1 / -1; // About на всю ширину
+            grid-column: 1 / -1;
         }
     }
 
-    // Large phone / compact tablet (600–768px): тот же 2×2, чуть меньше gap
     @media (max-width: 768px) {
         gap: $spacing-lg;
     }
 
-    // Small phone (< 600px): 1 колонка
     @media (max-width: 600px) {
         grid-template-columns: 1fr;
         gap: $spacing-lg;
 
         .footer__about {
-            grid-column: auto; // сбрасываем span
+            grid-column: auto;
         }
     }
 }
-
-// =============================================
-//               ABOUT SECTION
-// =============================================
 
 .footer__about {
     display: flex;
     flex-direction: column;
     gap: $spacing-xxs;
 
-    // На широком экране ограничиваем description
     .footer__description {
         max-width: 380px;
     }
 
-    // Когда About на всю ширину — description может быть шире
     @media (max-width: 1024px) and (min-width: 601px) {
         flex-direction: row;
         flex-wrap: wrap;
@@ -141,20 +105,14 @@
     }
 }
 
-// =============================================
-//               TYPOGRAPHY
-// =============================================
-
 .footer__title {
     font-family: $font-display;
-    font-size: $fs-md;
-    font-weight: $fw-bold;
-    letter-spacing: $letter-spacing-tight;
-    margin: 0 0 $spacing-md;
-    background: linear-gradient(135deg, var(--gradient-logo-start), var(--gradient-logo-mid-2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    letter-spacing: $letter-spacing-wider;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    margin: 0 0 $spacing-lg;
 }
 
 .footer__titleConnect {
@@ -169,10 +127,6 @@
     line-height: $lh-relaxed;
     margin: 0;
 }
-
-// =============================================
-//               BADGES
-// =============================================
 
 .footer__badges {
     display: flex;
@@ -195,31 +149,25 @@
 }
 
 .footer__badge {
-    background: rgba(var(--primary-accent-rgb), 0.08);
-    border: 1px solid rgba(var(--primary-accent-rgb), 0.18);
-    color: var(--primary-accent-light);
+    background: var(--glass-background-subtle);
+    border: 1px solid var(--border-color-subtle);
+    color: var(--text-secondary);
 
     &::before {
         content: '';
         width: 6px;
         height: 6px;
         border-radius: $radius-circle;
-        background: var(--primary-accent-light);
-        box-shadow: 0 0 6px var(--primary-accent-light);
-        animation: pulse $animation-pulse-duration ease-in-out infinite;
+        background: var(--text-secondary);
         flex-shrink: 0;
     }
 }
 
 .footer__badgeMit {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color-subtle);
     color: var(--text-muted);
 }
-
-// =============================================
-//               LISTS (Features & Tech Stack)
-// =============================================
 
 .footer__links {
     display: flex;
@@ -238,34 +186,30 @@
 .footer__item {
     display: flex;
     align-items: center;
-    gap: $spacing-xs;
-    width: 100%; // важно для margin-left: auto на .footer__version
+    gap: $spacing-sm;
+    width: 100%;
     font-family: $font-primary;
     font-size: $fs-sm;
     color: var(--text-secondary);
     line-height: $lh-normal;
-    transition: color $transition-fast $ease-in-out-smooth;
+    transition: color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
 
-    // Dot-маркер для Tech Stack (без иконки)
     &:not(:has(.footer__itemIcon))::before {
         content: '';
         width: 3px;
         height: 3px;
         border-radius: $radius-circle;
-        background: var(--primary-accent);
+        background: var(--text-muted);
         flex-shrink: 0;
-        opacity: 0.7;
-        transition:
-            opacity $transition-fast $ease-in-out-smooth,
-            transform $transition-fast $ease-in-out-smooth;
+        transition: background $transition-fast $ease-in-out-smooth;
     }
 
     &:hover {
         color: var(--text-primary);
+        transform: translateX(4px);
 
-        &::before {
-            opacity: 1;
-            transform: scale(1.5);
+        &:not(:has(.footer__itemIcon))::before {
+            background: var(--text-primary);
         }
     }
 }
@@ -280,19 +224,15 @@
     margin-left: auto;
     padding: 1px $spacing-xs;
     border-radius: $radius-pill;
-    background: rgba(var(--primary-accen-rgbt), 0.08);
-    border: 1px solid rgba(var(--primary-accent-rgb), 0.15);
+    background: var(--glass-background-subtle);
+    border: 1px solid var(--border-color-subtle);
     font-size: 0.7rem;
     font-weight: $fw-semibold;
-    color: var(--primary-accent-light);
+    color: var(--text-secondary);
     letter-spacing: $letter-spacing-wide;
     line-height: 1.4;
     flex-shrink: 0;
 }
-
-// =============================================
-//               PROJECT LINKS
-// =============================================
 
 .footer__projectLinks {
     display: flex;
@@ -302,40 +242,35 @@
 }
 
 .footer__projectLink {
-    display: flex; 
+    display: flex;
     align-items: center;
     gap: $spacing-xs;
     padding: $spacing-xs $spacing-sm;
     border-radius: $radius-sm;
-    background: rgba(var(--primary-accent-rgb), 0.06);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color-subtle);
     font-family: $font-primary;
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     color: var(--text-secondary);
     text-decoration: none;
-    transition:
-        background $transition-fast $ease-in-out-smooth,
-        border-color $transition-fast $ease-in-out-smooth,
-        color $transition-fast $ease-in-out-smooth,
-        transform $transition-fast $ease-spring;
+    transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-spring;
 
     svg {
         font-size: $fs-icon-sm;
         flex-shrink: 0;
-        color: var(--primary-accent-light);
-        opacity: 0.8;
-        transition: opacity $transition-fast $ease-in-out-smooth;
+        color: var(--text-secondary);
+        transition: color $transition-fast $ease-in-out-smooth;
     }
 
     &:hover {
-        background: rgba(var(--primary-accent-rgb), 0.13);
-        border-color: rgba(var(--primary-accent-rgb), 0.3);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--border-color-light);
         color: var(--text-primary);
-        transform: $hover-lift;
+        transform: translateY(-2px);
 
         svg {
-            opacity: 1;
+            color: var(--text-primary);
         }
     }
 
@@ -348,16 +283,11 @@
         outline-offset: $focus-ring-offset;
     }
 
-    // На мобильном — touch-friendly высота
     @media (max-width: 600px) {
         min-height: $touch-target-min;
         padding: $spacing-sm $spacing-md;
     }
 }
-
-// =============================================
-//               SOCIAL ICONS
-// =============================================
 
 .footer__socials {
     display: flex;
@@ -377,31 +307,25 @@
     width: 40px;
     height: 40px;
     border-radius: $radius-md;
-    background: rgba(var(--primary-accent-rgb), 0.06);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color-subtle);
     color: var(--text-muted);
     font-size: $fs-icon-md;
     text-decoration: none;
     flex-shrink: 0;
-    transition:
-        background $transition-fast $ease-in-out-smooth,
-        border-color $transition-fast $ease-in-out-smooth,
-        color $transition-fast $ease-in-out-smooth,
-        transform $transition-fast $ease-spring,
-        box-shadow $transition-fast $ease-in-out-smooth;
+    transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-spring, box-shadow $transition-fast $ease-in-out-smooth;
 
-    // Touch-friendly на мобильном
     @media (max-width: 600px) {
         width: $touch-target-min;
         height: $touch-target-min;
     }
 
     &:hover {
-        background: rgba(var(--primary-accent-rgb), 0.15);
-        border-color: rgba(var(--primary-accent-rgb), 0.35);
-        color: var(--primary-accent-light);
-        transform: $hover-lift scale($scale-up-sm);
-        box-shadow: var(--shadow-accent-sm);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--border-color-light);
+        color: var(--text-primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
     }
 
     &:active {
@@ -413,10 +337,6 @@
         outline-offset: $focus-ring-offset;
     }
 }
-
-// =============================================
-//               BOTTOM BAR
-// =============================================
 
 .footer__bottom {
     display: flex;
@@ -443,7 +363,7 @@
     letter-spacing: $letter-spacing-wide;
 
     span {
-        color: var(--primary-accent-light);
+        color: var(--text-secondary);
         font-weight: $fw-semibold;
     }
 }
@@ -458,67 +378,23 @@
     flex-shrink: 0;
 
     svg {
-        color: var(--error-color);
+        color: var(--text-muted);
         font-size: $fs-icon-sm;
-        animation: heartbeat $animation-pulse-duration ease-in-out infinite;
+        transition: color $transition-fast $ease-in-out-smooth;
+    }
+
+    &:hover svg {
+        color: var(--text-secondary);
     }
 }
-
-// =============================================
-//               ANIMATIONS
-// =============================================
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.5;
-        transform: scale(0.8);
-    }
-}
-
-@keyframes heartbeat {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    14% {
-        transform: scale(1.2);
-    }
-
-    28% {
-        transform: scale(1);
-    }
-
-    42% {
-        transform: scale(1.15);
-    }
-
-    70% {
-        transform: scale(1);
-    }
-}
-
-// =============================================
-//       REDUCED MOTION ACCESSIBILITY
-// =============================================
 
 @media (prefers-reduced-motion: reduce) {
-
-    .footer__badge::before,
-    .footer__madeWith svg {
-        animation-play-state: $animation-play-state-reduced;
-    }
-
     .footer__icon,
-    .footer__projectLink {
+    .footer__projectLink,
+    .footer__item {
         transition: none;
+        &:hover {
+            transform: none;
+        }
     }
 }
