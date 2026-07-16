@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { FaUserPlus, FaArrowRightToBracket, FaUser } from 'react-icons/fa6';
-import { FaBoxOpen, FaGithub } from 'react-icons/fa';
+import { FaGithub } from 'react-icons/fa';
 import { selectIsAuth, selectUserName } from '@/entities/session';
 import style from './header.module.scss';
 import { useAppSelector } from "@/shared/model";
@@ -13,22 +13,15 @@ export const Header = () => {
     <header className={style.topbar}>
       <div className={`${style.container} container`}>
         <div className={style.navGroup}>
-          {
-            isAuth ?
-              <Link to={'/orders'} className={style.primaryButton}>
-                <FaBoxOpen className={style.icon} />
-                <span>my orders</span>
-              </Link> :
-              <a
-                href="https://github.com/amp-r3/store"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={style.ghostButton}
-              >
-                <FaGithub className={style.icon} />
-                <span className={style.optionalText}>source code</span>
-              </a>
-          }
+          <a
+            href="https://github.com/amp-r3/store"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={style.ghostButton}
+          >
+            <FaGithub className={style.icon} />
+            <span className={style.optionalText}>source code</span>
+          </a>
         </div>
 
         <span className={style.text}>

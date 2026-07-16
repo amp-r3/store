@@ -1,0 +1,207 @@
+@use '@/app/styles/index' as *;
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  background: var(--glass-background-strong);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  height: fit-content;
+  position: sticky;
+  top: calc($header-height + $spacing-xxl);
+  backdrop-filter: blur(24px) saturate(120%);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--shadow-sm);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color-subtle);
+  padding-bottom: $spacing-xl;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: $radius-circle;
+  background: rgba(var(--primary-accent-rgb), 0.08);
+  border: 1px solid var(--border-color-light);
+  color: var(--primary-accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $fs-xl;
+  font-weight: $fw-semibold;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+}
+
+.name {
+  font-family: $font-display;
+  font-size: $fs-md;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  letter-spacing: $letter-spacing-wide;
+}
+
+.email {
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+  font-family: $font-primary;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  min-width: 0;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: $fw-normal;
+  font-size: $fs-sm;
+  border: 1px solid transparent;
+  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+    border-color: var(--border-color-subtle);
+    transform: translateX(4px);
+  }
+
+  &.active {
+    background: rgba(var(--primary-accent-rgb), 0.12);
+    border-color: var(--border-color-light);
+    color: var(--text-primary);
+    font-weight: $fw-semibold;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    
+    .icon {
+      color: var(--primary-accent-light);
+    }
+  }
+}
+
+.icon {
+  font-size: $fs-icon-md;
+  transition: color $transition-fast $ease-in-out-smooth;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: $fw-normal;
+  font-size: $fs-sm;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
+
+  .icon {
+    color: var(--error-color);
+    opacity: 0.8;
+    transition: opacity $transition-fast $ease-in-out-smooth;
+  }
+
+  &:hover {
+    color: var(--error-color);
+    background: rgba(239, 68, 68, 0.06);
+    border-color: rgba(239, 68, 68, 0.15);
+    transform: translateX(4px);
+
+    .icon {
+      opacity: 1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    position: relative;
+    top: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    gap: 0;
+  }
+
+  .userInfo {
+    display: none;
+  }
+
+  .nav {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: $spacing-xs;
+    gap: $spacing-sm;
+    scrollbar-width: none;
+    min-width: 0;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    mask-image: linear-gradient(to right, transparent 0, black $spacing-md, black calc(100% - #{$spacing-md}), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black $spacing-md, black calc(100% - #{$spacing-md}), transparent 100%);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .navLink, .logoutButton {
+    white-space: nowrap;
+    flex-shrink: 0;
+    background: var(--glass-background-subtle);
+    border-radius: $radius-pill;
+    border: 1px solid var(--border-color-subtle);
+    
+    &:hover {
+        transform: translateY(-2px);
+    }
+  }
+
+  .logoutButton {
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink, .logoutButton {
+    transition: none;
+    &:hover {
+      transform: none;
+    }
+  }
+}

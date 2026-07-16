@@ -3,94 +3,100 @@
 .profileView {
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
+  gap: $spacing-xl;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.infoList,
+.providersSection {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .infoList {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-  background: var(--background-glass-base);
-  border: 1px solid var(--glass-border-subtle);
-  border-radius: $radius-md;
-  padding: $spacing-md;
-  box-shadow: var(--shadow-sm);
+  gap: 0;
 }
 
 .infoRow {
   display: flex;
   flex-direction: column;
-  padding-bottom: $spacing-sm;
+  padding-bottom: $spacing-md;
+  margin-bottom: $spacing-md;
   border-bottom: 1px solid var(--border-color-subtle);
+  min-width: 0;
 
   &:last-child {
     padding-bottom: 0;
+    margin-bottom: 0;
     border-bottom: none;
   }
 }
 
 .label {
-  font-size: $fs-sm;
+  font-family: $font-display;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wider;
   color: var(--text-muted);
   margin-bottom: $spacing-xxs;
   font-weight: $fw-semibold;
 }
 
 .value {
+  font-family: $font-primary;
   font-size: $fs-base;
   color: var(--text-primary);
+  font-weight: $fw-normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
-// -----------------------------------------------
-// # LINKED PROVIDERS
-// -----------------------------------------------
-
 .providersSection {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-  background: var(--background-glass-base);
-  border: 1px solid var(--glass-border-subtle);
-  border-radius: $radius-md;
-  padding: $spacing-md;
-  box-shadow: var(--shadow-sm);
+  gap: $spacing-md;
 }
 
 .providersLabel {
-  font-size: $fs-sm;
+  font-family: $font-display;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wider;
   font-weight: $fw-semibold;
   color: var(--text-muted);
-  padding-left: $spacing-xxs;
 }
 
 .providersList {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-xs;
+  gap: $spacing-sm;
+  min-width: 0;
 }
 
 .providerBadge {
   display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
-  padding: $spacing-xs $spacing-sm;
+  padding: $spacing-xs $spacing-md;
   border-radius: $radius-pill;
-  border: 1px solid;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color-subtle);
   font-family: $font-primary;
   font-size: $fs-sm;
   font-weight: $fw-semibold;
-  line-height: $lh-ui;
-  transition: background-color $transition-fast $ease-in-out-smooth,
-    box-shadow $transition-fast $ease-in-out-smooth;
-
-  background-color: var(--glass-background);
   color: var(--text-secondary);
-  border-color: var(--border-color-light);
+  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
 
   &:hover {
-    background-color: var(--glass-background-strong);
-    border-color: var(--border-color);
-    box-shadow: var(--shadow-xs);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-color-light);
+    color: var(--text-primary);
+    transform: translateY(-2px);
   }
 }
 
@@ -98,93 +104,116 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  font-size: $fs-icon-sm;
 }
 
 .providerName {
   white-space: nowrap;
 }
 
-// -----------------------------------------------
-// # ACTION BUTTONS
-// -----------------------------------------------
-
 .actionButtons {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-md;
+  margin-top: $spacing-xs;
+  min-width: 0;
 }
 
 %btn-base {
-  padding: $spacing-md;
+  padding: $spacing-xs $spacing-xl;
   border: none;
-  border-radius: $radius-input;
+  border-radius: $radius-md;
   font-family: $font-primary;
-  font-size: $fs-base;
+  font-size: $fs-sm;
   font-weight: $fw-semibold;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 48px;
-  transition: all $transition-fast $ease-in-out-smooth;
+  text-align: center;
+  min-height: 44px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  white-space: normal;
+  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth, box-shadow $transition-fast $ease-in-out-smooth;
 
   @media (max-width: 480px) {
-    font-size: $fs-sm;
-    padding: $spacing-sm $spacing-md;
+    min-height: 48px;
+    font-size: $fs-base;
+    padding: $spacing-xs $spacing-md;
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.5;
     cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
   }
 }
 
 .editButton {
   @extend %btn-base;
-  background-color: var(--primary-accent);
+  background: var(--primary-accent);
   color: var(--text-inverse);
-  box-shadow: var(--shadow-accent-sm);
 
   &:hover:not(:disabled) {
-    background-color: var(--primary-accent-dark);
-    box-shadow: var(--shadow-accent-hover);
-    transform: translateY(-1px);
+    background: var(--primary-accent-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-accent-sm);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale($scale-down-sm);
   }
 }
 
 .dangerRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: $spacing-sm;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .logoutButton {
   @extend %btn-base;
-  background-color: transparent;
+  background: transparent;
   color: var(--error-color);
-  border: 1px solid rgba(220, 38, 38, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 
   &:hover:not(:disabled) {
-    background-color: rgba(220, 38, 38, 0.05);
-    border-color: var(--error-color);
+    background: rgba(239, 68, 68, 0.06);
+    border-color: rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale($scale-down-sm);
   }
 }
 
 .deleteButton {
   @extend %btn-base;
-  background-color: rgba(220, 38, 38, 0.08);
+  background: rgba(239, 68, 68, 0.05);
   color: var(--error-color);
-  border: 1px solid rgba(220, 38, 38, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.15);
 
   &:hover:not(:disabled) {
-    background-color: rgba(220, 38, 38, 0.15);
-    border-color: var(--error-color);
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale($scale-down-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .providerBadge, 
+  %btn-base {
+    transition: none;
+    
+    &:hover, 
+    &:active {
+      transform: none;
+    }
   }
 }

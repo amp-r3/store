@@ -112,7 +112,7 @@ export const OrdersPage = () => {
   return (
     <main className={`${style.pageWrapper} container`}>
       <div className={style.header__wrapper}>
-        <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Orders' }]} />
+        <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Profile', path: '/user' }, { label: 'Orders' }]} />
         <h1 className={style.pageTitle}>My Orders</h1>
       </div>
 
