@@ -9,8 +9,7 @@ import {
   HiExclamationCircle
 } from "react-icons/hi";
 import { CartProduct, CartItemDetails } from '@/entities/cart';
-import { StepType } from '@/pages/checkout-page/ui/CheckoutPage';
-import { DeliveryMethod, PaymentMethod } from '@/features/checkout-process/model/types';
+import { StepType, DeliveryMethod, PaymentMethod } from '@/features/checkout-process/model/types';
 import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema';
 import style from './checkout-summary.module.scss';
 import { formatPrice } from "@/shared/lib";

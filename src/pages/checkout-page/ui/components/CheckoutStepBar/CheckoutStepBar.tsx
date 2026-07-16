@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { StepType } from '../../CheckoutPage';
+import { StepType } from '@/features/checkout-process';
 import {
   HiOutlineUser, HiUser,
   HiOutlineMapPin, HiMapPin,

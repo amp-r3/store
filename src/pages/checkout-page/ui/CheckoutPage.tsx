@@ -21,11 +21,7 @@ import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
 import { useCheckoutDetails } from "@/features/checkout-process";
 import { selectCartItemsArray } from "@/entities/cart";
-
-const STEPS_ORDER = ['contacts', 'delivery', 'payment'] as const;
-
-export type StepType = typeof STEPS_ORDER[number];
-
+import { STEPS_ORDER, StepType } from "@/features/checkout-process";
 
 export const CheckoutPage = () => {
   const navigate = useNavigate()
