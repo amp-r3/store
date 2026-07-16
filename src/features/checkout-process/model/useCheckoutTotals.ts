@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { DeliveryMethod, PaymentMethod } from '@/features/checkout-process/model/types';
+import { DeliveryMethod, PaymentMethod } from '@/entities/order';
 import { calculateOrderTotals } from '@/entities/cart';
 
 interface UseCheckoutTotalsProps {

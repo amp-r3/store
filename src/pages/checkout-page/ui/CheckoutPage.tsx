@@ -12,9 +12,9 @@ import { CheckoutFormValues, checkoutMasterSchema } from "@/features/checkout-pr
 import { CheckoutPayments } from "../../../features/checkout-process/ui/CheckoutPayments/CheckoutPayments"
 import { CheckoutSummary } from "../../../features/checkout-process/ui/CheckoutSummary/CheckoutSummary"
 import { Header } from "@/widgets/header"
-import { useGetDeliveryMethodsQuery, useGetPaymentMethodsQuery } from "@/features/checkout-process"
+import { useGetDeliveryMethodsQuery, useGetPaymentMethodsQuery } from "@/entities/order"
 import { useCreateOrderMutation } from "@/entities/order"
-import { DeliveryOptions, PaymentOptions } from "@/features/checkout-process/model/types"
+import { DeliveryOptions, PaymentOptions } from "@/entities/order";
 import { useClearCartMutation } from "@/entities/cart"
 import { addToCheckout } from "@/features/checkout-process"
 import { useAppDispatch } from "@/shared/model";

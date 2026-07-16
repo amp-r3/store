@@ -1,4 +1,4 @@
-import { PaymentMethod, PaymentOptions } from '@/features/checkout-process/model/types'
+import { PaymentMethod, PaymentOptions } from '@/entities/order';
 import style from './payment-option.module.scss'
 import { FC } from 'react';
 

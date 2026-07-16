@@ -15,7 +15,6 @@ import { reviewApi } from '@/entities/review';
 import { authApi, authReducer } from '@/entities/session';
 import { cartApi, cartReducer } from '@/entities/cart';
 import { wishlistApi, wishlistReducer } from '@/entities/wishlist';
-import { checkoutApi } from '@/features/checkout-process';
 import { checkoutReducer } from '@/features/checkout-process';
 import { orderApi } from '@/entities/order';
 import { reviewModalReducer } from '@/features/order-review';
@@ -35,7 +34,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
-    [checkoutApi.reducerPath]: checkoutApi.reducer,
+
     [orderApi.reducerPath]: orderApi.reducer,
     auth: authReducer,
     cart: cartReducer,
@@ -54,7 +53,6 @@ export const store = configureStore({
       .concat(authApi.middleware)
       .concat(cartApi.middleware)
       .concat(wishlistApi.middleware)
-      .concat(checkoutApi.middleware)
       .concat(orderApi.middleware)
 });
 

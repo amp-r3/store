@@ -1,4 +1,4 @@
-import { DeliveryMethod, DeliveryOptions } from '@/features/checkout-process/model/types'
+import { DeliveryMethod, DeliveryOptions } from '@/entities/order';
 import style from './delivery-option.module.scss'
 import { formatPrice } from '@/shared/lib';
 import { FC } from 'react';

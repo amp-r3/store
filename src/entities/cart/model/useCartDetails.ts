@@ -7,7 +7,7 @@ import { calculateCartTotals } from '../lib/cartHelper';
 import { selectCartItemsArray, useGetCartQuery } from "@/entities/cart";
 import { CartProduct } from "@/entities/cart/model/cartSelectors";
 import { selectIsAuth } from "@/entities/session";
-import { useGetDeliveryMethodsQuery } from "@/features/checkout-process";
+import { useGetDeliveryMethodsQuery } from "@/entities/order";
 
 interface CartDetailsReturn {
   cartDetails: (CartItem | null)[];

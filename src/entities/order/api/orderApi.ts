@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CreateOrderPayload, ShippingAddress } from '@/features/checkout-process/model/types';
+import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase } from '@/shared/api';
-import { DeliveryStatus, Order, OrderStatus, PaymentStatus } from '@/entities/order/model/types';
+import { DeliveryStatus, Order, OrderStatus, PaymentStatus, DeliveryMethod, PaymentMethod } from '@/entities/order/model/types';
 
 interface DeliveryMethodResponse {
   id: string;
@@ -189,11 +189,60 @@ export const orderApi = createApi({
       },
       invalidatesTags: ['Order'],
     }),
+
+    getDeliveryMethods: builder.query<DeliveryMethod[], void>({
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from('delivery_methods')
+          .select('*');
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        const methods = (data as DeliveryMethodResponse[]).map((method) => {
+          return {
+            id: method.id,
+            code: method.code as any,
+            label: method.name,
+            price: method.price,
+            duration: method.estimated_time,
+            freeFromPrice: method.free_from_price,
+            isActive: method.is_active
+          };
+        });
+        return { data: methods as DeliveryMethod[] };
+      },
+    }),
+
+    getPaymentMethods: builder.query<PaymentMethod[], void>({
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from('payment_methods')
+          .select('id, code, fee_percentage, fee_fixed, name')
+          .eq('is_active', true);
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        const methods = (data as PaymentMethodResponse[]).map((method) => {
+          return {
+            id: method.id,
+            code: method.code as any,
+            name: method.name,
+            feePercentage: method.fee_percentage,
+            feeFixed: method.fee_fixed
+          };
+        });
+        return { data: methods as PaymentMethod[] };
+      },
+    }),
   }),
 });
 
 export const {
   useGetOrdersPaginationQuery,
   useGetOrdersScrollQuery,
-  useCreateOrderMutation
+  useCreateOrderMutation,
+  useGetDeliveryMethodsQuery,
+  useGetPaymentMethodsQuery
 } = orderApi;

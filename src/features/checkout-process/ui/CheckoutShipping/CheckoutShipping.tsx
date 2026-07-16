@@ -4,7 +4,7 @@ import { FC } from "react"
 import { useFormContext } from "react-hook-form";
 import { CheckoutFormValues } from "@/features/checkout-process/model/checkoutMasterSchema";
 import { LuHouse, LuClock, LuPackageOpen, LuMapPin } from "react-icons/lu";
-import { DeliveryMethod, DeliveryOptions } from "@/features/checkout-process/model/types";
+import { DeliveryMethod, DeliveryOptions } from "@/entities/order";
 import { DeliveryOption } from "./DeliveryOption/DeliveryOption";
 import { DeliveryOptionSkeleton } from "./DeliveryOption/DeliveryOptionSkeleton";
 

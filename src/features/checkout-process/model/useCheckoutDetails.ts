@@ -5,7 +5,7 @@ import { useProductsByIds } from '@/entities/product';
 import { calculateCartTotals } from '@/entities/cart';
 import { selectCheckoutItemsArray } from "@/features/checkout-process";
 import { CartItemDetails, CartProduct } from "@/entities/cart";
-import { useGetDeliveryMethodsQuery } from '../api/checkoutApi';
+import { useGetDeliveryMethodsQuery } from '@/entities/order';
 
 interface CheckoutDetailsReturn {
   checkoutItems: CartProduct[];

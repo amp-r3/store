@@ -6,7 +6,7 @@ import {
     DELIVERY_STATUS_MAP
 } from '@/entities/order';
 import { DeliveryStatus, PaymentStatus } from '@/entities/order/model/types';
-import { DeliveryOptions, PaymentOptions } from '@/features/checkout-process/model/types';
+import { DeliveryOptions, PaymentOptions } from '@/entities/order';
 import style from './order-details-info-card.module.scss';
 
 interface OrderDetailsInfoCardProps {
