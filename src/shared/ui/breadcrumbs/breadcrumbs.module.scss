@@ -1,0 +1,66 @@
+@use '@/app/styles/index' as *;
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.breadcrumbs__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.breadcrumbs__link,
+.breadcrumbs__current {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  letter-spacing: $letter-spacing-wide;
+  line-height: $lh-ui;
+  text-transform: uppercase;
+}
+
+.breadcrumbs__link {
+  color: var(--text-muted);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color $transition-base $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--primary-accent);
+  }
+
+  &:active {
+    transform: scale($button-pressed-scale);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+    border-radius: $radius-sm;
+  }
+}
+
+.breadcrumbs__current {
+  color: var(--text-primary);
+}
+
+.breadcrumbs__separator {
+  color: var(--border-color-light);
+  font-size: 10px;
+  flex-shrink: 0;
+}

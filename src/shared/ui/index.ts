@@ -1,4 +1,4 @@
-export * from './back-button/BackButton';
+export * from './breadcrumbs/Breadcrumbs';
 export * from './error-view/ErrorView';
 export * from './expandable-content/ExpandableContent';
 export * from './form-field/FormField';

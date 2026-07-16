@@ -1,14 +1,19 @@
 import style from './product-header.module.scss'
-import { BackButton, ShareCopyBtn } from '@/shared/ui';
+import { Breadcrumbs, ShareCopyBtn } from '@/shared/ui';
+
 interface ProductHeaderProps {
-    onClick: () => void;
-    label?: string;
+    category: string;
+    title: string;
 }
 
-export const ProductHeader = ({ onClick, label }: ProductHeaderProps) => {
+export const ProductHeader = ({ category, title }: ProductHeaderProps) => {
     return (
         <div className={style['product-header']}>
-            <BackButton onClick={onClick} label={label} />
+            <Breadcrumbs items={[
+                { label: 'Catalog', path: '/' },
+                { label: category, path: `/?category=${category}` },
+                { label: title }
+            ]} />
             <ShareCopyBtn />
         </div>
     );

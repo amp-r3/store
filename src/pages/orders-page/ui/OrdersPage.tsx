@@ -3,8 +3,7 @@ import { OrderReviewModal } from "@/features/order-review/ui/OrderReviewModal/Or
 import { useState, useEffect } from 'react';
 import { useGetOrdersPaginationQuery, useGetOrdersScrollQuery } from '@/entities/order';
 import style from './orders-page.module.scss';
-import { BackButton } from '@/shared/ui';
-import { useNavigate } from 'react-router';
+import { Breadcrumbs } from '@/shared/ui';
 import { OrderDetailsSkeleton } from '../../../widgets/order-details/OrderDetailsSkeleton';
 import { OrdersList } from '../../../widgets/orders-list/OrderList';
 import { OrderDetails } from '../../../widgets/order-details/OrderDetails';
@@ -16,7 +15,6 @@ import { useAppDispatch } from "@/shared/model";
 import { openReviewModal } from "@/features/order-review";
 
 export const OrdersPage = () => {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [page, setPage] = useState(1);
@@ -114,7 +112,7 @@ export const OrdersPage = () => {
   return (
     <main className={`${style.pageWrapper} container`}>
       <div className={style.header__wrapper}>
-        <BackButton onClick={() => navigate(-1)} />
+        <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Orders' }]} />
         <h1 className={style.pageTitle}>My Orders</h1>
       </div>
 

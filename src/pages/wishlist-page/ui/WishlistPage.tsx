@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router"
 import { ProductCardSkeleton } from "@/entities/product"
-import { BackButton, ErrorView } from "@/shared/ui";
+import { Breadcrumbs, ErrorView } from "@/shared/ui";
 import { useWishlistDetails } from "@/entities/wishlist";
 import { ProductCard } from "@/entities/product";
 import { WishlistEmpty } from "@/entities/wishlist";
@@ -17,7 +17,7 @@ export const WishListPage = () => {
 
   return (
     <main className='container'>
-      <BackButton onClick={() => { navigate(-1) }} />
+      <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Favorites' }]} />
 
       <h1>Your Favorites</h1>
 

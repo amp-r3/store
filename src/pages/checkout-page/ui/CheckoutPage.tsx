@@ -1,5 +1,5 @@
 import { CheckoutStepBar } from "./components";
-import { BackButton } from "@/shared/ui"
+import { Breadcrumbs } from "@/shared/ui"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import styles from './checkout-page.module.scss'
@@ -188,7 +188,7 @@ export const CheckoutPage = () => {
 
           {/* Header */}
           <header className={styles.checkout__header}>
-            <BackButton onClick={() => navigate(-1)} />
+            <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Checkout' }]} />
             <h1 className={styles.checkout__title}>Checkout</h1>
           </header>
 

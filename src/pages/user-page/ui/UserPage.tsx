@@ -2,7 +2,7 @@ import { AuthLayout } from "@/app/layouts/AuthLayout/AuthLayout";
 import { useState } from "react"
 import { selectUser } from "@/entities/session"
 import { useNavigate } from "react-router"
-import { BackButton } from "@/shared/ui"
+import { Breadcrumbs } from "@/shared/ui"
 import style from './user-page.module.scss'
 import { UserProfileForm } from "../../../features/profile-edit/ui/user-profile-form/UserProfileForm"
 import { UserProfileView } from "../../../entities/user/ui/user-profile-view/UserProfileView"
@@ -22,7 +22,7 @@ export const UserPage = () => {
 
   return (
     <main className='container'>
-      <BackButton onClick={() => navigate('/')} />
+      <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Profile' }]} />
 
       <article className={style.pageWrapper}>
         <AuthLayout
