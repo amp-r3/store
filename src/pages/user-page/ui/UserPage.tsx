@@ -1,7 +1,6 @@
 import { AuthLayout } from "@/app/layouts/AuthLayout/AuthLayout";
 import { useState } from "react"
 import { selectUser } from "@/entities/session"
-import { useNavigate } from "react-router"
 import { Breadcrumbs } from "@/shared/ui"
 import style from './user-page.module.scss'
 import { UserProfileForm } from "../../../features/profile-edit/ui/user-profile-form/UserProfileForm"
@@ -14,7 +13,6 @@ export const UserPage = () => {
   const providers = user?.app_metadata?.providers || [];
   const isGoogleUser = providers.includes('google');
   const isTelegramUser = providers.includes('telegram');
-  const navigate = useNavigate()
 
   const [isEditing, setIsEditing] = useState(false)
 

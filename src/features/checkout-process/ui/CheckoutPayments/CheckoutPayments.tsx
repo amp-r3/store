@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema'
 import { FC, useEffect } from 'react'
 import { PaymentMethod, PaymentOptions } from '@/features/checkout-process/model/types';
-import { PAYMENT_CONFIG } from '@/shared/config';
+import { PAYMENT_CONFIG } from '@/entities/order';
 
 interface CheckoutPaymentsProps {
   paymentMethods?: PaymentMethod[];

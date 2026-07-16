@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useFilters } from "@/features/product-filter";
 import { usePaginationBounds } from "@/shared/lib/hooks";
-import { getItemsToRender } from "@/shared/lib";
+import { getItemsToRender } from "../lib/formatters";
 import { useGetCategoriesQuery, useGetProductsQuery } from "../api/productsApi";
 
 const ITEMS_PER_PAGE = 12;

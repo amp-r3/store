@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router"
 import { ProductCardSkeleton } from "@/entities/product"
 import { Breadcrumbs, ErrorView } from "@/shared/ui";
 import { useWishlistDetails } from "@/entities/wishlist";
@@ -8,7 +7,6 @@ import { WishlistToggleButton } from "@/features/wishlist-toggle";
 
 export const WishListPage = () => {
   const { wishlistDetails, isEmpty, isError, isLoading, isFetching, wishlistItems } = useWishlistDetails()
-  const navigate = useNavigate()
 
   if (isError) {
     return <ErrorView />

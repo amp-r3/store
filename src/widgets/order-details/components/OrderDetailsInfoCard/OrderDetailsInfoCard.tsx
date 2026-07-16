@@ -4,7 +4,7 @@ import {
     DELIVERY_CONFIG,
     PAYMENT_STATUS_MAP,
     DELIVERY_STATUS_MAP
-} from '@/shared/config';
+} from '@/entities/order';
 import { DeliveryStatus, PaymentStatus } from '@/entities/order/model/types';
 import { DeliveryOptions, PaymentOptions } from '@/features/checkout-process/model/types';
 import style from './order-details-info-card.module.scss';

@@ -1,12 +1,11 @@
 import { Breadcrumbs } from "@/shared/ui"
 import { Header } from "@/widgets/header"
-import { useNavigate } from "react-router"
+import { FC } from 'react'
 import style from './order-empty.module.scss'
 
-export const OrderEmpty = () => {
-  const navigate = useNavigate()
+export const OrderEmpty: FC = () => {
   return (
-    <div className={style['empty']}>
+    <section className={style['empty-state']}>
       <Header />
       <div className={style['empty__container'] + ' container'}>
         <div className={style['empty__header']}>
@@ -18,6 +17,6 @@ export const OrderEmpty = () => {
           <p className={style.emptyStateText}>Your completed orders will appear here.</p>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
