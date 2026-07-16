@@ -1,14 +1,13 @@
-import { ProductHeader, ProductPurchaseBox, ProductSpecs, ProductImageModal, ProductSizesSkeleton, ProductSizes, ProductPurchaseStatusBadge } from "./components";
+import { ProductHeader, ProductSummaryBox, ProductSpecs, ProductImageModal } from "./components";
 // React
 import { useEffect, useState } from 'react';
 
 // Router
-import { useNavigate, useParams, Navigate, useSearchParams } from 'react-router';
+import { useParams, Navigate, useSearchParams } from 'react-router';
 
 // Components
 import { ErrorView, ExpandableContent } from '@/shared/ui';
 import { ProductGallery } from '../../../widgets/product-gallery/ProductGallery';
-import { ProductInfo } from '../../../widgets/product-info/ProductInfo';
 import { ProductPageSkeleton } from './ProductPageSkeleton';
 
 // Utils
@@ -19,7 +18,6 @@ import { useGetSizesQuery, useCheckPurchaseStatusQuery } from '@/entities/produc
 import { useGetReviewsQuery } from '@/entities/review';
 import { ProductReviews } from '../../../widgets/product-reviews/ProductReviews';
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
-import { useMediaQuery } from "@/shared/lib/hooks";
 import { useCartActions } from "@/features/cart-actions";
 import { useCartDetails } from "@/entities/cart";
 import { useProduct } from "@/entities/product";
@@ -29,13 +27,11 @@ import { useAppSelector } from "@/shared/model";
 import { selectIsAuth } from "@/entities/session";
 
 export const ProductPage = () => {
-    const navigate = useNavigate();
     const searchParams = useSearchParams()
     const { id } = useParams();
     const { onIncrease, onDecrease } = useCartActions()
     const { onWishlist } = useWishlistActions()
     const { wishlistItems } = useWishlistDetails()
-    const isMobile = useMediaQuery('(max-width: 768px)');
     const [selectedSizeId, setSelectedSizeId] = useState<number | undefined>(undefined);
     const isFavorite = wishlistItems.some(item => item?.id === +(id || 0))
     const openedImage = searchParams[0].get('view') === 'true';
@@ -92,7 +88,7 @@ export const ProductPage = () => {
         <main className={style['product-page']}>
             <ProductImageModal imageSrc={images[0]} imageAlt={title} onClose={onCloseModal} isOpen={openedImage} />
             <div className="container" key={productId}>
-                <ProductHeader onClick={() => navigate(-1)} label='Back to catalog' />
+                <ProductHeader category={category} title={title} />
 
                 <div className={style['layout']}>
                     <div className={style['gallery-column']}>
@@ -106,22 +102,15 @@ export const ProductPage = () => {
                     </div>
 
                     <div className={style['details-column']}>
-                        <ProductInfo
+                        <ProductSummaryBox
+                            productId={product.id}
                             category={category}
                             brand={brand}
                             title={title}
                             rating={rating}
                             reviewsCount={reviewsCount}
-                        />
-                        {lastPurchaseDate && (
-                            <ProductPurchaseStatusBadge
-                                productId={product.id} 
-                                purchaseDate={lastPurchaseDate} 
-                            />
-                        )}
-                        <ProductPurchaseBox
+                            lastPurchaseDate={lastPurchaseDate}
                             quantity={quantity}
-                            productId={product.id}
                             handleCart={handleCart}
                             hasDiscount={hasDiscount}
                             originalPrice={basePrice}
@@ -130,26 +119,9 @@ export const ProductPage = () => {
                             hasSizes={hasSizes}
                             selectedSizeId={selectedSizeId}
                             setSelectedSizeId={setSelectedSizeId}
-                            isMobile={isMobile}
                             isSizesLoading={isSizesLoading}
                         />
                     </div>
-                    {(isSizesLoading || (sizes && sizes.length > 0)) && isMobile ? (
-                        <>
-                            {isSizesLoading ? (
-                                <ProductSizesSkeleton isCompact={!isMobile} />
-                            ) : (
-                                sizes && (
-                                    <ProductSizes
-                                        sizes={sizes}
-                                        activeSizeId={selectedSizeId}
-                                        onSizeSelect={setSelectedSizeId}
-                                        isCompact={!isMobile}
-                                    />
-                                )
-                            )}
-                        </>
-                    ) : ''}
                 </div>
 
                 <ExpandableContent maxHeight={100} className={style['description-wrapper']}>

@@ -1,6 +1,5 @@
-import { ProductHeader, ProductSpecsSkeleton, ProductPurchaseBoxSkeleton, ProductSizesSkeleton } from "./components";
+import { ProductHeader, ProductSpecsSkeleton, ProductSummaryBoxSkeleton } from "./components";
 import style from './productPage.module.scss'
-import { ProductInfoSkeleton } from '../../../widgets/product-info/ProductInfoSkeleton'
 import { ProductGallerySkeleton } from '../../../widgets/product-gallery/ProductGallerySkeleton'
 import { useMediaQuery } from "@/shared/lib/hooks";
 
@@ -17,9 +16,7 @@ export const ProductPageSkeleton = () => {
             <ProductGallerySkeleton />
           </div>
           <div className={style['details-column']}>
-            <ProductInfoSkeleton />
-            {isMobile && <ProductSizesSkeleton isCompact={false} />}
-            <ProductPurchaseBoxSkeleton />
+            <ProductSummaryBoxSkeleton />
           </div>
         </div>
 

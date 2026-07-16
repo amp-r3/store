@@ -3,35 +3,19 @@
 .product-sizes {
     display: flex;
     flex-direction: column;
-    gap: $spacing-sm;
-    margin: $spacing-lg 0;
-    padding: $spacing-md;
+    gap: $spacing-xs;
+    margin-top: $spacing-sm;
     
-    // Prevent expanding in flex and grid parents
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    
-    // Glassmorphism panel styling
-    background: var(--glass-background-subtle);
-    backdrop-filter: $backdrop-blur;
-    -webkit-backdrop-filter: $backdrop-blur;
-    border: 1px solid var(--glass-border-subtle);
-    border-radius: $radius-md;
-    box-shadow: var(--shadow-xs);
-    transition: all $transition-base $ease-out-expo;
-
-    @media (max-width: 768px) {
-        padding: $spacing-xs;
-        margin: 0;
-        border-radius: $radius-sm;
-        gap: $spacing-xs;
-    }
 
     &__title {
-        color: var(--text-secondary);
-        font-size: $fs-sm;
-        font-weight: $fw-semibold;
+        color: var(--text-muted);
+        font-size: $fs-xs;
+        font-weight: $fw-bold;
+        text-transform: uppercase;
+        letter-spacing: $letter-spacing-wider;
         margin: 0;
     }
 
@@ -41,13 +25,14 @@
         overflow-x: auto;
         width: 100%;
         max-width: 100%;
-        scrollbar-width: none; // Firefox
-        -ms-overflow-style: none; // IE/Edge
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
         &::-webkit-scrollbar {
-            display: none; // Chrome/Safari
+            display: none; 
         }
-        gap: $spacing-xs;
-        padding-top: $spacing-xs;
+        gap: $spacing-sm;
+        padding-top: $spacing-xxs;
+        padding-bottom: $spacing-xxs; 
         margin: 0;
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
@@ -63,28 +48,25 @@
             mask-image: linear-gradient(to right, #000 88%, transparent 100%);
             padding-right: $spacing-md;
         }
-
-        @media (max-width: 480px) {
-            gap: $spacing-xxs;
-        }
     }
 
     &__item {
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: $touch-target-min;
-        flex-shrink: 0;
-        height: $touch-target-min;
-        padding: 0 $spacing-sm;
-        border: 1px solid var(--border-color-light);
+        min-width: $touch-target-comfortable;
+        height: $touch-target-comfortable;
+        padding: 0 $spacing-md;
+        border: 1px solid var(--border-color-strong);
         border-radius: $radius-sm;
-        background-color: var(--background-component);
+        background-color: transparent; 
         color: var(--text-primary);
         font-size: $fs-base;
         font-weight: $fw-semibold;
         cursor: pointer;
-        transition: all $transition-base $ease-out-expo;
+        transition: all $transition-fast $ease-out-expo;
+        position: relative;
+        overflow: hidden;
 
         @media (prefers-reduced-motion: reduce) {
             transition: none;
@@ -98,67 +80,35 @@
 
         @media (hover: hover) {
             &:hover:not(:disabled) {
-                border-color: var(--primary-accent);
-                color: var(--primary-accent);
+                border-color: var(--text-primary);
                 transform: $hover-lift;
             }
         }
 
         &--active {
-            background-color: var(--primary-accent);
-            border-color: var(--primary-accent);
-            color: var(--text-inverse);
+            background-color: var(--primary-accent-light); 
+            border-color: var(--border-color);
+            color: var(--background-body);
 
             @media (hover: hover) {
                 &:hover:not(:disabled) {
-                    color: var(--text-inverse);
                     transform: none;
                 }
             }
         }
 
         &:disabled {
-            opacity: 0.4;
+            opacity: 0.5;
             cursor: not-allowed;
-            text-decoration: line-through;
             color: var(--text-muted);
-            border-color: var(--border-color-subtle);
-            background-color: transparent;
-        }
-    }
-
-    &__skeleton-item {
-        width: $touch-target-min;
-        height: $touch-target-min;
-    }
-
-    &--compact {
-        background: transparent;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        margin: 0;
-        gap: $spacing-xs;
-
-        @media (max-width: 1024px) {
-            gap: $spacing-xxs;
-
-            .product-sizes__title {
-                font-size: $fs-xs;
-            }
-
-            .product-sizes__list {
-                gap: 4px;
-            }
-
-            .product-sizes__item {
-                font-size: $fs-sm;
-                min-width: 36px; // Premium compact fit for tablet columns
-                height: 36px;
-                padding: 0 4px;
-            }
+            border-color: var(--border-color-light);
+            background-image: linear-gradient(
+                to top right,
+                transparent calc(50% - 1px),
+                var(--border-color-strong) calc(50% - 1px),
+                var(--border-color-strong) calc(50% + 1px),
+                transparent calc(50% + 1px)
+            );
         }
     }
 }

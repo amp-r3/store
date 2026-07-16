@@ -3,14 +3,16 @@
 .image-column {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
+    height: 100%;
 }
 
 .image-wrapper {
     position: relative;
     cursor: pointer;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: 100%;
+    min-height: 300px;
     padding: $spacing-xl;
     overflow: hidden;
     border-radius: $radius-xl;
@@ -50,17 +52,26 @@
     @media (max-width: 768px) {
         max-width: 450px;
         padding: $spacing-lg;
+        height: auto;
+        aspect-ratio: 1 / 1;
     }
 }
 
 .image {
-    position: relative;
+    position: absolute;
+    inset: $spacing-xl;
+    width: calc(100% - 2 * #{$spacing-xl});
+    height: calc(100% - 2 * #{$spacing-xl});
     z-index: 0;
-    max-width: 100%;
-    max-height: 100%;
     object-fit: contain;
     transition: transform $transition-layout $ease-out-expo;
     will-change: transform;
+
+    @media (max-width: 768px) {
+        inset: $spacing-lg;
+        width: calc(100% - 2 * #{$spacing-lg});
+        height: calc(100% - 2 * #{$spacing-lg});
+    }
 
     filter: drop-shadow(0 8px 24px rgba(var(--primary-accent-rgb), 0.12));
 }

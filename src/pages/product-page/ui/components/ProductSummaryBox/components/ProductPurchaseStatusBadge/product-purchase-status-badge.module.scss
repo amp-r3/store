@@ -1,0 +1,96 @@
+@use '@/app/styles/index' as *;
+
+.badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    padding: $spacing-sm;
+    border-radius: $radius-md;
+    border: 1px solid var(--border-color-subtle); 
+    background: transparent; 
+    margin-top: $spacing-sm;
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+        align-items: flex-start; 
+        gap: $spacing-xs;
+    }
+}
+
+.badge-content {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+}
+
+.badge-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; 
+    height: 36px;
+    border-radius: $radius-circle;
+    background: rgba(var(--primary-accent-rgb), 0.08); 
+    color: var(--primary-accent-dark);
+    flex-shrink: 0;
+}
+
+.badge-icon {
+    font-size: $fs-icon-md;
+}
+
+.badge-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.badge-text-title {
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+    line-height: $lh-tight;
+}
+
+.badge-text-desc {
+    font-size: $fs-sm;
+    color: var(--text-muted);
+    margin: 0;
+    
+    strong { 
+        color: var(--text-primary); 
+        font-weight: $fw-semibold; 
+    }
+}
+
+.badge-button {
+    padding: 0 $spacing-xxs;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--primary-accent-light);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color $transition-base $ease-out-expo;
+    
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: transparent;
+
+    @media (max-width: 480px) {
+        margin-left: 48px; 
+    }
+
+    &:hover, &:focus-visible {
+        color: var(--text-primary);
+        text-decoration-color: var(--text-primary);
+        outline: none;
+    }
+    
+    &:active {
+        opacity: $button-pressed-opacity;
+    }
+}

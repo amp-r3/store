@@ -3,15 +3,11 @@ import style from './product-purchase-box.module.scss';
 import { CartProduct } from '@/entities/cart';
 import { addToCheckout, clearCheckout } from '@/features/checkout-process';
 import { useNavigate } from 'react-router';
-import { ProductSizes } from '../ProductSizes/ProductSizes';
-import { ProductSizesSkeleton } from '../ProductSizes/ProductSizesSkeleton';
 import { formatPrice } from "@/shared/lib";
 import { ProductSize } from "@/entities/product";
-import { useAppDispatch } from "@/shared/model";
-import { useAppSelector } from "@/shared/model";
+import { useAppDispatch, useAppSelector } from "@/shared/model";
 import { selectIsMaxReached } from "@/entities/cart";
-import { AddToCartButton } from "@/features/cart-actions";
-import { QuickBuyButton } from "@/features/cart-actions";
+import { AddToCartButton, QuickBuyButton } from "@/features/cart-actions";
 
 interface ProductPurchaseBoxProps {
     productId: number;
@@ -21,11 +17,8 @@ interface ProductPurchaseBoxProps {
     discountedPrice: number;
     handleCart(sizeId: number, type: 'inc' | 'dec'): void;
     sizes?: ProductSize[];
-    setSelectedSizeId(id: number): void;
     selectedSizeId: number | undefined;
     hasSizes: boolean;
-    isMobile: boolean;
-    isSizesLoading?: boolean;
 }
 
 export const ProductPurchaseBox = ({
@@ -35,12 +28,9 @@ export const ProductPurchaseBox = ({
     originalPrice,
     discountedPrice,
     handleCart,
-    isMobile,
     sizes,
-    hasSizes,
-    setSelectedSizeId,
     selectedSizeId,
-    isSizesLoading = false,
+    hasSizes,
 }: ProductPurchaseBoxProps) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -93,7 +83,6 @@ export const ProductPurchaseBox = ({
 
     let stockClass = style['purchase-box__stock'];
     if (hasSizes && !selectedSizeId) {
-        // do nothing
     } else if (isLowStock) {
         stockClass += ` ${style['purchase-box__stock--low']}`;
     } else if (isOutOfStock) {
@@ -113,24 +102,27 @@ export const ProductPurchaseBox = ({
 
     return (
         <div className={style['purchase-box']}>
-            <div className={style['price-section']}>
-                <div className={style['price-info']}>
-                    <span className={style['price-label']}>Current Price</span>
-                    <div className={style['price-values']}>
-                        {hasDiscount ? (
-                            <>
-                                <span className={style['discount-price']}>{formatPrice(discountedPrice)}</span>
-                                <span className={style['original-price']}>{formatPrice(originalPrice)}</span>
-                            </>
-                        ) : (
-                            <span className={style['discount-price']}>{formatPrice(originalPrice)}</span>
-                        )}
-                        {hasDiscount && (
-                            <div className={style['discount-badge']}>
-                                Save {formatPrice(originalPrice - discountedPrice)}
-                            </div>
-                        )}
-                    </div>
+            <div className={style['purchase-box__price-section']}>
+                <div className={style['purchase-box__price-values']}>
+                    {hasDiscount ? (
+                        <>
+                            <span className={style['purchase-box__discount-price']} aria-label={`Discounted price: ${formatPrice(discountedPrice)}`}>
+                                {formatPrice(discountedPrice)}
+                            </span>
+                            <span className={style['purchase-box__original-price']} aria-label={`Original price: ${formatPrice(originalPrice)}`}>
+                                {formatPrice(originalPrice)}
+                            </span>
+                        </>
+                    ) : (
+                        <span className={style['purchase-box__discount-price']}>
+                            {formatPrice(originalPrice)}
+                        </span>
+                    )}
+                    {hasDiscount && (
+                        <div className={style['purchase-box__discount-badge']}>
+                            Save {formatPrice(originalPrice - discountedPrice)}
+                        </div>
+                    )}
                 </div>
                 <span
                     className={stockClass}
@@ -140,30 +132,16 @@ export const ProductPurchaseBox = ({
                 </span>
             </div>
 
-            {(isSizesLoading || (sizes && sizes.length > 0)) && !isMobile ? (
-                <div className={style['purchase-box__sizes-container']}>
-                    {isSizesLoading ? (
-                        <ProductSizesSkeleton />
-                    ) : (
-                        sizes && (
-                            <ProductSizes
-                                sizes={sizes}
-                                activeSizeId={selectedSizeId}
-                                onSizeSelect={setSelectedSizeId}
-                                isCompact={true}
-                            />
-                        )
-                    )}
-                </div>
-            ) : ''}
-
             {(!isSizeSelected && isWarning) && (
-                <div className={`${style['purchase-box__warning']} ${isShaking ? style['purchase-box__warning--shake'] : ''}`}>
+                <div 
+                    className={`${style['purchase-box__warning']} ${isShaking ? style['purchase-box__warning--shake'] : ''}`}
+                    aria-live="polite"
+                >
                     Please select a size to purchase this item
                 </div>
             )}
 
-            <div className={style['actions']}>
+            <div className={style['purchase-box__actions']}>
                 <AddToCartButton
                     quantity={quantity}
                     onAddToCart={handleAddToCart}
@@ -171,19 +149,19 @@ export const ProductPurchaseBox = ({
                     onDecrement={() => handleCart(selectedSizeId as number, 'dec')}
                     inStock={currentInStock}
                     isMaxReached={isMaxReached}
-                    className={style['add-to-cart']}
+                    className={style['purchase-box__add-to-cart']}
                     buttonText={isSizeSelected ? 'Add to Cart' : 'Select Size'}
                     outOfStockText="Out of Stock"
                 />
                 <QuickBuyButton
                     onClick={handleQuickBuy}
                     disabled={!currentInStock}
-                    className={style['quick-buy']}
+                    className={style['purchase-box__quick-buy']}
                 />
             </div>
 
             {!currentInStock && (
-                <div className={style['out-of-stock-notice']}>
+                <div className={style['purchase-box__out-of-stock-notice']}>
                     Out of stock. Sign up for notifications.
                 </div>
             )}

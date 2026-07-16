@@ -7,14 +7,13 @@ export interface ProductSizesProps {
     sizes: ProductSize[];
     activeSizeId: number | null | undefined;
     onSizeSelect: (id: number) => void;
-    isCompact?: boolean;
+    // isCompact удален за ненадобностью
 }
 
 export const ProductSizes = ({
     sizes,
     activeSizeId,
     onSizeSelect,
-    isCompact = false,
 }: ProductSizesProps) => {
     const { light } = useHaptics();
 
@@ -32,23 +31,23 @@ export const ProductSizes = ({
         return null;
     }
 
-    const currentActiveId = activeSizeId
-
     const handleSelect = (id: number) => {
         light();
         onSizeSelect(id);
     };
 
-    const containerClassName = isCompact
-        ? `${style['product-sizes']} ${style['product-sizes--compact']}`
-        : style['product-sizes'];
-
     return (
-        <div className={containerClassName}>
-            <span className={style['product-sizes__title']}>Select Size</span>
-            <ul className={style['product-sizes__list']} role="listbox" aria-label="Select product size">
+        <div className={style['product-sizes']}>
+            <span className={style['product-sizes__title']} aria-hidden="true">
+                Select Size
+            </span>
+            <ul 
+                className={style['product-sizes__list']} 
+                role="listbox" 
+                aria-label="Select product size"
+            >
                 {sizes.map((size) => {
-                    const isActive = size.id === currentActiveId;
+                    const isActive = size.id === activeSizeId;
                     const isOutOfStock = size.stock === 0;
 
                     const itemClassName = isActive

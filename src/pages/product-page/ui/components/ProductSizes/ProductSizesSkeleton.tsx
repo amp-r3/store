@@ -1,17 +1,10 @@
 import Skeleton from 'react-loading-skeleton';
 import style from './product-sizes.module.scss';
 
-export interface ProductSizesSkeletonProps {
-    isCompact?: boolean;
-}
-
-export const ProductSizesSkeleton = ({ isCompact = false }: ProductSizesSkeletonProps) => {
-    const containerClassName = isCompact
-        ? `${style['product-sizes']} ${style['product-sizes--compact']}`
-        : style['product-sizes'];
+export const ProductSizesSkeleton = () => {
 
     return (
-        <div className={containerClassName}>
+        <div className={style['product-sizes']}>
             <span className={style['product-sizes__title']}>
                 <Skeleton 
                     width={80} 

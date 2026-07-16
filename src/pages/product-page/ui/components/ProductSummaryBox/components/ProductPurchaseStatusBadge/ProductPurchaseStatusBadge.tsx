@@ -13,9 +13,9 @@ export const ProductPurchaseStatusBadge = ({ productId, purchaseDate }: Purchase
     const dispatch = useAppDispatch();
     const { success } = useHaptics();
 
-    const formattedDate = new Intl.DateTimeFormat('us-US', {
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
         day: '2-digit',
-        month: '2-digit',
+        month: 'short', 
         year: 'numeric'
     }).format(new Date(purchaseDate));
 
@@ -25,22 +25,23 @@ export const ProductPurchaseStatusBadge = ({ productId, purchaseDate }: Purchase
     };
 
     return (
-        <div className={style['purchase-badge']}>
-            <div className={style['purchase-badge__content']}>
-                <div className={style['purchase-badge__icon-wrapper']}>
-                    <IoCheckmarkCircle className={style['purchase-badge__icon']} aria-hidden="true" />
+        <div className={style['badge']}>
+            <div className={style['badge-content']}>
+                <div className={style['badge-icon-wrapper']}>
+                    <IoCheckmarkCircle className={style['badge-icon']} aria-hidden="true" />
                 </div>
-                <div className={style['purchase-badge__text']}>
-                    <span className={style['purchase-badge__text-title']}>Item purchased</span>
-                    <p className={style['purchase-badge__text-desc']}>
-                        You bought this product on <strong>{formattedDate}</strong>
+                <div className={style['badge-text']}>
+                    <span className={style['badge-text-title']}>Item purchased</span>
+                    <p className={style['badge-text-desc']}>
+                        You bought this on <strong>{formattedDate}</strong>
                     </p>
                 </div>
             </div>
             <button
-                className={style['purchase-badge__button']}
+                className={style['badge-button']}
                 onClick={handleLeaveFeedback}
                 type="button"
+                aria-label="Leave feedback for this purchased item"
             >
                 Leave feedback
             </button>
