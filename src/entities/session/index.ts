@@ -4,3 +4,4 @@ export * from './model/authSelectors';
 
 export * from './model/useAuthSync';
 export * from './model/useAuthUrlError';
+export * from './model/types';

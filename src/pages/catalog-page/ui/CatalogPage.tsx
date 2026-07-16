@@ -7,7 +7,7 @@ import { ErrorView, NoResults } from '@/shared/ui'
 // Utils
 // Types
 import { ProductCardSkeleton } from '@/entities/product'
-import { ControlPanelSkeleton } from '@/widgets/control-panel/ControlPanelSkeleton'
+import { ControlPanelSkeleton } from '@/widgets/control-panel'
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
 import { Product } from "@/entities/product";
 import { useProductCatalog } from "@/entities/product";

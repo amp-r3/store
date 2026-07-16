@@ -42,7 +42,7 @@ export interface CreateOrderPayload {
   p_delivery_method_id: string;
   p_items: CheckoutCartItem[];
 }
-import { Product } from "@/entities/product/model/types";
+import { Product } from "@/entities/product";
 
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled';
 export type PaymentStatus = 'awaiting_payment' | 'paid' | 'failed' | 'refunded';

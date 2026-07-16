@@ -1,6 +1,6 @@
 import { supabase } from "@/shared/api";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import { productsApi } from "../../product/api/productsApi";
+import { productsApi } from "@/entities/product";
 import { ProductReview } from "@/entities/review";
 
 const pendingLikes = new Set<number>();

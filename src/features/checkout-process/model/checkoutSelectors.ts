@@ -1,6 +1,6 @@
 import { RootState } from "@/app/store";
 import { createSelector } from "@reduxjs/toolkit";
-import { CartProduct } from "../../../entities/cart/model/cartSelectors";
+import { CartProduct } from "@/entities/cart";
 
 export const selectCheckoutItemsMap = (state: RootState) => state.checkout.items;
 

@@ -6,7 +6,7 @@ import {
   PaymentMethod, 
   CheckoutCartItem, 
   CreateOrderPayload 
-} from '@/entities/order/model/types';
+} from '@/entities/order';
 
 export const STEPS_ORDER = ['contacts', 'delivery', 'payment'] as const;
 export type StepType = typeof STEPS_ORDER[number];

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Product } from '@/entities/product/model/types';
+import { Product } from '@/entities/product';
 import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
 import { WishlistData, useGetWishlistQuery, selectFavoritesArray } from '@/entities/wishlist';

@@ -1,5 +1,5 @@
 import { OrderEmpty } from "./components";
-import { OrderReviewModal } from "@/features/order-review/ui/OrderReviewModal/OrderReviewModal";
+import { OrderReviewModal } from "@/features/order-review";
 import { useState, useEffect } from 'react';
 import { useGetOrdersPaginationQuery, useGetOrdersScrollQuery } from '@/entities/order';
 import style from './orders-page.module.scss';

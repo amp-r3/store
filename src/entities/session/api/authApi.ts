@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { LoginFormData, RegisterFormData, SessionUser } from "@/entities/session/model/types";
 import { supabase } from "@/shared/api";
-import { EditProfileSchema } from "@/features/profile-edit/model/editProfileSchema";
+import { EditProfileSchema } from "@/features/profile-edit";
 
 
 export const authApi = createApi({

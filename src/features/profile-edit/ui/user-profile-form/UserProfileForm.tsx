@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "react-router"
 import { useUpdateProfileMutation } from "@/entities/session"
-import { editProfileSchema } from "@/features/profile-edit/model/editProfileSchema"
+import { editProfileSchema } from "@/features/profile-edit"
 import { FormField, Loader } from "@/shared/ui"
 import style from './user-profile-form.module.scss';
-import { SessionUser } from "@/entities/session/model/types"
+import { SessionUser } from "@/entities/session"
 import { LuAtSign, LuMail, LuUser } from "react-icons/lu"
 
 

@@ -2,10 +2,10 @@ import { useNavigation, Outlet } from 'react-router';
 import { Suspense } from 'react';
 
 // Custom Components
-import { Navbar } from '@/widgets/navbar/Navbar';
-import { MobileBar } from '@/widgets/mobile-bar/MobileBar';
-import { Footer } from '@/widgets/footer/Footer';
-import { Header } from '@/widgets/header/Header';
+import { Navbar } from '@/widgets/navbar';
+import { MobileBar } from '@/widgets/mobile-bar';
+import { Footer } from '@/widgets/footer';
+import { Header } from '@/widgets/header';
 
 // Redux Hooks
 // Functions and Selectors

@@ -3,7 +3,7 @@ import { Drawer } from "vaul";
 import { FC } from "react";
 import { IoClose } from "react-icons/io5";
 import { LuStar } from 'react-icons/lu';
-import { EnrichedOrderItem } from "@/entities/order/model/types";
+import { EnrichedOrderItem } from "@/entities/order";
 import style from './order-review-modal.module.scss'
 import { useMediaQuery } from "@/shared/lib/hooks";
 import { OrderItem } from "@/entities/order";

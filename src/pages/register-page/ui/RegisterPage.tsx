@@ -3,7 +3,7 @@ import style from "@/app/layouts/AuthLayout/auth-layout.module.scss";
 import { useNavigate, Link, useLocation } from "react-router"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { RegisterSchema, registerSchema } from "@/features/auth/model/registerSchema"
+import { RegisterSchema, registerSchema } from "@/features/auth"
 import { useRegisterMutation, useSignInWithGoogleMutation, useSignInWithTelegramMutation } from "@/entities/session"
 import { useState, useEffect } from "react"
 import { LuMail } from "react-icons/lu";

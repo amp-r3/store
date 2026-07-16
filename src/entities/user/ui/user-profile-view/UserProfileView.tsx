@@ -6,7 +6,7 @@ import { Modal } from "@/shared/ui";
 import { CgLogOut, CgTrash } from "react-icons/cg";
 
 import style from './user-profile-view.module.scss';
-import { SessionUser } from "@/entities/session/model/types";
+import { SessionUser } from "@/entities/session";
 import { PROVIDER_CONFIG } from "@/shared/config";
 import { useAppDispatch } from "@/shared/model";
 
