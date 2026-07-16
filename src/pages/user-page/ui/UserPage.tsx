@@ -3,8 +3,8 @@ import { useState } from "react"
 import { selectUser } from "@/entities/session"
 import { Breadcrumbs } from "@/shared/ui"
 import style from './user-page.module.scss'
-import { UserProfileForm } from "../../../features/profile-edit/ui/user-profile-form/UserProfileForm"
-import { UserProfileView } from "../../../entities/user/ui/user-profile-view/UserProfileView"
+import { UserProfileForm } from "@/features/profile-edit"
+import { UserProfileView } from "@/entities/user"
 import { useAppSelector } from "@/shared/model";
 
 export const UserPage = () => {

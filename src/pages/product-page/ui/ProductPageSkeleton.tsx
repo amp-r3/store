@@ -1,6 +1,6 @@
 import { ProductHeader, ProductSpecsSkeleton, ProductSummaryBoxSkeleton } from "./components";
 import style from './productPage.module.scss'
-import { ProductGallerySkeleton } from '../../../widgets/product-gallery/ProductGallerySkeleton'
+import { ProductGallerySkeleton } from '@/widgets/product-gallery'
 export const ProductPageSkeleton = () => {
 
   return (

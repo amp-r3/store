@@ -7,7 +7,7 @@ import { useParams, Navigate, useSearchParams } from 'react-router';
 
 // Components
 import { ErrorView, ExpandableContent } from '@/shared/ui';
-import { ProductGallery } from '../../../widgets/product-gallery/ProductGallery';
+import { ProductGallery } from '@/widgets/product-gallery';
 import { ProductPageSkeleton } from './ProductPageSkeleton';
 
 // Utils
@@ -16,7 +16,7 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 import style from './productPage.module.scss';
 import { useGetSizesQuery, useCheckPurchaseStatusQuery } from '@/entities/product';
 import { useGetReviewsQuery } from '@/entities/review';
-import { ProductReviews } from '../../../widgets/product-reviews/ProductReviews';
+import { ProductReviews } from '@/widgets/product-reviews';
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
 import { useCartActions } from "@/features/cart-actions";
 import { useCartDetails } from "@/entities/cart";
