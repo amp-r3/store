@@ -65,48 +65,37 @@
 
 ---
 
-## 🏗️ Project Architecture
+## 🏗️ Project Architecture (Feature-Sliced Design)
 
-The project is designed with a strong emphasis on separation of concerns,
-modularity, and adherence to naming conventions (BEM, SCSS Modules). All key
-directories have a clear and consistent structure:
+The project is architected using the **Feature-Sliced Design (FSD)** methodology. This provides a strict, predictable, scalable structure, while maintaining a strong emphasis on separation of concerns, modularity, and adherence to naming conventions (BEM, SCSS Modules).
 
 ```text
 src/
-├── app/            # Redux Store initialization and router config (React Router v7)
-├── components/     # Reusable UI components
-│   ├── common/     # Universal atomic components (buttons, skeletons, placeholders)
-│   ├── cart/       # Cart components (side drawer, cart items)
-│   ├── products/   # Product cards, filters, pagination elements
-│   └── layout/     # Layout components (Header, Navbar, Footer, page wrappers)
-├── config/         # Project and integration settings (Supabase client)
-├── hooks/          # Custom React hooks (business logic extracted from UI components)
-│   ├── common/     # General-purpose hooks (useHaptics, usePagination)
-│   └── features/   # Feature-specific hooks (cart, checkout, order, product, wishlist, auth)
+├── app/            # Application initialization, Redux store setup, router config, global styles
 ├── pages/          # Application pages (CatalogPage, ProductPage, OrdersPage, etc.)
-├── schemas/        # Zod validation schemas for forms (login, registration, profile editing)
-├── services/       # Data layer — RTK Query API slices (products, cart, wishlist, orders)
-├── store/          # Redux slices, selectors (Reselect), and persistence configuration
-├── styles/         # Design system (SCSS variables, themes, global styles)
-├── types/          # Shared TypeScript types and interfaces
-└── utils/          # Pure utility helpers (price formatting, haptics presets)
+├── widgets/        # Complex standalone UI blocks composed of entities and features (e.g., Header, CartDrawer)
+├── features/       # User interactions and business actions (e.g., AddToCart, ThemeToggle)
+├── entities/       # Business entities and their representations (Product, User, Order)
+└── shared/         # Reusable infrastructure, UI kit, configs, types, utils, and base API
 ```
 
 ### Key Architectural Decisions
 
-1. **URL as the Single Source of Truth for the catalog**: Search query (`?q=`),
+1. **Feature-Sliced Design (FSD)**: Strict adherence to FSD principles.
+   - **Unidirectional dependencies**: `app` -> `pages` -> `widgets` -> `features` -> `entities` -> `shared`. Modules only import from layers strictly below them.
+   - **Public APIs**: Every slice exposes its capabilities via an `index.ts` barrel file. Internal cross-slice imports are forbidden.
+2. **URL as the Single Source of Truth for the catalog**: Search query (`?q=`),
    sort order (`?sortBy=`, `?order=`), category (`?category=`), and current page
    (`?page=`) are all managed exclusively via URL (`useSearchParams`). This
    enables shareable and bookmarkable links, as well as correct browser
    Back/Forward navigation.
-2. **Thin components with logic in hooks**: All UI components are declarative.
+3. **Thin components with logic separated into models/hooks**: All UI components are declarative.
    API requests, router manipulation, derived state computation, and validation
-   are handled inside dedicated hooks (e.g. `useCartDetails`,
-   `useProductDetails`, `useWishlistDetails`).
-3. **Normalized cache in RTK Query**: API responses from DummyJSON are
+   are handled inside dedicated slice segments (e.g., `model`, `lib`, `api`).
+4. **Normalized cache in RTK Query**: API responses from DummyJSON are
    transformed into a `{ ids: number[], items: Record<number, Product> }`
    structure for O(1) lookups and reduced rendering overhead.
-4. **Selective LocalStorage caching (Redux Persist)**: Only the most critical
+5. **Selective LocalStorage caching (Redux Persist)**: Only the most critical
    data is persisted: `cart.items`, `wishlistSlice` (for unauthenticated users),
     and `auth` (user and token). RTK Query cache and transient UI
    state are not persisted.
