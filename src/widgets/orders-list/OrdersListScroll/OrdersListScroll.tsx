@@ -1,5 +1,5 @@
 import style from './orders-list-scroll.module.scss'
-import { OrderCard } from '../../../entities/order/ui/order-card/OrderCard';
+import { OrderCard } from '@/entities/order';
 import { OrdersListProps } from '../OrderList';
 import { FC, useEffect, useRef } from 'react';
 import { OrderCardSkeleton } from "@/entities/order";

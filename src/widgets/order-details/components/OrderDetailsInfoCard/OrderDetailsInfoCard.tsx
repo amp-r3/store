@@ -5,7 +5,7 @@ import {
     PAYMENT_STATUS_MAP,
     DELIVERY_STATUS_MAP
 } from '@/entities/order';
-import { DeliveryStatus, PaymentStatus } from '@/entities/order/model/types';
+import { DeliveryStatus, PaymentStatus } from '@/entities/order';
 import { DeliveryOptions, PaymentOptions } from '@/entities/order';
 import style from './order-details-info-card.module.scss';
 

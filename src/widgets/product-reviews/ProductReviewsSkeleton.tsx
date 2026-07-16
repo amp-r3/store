@@ -1,7 +1,5 @@
 import { FaComments } from 'react-icons/fa';
-import { ReviewCardSkeleton } from '@/entities/review';
-import { ReviewsStatsSkeleton } from '@/entities/review/ui/reviews-stats/ReviewsStatsSkeleton';
-import { ReviewsControlsSkeleton } from '@/entities/review/ui/reviews-controls/ReviewsControlsSkeleton';
+import { ReviewCardSkeleton, ReviewsStatsSkeleton, ReviewsControlsSkeleton } from '@/entities/review';
 import style from './product-reviews.module.scss';
 
 export const ProductReviewsSkeleton = () => {

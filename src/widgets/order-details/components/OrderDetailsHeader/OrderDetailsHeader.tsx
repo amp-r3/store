@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { HiOutlineClipboardDocument, HiOutlineClipboardDocumentCheck, HiOutlineCalendar } from 'react-icons/hi2';
 import style from './order-details-header.module.scss';
-import { OrderStatus } from '@/entities/order/model/types';
+import { OrderStatus } from '@/entities/order';
 
 interface OrderDetailsHeaderProps {
     orderId: string;

@@ -1,6 +1,6 @@
 import { OrdersListPagination } from './OrdersListPagination/OrdersListPagination'
 import { OrdersListScroll } from "./OrdersListScroll/OrdersListScroll"
-import { Order } from "@/entities/order/model/types";
+import { Order } from "@/entities/order";
 import { FC } from "react";
 
 export interface OrdersListProps {

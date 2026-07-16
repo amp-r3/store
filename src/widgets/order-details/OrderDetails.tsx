@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { OrderDetailsDrawer } from "./OrderDetailsDrawer/OrderDetailsDrawer";
 import { OrderDetailsCard } from "./OrderDetailsCard/OrderDetailsCard";
-import { EnrichedOrderItem, Order } from "@/entities/order/model/types";
+import { EnrichedOrderItem, Order } from "@/entities/order";
 import { CartProduct } from "@/entities/cart";
 import { useMediaQuery } from "@/shared/lib/hooks";
 

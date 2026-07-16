@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { EnrichedOrderItem, Order } from '@/entities/order/model/types';
+import { EnrichedOrderItem, Order } from '@/entities/order';
 import { OrderDetailsInfoCard } from '../OrderDetailsInfoCard/OrderDetailsInfoCard';
 import style from './order-details-body.module.scss';
 import { LuStar } from 'react-icons/lu';
