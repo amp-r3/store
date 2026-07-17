@@ -200,6 +200,41 @@ export const productsApi = createApi({
             }
         }),
 
+        getDealsProducts: builder.query<Product[], { limit?: number } | void>({
+            async queryFn(params) {
+                try {
+                    const limit = params?.limit ?? 12;
+
+                    const { data, error } = await supabase
+                        .from('products_view')
+                        .select('*')
+                        .gt('discountPercentage', 0)
+                        .order('discountPercentage', { ascending: false })
+                        .order('id', { ascending: true })
+                        .limit(limit);
+
+                    if (error) {
+                        return {
+                            error: { status: error.code, data: error.message }
+                        };
+                    }
+
+                    return { data: data as Product[] };
+                } catch (err: any) {
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: err.message }
+                    };
+                }
+            },
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map((product) => ({ type: 'Product' as const, id: product.id })),
+                        { type: 'Product', id: 'DEALS' },
+                    ]
+                    : [{ type: 'Product', id: 'DEALS' }],
+        }),
+
         checkPurchaseStatus: builder.query<string | null, number>({
             async queryFn(productId) {
                 try {
@@ -222,4 +257,5 @@ export const {
     useGetProductArrayByIdQuery,
     useGetSizesQuery,
     useCheckPurchaseStatusQuery,
+    useGetDealsProductsQuery,
 } = productsApi;
