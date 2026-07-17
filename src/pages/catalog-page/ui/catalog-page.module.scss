@@ -1,0 +1,11 @@
+@use '@/app/styles/index' as *;
+
+.catalogPage {
+    &__breadcrumbs {
+        margin: $spacing-lg 0;
+
+        @media (max-width: 600px) {
+            margin: $spacing-md 0;
+        }
+    }
+}
