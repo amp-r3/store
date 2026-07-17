@@ -7,6 +7,14 @@
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--text-secondary);
+
+  &--overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: $z-index-fixed;
+    width: 100%;
+  }
 }
 
 .container {

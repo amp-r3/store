@@ -1,0 +1,106 @@
+@use '@/app/styles/index' as *;
+
+.hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    text-align: center;
+
+    background:
+        radial-gradient(ellipse at top, rgba(var(--primary-accent-rgb), 0.22), transparent 60%),
+        radial-gradient(ellipse at bottom, rgba(var(--secondary-accent-rgb), 0.1), transparent 55%),
+        linear-gradient(180deg, var(--gradient-body-start), var(--background-body));
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle at 1px 1px, rgba(var(--primary-accent-rgb), 0.14) 1px, transparent 0);
+        background-size: 28px 28px;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    &__content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $spacing-lg;
+        max-width: 40rem;
+        padding-bottom: calc($spacing-xxl + $touch-target-comfortable + $safe-area-bottom);
+
+        @media (max-width: 525px) {
+            padding-bottom: calc($spacing-xl + $touch-target-comfortable + $safe-area-bottom);
+        }
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: clamp(2.25rem, 6vw, 4rem);
+        font-weight: $fw-black;
+        line-height: $lh-tight;
+        letter-spacing: $letter-spacing-tight;
+        color: var(--text-primary);
+        background: linear-gradient(135deg, var(--gradient-logo-start), var(--gradient-logo-mid-1) 45%, var(--gradient-logo-mid-2));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    &__subtitle {
+        font-size: $fs-md;
+        line-height: $lh-relaxed;
+        color: var(--text-secondary);
+        max-width: 34rem;
+
+        @media (max-width: 525px) {
+            font-size: $fs-base;
+        }
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: $touch-target-comfortable;
+        padding: $spacing-sm $spacing-xxl;
+        margin-top: $spacing-sm;
+        border-radius: $radius-pill;
+        background: linear-gradient(135deg, var(--primary-accent-light), var(--primary-accent));
+        color: var(--text-on-accent);
+        font-family: $font-primary;
+        font-size: $fs-base;
+        font-weight: $fw-semibold;
+        box-shadow: var(--shadow-accent);
+        transition:
+            transform $transition-base $ease-out-expo,
+            box-shadow $transition-base $ease-out-expo;
+
+        @media (hover: hover) {
+            &:hover {
+                transform: $hover-lift;
+                box-shadow: var(--shadow-accent-hover);
+            }
+        }
+
+        &:active {
+            transform: scale($button-pressed-scale);
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid var(--focus-ring-color);
+            outline-offset: $focus-ring-offset;
+            box-shadow: var(--shadow-focus-button);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            transition-duration: $transition-reduced;
+        }
+    }
+}

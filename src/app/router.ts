@@ -4,7 +4,7 @@ import { MainLayout } from "@/app/layouts/MainLayout/MainLayout";
 import RootLayout from "@/app/layouts/RootLayout/RootLayout";
 import { ProtectedRoute } from "@/app/providers/ProtectedRoute/ProtectedRoute";
 import { PublicRoute } from "@/app/providers/PublicRoute/PublicRoute";
-import CatalogPage from "@/pages/catalog-page";
+import HomePage from "@/pages/home-page";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
@@ -19,7 +19,14 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: CatalogPage
+            Component: HomePage
+          },
+          {
+            path: 'catalog',
+            lazy: async () => {
+              const module = await import("@/pages/catalog-page");
+              return { Component: module.default }
+            },
           },
           {
             path: 'product/:id',

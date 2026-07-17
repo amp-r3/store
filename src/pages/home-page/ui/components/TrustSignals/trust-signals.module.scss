@@ -1,0 +1,81 @@
+@use '@/app/styles/index' as *;
+
+.trustSignals {
+    padding: $spacing-xxl 0;
+
+    @media (max-width: 600px) {
+        padding: $spacing-xl 0;
+    }
+
+    &__title {
+        font-family: $font-display;
+        text-align: center;
+        font-size: $fs-xl;
+        font-weight: $fw-bold;
+        color: var(--text-primary);
+        margin-bottom: $spacing-xl;
+
+        @media (max-width: 600px) {
+            font-size: $fs-lg;
+            margin-bottom: $spacing-lg;
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: $spacing-lg;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $spacing-sm;
+        padding: $spacing-xl $spacing-lg;
+        text-align: center;
+        background: var(--background-component);
+        border: 1px solid var(--border-color-subtle);
+        border-radius: $radius-lg;
+        box-shadow: var(--shadow-card);
+        transition:
+            transform $transition-base $ease-out-expo,
+            box-shadow $transition-base $ease-out-expo;
+
+        @media (hover: hover) {
+            &:hover {
+                transform: $hover-lift;
+                box-shadow: var(--shadow-default);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            transition-duration: $transition-reduced;
+        }
+    }
+
+    &__icon {
+        font-family: $font-display;
+        font-size: $fs-xxl;
+        font-weight: $fw-black;
+        color: var(--primary-accent);
+        line-height: $lh-ui;
+    }
+
+    &__cardTitle {
+        font-family: $font-display;
+        font-size: $fs-md;
+        font-weight: $fw-semibold;
+        color: var(--text-primary);
+    }
+
+    &__cardDescription {
+        font-size: $fs-sm;
+        line-height: $lh-normal;
+        color: var(--text-secondary);
+    }
+}

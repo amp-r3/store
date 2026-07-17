@@ -3,7 +3,7 @@ import { useLocation, useSearchParams } from "react-router";
 
 export function useSearch() {
     const location = useLocation();
-    const isHomePage = location.pathname === '/';
+    const isCatalogPage = location.pathname === '/catalog';
     const [searchParams, setSearchParams] = useSearchParams();
     
     const queryFromUrl = searchParams.get('q') || '';
@@ -49,6 +49,6 @@ export function useSearch() {
         inputValue,
         handleSearch,
         handleClear,
-        isHomePage
+        isCatalogPage
     };
 }

@@ -5,12 +5,16 @@ import { selectIsAuth, selectUserName } from '@/entities/session';
 import style from './header.module.scss';
 import { useAppSelector } from "@/shared/model";
 
-export const Header = () => {
+interface HeaderProps {
+  isOverlay?: boolean;
+}
+
+export const Header = ({ isOverlay = false }: HeaderProps) => {
   const isAuth = useAppSelector(selectIsAuth);
   const userName = useAppSelector(selectUserName);
 
   return (
-    <header className={style.topbar}>
+    <header className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''}`}>
       <div className={`${style.container} container`}>
         <div className={style.navGroup}>
           <a

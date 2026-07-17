@@ -1,0 +1,68 @@
+@use '@/app/styles/index' as *;
+
+.categoryRow {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: $spacing-md;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: $fs-lg;
+        font-weight: $fw-semibold;
+        color: var(--text-primary);
+        text-transform: capitalize;
+    }
+
+    &__viewAll {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        padding: $spacing-xs $spacing-sm;
+        margin: calc($spacing-xs * -1) calc($spacing-sm * -1);
+        border-radius: $radius-sm;
+        font-size: $fs-sm;
+        font-weight: $fw-semibold;
+        color: var(--primary-accent);
+        white-space: nowrap;
+        transition: color $transition-fast;
+
+        &:hover {
+            color: var(--primary-accent-light);
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid var(--focus-ring-color);
+            outline-offset: $focus-ring-offset;
+        }
+    }
+
+    &__item {
+        display: flex;
+        width: 240px;
+
+        @media (max-width: 768px) {
+            width: 200px;
+        }
+
+        @media (max-width: 480px) {
+            width: 165px;
+        }
+    }
+
+    &__skeletonTrack {
+        display: flex;
+        gap: $spacing-lg;
+        overflow: hidden;
+
+        @media (max-width: 600px) {
+            gap: $spacing-md;
+        }
+    }
+}

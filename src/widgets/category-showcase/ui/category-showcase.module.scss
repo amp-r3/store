@@ -1,0 +1,19 @@
+@use '@/app/styles/index' as *;
+
+.categoryShowcase {
+    padding: $spacing-xxl 0;
+
+    @media (max-width: 600px) {
+        padding: $spacing-xl 0;
+    }
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xxl;
+
+        @media (max-width: 600px) {
+            gap: $spacing-xl;
+        }
+    }
+}

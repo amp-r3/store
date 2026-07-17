@@ -1,0 +1,79 @@
+@use '@/app/styles/index' as *;
+
+.horizontalScroll {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    &__track {
+        display: flex;
+        gap: $spacing-lg;
+        flex: 1;
+        min-width: 0;
+        padding-block: $spacing-sm;
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+
+        @media (prefers-reduced-motion: reduce) {
+            scroll-behavior: auto;
+        }
+
+        @media (hover: hover) and (min-width: 768px) {
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid var(--focus-ring-color);
+            outline-offset: $focus-ring-offset;
+        }
+
+        >* {
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+        }
+    }
+
+    &__arrow {
+        display: none;
+        flex-shrink: 0;
+        width: $touch-target-comfortable;
+        height: $touch-target-comfortable;
+        border-radius: $radius-circle;
+        background: var(--glass-background);
+        backdrop-filter: $backdrop-blur-sm;
+        border: 1px solid var(--border-color-light);
+        color: var(--text-primary);
+        font-size: $fs-icon-md;
+        transition:
+            background-color $transition-fast $ease-out-expo,
+            box-shadow $transition-fast $ease-out-expo,
+            opacity $transition-fast;
+
+        @media (hover: hover) and (min-width: 768px) {
+            display: grid;
+            place-items: center;
+        }
+
+        &:hover:not(:disabled) {
+            background: var(--glass-background-strong);
+            box-shadow: var(--shadow-accent-sm);
+        }
+
+        &:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid var(--focus-ring-color);
+            outline-offset: $focus-ring-offset;
+        }
+    }
+}

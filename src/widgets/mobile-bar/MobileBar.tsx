@@ -4,7 +4,7 @@ import { useSearch } from "@/features/product-search";
 import { SearchForm } from "@/features/product-search";
 
 export const MobileBar = () => {
-    const { handleSearch, inputValue, handleClear,  isHomePage } = useSearch();
+    const { handleSearch, inputValue, handleClear, isCatalogPage } = useSearch();
 
     const [isVisible, setIsVisible] = useState(true);
     const [isFocused, setIsFocused] = useState(false);
@@ -45,7 +45,7 @@ export const MobileBar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isFocused]);
 
-    const hiddenClass = (!isVisible || !isHomePage) ? style['navbar--hidden'] : '';
+    const hiddenClass = (!isVisible || !isCatalogPage) ? style['navbar--hidden'] : '';
 
     return (
         <>
@@ -54,7 +54,7 @@ export const MobileBar = () => {
                 inputValue={inputValue}
                 handleSearch={handleSearch}
                 handleClear={handleClear}
-                isHomePage={isHomePage}
+                isCatalogPage={isCatalogPage}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
             />

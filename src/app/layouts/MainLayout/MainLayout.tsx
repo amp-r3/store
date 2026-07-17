@@ -1,4 +1,4 @@
-import { useNavigation, Outlet } from 'react-router';
+import { useNavigation, useLocation, Outlet } from 'react-router';
 import { Suspense } from 'react';
 
 // Custom Components
@@ -23,10 +23,12 @@ import { ReviewModal } from "@/features/order-review";
 
 export const MainLayout = () => {
     const navigation = useNavigation();
+    const location = useLocation();
     const dispatch = useAppDispatch();
     useAuthSync();
     const isOpen = useAppSelector(selectIsCartOpen);
     const isLoading = navigation.state === 'loading';
+    const isHomePage = location.pathname === '/';
 
     const handleClose = () => {
         dispatch(closeCart())
@@ -35,11 +37,15 @@ export const MainLayout = () => {
 
     return (
         <>
-            <Header />
-            <div className={style.layout}>
-                <div className={style.header}>
-                    <Navbar />
-                </div>
+            <Header isOverlay={isHomePage} />
+            <div className={`${style.layout} ${isHomePage ? style['layout--flush'] : ''}`}>
+                {
+                    !isHomePage && (
+                        <div className={style.header}>
+                            <Navbar />
+                        </div>
+                    )
+                }
                 <TopBarLoader isLoading={isLoading} />
                 <Suspense fallback={<Loader />}>
                     <Outlet />

@@ -7,7 +7,7 @@ interface SearchFormProps {
     inputValue: string;
     handleSearch: (e: ChangeEvent<HTMLInputElement>) => void;
     handleClear: () => void;
-    isHomePage: boolean;
+    isCatalogPage: boolean;
     onFocus?: () => void;
     onBlur?: () => void;
 }
@@ -16,7 +16,7 @@ export const SearchForm: FC<SearchFormProps> = ({
     inputValue,
     handleSearch,
     handleClear,
-    isHomePage,
+    isCatalogPage,
     onFocus,
     onBlur
 
@@ -50,7 +50,7 @@ export const SearchForm: FC<SearchFormProps> = ({
                     value={inputValue}
                     onChange={handleSearch}
                     onKeyDown={handleKeyDown}
-                    disabled={!isHomePage}
+                    disabled={!isCatalogPage}
                     onFocus={onFocus}
                     onBlur={onBlur}
                 />

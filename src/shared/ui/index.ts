@@ -9,3 +9,4 @@ export * from './no-results/NoResults';
 export * from './top-bar-loader/TopBarLoader';
 export * from './share-copy-btn/ShareCopyBtn';
 export * from './pagination/Pagination';
+export * from './horizontal-scroll/HorizontalScroll';

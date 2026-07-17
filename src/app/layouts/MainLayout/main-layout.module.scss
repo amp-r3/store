@@ -4,6 +4,10 @@
     padding-top: $header-height;
     min-height: 100vh;
     padding-bottom: $header-height;
+
+    &--flush {
+        padding-top: 0;
+    }
 }
 
 .mobileBar {

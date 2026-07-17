@@ -15,7 +15,7 @@ export const CheckoutGuard = () => {
   const hasItems = data && Object.keys(data).length > 0;
 
   if (!hasItems && !orderId) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/catalog" replace />;
   }
 
   return <Outlet />;
