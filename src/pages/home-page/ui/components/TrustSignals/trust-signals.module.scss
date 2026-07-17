@@ -38,18 +38,21 @@
         gap: $spacing-sm;
         padding: $spacing-xl $spacing-lg;
         text-align: center;
-        background: var(--background-component);
-        border: 1px solid var(--border-color-subtle);
+        background: var(--glass-background);
+        backdrop-filter: $backdrop-blur;
+        border: 1px solid var(--glass-border-subtle);
         border-radius: $radius-lg;
         box-shadow: var(--shadow-card);
         transition:
             transform $transition-base $ease-out-expo,
-            box-shadow $transition-base $ease-out-expo;
+            box-shadow $transition-base $ease-out-expo,
+            border-color $transition-base $ease-out-expo;
 
         @media (hover: hover) {
             &:hover {
                 transform: $hover-lift;
                 box-shadow: var(--shadow-default);
+                border-color: rgba(var(--primary-accent-rgb), 0.3);
             }
         }
 
@@ -62,8 +65,12 @@
         font-family: $font-display;
         font-size: $fs-xxl;
         font-weight: $fw-black;
-        color: var(--primary-accent);
         line-height: $lh-ui;
+        letter-spacing: $letter-spacing-tight;
+        background: linear-gradient(135deg, var(--gradient-logo-start), var(--gradient-logo-mid-1) 45%, var(--gradient-logo-mid-2));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     &__cardTitle {

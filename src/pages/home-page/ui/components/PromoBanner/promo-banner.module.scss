@@ -1,0 +1,101 @@
+@use '@/app/styles/index' as *;
+
+.promoBanner {
+    padding: $spacing-xxl 0;
+
+    @media (max-width: 600px) {
+        padding: $spacing-xl 0;
+    }
+
+    &__card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: $spacing-md;
+        overflow: hidden;
+        padding: $spacing-xxl $spacing-xl;
+        border-radius: $radius-xl;
+        background: var(--glass-background);
+        backdrop-filter: $backdrop-blur;
+        border: 1px solid var(--glass-border-subtle);
+
+        @media (max-width: 600px) {
+            padding: $spacing-xl $spacing-lg;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at top, rgba(var(--primary-accent-rgb), 0.18), transparent 65%);
+            pointer-events: none;
+        }
+    }
+
+    &__title {
+        position: relative;
+        z-index: 1;
+        font-family: $font-display;
+        font-size: clamp($fs-xl, 4vw, $fs-xxl);
+        font-weight: $fw-bold;
+        letter-spacing: $letter-spacing-tight;
+        color: var(--text-primary);
+        background: linear-gradient(135deg, var(--gradient-logo-start), var(--gradient-logo-mid-1) 45%, var(--gradient-logo-mid-2));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    &__subtitle {
+        position: relative;
+        z-index: 1;
+        max-width: 30rem;
+        font-size: $fs-md;
+        line-height: $lh-relaxed;
+        color: var(--text-secondary);
+    }
+
+    &__cta {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: $touch-target-comfortable;
+        padding: $spacing-sm $spacing-xxl;
+        margin-top: $spacing-sm;
+        border-radius: $radius-pill;
+        background: linear-gradient(135deg, var(--primary-accent-light), var(--primary-accent));
+        color: var(--text-on-accent);
+        font-family: $font-primary;
+        font-size: $fs-base;
+        font-weight: $fw-semibold;
+        box-shadow: var(--shadow-accent);
+        transition:
+            transform $transition-base $ease-out-expo,
+            box-shadow $transition-base $ease-out-expo;
+
+        @media (hover: hover) {
+            &:hover {
+                transform: $hover-lift;
+                box-shadow: var(--shadow-accent-hover);
+            }
+        }
+
+        &:active {
+            transform: scale($button-pressed-scale);
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid var(--focus-ring-color);
+            outline-offset: $focus-ring-offset;
+            box-shadow: var(--shadow-focus-button);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            transition-duration: $transition-reduced;
+        }
+    }
+}
