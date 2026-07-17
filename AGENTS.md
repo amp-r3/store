@@ -123,7 +123,7 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
   `style['block__element--modifier']`, never raw strings.
 - One module per component, kebab-case, colocated:
   `Component/component-name.module.scss`.
-- Tokens via `@use '@/shared/styles/index' as *;` only — never `@import`.
+- Tokens via `@use '@/app/styles/index' as *;` only — never `@import`.
 - No magic values — use tokens (`$spacing-md`, `$radius-lg`, `$fs-base`,
   `$transition-base`, `$ease-out-expo`…). No hardcoded colors — use CSS custom
   properties (`--primary-accent`, `--text-primary`, `--background-body`,
