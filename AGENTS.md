@@ -116,6 +116,10 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
 - Direct `supabase.*` in components → RTK Query endpoints in an `api/` segment.
 - `useDispatch()`/`useSelector()` → `useAppDispatch()`/`useAppSelector()`.
 - Catalog filters in Redux → URL via `useSearchParams`.
+- `catch (err: any)` → `catch (err)` (already `unknown` under `strict`) +
+  `getErrorMessage(err)` from `shared/lib` for the display string. It handles
+  both RTK Query error shapes (`FetchBaseQueryError`/`SerializedError`) and raw
+  thrown exceptions — don't hand-roll `err?.message || err?.data` per call site.
 
 ## CSS / SCSS
 
@@ -157,6 +161,13 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
   `wishlist.favoriteItems`. RTK Query cache and transient UI state are not persisted.
 - Optimistic updates: `onQueryStarted` + `updateQueryData`, rollback via
   `patchResult.undo()` on error. Derived state: `createSelector` (Reselect) only.
+- Selectors reading only their own slice: type `state` against that slice's own
+  state type via a same-slice import (e.g. `(state: { auth: AuthState }) => ...`
+  in `entities/session/model/authSelectors.ts`), not a hand-rolled `any`. Reserve
+  `SharedRootState` (`shared/model` + `shared/types`) for the genuine cross-entity
+  case — e.g. `reviewApi`'s `onQueryStarted` needing to read `auth.user` from
+  inside the `review` entity, where `getState()`'s own RTK Query type only knows
+  about `reviewApi`'s own slice.
 
 ## Typing
 
@@ -164,6 +175,11 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
   resort, with a comment. Forms: Zod + `react-hook-form` via `@hookform/resolvers/zod`.
 - Shared interfaces in `shared/types/`; local-only types stay in the
   component/model file.
+- `shared/api/supabase.ts` creates the client with no `Database` generic, so
+  `.from().select()` results are implicitly `any`. Define a local response
+  interface next to the `queryFn` (see `entities/order/api/orderApi.ts`'s
+  `*Response` interfaces) and cast once (`data as MyRow[]`) instead of leaving
+  fields untyped or adding explicit `any` on the callback that consumes them.
 
 ## Routing & Performance
 
