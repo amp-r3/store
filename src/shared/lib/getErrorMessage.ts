@@ -1,16 +1,33 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { SerializedError } from '@reduxjs/toolkit';
 
-export const getErrorMessage = (error: FetchBaseQueryError | SerializedError): string => {
-    if ('status' in error) {
-        const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
+export const getErrorMessage = (error: unknown): string => {
+    if (typeof error === 'object' && error !== null && 'status' in error) {
+        const rtkError = error as FetchBaseQueryError;
 
-        if (typeof error.data === 'object' && error.data !== null && 'message' in error.data) {
-            return (error.data as any).message;
+        if (typeof rtkError.data === 'string') {
+            return rtkError.data;
         }
 
+        if (
+            typeof rtkError.data === 'object' &&
+            rtkError.data !== null &&
+            'message' in rtkError.data &&
+            typeof rtkError.data.message === 'string'
+        ) {
+            return rtkError.data.message;
+        }
+
+        const errMsg = 'error' in rtkError ? rtkError.error : JSON.stringify(rtkError.data);
         return errMsg || 'Неизвестная ошибка сервера';
-    } else {
+    }
+
+    if (error instanceof Error) {
         return error.message || 'Произошла неизвестная ошибка';
     }
+
+    if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
+        return error.message || 'Произошла неизвестная ошибка';
+    }
+
+    return 'Произошла неизвестная ошибка';
 };

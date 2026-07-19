@@ -12,6 +12,7 @@ import { FormField, Loader } from "@/shared/ui";
 import { useAuthUrlError } from "@/entities/session";
 import { SignInButton } from "@/features/auth";
 import { LocationState } from "@/shared/types";
+import { getErrorMessage } from "@/shared/lib";
 
 export const LoginPage = () => {
   const navigate = useNavigate()
@@ -47,8 +48,8 @@ export const LoginPage = () => {
     try {
       await login(data).unwrap()
       navigate(from, { replace: true })
-    } catch (err: any) {
-      if (err?.status === 401) {
+    } catch (err) {
+      if (typeof err === 'object' && err !== null && 'status' in err && err.status === 401) {
         setError('email', { message: 'Invalid email or password' })
         setError('password', { message: 'Invalid email or password' })
       }
@@ -60,11 +61,10 @@ export const LoginPage = () => {
       sessionStorage.setItem('oauth_provider', 'Google')
       sessionStorage.setItem('auth_redirect_from', from)
       await signInWithGoogle().unwrap()
-    } catch (err: any) {
-      const errorMessage = err?.data || err?.message || '';
+    } catch (err) {
       setError('root', {
         type: 'server',
-        message: errorMessage || 'An error occurred while logging in. Please try again later.'
+        message: getErrorMessage(err) || 'An error occurred while logging in. Please try again later.'
       });
     }
   }
@@ -74,11 +74,10 @@ export const LoginPage = () => {
       sessionStorage.setItem('oauth_provider', 'Telegram')
       sessionStorage.setItem('auth_redirect_from', from)
       await signInWithTelegram().unwrap()
-    } catch (err: any) {
-      const errorMessage = err?.data || err?.message || '';
+    } catch (err) {
       setError('root', {
         type: 'server',
-        message: errorMessage || 'An error occurred while logging in. Please try again later.'
+        message: getErrorMessage(err) || 'An error occurred while logging in. Please try again later.'
       });
     }
   }

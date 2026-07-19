@@ -7,6 +7,7 @@ import { FormField, Loader } from "@/shared/ui"
 import style from './user-profile-form.module.scss';
 import { SessionUser } from "@/entities/session"
 import { LuAtSign, LuMail, LuUser } from "react-icons/lu"
+import { getErrorMessage } from "@/shared/lib"
 
 
 interface UserProfileFormProps {
@@ -42,10 +43,10 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
       await updateProfile(data).unwrap()
       onSuccess()
       navigate('/', { replace: true })
-    } catch (err: any) {
+    } catch (err) {
       console.error('Registration error details:', JSON.stringify(err, null, 2));
 
-      const errorMessage = err?.data || err?.message || '';
+      const errorMessage = getErrorMessage(err);
 
       const errText = errorMessage.toLowerCase();
 

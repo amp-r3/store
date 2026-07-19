@@ -1,6 +1,7 @@
 import { supabase } from "@/shared/api";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Product, ProductSize } from "@/entities/product";
+import { getErrorMessage } from "@/shared/lib";
 
 
 export interface Category {
@@ -83,9 +84,9 @@ export const productsApi = createApi({
                             total: count ?? 0
                         }
                     };
-                } catch (err: any) {
+                } catch (err) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: err.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
                     };
                 }
             },
@@ -118,9 +119,9 @@ export const productsApi = createApi({
 
                     return { data: [defaultCategory, ...(data || [])] as Categories };
 
-                } catch (err: any) {
+                } catch (err) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: err.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
                     };
                 }
             },
@@ -143,9 +144,9 @@ export const productsApi = createApi({
                     }
 
                     return { data: data as Product };
-                } catch (err: any) {
+                } catch (err) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: err.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
                     };
                 }
             },
@@ -167,9 +168,9 @@ export const productsApi = createApi({
                     }
 
                     return { data: data as Product[] };
-                } catch (err: any) {
+                } catch (err) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: err.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
                     };
                 }
             }
@@ -192,9 +193,9 @@ export const productsApi = createApi({
                     }
 
                     return { data: sizes as ProductSize[]}
-                } catch (error: any) {
+                } catch (error) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: error.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
                 }
             }
@@ -220,9 +221,9 @@ export const productsApi = createApi({
                     }
 
                     return { data: data as Product[] };
-                } catch (err: any) {
+                } catch (err) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: err.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
                     };
                 }
             },
@@ -241,8 +242,8 @@ export const productsApi = createApi({
                     const { data, error } = await supabase.rpc('get_last_purchase_date', { p_product_id: productId });
                     if (error) throw error;
                     return { data: data as string | null };
-                } catch (error: any) {
-                    return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+                } catch (error) {
+                    return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
                 }
             },
             providesTags: ['PurchaseHistory']

@@ -1,5 +1,6 @@
 import { supabase } from "@/shared/api";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getErrorMessage } from "@/shared/lib";
 
 export const wishlistApi = createApi({
   reducerPath: 'wishlistApi',
@@ -33,8 +34,8 @@ export const wishlistApi = createApi({
           }
 
           return { data: formattedWishlist };
-        } catch (error: any) {
-          return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
       providesTags: ['Wishlist']
@@ -72,8 +73,8 @@ export const wishlistApi = createApi({
           }
 
           return { data: null };
-        } catch (error: any) {
-          return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
 
@@ -128,8 +129,8 @@ export const wishlistApi = createApi({
           }
 
           return { data: null };
-        } catch (error: any) {
-          return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
       invalidatesTags: ['Wishlist']

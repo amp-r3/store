@@ -19,6 +19,7 @@ import { useAppSelector } from "@/shared/model";
 import { useCheckoutDetails } from "@/features/checkout-process";
 import { selectCartItemsArray } from "@/entities/cart";
 import { STEPS_ORDER, StepType } from "@/features/checkout-process";
+import { getErrorMessage } from "@/shared/lib";
 
 export const CheckoutPage = () => {
   const navigate = useNavigate()
@@ -155,8 +156,8 @@ export const CheckoutPage = () => {
         state: { orderId },
         replace: true
       });
-    } catch (err: any) {
-      setError(err?.data || 'An error occurred');
+    } catch (err) {
+      setError(getErrorMessage(err));
     }
   };
 

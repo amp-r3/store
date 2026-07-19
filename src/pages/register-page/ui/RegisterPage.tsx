@@ -13,6 +13,8 @@ import { useAuthUrlError } from "@/entities/session";
 import { SignInButton } from "@/features/auth";
 import { PasswordRequirements } from "./password-requirements/PasswordRequirements";
 import { LocationState } from "@/shared/types";
+import { getErrorMessage } from "@/shared/lib";
+
 export const RegisterPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -50,10 +52,10 @@ export const RegisterPage = () => {
     try {
       await register(formData).unwrap();
       navigate(from, { replace: true });
-    } catch (err: any) {
+    } catch (err) {
       console.error('Registration error details:', JSON.stringify(err, null, 2));
 
-      const errorMessage = err?.data || err?.message || '';
+      const errorMessage = getErrorMessage(err);
 
       const errText = errorMessage.toLowerCase();
 
@@ -83,11 +85,10 @@ export const RegisterPage = () => {
       sessionStorage.setItem('oauth_provider', 'Google')
       sessionStorage.setItem('auth_redirect_from', from)
       await signInWithGoogle().unwrap()
-    } catch (err: any) {
-      const errorMessage = err?.data || err?.message || '';
+    } catch (err) {
       setError('root', {
         type: 'server',
-        message: errorMessage || 'An error occurred while registering. Please try again later.'
+        message: getErrorMessage(err) || 'An error occurred while registering. Please try again later.'
       });
     }
   }
@@ -96,11 +97,10 @@ export const RegisterPage = () => {
       sessionStorage.setItem('oauth_provider', 'Telegram')
       sessionStorage.setItem('auth_redirect_from', from)
       await signInWithTelegram().unwrap()
-    } catch (err: any) {
-      const errorMessage = err?.data || err?.message || '';
+    } catch (err) {
       setError('root', {
         type: 'server',
-        message: errorMessage || 'An error occurred while registering. Please try again later.'
+        message: getErrorMessage(err) || 'An error occurred while registering. Please try again later.'
       });
     }
   }

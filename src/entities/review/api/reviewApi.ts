@@ -3,6 +3,7 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { productsApi } from "@/entities/product";
 import { ProductReview } from "@/entities/review";
 import { SharedRootState } from "@/shared/model";
+import { getErrorMessage } from "@/shared/lib";
 
 const pendingLikes = new Set<number>();
 
@@ -90,9 +91,9 @@ export const reviewApi = createApi({
                     });
 
                     return { data: reviews };
-                } catch (error: any) {
+                } catch (error) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: error.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
                 }
             },
@@ -115,9 +116,9 @@ export const reviewApi = createApi({
                     }
 
                     return { data: undefined };
-                } catch (error: any) {
+                } catch (error) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: error.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
                 }
             },
@@ -187,9 +188,9 @@ export const reviewApi = createApi({
                     }
 
                     return { data: !!data };
-                } catch (error: any) {
+                } catch (error) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: error.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
                 } finally {
                     pendingLikes.delete(reviewId);
@@ -244,9 +245,9 @@ export const reviewApi = createApi({
                     }
 
                     return { data: undefined };
-                } catch (error: any) {
+                } catch (error) {
                     return {
-                        error: { status: 'CUSTOM_ERROR', data: error.message }
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
                 }
             },

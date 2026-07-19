@@ -1,6 +1,7 @@
 import { supabase } from "@/shared/api";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { CartData } from "@/entities/cart";
+import { getErrorMessage } from "@/shared/lib";
 
 type QuantityAction = 'inc' | 'dec';
 
@@ -48,8 +49,8 @@ export const cartApi = createApi({
           }
 
           return { data: formattedCart };
-        } catch (error: any) {
-          return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
       providesTags: ['Cart']
@@ -100,8 +101,8 @@ export const cartApi = createApi({
           }
 
           return { data: null };
-        } catch (error: any) {
-          return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
 
@@ -158,8 +159,8 @@ export const cartApi = createApi({
           }
 
           return { data: null };
-        } catch (error: any) {
-          return { error: { status: error.code, data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
 
@@ -205,8 +206,8 @@ export const cartApi = createApi({
           }
 
           return { data: null };
-        } catch (error: any) {
-          return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
       invalidatesTags: ['Cart']
@@ -232,8 +233,8 @@ export const cartApi = createApi({
           }
 
           return { data: null };
-        } catch (error: any) {
-          return { error: { status: 'CUSTOM_ERROR', data: error.message } };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
 
