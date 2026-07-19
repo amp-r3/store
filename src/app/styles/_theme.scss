@@ -96,6 +96,11 @@
   --glass-background-strong: rgba(35, 35, 41, 0.72);
   --glass-background-fallback: rgba(35, 35, 41, 0.94);
   --glass-border-subtle: rgba(184, 167, 240, 0.10);
+  --glass-highlight: rgba(255, 255, 255, 0.05);
+  --glass-highlight-strong: rgba(255, 255, 255, 0.08);
+
+  // --- Overlays ---
+  --overlay-backdrop: rgba(0, 0, 0, 0.4);
 
   // --- Navbar Specific Backgrounds ---
   --navbar-bg-default: rgba(35, 35, 41, 0.52);

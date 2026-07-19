@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import { FaUser, FaBoxOpen, FaStar } from 'react-icons/fa6';
 import { CgLogOut } from 'react-icons/cg';
@@ -14,7 +14,7 @@ interface ProfileSidebarProps {
   user: SessionUser;
 }
 
-export const ProfileSidebar = ({ user }: ProfileSidebarProps) => {
+export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -95,4 +95,6 @@ export const ProfileSidebar = ({ user }: ProfileSidebarProps) => {
       />
     </aside>
   );
-};
+});
+
+ProfileSidebar.displayName = 'ProfileSidebar';

@@ -1,12 +1,9 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 
-import { selectUser } from '@/entities/session';
-import { Breadcrumbs } from '@/shared/ui';
-import { useAppSelector, useAppDispatch } from '@/shared/model';
+import { useAppDispatch } from '@/shared/model';
 import { useMediaQuery, useHaptics } from '@/shared/lib/hooks';
 import { scrollToTop } from '@/shared/lib';
-import { ProfileSidebar } from '@/widgets/profile-sidebar';
 import { OrdersList } from '@/widgets/orders-list';
 import { OrderDetails } from '@/widgets/order-details';
 import { CartProduct } from '@/entities/cart';
@@ -35,7 +32,6 @@ const formatOrderDate = (dateStr: string) =>
     });
 
 export const UserOrdersPage = () => {
-    const user = useAppSelector(selectUser);
     const dispatch = useAppDispatch();
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { soft } = useHaptics();
@@ -151,66 +147,48 @@ export const UserOrdersPage = () => {
         [products]
     );
 
-    if (!user) return null;
-
     return (
-        <main className={`container ${style.page}`}>
-            <div className={style.header__wrapper}>
-                <Breadcrumbs
-                    items={[
-                        { label: 'Home', path: '/' },
-                        { label: 'Profile', path: '/user' },
-                        { label: 'Orders' },
-                    ]}
-                />
+        <>
+            <header className={style.contentHeader}>
+                <h1 className={style.title}>My Orders</h1>
+                <p className={style.subtitle}>
+                    Track active orders and look back at everything you&apos;ve completed.
+                </p>
+            </header>
+
+            <UserOrdersTabs tab={tab} counts={counts} onChange={handleTabChange} />
+
+            <div
+                className={style.contentBody}
+                role="tabpanel"
+                id={`user-orders-panel-${tab}`}
+                aria-labelledby={`user-orders-tab-${tab}`}
+                aria-live="polite"
+            >
+                {!isLoading && orders.length === 0 ? (
+                    <UserOrdersEmpty
+                        variant={tab}
+                        hasOtherTabOrders={tab === 'active' ? (counts?.completed ?? 0) > 0 : (counts?.active ?? 0) > 0}
+                    />
+                ) : (
+                    <OrdersList
+                        orders={orders}
+                        totalItems={totalCount}
+                        selectedOrderId={orderId}
+                        currentPage={page}
+                        itemsPerPage={limit}
+                        thumbnailsById={isProductsLoading ? undefined : thumbnailsById}
+                        formatOrderDate={formatOrderDate}
+                        onCardClick={openOrder}
+                        onPageChange={handlePageChange}
+                        onLoadMore={loadMore}
+                        hasMore={orders.length < totalCount}
+                        isMobile={isMobile}
+                        isLoading={isLoading}
+                        isFetching={isFetching}
+                    />
+                )}
             </div>
-
-            <article className={style.pageWrapper}>
-                <ProfileSidebar user={user} />
-
-                <section className={style.contentArea}>
-                    <header className={style.contentHeader}>
-                        <h1 className={style.title}>My Orders</h1>
-                        <p className={style.subtitle}>
-                            Track active orders and look back at everything you&apos;ve completed.
-                        </p>
-                    </header>
-
-                    <UserOrdersTabs tab={tab} counts={counts} onChange={handleTabChange} />
-
-                    <div
-                        className={style.contentBody}
-                        role="tabpanel"
-                        id={`user-orders-panel-${tab}`}
-                        aria-labelledby={`user-orders-tab-${tab}`}
-                        aria-live="polite"
-                    >
-                        {!isLoading && orders.length === 0 ? (
-                            <UserOrdersEmpty
-                                variant={tab}
-                                hasOtherTabOrders={tab === 'active' ? (counts?.completed ?? 0) > 0 : (counts?.active ?? 0) > 0}
-                            />
-                        ) : (
-                            <OrdersList
-                                orders={orders}
-                                totalItems={totalCount}
-                                selectedOrderId={orderId}
-                                currentPage={page}
-                                itemsPerPage={limit}
-                                thumbnailsById={isProductsLoading ? undefined : thumbnailsById}
-                                formatOrderDate={formatOrderDate}
-                                onCardClick={openOrder}
-                                onPageChange={handlePageChange}
-                                onLoadMore={loadMore}
-                                hasMore={orders.length < totalCount}
-                                isMobile={isMobile}
-                                isLoading={isLoading}
-                                isFetching={isFetching}
-                            />
-                        )}
-                    </div>
-                </section>
-            </article>
 
             {activeOrder && (
                 <OrderDetails
@@ -239,6 +217,6 @@ export const UserOrdersPage = () => {
                     dispatch(openReviewModal(item.product.id.toString()));
                 }}
             />
-        </main>
+        </>
     );
 };

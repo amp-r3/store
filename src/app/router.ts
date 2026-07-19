@@ -2,6 +2,7 @@ import { ErrorView } from "@/shared/ui";
 import { CheckoutGuard } from "@/app/providers/CheckoutGuard/CheckoutGuard";
 import { MainLayout } from "@/app/layouts/MainLayout/MainLayout";
 import RootLayout from "@/app/layouts/RootLayout/RootLayout";
+import { UserLayout } from "@/app/layouts/UserLayout/UserLayout";
 import { ProtectedRoute } from "@/app/providers/ProtectedRoute/ProtectedRoute";
 import { PublicRoute } from "@/app/providers/PublicRoute/PublicRoute";
 import HomePage from "@/pages/home-page";
@@ -47,24 +48,30 @@ export const router = createBrowserRouter([
             children: [
               {
                 path: 'user',
-                lazy: async () => {
-                  const module = await import("@/pages/user-page")
-                  return { Component: module.default }
-                }
-              },
-              {
-                path: 'user/reviews',
-                lazy: async () => {
-                  const module = await import("@/pages/user-reviews-page")
-                  return { Component: module.default }
-                }
-              },
-              {
-                path: 'user/orders',
-                lazy: async () => {
-                  const module = await import("@/pages/user-orders-page")
-                  return { Component: module.default }
-                }
+                Component: UserLayout,
+                children: [
+                  {
+                    index: true,
+                    lazy: async () => {
+                      const module = await import("@/pages/user-page")
+                      return { Component: module.default }
+                    }
+                  },
+                  {
+                    path: 'reviews',
+                    lazy: async () => {
+                      const module = await import("@/pages/user-reviews-page")
+                      return { Component: module.default }
+                    }
+                  },
+                  {
+                    path: 'orders',
+                    lazy: async () => {
+                      const module = await import("@/pages/user-orders-page")
+                      return { Component: module.default }
+                    }
+                  }
+                ]
               }
             ]
           },
