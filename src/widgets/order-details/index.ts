@@ -1,1 +1,1 @@
-export * from './OrderDetails';
+export * from './ui/OrderDetails';
