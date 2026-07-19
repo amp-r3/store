@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface ReviewModalState {
+export interface ReviewModalState {
   isOpen: boolean;
   productId: string | null;
   /** Rating to pre-select when opening from a star click; ignored when editing. */

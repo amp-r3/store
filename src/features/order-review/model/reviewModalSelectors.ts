@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
-import { RootState } from '@/app/store';
+import type { ReviewModalState } from './reviewModalSlice';
 
-const selectReviewModalState = (state: RootState) => state.reviewModal;
+const selectReviewModalState = (state: { reviewModal: ReviewModalState }) => state.reviewModal;
 
 export const selectIsReviewModalOpen = createSelector(
   [selectReviewModalState],

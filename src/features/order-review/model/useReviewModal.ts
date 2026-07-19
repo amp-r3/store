@@ -7,6 +7,7 @@ import { useAppSelector } from "@/shared/model";
 import { closeReviewModal } from './reviewModalSlice';
 import { selectIsReviewModalOpen, selectReviewModalProductId, selectReviewModalInitialRating } from './reviewModalSelectors';
 import { useGetReviewsQuery, useAddOrUpdateReviewMutation } from '@/entities/review';
+import { selectUser } from '@/entities/session';
 import { useHaptics } from '@/shared/lib/hooks';
 
 export const useReviewModal = () => {
@@ -14,7 +15,7 @@ export const useReviewModal = () => {
   const isOpen = useAppSelector(selectIsReviewModalOpen);
   const productId = useAppSelector(selectReviewModalProductId);
   const initialRating = useAppSelector(selectReviewModalInitialRating);
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector(selectUser);
   const haptics = useHaptics();
   
   const { data: reviews } = useGetReviewsQuery(Number(productId), { skip: !productId });
