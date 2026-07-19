@@ -2,6 +2,7 @@ import { supabase } from "@/shared/api";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { productsApi } from "@/entities/product";
 import { ProductReview } from "@/entities/review";
+import { SharedRootState } from "@/shared/model";
 
 const pendingLikes = new Set<number>();
 
@@ -122,7 +123,7 @@ export const reviewApi = createApi({
             },
             invalidatesTags: (_result, _error, { productId }) => [{ type: 'Review', id: productId }],
             async onQueryStarted({ productId, rating, comment, reviewerName, userId }, { dispatch, queryFulfilled, getState }) {
-                const state = getState() as any;
+                const state = getState() as unknown as SharedRootState;
                 const authUser = state.auth?.user;
 
                 const resolvedUserId = userId || authUser?.id || 'temp-user-id';

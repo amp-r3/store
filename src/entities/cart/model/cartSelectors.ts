@@ -1,8 +1,8 @@
-import { SharedRootState } from "@/shared/model";
 import { createSelector } from "@reduxjs/toolkit";
+import { CartState } from "./cartSlice";
 
-export const selectCartItemsMap = (state: SharedRootState) => state.cart.items;
-export const selectIsCartOpen = (state: SharedRootState) => state.cart.isOpen;
+export const selectCartItemsMap = (state: { cart: CartState }) => state.cart.items;
+export const selectIsCartOpen = (state: { cart: CartState }) => state.cart.isOpen;
 
 export interface CartProduct {
     sizeId: number;
@@ -26,7 +26,7 @@ export const selectCartTotalQuantity = createSelector(
         Object.values(itemsMap).reduce((total, item) => total + item.quantity, 0)
 );
 
-export const selectQuantityById = (state: SharedRootState, productId: number) => {
+export const selectQuantityById = (state: { cart: CartState }, productId: number) => {
     return state.cart.items[productId]?.quantity || 0;
 };
 

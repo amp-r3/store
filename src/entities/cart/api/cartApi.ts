@@ -106,7 +106,7 @@ export const cartApi = createApi({
       },
 
       async onQueryStarted({ sizeId, productId, action }, { dispatch, queryFulfilled, getState }) {
-        const state = getState() as any;
+        const state = getState();
         const cartData = cartApi.endpoints.getCart.select()(state).data;
         const currentQty = cartData?.[sizeId]?.quantity ?? 0;
 

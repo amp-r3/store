@@ -50,9 +50,9 @@ export const CheckoutPage = () => {
     defaultValues: {
       paymentMethodId: '',
       deliveryMethodId: '',
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email
+      firstName: user?.firstName ?? undefined,
+      lastName: user?.lastName ?? undefined,
+      email: user?.email ?? undefined
     },
   });
 

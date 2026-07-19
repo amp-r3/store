@@ -1,7 +1,7 @@
-import { SharedRootState } from "@/shared/model";
 import { createSelector } from "reselect";
+import { WishlistState } from "./wishlistSlice";
 
-const selectFavoriteDict = (state: SharedRootState) => state.wishlist.favoriteItems
+const selectFavoriteDict = (state: { wishlist: WishlistState }) => state.wishlist.favoriteItems
 
 export interface WishlistData {
   id: number
@@ -15,6 +15,6 @@ export const selectFavoritesArray = createSelector(
     }))
 )
 
-export const selectIsFavorite = (state: SharedRootState, id: number) => {
+export const selectIsFavorite = (state: { wishlist: WishlistState }, id: number) => {
   return state.wishlist.favoriteItems[id]
 }
