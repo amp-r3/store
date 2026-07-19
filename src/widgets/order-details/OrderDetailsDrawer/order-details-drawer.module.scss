@@ -1,26 +1,12 @@
 @use '@/app/styles/index' as *;
 
-@keyframes pulse-dot {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.5;
-        transform: scale(0.75);
-    }
-}
-
 .order-drawer {
 
     &__overlay {
         position: fixed;
         inset: 0;
         z-index: $z-index-modal-backdrop;
-        background: rgba(0, 0, 0, 0.4);
+        background: var(--overlay-backdrop);
         backdrop-filter: $backdrop-blur-sm;
     }
 

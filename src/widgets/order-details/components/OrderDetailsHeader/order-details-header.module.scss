@@ -1,6 +1,20 @@
 @use '@/app/styles/index' as *;
 @use '@/app/styles/statuses' as status;
 
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.75);
+    }
+}
+
 .header {
     display: flex;
     flex-direction: column;
@@ -102,11 +116,15 @@
 
         &::before {
             content: '';
-            width: 5px;
-            height: 5px;
+            width: $icon-size-xxs;
+            height: $icon-size-xxs;
             border-radius: $radius-circle;
             background: var(--primary-accent);
             animation: pulse-dot $animation-pulse-duration $ease-in-out-smooth infinite;
+
+            @media (prefers-reduced-motion: reduce) {
+                animation: none;
+            }
         }
     }
 

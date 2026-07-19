@@ -102,6 +102,10 @@
         width: $spacing-sm;
         height: $spacing-sm;
         animation: spin 3s linear infinite;
+
+        @media (prefers-reduced-motion: reduce) {
+            animation: none;
+        }
     }
 }
 
