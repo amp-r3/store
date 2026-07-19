@@ -250,7 +250,7 @@ export const cartApi = createApi({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           cartApi.util.updateQueryData('getCart', undefined as never, (draft) => {
-            Object.keys(draft).forEach((key) => delete draft[key as any]);
+            Object.keys(draft).forEach((key) => delete draft[Number(key)]);
           })
         );
         try {

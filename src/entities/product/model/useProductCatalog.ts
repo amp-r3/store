@@ -4,13 +4,14 @@ import { useFilters } from "@/features/product-filter";
 import { usePaginationBounds } from "@/shared/lib/hooks";
 import { getItemsToRender } from "../lib/formatters";
 import { useGetCategoriesQuery, useGetProductsQuery } from "../api/productsApi";
+import { ProductParams } from "../api/productsApi";
 
 const ITEMS_PER_PAGE = 12;
 
 export function useProductCatalog() {
     const [searchParams] = useSearchParams();
     const categories = useGetCategoriesQuery();
-    const filters = useFilters(1, categories as any);
+    const filters = useFilters(1, categories);
 
     const query = searchParams.get('q');
     const categoryId = filters.activeCategoryOption?.slug;
@@ -24,7 +25,7 @@ export function useProductCatalog() {
     }, [filterKey]);
 
     const params = useMemo(() => {
-        const p: Record<string, any> = { page: filters.page };
+        const p: ProductParams = { page: filters.page };
         if (query) p.search = query;
         if (filters.activeSortOption) {
             p.sortBy = filters.activeSortOption.sortBy;
@@ -79,7 +80,7 @@ export function useProductCatalog() {
     );
 
     const itemsToRender = useMemo(
-        () => getItemsToRender(productsResponse as any, !!displayLoading, ITEMS_PER_PAGE),
+        () => getItemsToRender(productsResponse, !!displayLoading, ITEMS_PER_PAGE),
         [productsResponse, displayLoading]
     );
 

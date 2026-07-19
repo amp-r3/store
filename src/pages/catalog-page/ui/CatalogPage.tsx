@@ -43,7 +43,7 @@ export const CatalogPage = () => {
           <ControlPanel
             clearAll={filters.clearAllFilters}
             sortingOptions={filters.sortingOptions}
-            changeSort={filters.changeSort as any}
+            changeSort={filters.changeSort}
             activeSortOption={filters.activeSortOption}
             categoryOptions={filters.categories}
             changeCategory={filters.changeCategory}

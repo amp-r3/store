@@ -132,7 +132,7 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
               return (
               <CartItem
                 key={`${item.productId} ${item.sizeId}`}
-                product={{ ...details, quantity: item.quantity, sizeId: item.sizeId } as any}
+                product={{ ...details, quantity: item.quantity, sizeId: item.sizeId }}
                 readonly
               />
             )})

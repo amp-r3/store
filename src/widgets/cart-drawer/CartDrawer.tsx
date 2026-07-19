@@ -108,16 +108,21 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   <EmptyCart onStartShopping={onStartShopping} />
 
                 ) : (
-                  cartItems.map((item, index) => (
-                    <CartItem
-                      key={item.sizeId}
-                      product={cartDetails[index] as any}
-                      onIncrease={onIncrease}
-                      onDecrease={onDecrease}
-                      onRemove={onRemove}
-                      onClose={onClose}
-                    />
-                  ))
+                  cartItems.map((item, index) => {
+                    const productDetails = cartDetails[index];
+                    if (!productDetails) return null;
+
+                    return (
+                      <CartItem
+                        key={item.sizeId}
+                        product={productDetails}
+                        onIncrease={onIncrease}
+                        onDecrease={onDecrease}
+                        onRemove={onRemove}
+                        onClose={onClose}
+                      />
+                    );
+                  })
                 )}
 
               </div>

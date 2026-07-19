@@ -1,7 +1,5 @@
 import { useSearchParams } from "react-router";
 import { sortingOptions, SortingOption } from "@/features/product-sort";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import { Categories, Category } from "@/entities/product";
 import { useCallback, useMemo } from "react";
 import { catalogParamsSchema } from "@/features/product-filter/model/catalogParamsSchema";
@@ -14,11 +12,11 @@ export interface UseFilterReturn {
     categories: Categories;
     categoriesLoading: boolean;
     categoriesFetching: boolean;
-    categoriesError: FetchBaseQueryError | SerializedError | undefined;
+    categoriesError: unknown;
     activeSortOption: SortingOption;
     activeCategoryOption?: Category;
     sortingOptions: SortingOption[];
-    changeSort(newSortBy?: string, newOrder?: string): void;
+    changeSort(newSortBy: string | null, newOrder: string | null): void;
     changeCategory(newCategory: string | null): void;
     setPage(newPage: number): void;
     clearAllFilters(): void;
@@ -28,7 +26,7 @@ interface CategoriesQueryProps {
     data?: Categories;
     isLoading: boolean;
     isFetching: boolean;
-    error?: FetchBaseQueryError | SerializedError;
+    error?: unknown;
 }
 
 
@@ -99,7 +97,7 @@ export function useFilters(
         }, { replace: action === 'replace' });
     }, [setSearchParams]);
 
-    const changeSort = useCallback((newSortBy?: string, newOrder?: string) => {
+    const changeSort = useCallback((newSortBy: string | null, newOrder: string | null) => {
         if (newSortBy && newOrder) {
             updateParams({ sortBy: newSortBy, order: newOrder });
         } else {
