@@ -123,5 +123,5 @@ export const useAuthSync = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [dispatch, syncCart, syncWishlist]);
+  }, [dispatch, syncCart, syncWishlist, navigate]);
 }

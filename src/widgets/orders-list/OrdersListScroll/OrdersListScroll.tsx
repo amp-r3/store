@@ -17,6 +17,8 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
     const triggerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
+        const triggerElement = triggerRef.current;
+
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting && hasMore && !isFetching) {
@@ -26,13 +28,13 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
             { rootMargin: '100px' }
         );
 
-        if (triggerRef.current) {
-            observer.observe(triggerRef.current);
+        if (triggerElement) {
+            observer.observe(triggerElement);
         }
 
         return () => {
-            if (triggerRef.current) {
-                observer.unobserve(triggerRef.current);
+            if (triggerElement) {
+                observer.unobserve(triggerElement);
             }
         };
     }, [hasMore, isFetching, onLoadMore]);

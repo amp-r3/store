@@ -1,6 +1,6 @@
 import { OrderEmpty } from "./components";
 import { ReviewTargetPicker } from "@/features/order-review";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useGetOrdersPaginationQuery, useGetOrdersScrollQuery } from '@/entities/order';
 import style from './orders-page.module.scss';
 import { Breadcrumbs } from '@/shared/ui';
@@ -34,7 +34,7 @@ export const OrdersPage = () => {
   const isLoading = isMobile ? paginationResult.isLoading : scrollResult.isLoading;
   const isFetching = isMobile ? paginationResult.isFetching : scrollResult.isFetching;
 
-  const orders = ordersResponse?.items || [];
+  const orders = useMemo(() => ordersResponse?.items || [], [ordersResponse]);
   const totalCount = ordersResponse?.totalCount || 0;
 
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
