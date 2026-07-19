@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { LoginFormData, RegisterFormData, SessionUser } from "@/entities/session/model/types";
+import { LoginFormData, RegisterFormData, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
 import { supabase } from "@/shared/api";
-import { EditProfileSchema } from "@/features/profile-edit";
 import type { OAuthResponse } from "@supabase/supabase-js";
 
 
@@ -122,7 +121,7 @@ export const authApi = createApi({
         return { data };
       }
     }),
-    updateProfile: builder.mutation<Partial<SessionUser>, EditProfileSchema>({
+    updateProfile: builder.mutation<Partial<SessionUser>, UpdateProfilePayload>({
       queryFn: async (userData) => {
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -174,7 +173,45 @@ export const authApi = createApi({
       }
     }),
 
+    signOut: builder.mutation<null, void>({
+      queryFn: async () => {
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+          return { error: { status: error.status || 500, data: error.message } };
+        }
+
+        return { data: null };
+      }
+    }),
+
+    deleteAccount: builder.mutation<null, void>({
+      queryFn: async () => {
+        const { error } = await supabase.functions.invoke('delete-account');
+
+        if (error) {
+          return { error: { status: 500, data: error.message } };
+        }
+
+        const { error: signOutError } = await supabase.auth.signOut();
+
+        if (signOutError) {
+          return { error: { status: signOutError.status || 500, data: signOutError.message } };
+        }
+
+        return { data: null };
+      }
+    }),
+
   })
 })
 
-export const { useLoginMutation, useRegisterMutation, useSignInWithGoogleMutation, useSignInWithTelegramMutation, useUpdateProfileMutation } = authApi
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useSignInWithGoogleMutation,
+  useSignInWithTelegramMutation,
+  useUpdateProfileMutation,
+  useSignOutMutation,
+  useDeleteAccountMutation,
+} = authApi

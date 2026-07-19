@@ -4,8 +4,7 @@ import { FaUser, FaBoxOpen, FaStar } from 'react-icons/fa6';
 import { CgLogOut } from 'react-icons/cg';
 
 import { useAppDispatch } from '@/shared/model';
-import { supabase } from '@/shared/api';
-import { logout, SessionUser } from '@/entities/session';
+import { logout, SessionUser, useSignOutMutation } from '@/entities/session';
 import { Modal } from '@/shared/ui';
 
 import style from './profile-sidebar.module.scss';
@@ -17,12 +16,13 @@ interface ProfileSidebarProps {
 export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [signOut] = useSignOutMutation();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const handleLogout = async () => {
     setIsLogoutModalOpen(false);
     dispatch(logout());
-    await supabase.auth.signOut();
+    await signOut();
     navigate('/', { replace: true });
   };
 

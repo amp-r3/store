@@ -1,19 +1,32 @@
 import { useState } from "react"
-import { selectUser } from "@/entities/session"
+import { useNavigate } from "react-router"
+import { selectUser, useDeleteAccountMutation } from "@/entities/session"
 import { UserProfileForm } from "@/features/profile-edit"
 import { UserProfileView } from "@/entities/user"
 import { useAppSelector } from "@/shared/model";
+import { getErrorMessage } from "@/shared/lib";
 
 import style from './user-page.module.scss'
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
+  const navigate = useNavigate()
+  const [deleteAccount, { error: deleteError }] = useDeleteAccountMutation()
 
   const providers = user?.app_metadata?.providers || [];
   const isGoogleUser = providers.includes('google');
   const isTelegramUser = providers.includes('telegram');
 
   const [isEditing, setIsEditing] = useState(false)
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteAccount().unwrap()
+      navigate('/', { replace: true })
+    } catch {
+      // Surfaced through `deleteError` below.
+    }
+  }
 
   if (!user) return null;
 
@@ -36,6 +49,8 @@ export const UserPage = () => {
             user={user}
             providers={providers}
             onEditClick={() => setIsEditing(true)}
+            onDeleteAccount={handleDeleteAccount}
+            deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
           />
         ) : (
           <UserProfileForm

@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { supabase } from "@/shared/api";
 import { Modal } from "@/shared/ui";
 import { CgTrash } from "react-icons/cg";
 
@@ -12,6 +10,8 @@ interface UserProfileViewProps {
   user: SessionUser;
   providers: string[];
   onEditClick: () => void;
+  onDeleteAccount: () => void;
+  deleteError?: string;
 }
 
 const UserInfoRow = ({ label, value, prefix = '' }: { label: string, value: string | null, prefix?: string }) => (
@@ -43,19 +43,8 @@ const LinkedProviders = ({ providers }: { providers: string[] }) => {
   );
 };
 
-export const UserProfileView = ({ user, onEditClick, providers }: UserProfileViewProps) => {
-  const navigate = useNavigate();
-
+export const UserProfileView = ({ user, onEditClick, providers, onDeleteAccount, deleteError }: UserProfileViewProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  const handleDeleteAccount = async () => {
-    const { error } = await supabase.functions.invoke('delete-account');
-
-    if (!error) {
-      await supabase.auth.signOut();
-      navigate('/', { replace: true });
-    }
-  };
 
   return (
     <div className={style.profileView}>
@@ -85,7 +74,11 @@ export const UserProfileView = ({ user, onEditClick, providers }: UserProfileVie
         </div>
       </div>
 
-
+      {deleteError && (
+        <p className={style.deleteError} role="alert">
+          {deleteError}
+        </p>
+      )}
 
       <Modal
         isOpen={isDeleteModalOpen}
@@ -95,7 +88,7 @@ export const UserProfileView = ({ user, onEditClick, providers }: UserProfileVie
         icon={<CgTrash size={50} />}
         actionLabel="Delete Account"
         actionVariant="danger"
-        onAction={handleDeleteAccount}
+        onAction={onDeleteAccount}
       />
     </div>
   );

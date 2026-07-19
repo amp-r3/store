@@ -206,6 +206,13 @@
   }
 }
 
+.deleteError {
+  margin: $spacing-sm 0 0;
+  font-size: $fs-sm;
+  color: var(--error-color);
+  line-height: $lh-relaxed;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .providerBadge, 
   %btn-base {
