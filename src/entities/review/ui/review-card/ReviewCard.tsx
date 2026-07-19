@@ -5,13 +5,12 @@ import { useDeleteReviewMutation, useToggleReviewLikeMutation } from '@/entities
 import style from './review-card.module.scss';
 import { useHaptics } from "@/shared/lib/hooks";
 import { ProductReview } from "@/entities/review";
-import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
-import { openReviewModal } from "@/features/order-review";
 
 interface ReviewCardProps {
     review: ProductReview;
     isCurrentUser?: boolean;
+    onEdit?: () => void;
 }
 
 const getAvatarStyle = (name: string) => {
@@ -36,17 +35,12 @@ const getInitials = (name: string) => {
     return parts[0][0].toUpperCase();
 };
 
-export const ReviewCard = ({ review, isCurrentUser }: ReviewCardProps) => {
+export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) => {
     const { soft } = useHaptics();
-    const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.auth.user);
     const [deleteReview] = useDeleteReviewMutation();
     const [toggleLike, { isLoading: isToggleLikeLoading }] = useToggleReviewLikeMutation();
     const [likeError, setLikeError] = useState<string | null>(null);
-
-    const handleEdit = () => {
-        dispatch(openReviewModal(review.productId.toString()));
-    };
 
     const handleDelete = async () => {
         try {
@@ -86,9 +80,9 @@ export const ReviewCard = ({ review, isCurrentUser }: ReviewCardProps) => {
 
     return (
         <article className={`${style['review-card']} ${isCurrentUser ? style['review-card--current-user'] : ''}`}>
-            {isCurrentUser && (
+            {isCurrentUser && onEdit && (
                 <div className={style['review-card__menu']}>
-                    <ReviewMenu onEdit={handleEdit} onDelete={handleDelete} />
+                    <ReviewMenu onEdit={onEdit} onDelete={handleDelete} />
                 </div>
             )}
 

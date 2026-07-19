@@ -18,3 +18,19 @@ export interface ProductReview {
         avatarUrl: string;
     };
 }
+
+/**
+ * Minimal product shape the review cards need. Declared here rather than imported
+ * from `@/entities/product` so the review slice stays free of entity↔entity coupling.
+ */
+export interface ReviewProductPreview {
+    id: number;
+    title: string;
+    thumbnail: string;
+}
+
+export interface UnreviewedPurchase {
+    productId: number;
+    lastPurchasedAt: string;
+    purchaseCount: number;
+}

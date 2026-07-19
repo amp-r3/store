@@ -5,7 +5,7 @@ import { reviewSchema, ReviewFormData } from '@/features/order-review/model/revi
 import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
 import { closeReviewModal } from './reviewModalSlice';
-import { selectIsReviewModalOpen, selectReviewModalProductId } from './reviewModalSelectors';
+import { selectIsReviewModalOpen, selectReviewModalProductId, selectReviewModalInitialRating } from './reviewModalSelectors';
 import { useGetReviewsQuery, useAddOrUpdateReviewMutation } from '@/entities/review';
 import { useHaptics } from '@/shared/lib/hooks';
 
@@ -13,6 +13,7 @@ export const useReviewModal = () => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectIsReviewModalOpen);
   const productId = useAppSelector(selectReviewModalProductId);
+  const initialRating = useAppSelector(selectReviewModalInitialRating);
   const user = useAppSelector((state) => state.auth.user);
   const haptics = useHaptics();
   
@@ -36,10 +37,10 @@ export const useReviewModal = () => {
           comment: currentUserReview.comment || '',
         });
       } else {
-        reset({ rating: 0, comment: '' });
+        reset({ rating: initialRating ?? 0, comment: '' });
       }
     }
-  }, [isOpen, currentUserReview, reset]);
+  }, [isOpen, currentUserReview, initialRating, reset]);
 
   const handleClose = () => dispatch(closeReviewModal());
   

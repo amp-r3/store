@@ -7,6 +7,8 @@ import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 import { ReviewCard } from '@/entities/review';
 import { ProductReview } from "@/entities/review";
 import { useProductReviews } from "@/entities/review";
+import { openReviewModal } from '@/features/order-review';
+import { useAppDispatch } from '@/shared/model';
 
 interface ProductReviewsProps {
     reviews: ProductReview[];
@@ -15,6 +17,7 @@ interface ProductReviewsProps {
 
 export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
     const { sortedReviews, user } = useProductReviews(reviews);
+    const dispatch = useAppDispatch();
 
     if (!reviews) return <ProductReviewsSkeleton />;
 
@@ -46,6 +49,7 @@ export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
                                         key={review.id}
                                         review={review}
                                         isCurrentUser={user?.id === review.userId}
+                                        onEdit={() => dispatch(openReviewModal(review.productId.toString()))}
                                     />
                                 ))}
                             </div>

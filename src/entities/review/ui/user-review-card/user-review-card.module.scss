@@ -1,0 +1,194 @@
+@use '@/app/styles/index' as *;
+
+.user-review-card {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    border: 1px solid var(--border-color-light);
+    border-radius: $radius-lg;
+    background-color: var(--glass-background);
+    transition:
+        border-color $transition-base $ease-in-out-smooth,
+        box-shadow $transition-base $ease-in-out-smooth;
+
+    &:hover {
+        border-color: var(--border-color-strong);
+        box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 480px) {
+        padding: $spacing-sm;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+.user-review-card__product {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
+    border-radius: $radius-md;
+
+    &:hover .user-review-card__title {
+        color: var(--primary-accent);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
+}
+
+.user-review-card__thumb,
+.user-review-card__thumb--fallback {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: $radius-md;
+    object-fit: cover;
+    background-color: var(--skeleton-base);
+    border: 1px solid var(--border-color-subtle);
+}
+
+.user-review-card__title {
+    font-family: $font-primary;
+    font-size: $fs-base;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+    line-height: $lh-tight;
+    overflow-wrap: anywhere;
+    transition: color $transition-fast $ease-in-out-smooth;
+}
+
+.user-review-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.user-review-card__summary {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+}
+
+.user-review-card__rating {
+    display: flex;
+    gap: $spacing-xxs;
+    font-size: $fs-sm;
+}
+
+.user-review-card__star--filled {
+    color: var(--primary-accent);
+}
+
+.user-review-card__star--empty {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.user-review-card__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    font-family: $font-primary;
+    font-size: $fs-xs;
+    color: var(--text-muted);
+}
+
+.user-review-card__meta-icon {
+    flex-shrink: 0;
+}
+
+.user-review-card__edited {
+    font-style: italic;
+}
+
+.user-review-card__helpful {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xxs;
+}
+
+.user-review-card__comment,
+.user-review-card__comment--empty {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    line-height: $lh-relaxed;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.user-review-card__comment--empty {
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.user-review-card__footer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    padding-top: $spacing-sm;
+    border-top: 1px solid var(--border-color-subtle);
+}
+
+.user-review-card__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    min-height: $touch-target-min;
+    padding-inline: $spacing-md;
+    border: 1px solid var(--border-color-light);
+    border-radius: $radius-pill;
+    background: transparent;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-secondary);
+    transition:
+        color $transition-fast $ease-in-out-smooth,
+        border-color $transition-fast $ease-in-out-smooth,
+        background-color $transition-fast $ease-in-out-smooth;
+
+    &:hover {
+        color: var(--primary-accent);
+        border-color: var(--primary-accent);
+        background: var(--glass-background-subtle);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
+
+    &--danger:hover {
+        color: var(--error-color);
+        border-color: var(--error-color);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+.user-review-card__action-icon {
+    font-size: $fs-xs;
+}
+
+.user-review-card__error {
+    font-family: $font-primary;
+    font-size: $fs-xs;
+    color: var(--error-color);
+}

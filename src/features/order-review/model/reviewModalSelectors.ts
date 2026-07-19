@@ -12,3 +12,8 @@ export const selectReviewModalProductId = createSelector(
   [selectReviewModalState],
   (modalState) => modalState.productId
 );
+
+export const selectReviewModalInitialRating = createSelector(
+  [selectReviewModalState],
+  (modalState) => modalState.initialRating
+);

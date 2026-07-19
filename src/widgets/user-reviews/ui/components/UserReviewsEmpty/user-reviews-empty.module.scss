@@ -1,0 +1,88 @@
+@use '@/app/styles/index' as *;
+
+.reviews-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: $spacing-sm;
+    min-height: 320px;
+    padding: $spacing-xl;
+    border: 1px dashed var(--border-color);
+    border-radius: $radius-lg;
+    background: var(--glass-background-subtle);
+
+    @media (max-width: 480px) {
+        padding: $spacing-lg;
+        min-height: 260px;
+    }
+}
+
+.reviews-empty__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: $radius-pill;
+    background: rgba(var(--primary-accent-rgb), 0.12);
+    color: var(--primary-accent);
+    font-size: $fs-lg;
+}
+
+.reviews-empty__title {
+    margin: 0;
+    font-family: $font-display;
+    font-size: $fs-lg;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+}
+
+.reviews-empty__text {
+    margin: 0;
+    max-width: 42ch;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    line-height: $lh-relaxed;
+    color: var(--text-muted);
+}
+
+.reviews-empty__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: $touch-target-comfortable;
+    margin-top: $spacing-xs;
+    padding-inline: $spacing-xl;
+    border: 1px solid var(--primary-accent);
+    border-radius: $radius-pill;
+    text-decoration: none;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--primary-accent);
+    transition:
+        transform $transition-fast $ease-out-expo,
+        background-color $transition-fast $ease-in-out-smooth,
+        color $transition-fast $ease-in-out-smooth;
+
+    &:hover {
+        transform: $hover-lift;
+        background: var(--primary-accent);
+        color: var(--text-on-accent);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+
+        &:hover {
+            transform: none;
+        }
+    }
+}

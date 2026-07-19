@@ -1,0 +1,45 @@
+@use '@/app/styles/index' as *;
+
+@keyframes review-item-in {
+    from {
+        opacity: 0;
+        transform: translateY($spacing-sm);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-reviews {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+}
+
+.user-reviews__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    min-height: 200px;
+}
+
+.user-reviews__item {
+    animation: review-item-in $transition-base $ease-out-expo both;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
+}
+
+.user-reviews__error {
+    margin: 0;
+    padding: $spacing-lg;
+    border: 1px solid var(--error-color);
+    border-radius: $radius-lg;
+    background: var(--glass-background-subtle);
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    color: var(--error-color);
+    text-align: center;
+}
