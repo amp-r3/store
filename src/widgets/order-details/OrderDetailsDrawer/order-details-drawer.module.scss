@@ -26,12 +26,16 @@
 
     &__content {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
         z-index: $z-index-modal;
         display: flex;
         flex-direction: column;
+        outline: none;
+    }
+
+    &__content--bottom {
+        bottom: 0;
+        left: 0;
+        right: 0;
         height: 86dvh;
         background: var(--background-component);
         border-top-left-radius: $radius-xl;
@@ -39,7 +43,31 @@
         border: 1px solid var(--border-color-subtle);
         border-bottom: none;
         box-shadow: var(--shadow-modal);
-        outline: none;
+    }
+
+    &__content--right {
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+
+        @media (min-width: 480px) {
+            width: clamp(470px, 60vw, 500px);
+        }
+
+        @media (min-width: 1024px) {
+            width: clamp(500px, 35vw, 600px);
+        }
+
+        background: var(--background-glass-base);
+        backdrop-filter: $backdrop-blur;
+        border-left: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-default);
+        border-radius: 0;
+
+        @media (min-width: 480px) {
+            border-radius: $radius-xl 0 0 $radius-xl;
+        }
     }
 
     &__handle {
@@ -53,6 +81,34 @@
 
         @media (max-width: 400px) {
             margin: $spacing-xs auto $spacing-xxs;
+        }
+    }
+
+    &__close {
+        position: absolute;
+        top: $spacing-sm;
+        right: $spacing-sm;
+        z-index: $z-index-sticky;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: $touch-target-min;
+        height: $touch-target-min;
+        border: none;
+        border-radius: $radius-circle;
+        background: var(--glass-background);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+
+        &:hover {
+            background: var(--glass-background-strong);
+            color: var(--text-primary);
+        }
+
+        &:focus-visible {
+            outline: $focus-ring-width solid var(--focus-ring-color);
+            outline-offset: $focus-ring-offset;
         }
     }
 

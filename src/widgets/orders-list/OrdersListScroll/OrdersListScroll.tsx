@@ -4,9 +4,12 @@ import { OrdersListProps } from '../OrderList';
 import { FC, useEffect, useRef } from 'react';
 import { OrderCardSkeleton } from "@/entities/order";
 
+const MAX_STAGGER_INDEX = 8;
+
 export const OrdersListScroll: FC<OrdersListProps> = ({
     orders,
     selectedOrderId,
+    thumbnailsById,
     formatOrderDate,
     onCardClick,
     onLoadMore,
@@ -42,23 +45,30 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
     return (
         <section
             className={`${style['order-list']} ${isFetching ? 'scroll-loader' : ''}`}
-            role="listbox"
+            role="list"
             aria-label="Orders"
         >
             {isLoading ? (
                 <OrderCardSkeleton count={4} />
             ) : (
-                orders.map((order) => (
-                    <OrderCard
-                        orderId={order.id}
-                        orderNumber={order.orderId}
-                        orderDate={formatOrderDate(order.createdAt)}
-                        orderStatus={order.status}
-                        orderTotalAmount={order.totalAmount}
-                        isActive={order.id === selectedOrderId}
-                        onClick={onCardClick}
+                orders.map((order, index) => (
+                    <div
                         key={order.id}
-                    />
+                        className={style['order-list__item']}
+                        style={{ animationDelay: `${Math.min(index, MAX_STAGGER_INDEX) * 40}ms` }}
+                    >
+                        <OrderCard
+                            orderId={order.id}
+                            orderNumber={order.orderId}
+                            orderDate={formatOrderDate(order.createdAt)}
+                            orderStatus={order.status}
+                            orderTotalAmount={order.totalAmount}
+                            items={order.orderItems}
+                            thumbnailsById={thumbnailsById}
+                            isActive={order.id === selectedOrderId}
+                            onClick={onCardClick}
+                        />
+                    </div>
                 ))
             )}
 

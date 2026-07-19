@@ -3,9 +3,25 @@
 .body {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: $spacing-lg $spacing-xl;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    scrollbar-width: none;
+
+    @media (max-width: 768px) {
+        padding: $spacing-md;
+    }
 
     &__info-grid {
         display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: $spacing-md;
         margin-bottom: $spacing-md;
         flex-shrink: 0;
@@ -14,9 +30,17 @@
     &__items-section {
         display: flex;
         flex-direction: column;
+        height: auto;
+        overflow: visible;
         background: var(--glass-background-subtle);
         border: 1px solid var(--border-color-subtle);
         border-radius: $radius-md;
+    }
+
+    &__scroll-area {
+        padding: $spacing-xs;
+        overflow-y: visible;
+        max-height: none;
     }
 
     &__section-header {
@@ -125,84 +149,5 @@
         font-weight: $fw-normal;
         color: var(--text-secondary);
         font-variant-numeric: tabular-nums;
-    }
-}
-
-.body--card {
-    height: 100%;
-    overflow: hidden;
-    padding: $spacing-xl;
-
-    @media (max-width: 768px) {
-        padding: $spacing-lg $spacing-md;
-    }
-
-    .body__info-grid {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    }
-
-    .body__items-section {
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-    }
-
-    .body__scroll-area {
-        flex: 1;
-        overflow-y: auto;
-        max-height: 380px;
-        overscroll-behavior: contain;
-        padding: $spacing-md;
-
-        &::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: transparent;
-            margin: $spacing-xs 0;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: $radius-pill;
-
-            &:hover {
-                background: var(--primary-accent-light);
-            }
-        }
-    }
-}
-
-.body--drawer {
-    flex: 1;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    padding: $spacing-lg $spacing-xl;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-
-    scrollbar-width: none;
-
-    @media (max-width: 768px) {
-        padding: $spacing-md;
-    }
-
-    .body__info-grid {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    }
-
-    .body__items-section {
-        height: auto;
-        overflow: visible;
-    }
-
-    .body__scroll-area {
-        padding: $spacing-xs;
-        overflow-y: visible;
-        max-height: none;
     }
 }

@@ -119,3 +119,33 @@
   @include status.badge-base;
   @include status.generate-modifiers;
 }
+
+.thumbnails {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-top: $spacing-sm;
+}
+
+.thumbnail {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-color-subtle);
+  object-fit: cover;
+}
+
+.thumbnailExtra {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: $radius-md;
+  background: var(--glass-background);
+  color: var(--text-muted);
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+}

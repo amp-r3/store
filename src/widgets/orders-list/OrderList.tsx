@@ -6,9 +6,10 @@ import { FC } from "react";
 export interface OrdersListProps {
     orders: Order[];
     totalItems: number;
-    selectedOrderId: string;
+    selectedOrderId: string | null;
     currentPage: number;
     itemsPerPage: number;
+    thumbnailsById?: Record<number, string>;
     formatOrderDate(dateStr: string): string;
     onCardClick(id: string): void;
     onPageChange(newPage: number): void;

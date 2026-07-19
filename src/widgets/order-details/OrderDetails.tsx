@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { OrderDetailsDrawer } from "./OrderDetailsDrawer/OrderDetailsDrawer";
-import { OrderDetailsCard } from "./OrderDetailsCard/OrderDetailsCard";
 import { EnrichedOrderItem, Order } from "@/entities/order";
 import { CartProduct } from "@/entities/cart";
 import { useMediaQuery } from "@/shared/lib/hooks";
@@ -19,43 +18,9 @@ export interface OrderDetailsProps {
     onRateClick(): void;
 }
 
-
-
-export const OrderDetails: FC<OrderDetailsProps> = ({
-    order,
-    open,
-    items,
-    goodsTotal,
-    isFetching,
-    isItemsFetching,
-    isItemsLoading,
-    formatOrderDate,
-    orderCartProduct,
-    onOpenChange,
-    onRateClick,
-}) => {
+export const OrderDetails: FC<OrderDetailsProps> = (props) => {
     const isMobile = useMediaQuery('(max-width: 768px)');
-    return isMobile ? <OrderDetailsDrawer
-        open={open}
-        onOpenChange={onOpenChange}
-        order={order}
-        isFetching={isFetching}
-        items={items}
-        isItemsFetching={isItemsFetching}
-        isItemsLoading={isItemsLoading}
-        goodsTotal={goodsTotal}
-        formatOrderDate={formatOrderDate}
-        orderCartProduct={orderCartProduct}
-        onRateClick={onRateClick} /> :
-        <OrderDetailsCard
-            order={order}
-            isFetching={isFetching}
-            items={items}
-            isItemsFetching={isItemsFetching}
-            isItemsLoading={isItemsLoading}
-            goodsTotal={goodsTotal}
-            formatOrderDate={formatOrderDate}
-            orderCartProduct={orderCartProduct}
-            onRateClick={onRateClick} />
+    const direction = isMobile ? 'bottom' : 'right';
 
-}
+    return <OrderDetailsDrawer key={direction} direction={direction} {...props} />;
+};

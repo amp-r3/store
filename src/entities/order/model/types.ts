@@ -87,3 +87,10 @@ export interface Order {
   deliveryMethods: DeliveryMethod;
   orderItems: OrderItem[];
 }
+
+export type OrdersScope = 'active' | 'completed';
+
+export interface OrderCounts {
+  active: number;
+  completed: number;
+}

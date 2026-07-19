@@ -13,7 +13,6 @@ interface OrderDetailsBodyProps {
     isLoading: boolean;
     isFetching: boolean;
     ITEMS_PREVIEW_COUNT: number;
-    variant: 'card' | 'drawer';
     goodsTotal: number;
     onClose?(): void;
     onRateClick(): void;
@@ -25,13 +24,12 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
     isLoading,
     isFetching,
     ITEMS_PREVIEW_COUNT,
-    variant,
     goodsTotal,
     onClose,
     onRateClick,
 }) => {
     return (
-        <div className={`${style['body']} ${style[`body--${variant}`]}`}>
+        <div className={style['body']}>
             <div className={style['body__info-grid']}>
                 <OrderDetailsInfoCard
                     variant='delivery'

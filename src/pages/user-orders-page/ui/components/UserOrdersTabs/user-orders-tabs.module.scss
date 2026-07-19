@@ -1,0 +1,86 @@
+@use '@/app/styles/index' as *;
+
+.orders-tabs {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-xxs;
+    padding: $spacing-xxs;
+    border: 1px solid var(--border-color-light);
+    border-radius: $radius-pill;
+    background: var(--glass-background-subtle);
+}
+
+/** Sliding indicator behind the active tab. */
+.orders-tabs__pill {
+    position: absolute;
+    inset-block: $spacing-xxs;
+    left: $spacing-xxs;
+    width: calc(50% - #{$spacing-xxs});
+    border-radius: $radius-pill;
+    background: var(--primary-accent);
+    transition: transform $transition-base $ease-out-expo;
+
+    &[data-tab='completed'] {
+        transform: translateX(100%);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+.orders-tabs__tab {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    min-height: $touch-target-min;
+    padding-inline: $spacing-md;
+    border: none;
+    border-radius: $radius-pill;
+    background: transparent;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-secondary);
+    transition:
+     color $transition-base $ease-in-out-smooth;
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
+
+    &:not(&--active):hover {
+        color: var(--text-primary);
+    }
+
+    &--active {
+        color: var(--text-on-accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+.orders-tabs__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    padding-inline: $spacing-xxs;
+    border-radius: $radius-pill;
+    background: var(--glass-background);
+    font-size: $fs-xs;
+    color: var(--text-muted);
+}
+
+.orders-tabs__tab--active .orders-tabs__count {
+    background: rgba(var(--text-on-accent-rgb), 0.12);
+    color: var(--text-on-accent);
+}

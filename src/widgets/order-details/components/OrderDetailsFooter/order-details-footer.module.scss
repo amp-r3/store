@@ -4,6 +4,14 @@
 .footer {
     background: var(--background-glass-base);
     border-top: 1px solid var(--border-color-light);
+    flex-shrink: 0;
+    padding: $spacing-sm $spacing-lg calc(#{$spacing-sm} + #{$safe-area-bottom});
+    backdrop-filter: $backdrop-blur;
+    box-shadow: 0 -1px 0 var(--border-color-light), 0 -12px 32px rgba(0, 0, 0, 0.06);
+
+    @media (max-width: 400px) {
+        padding: $spacing-xs $spacing-md calc(#{$spacing-xs} + #{$safe-area-bottom});
+    }
 
     // ── Summary section ──────────────────────
     &__summary {
@@ -168,22 +176,6 @@
                 transform: scale($scale-up-sm);
             }
         }
-    }
-}
-
-// ── Variants ──────────────────────────────────
-.footer--card {
-    padding: $spacing-sm $spacing-lg;
-}
-
-.footer--drawer {
-    flex-shrink: 0;
-    padding: $spacing-sm $spacing-lg calc(#{$spacing-sm} + #{$safe-area-bottom});
-    backdrop-filter: $backdrop-blur;
-    box-shadow: 0 -1px 0 var(--border-color-light), 0 -12px 32px rgba(0, 0, 0, 0.06);
-
-    @media (max-width: 400px) {
-        padding: $spacing-xs $spacing-md calc(#{$spacing-xs} + #{$safe-area-bottom});
     }
 }
 

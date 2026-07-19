@@ -11,14 +11,12 @@ import { useAppDispatch } from "@/shared/model";
 
 interface OrderDetailsFooterProps {
     totalAmount: number;
-    variant: 'drawer' | 'card';
     orderCartProduct: CartProduct[]
 }
 
 export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
     totalAmount,
     orderCartProduct,
-    variant,
 }) => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
@@ -32,7 +30,7 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
         navigate('/checkout')
     }
     return (
-        <footer className={`${style['footer']} ${style[`footer--${variant}`]}`}>
+        <footer className={style['footer']}>
             <div className={style['footer__summary']}>
                 <div className={`${style['footer__summary-row']} ${style['footer__summary-row--total']}`}>
                     <span className={style['footer__total-label']}>Total</span>

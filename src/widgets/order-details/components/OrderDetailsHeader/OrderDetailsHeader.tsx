@@ -8,7 +8,6 @@ interface OrderDetailsHeaderProps {
     orderStatus: OrderStatus;
     orderDate: string;
     isFetching: boolean;
-    variant: 'drawer' | 'card';
 }
 
 export const OrderDetailsHeader: FC<OrderDetailsHeaderProps> = ({
@@ -16,7 +15,6 @@ export const OrderDetailsHeader: FC<OrderDetailsHeaderProps> = ({
     orderStatus,
     orderDate,
     isFetching,
-    variant,
 }) => {
     const [isCopied, setIsCopied] = useState(false);
 
@@ -31,7 +29,7 @@ export const OrderDetailsHeader: FC<OrderDetailsHeaderProps> = ({
     };
 
     return (
-        <header className={`${style['header']} ${style[`header--${variant}`]}`} aria-label="Order details header">
+        <header className={style['header']} aria-label="Order details header">
             <div className={style['header__main']}>
                 <div className={style['header__title-group']}>
                     <h2 className={style['header__title']}>

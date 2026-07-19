@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase } from '@/shared/api';
-import { DeliveryStatus, Order, OrderStatus, PaymentStatus, DeliveryMethod, PaymentMethod, DeliveryOptions, PaymentOptions } from '@/entities/order/model/types';
+import { DeliveryStatus, Order, OrderCounts, OrderStatus, OrdersScope, PaymentStatus, DeliveryMethod, PaymentMethod, DeliveryOptions, PaymentOptions } from '@/entities/order/model/types';
 
 interface DeliveryMethodResponse {
   id: string;
@@ -58,6 +58,32 @@ export interface PaginatedOrders {
   totalCount: number;
 }
 
+interface OrdersQueryArgs {
+  page: number;
+  limit: number;
+  scope: OrdersScope;
+}
+
+const ORDERS_SELECT = `
+  *,
+  delivery_methods (
+    *
+  ),
+  payment_methods (
+    *
+  ),
+  order_items (
+    id,
+    order_id,
+    product_id,
+    size_id,
+    quantity,
+    price_at_purchase,
+    created_at
+  )
+`;
+
+
 const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
   id: order.id,
   orderId: order.order_number,
@@ -93,7 +119,7 @@ const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
   })),
 });
 
-const fetchOrders = async (page: number, limit: number) => {
+const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -103,27 +129,16 @@ const fetchOrders = async (page: number, limit: number) => {
   const from = (page - 1) * limit;
   const to = page * limit - 1;
 
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('orders')
-    .select(`
-            *,
-            delivery_methods (
-              *
-            ),
-            payment_methods (
-              *
-            ),
-            order_items (
-              id,
-              order_id,
-              product_id,
-              size_id,
-              quantity,
-              price_at_purchase,
-              created_at
-            )
-          `, { count: 'exact' })
-    .eq('user_id', user.id)
+    .select(ORDERS_SELECT, { count: 'exact' })
+    .eq('user_id', user.id);
+
+  query = scope === 'completed'
+    ? query.in('status', ['completed', 'cancelled'])
+    : query.not('status', 'in', '(completed,cancelled)');
+
+  const { data, error, count } = await query
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -144,15 +159,15 @@ export const orderApi = createApi({
   baseQuery: fakeBaseQuery(),
   tagTypes: ['Order'],
   endpoints: (builder) => ({
-    getOrdersPagination: builder.query<PaginatedOrders, { page: number; limit: number }>({
-      queryFn: ({ page, limit }) => fetchOrders(page, limit),
+    getOrdersPagination: builder.query<PaginatedOrders, OrdersQueryArgs>({
+      queryFn: (args) => fetchOrders(args),
       providesTags: ['Order']
     }),
 
-    getOrdersScroll: builder.query<PaginatedOrders, { page: number; limit: number }>({
-      queryFn: ({ page, limit }) => fetchOrders(page, limit),
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
+    getOrdersScroll: builder.query<PaginatedOrders, OrdersQueryArgs>({
+      queryFn: (args) => fetchOrders(args),
+      serializeQueryArgs: ({ endpointName, queryArgs }) => {
+        return `${endpointName}-${queryArgs.scope}`;
       },
       merge: (currentCache, newResponse, { arg }) => {
         if (arg?.page === 1) {
@@ -165,7 +180,63 @@ export const orderApi = createApi({
         currentCache.totalCount = newResponse.totalCount;
       },
       forceRefetch({ currentArg, previousArg }) {
-        return currentArg?.page !== previousArg?.page || currentArg?.limit !== previousArg?.limit;
+        return currentArg?.page !== previousArg?.page
+          || currentArg?.limit !== previousArg?.limit
+          || currentArg?.scope !== previousArg?.scope;
+      },
+      providesTags: ['Order']
+    }),
+
+    getOrderById: builder.query<Order, string>({
+      queryFn: async (id) => {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+          return { error: { status: 401, data: 'The user is not authorized' } };
+        }
+
+        const { data, error } = await supabase
+          .from('orders')
+          .select(ORDERS_SELECT)
+          .eq('user_id', user.id)
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: mapOrderResponseToOrder(data as OrderResponse) };
+      },
+      providesTags: ['Order']
+    }),
+
+    getOrderCounts: builder.query<OrderCounts, void>({
+      queryFn: async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+          return { error: { status: 401, data: 'The user is not authorized' } };
+        }
+
+        const [active, completed] = await Promise.all([
+          supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .not('status', 'in', '(completed,cancelled)'),
+          supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .in('status', ['completed', 'cancelled']),
+        ]);
+
+        if (active.error || completed.error) {
+          return { error: { status: 400, data: (active.error ?? completed.error)!.message } };
+        }
+
+        return { data: { active: active.count ?? 0, completed: completed.count ?? 0 } };
       },
       providesTags: ['Order']
     }),
@@ -242,6 +313,8 @@ export const orderApi = createApi({
 export const {
   useGetOrdersPaginationQuery,
   useGetOrdersScrollQuery,
+  useGetOrderByIdQuery,
+  useGetOrderCountsQuery,
   useCreateOrderMutation,
   useGetDeliveryMethodsQuery,
   useGetPaymentMethodsQuery

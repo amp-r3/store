@@ -35,6 +35,12 @@ export const OrderCardSkeleton: FC<OrderCardSkeletonProps> = ({ count = 1 }) => 
                             <Skeleton width={90} height={14} />
                         </span>
                     </div>
+
+                    <div className={style.thumbnails}>
+                        <Skeleton width={44} height={44} borderRadius={8} />
+                        <Skeleton width={44} height={44} borderRadius={8} />
+                        <Skeleton width={44} height={44} borderRadius={8} />
+                    </div>
                 </article>
             ))}
         </>

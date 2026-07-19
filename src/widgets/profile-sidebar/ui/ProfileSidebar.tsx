@@ -58,8 +58,8 @@ export const ProfileSidebar = ({ user }: ProfileSidebarProps) => {
           <span>Profile</span>
         </NavLink>
         
-        <NavLink 
-          to="/orders" 
+        <NavLink
+          to="/user/orders"
           className={({ isActive }) => `${style.navLink} ${isActive ? style.active : ''}`}
         >
           <FaBoxOpen className={style.icon} />
