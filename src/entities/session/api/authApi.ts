@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { LoginFormData, RegisterFormData, SessionUser } from "@/entities/session/model/types";
 import { supabase } from "@/shared/api";
 import { EditProfileSchema } from "@/features/profile-edit";
+import type { OAuthResponse } from "@supabase/supabase-js";
 
 
 export const authApi = createApi({
@@ -89,7 +90,7 @@ export const authApi = createApi({
       }
     }),
 
-    signInWithGoogle: builder.mutation<any, void>({
+    signInWithGoogle: builder.mutation<OAuthResponse['data'], void>({
       queryFn: async () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
@@ -99,13 +100,13 @@ export const authApi = createApi({
         });
 
         if (error) {
-          return { error: { status: error.status || 500, data: error.message } as any };
+          return { error: { status: error.status || 500, data: error.message } };
         }
 
-        return { data } as any;
+        return { data };
       }
     }),
-    signInWithTelegram: builder.mutation<any, void>({
+    signInWithTelegram: builder.mutation<OAuthResponse['data'], void>({
       queryFn: async () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'custom:telegram',
@@ -115,10 +116,10 @@ export const authApi = createApi({
         });
 
         if (error) {
-          return { error: { status: error.status || 500, data: error.message } as any };
+          return { error: { status: error.status || 500, data: error.message } };
         }
 
-        return { data } as any;
+        return { data };
       }
     }),
     updateProfile: builder.mutation<Partial<SessionUser>, EditProfileSchema>({
@@ -129,7 +130,7 @@ export const authApi = createApi({
           return { error: { status: 401, data: 'The user is not authorized' } };
         }
 
-        const profilePayload: Record<string, any> = {};
+        const profilePayload: Record<string, string> = {};
         if (userData.firstName !== undefined) profilePayload.first_name = userData.firstName;
         if (userData.lastName !== undefined) profilePayload.last_name = userData.lastName;
         if (userData.username !== undefined) profilePayload.username = userData.username;

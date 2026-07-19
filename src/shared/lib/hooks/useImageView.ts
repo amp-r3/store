@@ -1,5 +1,4 @@
 import { useDrag, usePinch } from "@use-gesture/react";
-import { ReactDOMAttributes } from "@use-gesture/react/dist/declarations/src/types";
 import { RefObject, useEffect, useRef } from "react";
 
 interface useImageViewProps {
@@ -10,8 +9,8 @@ interface useImageViewProps {
 interface useImageViewReturn {
   contentRef: RefObject<HTMLDivElement | null>;
   imageRef: RefObject<HTMLImageElement | null>;
-  bindPinch: (...args: any[]) => ReactDOMAttributes;
-  bindDrag: (...args: any[]) => ReactDOMAttributes;
+  bindPinch: ReturnType<typeof usePinch>;
+  bindDrag: ReturnType<typeof useDrag>;
 }
 
 export const useImageView = ({isOpen, onClose}: useImageViewProps): useImageViewReturn => {

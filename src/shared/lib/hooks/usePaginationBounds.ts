@@ -5,13 +5,13 @@ export function usePaginationBounds(
   totalItems: number,
   itemsPerPage: number,
   setPage: (page: number) => void,
-  error?: any
+  error?: unknown
 ) {
   useEffect(() => {
-    const isRangeError = error && (
-      error.status === 'PGRST103' ||
-      error.status === 416
-    );
+    const isRangeError = error &&
+      typeof error === 'object' &&
+      'status' in error &&
+      (error.status === 'PGRST103' || error.status === 416);
 
     if (isRangeError) {
       setPage(1);

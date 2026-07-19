@@ -82,11 +82,12 @@ export const ProductPurchaseBox = ({
     const isOutOfStock = currentStock === 0;
 
     let stockClass = style['purchase-box__stock'];
-    if (hasSizes && !selectedSizeId) {
-    } else if (isLowStock) {
-        stockClass += ` ${style['purchase-box__stock--low']}`;
-    } else if (isOutOfStock) {
-        stockClass += ` ${style['purchase-box__stock--out']}`;
+    if (!hasSizes || selectedSizeId) {
+        if (isLowStock) {
+            stockClass += ` ${style['purchase-box__stock--low']}`;
+        } else if (isOutOfStock) {
+            stockClass += ` ${style['purchase-box__stock--out']}`;
+        }
     }
 
     let stockText = '';

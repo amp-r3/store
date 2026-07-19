@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase } from '@/shared/api';
-import { DeliveryStatus, Order, OrderStatus, PaymentStatus, DeliveryMethod, PaymentMethod } from '@/entities/order/model/types';
+import { DeliveryStatus, Order, OrderStatus, PaymentStatus, DeliveryMethod, PaymentMethod, DeliveryOptions, PaymentOptions } from '@/entities/order/model/types';
 
 interface DeliveryMethodResponse {
   id: string;
@@ -67,7 +67,7 @@ const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
   shippingAddress: order.shipping_address,
   createdAt: order.created_at,
   updatedAt: order.updated_at,
-  paymentMethod: order.payment_methods.code as any,
+  paymentMethod: order.payment_methods.code as PaymentOptions,
   paymentStatus: order.payment_status,
   deliveryStatus: order.delivery_status,
   deliveryMethod_id: order.delivery_methods.id,
@@ -75,7 +75,7 @@ const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
   paymentFee: Number(order.payment_fee),
   deliveryMethods: {
     id: order.delivery_methods.id,
-    code: order.delivery_methods.code as any,
+    code: order.delivery_methods.code as DeliveryOptions,
     label: order.delivery_methods.name,
     isActive: order.delivery_methods.is_active,
     duration: order.delivery_methods.estimated_time,
@@ -202,7 +202,7 @@ export const orderApi = createApi({
         const methods = (data as DeliveryMethodResponse[]).map((method) => {
           return {
             id: method.id,
-            code: method.code as any,
+            code: method.code as DeliveryOptions,
             label: method.name,
             price: method.price,
             duration: method.estimated_time,
@@ -227,7 +227,7 @@ export const orderApi = createApi({
         const methods = (data as PaymentMethodResponse[]).map((method) => {
           return {
             id: method.id,
-            code: method.code as any,
+            code: method.code as PaymentOptions,
             name: method.name,
             feePercentage: method.fee_percentage,
             feeFixed: method.fee_fixed
