@@ -22,7 +22,7 @@ export const useCheckoutDetails = (): CheckoutDetailsReturn => {
   const { data: deliveryMethods, isLoading: isDeliveryLoading, isFetching: isDeliveryFetching, isError: isDeliveryError } = useGetDeliveryMethodsQuery();
 
   const freeShippingThreshold = deliveryMethods?.find(
-    (method: any) => method && method.freeFromPrice > 0
+    (method) => method && method.freeFromPrice !== null && method.freeFromPrice > 0
   )?.freeFromPrice ?? null;
 
   const productIds = useMemo(

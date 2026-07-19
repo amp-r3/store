@@ -18,6 +18,12 @@ interface ProductReviewResponse {
     reviewer_name: string | null;
     reviewer_email: string | null;
     is_edited: boolean;
+    profiles: {
+        first_name: string | null;
+        last_name: string | null;
+        username: string | null;
+        avatar_url: string | null;
+    } | null;
 }
 
 export const reviewApi = createApi({
@@ -63,7 +69,7 @@ export const reviewApi = createApi({
                         }
                     }
 
-                    const reviews: ProductReview[] = reviewsData.map((review: any) => {
+                    const reviews: ProductReview[] = (reviewsData as ProductReviewResponse[]).map((review) => {
                         let finalName = review.reviewer_name || 'Anonymous';
 
                         if (review.profiles) {

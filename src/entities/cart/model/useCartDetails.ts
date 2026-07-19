@@ -32,7 +32,7 @@ export const useCartDetails = (
   const { data: deliveryMethods, isLoading: isDeliveryLoading, isFetching: isDeliveryFetching, isError: isDeliveryError } = useGetDeliveryMethodsQuery();
 
   const freeShippingThreshold = deliveryMethods?.find(
-    (method: any) => method && method.freeFromPrice > 0
+    (method) => method && method.freeFromPrice !== null && method.freeFromPrice > 0
   )?.freeFromPrice ?? null;
 
   const unifiedCartItems = useMemo(() => {
@@ -57,12 +57,12 @@ export const useCartDetails = (
     useProductsByIds(productIds, isOpen);
 
   const cartDetails = useMemo(() => {
-    const productsMap = products.reduce<Record<number, Product>>((acc: any, product: any) => {
+    const productsMap = products.reduce<Record<number, Product>>((acc, product) => {
       acc[product.id] = product;
       return acc;
     }, {});
 
-    return unifiedCartItems.map((item: any) => {
+    return unifiedCartItems.map((item) => {
       const serverProduct = productsMap[item.productId];
       if (!serverProduct) return null;
 
@@ -75,12 +75,12 @@ export const useCartDetails = (
   }, [products, unifiedCartItems]);
 
   const totalQuantity = useMemo(() =>
-    unifiedCartItems.reduce((acc: any, item: any) => acc + item.quantity, 0),
+    unifiedCartItems.reduce((acc, item) => acc + item.quantity, 0),
     [unifiedCartItems]
   );
 
   const totals = useMemo(() => {
-    const validItems = cartDetails.filter((item: any): item is CartItem => item !== null);
+    const validItems = cartDetails.filter((item): item is CartItem => item !== null);
 
     return calculateCartTotals(validItems, freeShippingThreshold);
   }, [cartDetails, freeShippingThreshold]);

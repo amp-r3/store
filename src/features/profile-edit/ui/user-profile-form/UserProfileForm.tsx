@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "react-router"
 import { useUpdateProfileMutation } from "@/entities/session"
-import { editProfileSchema } from "@/features/profile-edit"
+import { editProfileSchema, EditProfileSchema } from "@/features/profile-edit"
 import { FormField, Loader } from "@/shared/ui"
 import style from './user-profile-form.module.scss';
 import { SessionUser } from "@/entities/session"
@@ -28,7 +29,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
     handleSubmit,
     reset,
     formState: { errors }
-  } = useForm({
+  } = useForm<z.input<typeof editProfileSchema>, unknown, EditProfileSchema>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       firstName: user.firstName || '',
@@ -38,7 +39,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
     }
   })
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: EditProfileSchema) => {
     try {
       await updateProfile(data).unwrap()
       onSuccess()

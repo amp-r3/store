@@ -13,7 +13,7 @@ interface OrderItemProps {
 export const OrderItem: React.FC<OrderItemProps> = ({ item, onClose }) => {
   const { product, quantity, priceAtPurchase, sizeId } = item;
   const { data: sizes } = useGetSizesQuery(product.id)
-  const { value: selectedSize } = sizes?.find((size: any) => size.id === sizeId) ?? {}
+  const { value: selectedSize } = sizes?.find((size) => size.id === sizeId) ?? {}
 
   const itemTotal = quantity * priceAtPurchase;
 

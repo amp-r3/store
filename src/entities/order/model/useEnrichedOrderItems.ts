@@ -22,10 +22,10 @@ export const useEnrichedOrderItems = (
   const items = useMemo(() => {
     if (!products?.length || !orderItems?.length) return [];
 
-    const productsMap = new Map(products.map((p: any) => [p.id, p]));
+    const productsMap = new Map(products.map((p) => [p.id, p]));
 
     return orderItems.reduce<EnrichedOrderItem[]>((acc, orderItem) => {
-      const product: any = productsMap.get(orderItem.productId);
+      const product = productsMap.get(orderItem.productId);
 
       if (product) {
         const { id, title, thumbnail, category } = product;

@@ -31,7 +31,7 @@ export const CartItem = memo<CartItemProps>(({
 
     const { id, title, price, thumbnail, quantity, discountPercentage, sizeId } = product;
     const { data: sizes } = useGetSizesQuery(id)
-    const selectedSize = sizes?.find((size: any) => size.id === sizeId)
+    const selectedSize = sizes?.find((size) => size.id === sizeId)
     const stock = selectedSize?.stock
 
     const totalPrice = price * quantity;
