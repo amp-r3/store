@@ -1,6 +1,6 @@
 @use '@/app/styles/index' as *;
 
-.contentHeader {
+.user-reviews-page__content-header {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
@@ -8,7 +8,7 @@
   padding-bottom: $spacing-lg;
 }
 
-.title {
+.user-reviews-page__title {
   font-family: $font-display;
   font-size: $fs-xl;
   font-weight: $fw-semibold;
@@ -17,7 +17,7 @@
   letter-spacing: $letter-spacing-tight;
 }
 
-.subtitle {
+.user-reviews-page__subtitle {
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--text-muted);
@@ -25,7 +25,7 @@
   line-height: $lh-relaxed;
 }
 
-.contentBody {
+.user-reviews-page__content-body {
   display: flex;
   flex-direction: column;
 }

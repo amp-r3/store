@@ -1,6 +1,6 @@
 @use '@/app/styles/index' as *;
 
-.profileView {
+.profile-view {
   display: flex;
   flex-direction: column;
   gap: $spacing-xl;
@@ -8,11 +8,11 @@
   max-width: 100%;
 }
 
-.infoList,
-.providersSection {
+.profile-view__info-list,
+.profile-view__providers-section {
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--glass-highlight-subtle);
   border: 1px solid var(--border-color-subtle);
   border-radius: $radius-lg;
   padding: $spacing-lg;
@@ -20,11 +20,11 @@
   box-sizing: border-box;
 }
 
-.infoList {
+.profile-view__info-list {
   gap: 0;
 }
 
-.infoRow {
+.profile-view__info-row {
   display: flex;
   flex-direction: column;
   padding-bottom: $spacing-md;
@@ -39,7 +39,7 @@
   }
 }
 
-.label {
+.profile-view__label {
   font-family: $font-display;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -49,7 +49,7 @@
   font-weight: $fw-semibold;
 }
 
-.value {
+.profile-view__value {
   font-family: $font-primary;
   font-size: $fs-base;
   color: var(--text-primary);
@@ -58,11 +58,11 @@
   overflow-wrap: anywhere;
 }
 
-.providersSection {
+.profile-view__providers-section {
   gap: $spacing-md;
 }
 
-.providersLabel {
+.profile-view__providers-label {
   font-family: $font-display;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -71,20 +71,20 @@
   color: var(--text-muted);
 }
 
-.providersList {
+.profile-view__providers-list {
   display: flex;
   flex-wrap: wrap;
   gap: $spacing-sm;
   min-width: 0;
 }
 
-.providerBadge {
+.profile-view__provider-badge {
   display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-xs $spacing-md;
   border-radius: $radius-pill;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--glass-highlight-subtle);
   border: 1px solid var(--border-color-subtle);
   font-family: $font-primary;
   font-size: $fs-sm;
@@ -93,25 +93,25 @@
   transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--glass-highlight-strong);
     border-color: var(--border-color-light);
     color: var(--text-primary);
     transform: translateY(-2px);
   }
 }
 
-.providerIcon {
+.profile-view__provider-icon {
   display: flex;
   align-items: center;
   flex-shrink: 0;
   font-size: $fs-icon-sm;
 }
 
-.providerName {
+.profile-view__provider-name {
   white-space: nowrap;
 }
 
-.actionButtons {
+.profile-view__action-buttons {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
@@ -150,7 +150,7 @@
   }
 }
 
-.editButton {
+.profile-view__edit-button {
   @extend %btn-base;
   background: var(--primary-accent);
   color: var(--text-inverse);
@@ -166,21 +166,21 @@
   }
 }
 
-.dangerRow {
+.profile-view__danger-row {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.logoutButton {
+.profile-view__logout-button {
   @extend %btn-base;
   background: transparent;
   color: var(--error-color);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(var(--error-color-rgb), 0.2);
 
   &:hover:not(:disabled) {
-    background: rgba(239, 68, 68, 0.06);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(var(--error-color-rgb), 0.06);
+    border-color: rgba(var(--error-color-rgb), 0.3);
     transform: translateY(-2px);
   }
 
@@ -189,15 +189,15 @@
   }
 }
 
-.deleteButton {
+.profile-view__delete-button {
   @extend %btn-base;
-  background: rgba(239, 68, 68, 0.05);
+  background: rgba(var(--error-color-rgb), 0.05);
   color: var(--error-color);
-  border: 1px solid rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(var(--error-color-rgb), 0.15);
 
   &:hover:not(:disabled) {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(var(--error-color-rgb), 0.12);
+    border-color: rgba(var(--error-color-rgb), 0.3);
     transform: translateY(-2px);
   }
 
@@ -206,7 +206,7 @@
   }
 }
 
-.deleteError {
+.profile-view__delete-error {
   margin: $spacing-sm 0 0;
   font-size: $fs-sm;
   color: var(--error-color);
@@ -214,7 +214,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .providerBadge, 
+  .profile-view__provider-badge, 
   %btn-base {
     transition: none;
     

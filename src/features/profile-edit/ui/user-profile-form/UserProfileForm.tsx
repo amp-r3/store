@@ -77,10 +77,10 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
       : undefined;
 
   return (
-    <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
+    <form className={style['profile-form']} onSubmit={handleSubmit(onSubmit)}>
 
       {errors.root && (
-        <div className={style.root} role="alert">
+        <div className={style['profile-form__error']} role="alert">
           {errors.root.message}
         </div>
       )}
@@ -115,10 +115,10 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
 
 
 
-      <div className={style.formActions}>
+      <div className={style['profile-form__actions']}>
         <button
           type="button"
-          className={style.cancelButton}
+          className={style['profile-form__cancel-button']}
           onClick={handleCancel}
           disabled={isLoading}
         >
@@ -126,7 +126,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
         </button>
         <button
           type="submit"
-          className={style.submitButton}
+          className={style['profile-form__submit-button']}
           disabled={isLoading}
         >
           {isLoading ? <Loader size="sm" /> : 'Save Changes'}

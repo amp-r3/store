@@ -149,9 +149,9 @@ export const UserOrdersPage = () => {
 
     return (
         <>
-            <header className={style.contentHeader}>
-                <h1 className={style.title}>My Orders</h1>
-                <p className={style.subtitle}>
+            <header className={style['user-orders-page__content-header']}>
+                <h1 className={style['user-orders-page__title']}>My Orders</h1>
+                <p className={style['user-orders-page__subtitle']}>
                     Track active orders and look back at everything you&apos;ve completed.
                 </p>
             </header>
@@ -159,7 +159,7 @@ export const UserOrdersPage = () => {
             <UserOrdersTabs tab={tab} counts={counts} onChange={handleTabChange} />
 
             <div
-                className={style.contentBody}
+                className={style['user-orders-page__content-body']}
                 role="tabpanel"
                 id={`user-orders-panel-${tab}`}
                 aria-labelledby={`user-orders-tab-${tab}`}

@@ -15,9 +15,9 @@ interface UserProfileViewProps {
 }
 
 const UserInfoRow = ({ label, value, prefix = '' }: { label: string, value: string | null, prefix?: string }) => (
-  <div className={style.infoRow}>
-    <span className={style.label}>{label}</span>
-    <span className={style.value}>{value ? `${prefix}${value}` : '—'}</span>
+  <div className={style['profile-view__info-row']}>
+    <span className={style['profile-view__label']}>{label}</span>
+    <span className={style['profile-view__value']}>{value ? `${prefix}${value}` : '—'}</span>
   </div>
 );
 
@@ -25,16 +25,16 @@ const LinkedProviders = ({ providers }: { providers: string[] }) => {
   if (!providers.length) return null;
 
   return (
-    <div className={style.providersSection}>
-      <span className={style.providersLabel}>Linked accounts</span>
-      <div className={style.providersList}>
+    <div className={style['profile-view__providers-section']}>
+      <span className={style['profile-view__providers-label']}>Linked accounts</span>
+      <div className={style['profile-view__providers-list']}>
         {providers.map((key) => {
           const config = PROVIDER_CONFIG[key.toLowerCase()];
           if (!config) return null;
           return (
-            <div key={key} className={style.providerBadge}>
-              <span className={style.providerIcon}>{config.icon}</span>
-              <span className={style.providerName}>{config.label}</span>
+            <div key={key} className={style['profile-view__provider-badge']}>
+              <span className={style['profile-view__provider-icon']}>{config.icon}</span>
+              <span className={style['profile-view__provider-name']}>{config.label}</span>
             </div>
           );
         })}
@@ -47,8 +47,8 @@ export const UserProfileView = ({ user, onEditClick, providers, onDeleteAccount,
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
-    <div className={style.profileView}>
-      <div className={style.infoList}>
+    <div className={style['profile-view']}>
+      <div className={style['profile-view__info-list']}>
         <UserInfoRow label="First Name" value={user.firstName} />
         <UserInfoRow label="Last Name" value={user.lastName} />
         <UserInfoRow label="Username" value={user.username} prefix="@" />
@@ -57,16 +57,16 @@ export const UserProfileView = ({ user, onEditClick, providers, onDeleteAccount,
 
       <LinkedProviders providers={providers} />
 
-      <div className={style.actionButtons}>
+      <div className={style['profile-view__action-buttons']}>
         <button
-          className={style.editButton}
+          className={style['profile-view__edit-button']}
           onClick={onEditClick}
         >
           Edit Profile
         </button>
-        <div className={style.dangerRow}>
+        <div className={style['profile-view__danger-row']}>
           <button
-            className={style.deleteButton}
+            className={style['profile-view__delete-button']}
             onClick={() => setIsDeleteModalOpen(true)}
           >
             Delete Account
@@ -75,7 +75,7 @@ export const UserProfileView = ({ user, onEditClick, providers, onDeleteAccount,
       </div>
 
       {deleteError && (
-        <p className={style.deleteError} role="alert">
+        <p className={style['profile-view__delete-error']} role="alert">
           {deleteError}
         </p>
       )}

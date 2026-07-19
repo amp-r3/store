@@ -33,52 +33,52 @@ export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
   };
 
   return (
-    <aside className={style.sidebar}>
-      <div className={style.userInfo}>
-        <div className={style.avatar}>
+    <aside className={style['profile-sidebar']}>
+      <div className={style['profile-sidebar__user-info']}>
+        <div className={style['profile-sidebar__avatar']}>
           {getInitial(user.firstName || user.lastName, user.username)}
         </div>
-        <div className={style.details}>
-          <div className={style.name}>
+        <div className={style['profile-sidebar__details']}>
+          <div className={style['profile-sidebar__name']}>
             {user.firstName || user.lastName 
               ? `${user.firstName || ''} ${user.lastName || ''}`.trim() 
               : `@${user.username}`}
           </div>
-          {user.email && <div className={style.email}>{user.email}</div>}
+          {user.email && <div className={style['profile-sidebar__email']}>{user.email}</div>}
         </div>
       </div>
 
-      <nav className={style.nav}>
+      <nav className={style['profile-sidebar__nav']}>
         <NavLink 
           to="/user" 
           end
-          className={({ isActive }) => `${style.navLink} ${isActive ? style.active : ''}`}
+          className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
         >
-          <FaUser className={style.icon} />
+          <FaUser className={style['profile-sidebar__icon']} />
           <span>Profile</span>
         </NavLink>
         
         <NavLink
           to="/user/orders"
-          className={({ isActive }) => `${style.navLink} ${isActive ? style.active : ''}`}
+          className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
         >
-          <FaBoxOpen className={style.icon} />
+          <FaBoxOpen className={style['profile-sidebar__icon']} />
           <span>Orders History</span>
         </NavLink>
 
         <NavLink 
           to="/user/reviews" 
-          className={({ isActive }) => `${style.navLink} ${isActive ? style.active : ''}`}
+          className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
         >
-          <FaStar className={style.icon} />
+          <FaStar className={style['profile-sidebar__icon']} />
           <span>My Reviews</span>
         </NavLink>
 
         <button 
-          className={style.logoutButton}
+          className={style['profile-sidebar__logout-button']}
           onClick={() => setIsLogoutModalOpen(true)}
         >
-          <CgLogOut className={style.icon} />
+          <CgLogOut className={style['profile-sidebar__icon']} />
           <span>Logout</span>
         </button>
       </nav>

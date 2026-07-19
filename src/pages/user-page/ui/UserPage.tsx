@@ -31,18 +31,18 @@ export const UserPage = () => {
 
   return (
     <>
-      <header className={style.contentHeader}>
-        <h1 className={style.title}>
+      <header className={style['user-page__content-header']}>
+        <h1 className={style['user-page__title']}>
           {isEditing ? 'Edit Profile' : `Hello, ${user.username}!`}
         </h1>
-        <p className={style.subtitle}>
+        <p className={style['user-page__subtitle']}>
           {isEditing
             ? 'Update your personal information below.'
             : 'You can edit fields or just look at your data.'}
         </p>
       </header>
 
-      <div className={style.contentBody}>
+      <div className={style['user-page__content-body']}>
         {!isEditing ? (
           <UserProfileView
             user={user}

@@ -1,12 +1,12 @@
 @use '@/app/styles/index' as *;
 
-.form {
+.profile-form {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
 }
 
-.formActions {
+.profile-form__actions {
   display: flex;
   gap: $spacing-sm;
   margin-top: $spacing-sm;
@@ -16,14 +16,14 @@
   }
 }
 
-.root {
+.profile-form__error {
   display: flex;
   align-items: flex-start;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
   border-radius: $radius-input;
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  background-color: rgba(220, 38, 38, 0.07);
+  border: 1px solid rgba(var(--error-color-rgb), 0.3);
+  background-color: rgba(var(--error-color-rgb), 0.07);
   color: var(--error-color);
   font-family: $font-primary;
   font-size: $fs-sm;
@@ -74,7 +74,7 @@
   }
 }
 
-.submitButton {
+.profile-form__submit-button {
   @extend %btn-base;
   background-color: var(--primary-accent);
   color: var(--text-inverse);
@@ -87,7 +87,7 @@
   }
 }
 
-.cancelButton {
+.profile-form__cancel-button {
   @extend %btn-base;
   background-color: transparent;
   color: var(--text-secondary);

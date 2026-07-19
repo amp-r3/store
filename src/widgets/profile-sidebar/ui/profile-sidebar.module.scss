@@ -1,6 +1,6 @@
 @use '@/app/styles/index' as *;
 
-.sidebar {
+.profile-sidebar {
   display: flex;
   flex-direction: column;
   gap: $spacing-xl;
@@ -13,13 +13,13 @@
   top: calc($header-height + $spacing-xxl);
   backdrop-filter: blur(24px) saturate(120%);
   -webkit-backdrop-filter: blur(24px) saturate(120%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--shadow-sm);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-sm);
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
 }
 
-.userInfo {
+.profile-sidebar__user-info {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,7 +29,7 @@
   padding-bottom: $spacing-xl;
 }
 
-.avatar {
+.profile-sidebar__avatar {
   width: 80px;
   height: 80px;
   border-radius: $radius-circle;
@@ -41,16 +41,16 @@
   justify-content: center;
   font-size: $fs-xl;
   font-weight: $fw-semibold;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
 }
 
-.details {
+.profile-sidebar__details {
   display: flex;
   flex-direction: column;
   gap: $spacing-xxs;
 }
 
-.name {
+.profile-sidebar__name {
   font-family: $font-display;
   font-size: $fs-md;
   font-weight: $fw-semibold;
@@ -58,20 +58,20 @@
   letter-spacing: $letter-spacing-wide;
 }
 
-.email {
+.profile-sidebar__email {
   font-size: $fs-sm;
   color: var(--text-secondary);
   font-family: $font-primary;
 }
 
-.nav {
+.profile-sidebar__nav {
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
   min-width: 0;
 }
 
-.navLink {
+.profile-sidebar__nav-link {
   display: flex;
   align-items: center;
   gap: $spacing-md;
@@ -91,25 +91,25 @@
     transform: translateX(4px);
   }
 
-  &.active {
+  &.profile-sidebar__nav-link--active {
     background: rgba(var(--primary-accent-rgb), 0.12);
     border-color: var(--border-color-light);
     color: var(--text-primary);
     font-weight: $fw-semibold;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    box-shadow: inset 0 1px 0 var(--glass-highlight-subtle);
     
-    .icon {
+    .profile-sidebar__icon {
       color: var(--primary-accent-light);
     }
   }
 }
 
-.icon {
+.profile-sidebar__icon {
   font-size: $fs-icon-md;
   transition: color $transition-fast $ease-in-out-smooth;
 }
 
-.logoutButton {
+.profile-sidebar__logout-button {
   display: flex;
   align-items: center;
   gap: $spacing-md;
@@ -126,7 +126,7 @@
   text-align: left;
   transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
 
-  .icon {
+  .profile-sidebar__icon {
     color: var(--error-color);
     opacity: 0.8;
     transition: opacity $transition-fast $ease-in-out-smooth;
@@ -134,18 +134,18 @@
 
   &:hover {
     color: var(--error-color);
-    background: rgba(239, 68, 68, 0.06);
-    border-color: rgba(239, 68, 68, 0.15);
+    background: rgba(var(--error-color-rgb), 0.06);
+    border-color: rgba(var(--error-color-rgb), 0.15);
     transform: translateX(4px);
 
-    .icon {
+    .profile-sidebar__icon {
       opacity: 1;
     }
   }
 }
 
 @media (max-width: 768px) {
-  .sidebar {
+  .profile-sidebar {
     padding: 0;
     border: none;
     background: transparent;
@@ -157,11 +157,11 @@
     gap: 0;
   }
 
-  .userInfo {
+  .profile-sidebar__user-info {
     display: none;
   }
 
-  .nav {
+  .profile-sidebar__nav {
     flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
@@ -180,7 +180,7 @@
     }
   }
 
-  .navLink, .logoutButton {
+  .profile-sidebar__nav-link, .profile-sidebar__logout-button {
     white-space: nowrap;
     flex-shrink: 0;
     background: var(--glass-background-subtle);
@@ -192,13 +192,13 @@
     }
   }
 
-  .logoutButton {
+  .profile-sidebar__logout-button {
     width: auto;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .navLink, .logoutButton {
+  .profile-sidebar__nav-link, .profile-sidebar__logout-button {
     transition: none;
     &:hover {
       transform: none;
