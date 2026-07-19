@@ -12,7 +12,7 @@ interface OrderItemProps {
   linkToProduct?: boolean;
 }
 
-export const OrderItem: React.FC<OrderItemProps> = ({ item, onClose, linkToProduct = true }) => {
+export const OrderItem: React.FC<OrderItemProps> = React.memo(({ item, onClose, linkToProduct = true }) => {
   const { product, quantity, priceAtPurchase, sizeId } = item;
   const { data: sizes } = useGetSizesQuery(product.id)
   const { value: selectedSize } = sizes?.find((size) => size.id === sizeId) ?? {}
@@ -69,4 +69,6 @@ export const OrderItem: React.FC<OrderItemProps> = ({ item, onClose, linkToProdu
       </div>
     </article>
   );
-};
+});
+
+OrderItem.displayName = 'OrderItem';
