@@ -211,7 +211,6 @@ export const UserOrdersPage = () => {
                 onOpenChange={setIsReviewOpen}
                 orderItems={reviewItems}
                 isLoading={isItemsLoading}
-                onClose={() => setIsReviewOpen(false)}
                 onAction={(item: EnrichedOrderItem) => {
                     setIsReviewOpen(false);
                     dispatch(openReviewModal(item.product.id.toString()));

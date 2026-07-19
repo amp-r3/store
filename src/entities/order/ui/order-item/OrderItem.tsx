@@ -8,9 +8,11 @@ import { Link } from 'react-router';
 interface OrderItemProps {
   item: EnrichedOrderItem;
   onClose?(): void;
+  /** Off when the row itself is the interactive element, so the two don't compete for the click. */
+  linkToProduct?: boolean;
 }
 
-export const OrderItem: React.FC<OrderItemProps> = ({ item, onClose }) => {
+export const OrderItem: React.FC<OrderItemProps> = ({ item, onClose, linkToProduct = true }) => {
   const { product, quantity, priceAtPurchase, sizeId } = item;
   const { data: sizes } = useGetSizesQuery(product.id)
   const { value: selectedSize } = sizes?.find((size) => size.id === sizeId) ?? {}
@@ -19,12 +21,14 @@ export const OrderItem: React.FC<OrderItemProps> = ({ item, onClose }) => {
 
   return (
     <article className={style['order-item']}>
-      <Link
-        to={`/product/${item.product.id}`}
-        className={style['order-item__link']}
-        aria-label={`View details for ${product.title}`}
-        onClick={onClose}
-      />
+      {linkToProduct && (
+        <Link
+          to={`/product/${item.product.id}`}
+          className={style['order-item__link']}
+          aria-label={`View details for ${product.title}`}
+          onClick={onClose}
+        />
+      )}
 
       <div className={style['order-item__image-wrapper']}>
         {product.thumbnail ? (

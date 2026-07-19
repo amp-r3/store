@@ -1,12 +1,31 @@
 @use '@/app/styles/index' as *;
 
+.review-target {
+  cursor: pointer;
+  border-radius: $radius-lg;
+  transition: background-color $transition-base $ease-out-expo;
+
+  &:hover {
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
 /* ── Desktop Dialog Styles ── */
 .review-modal {
   &__overlay {
     position: fixed;
     inset: 0;
     z-index: $z-index-modal;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--overlay-backdrop);
     backdrop-filter: $backdrop-blur-sm;
 
     &[data-state='open'] {
@@ -157,7 +176,7 @@
     position: fixed;
     inset: 0;
     z-index: $z-index-modal-backdrop;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--overlay-backdrop);
     backdrop-filter: $backdrop-blur-sm;
   }
 

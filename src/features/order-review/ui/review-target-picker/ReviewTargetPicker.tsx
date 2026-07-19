@@ -13,17 +13,38 @@ interface ReviewTargetPickerProps {
     orderItems: EnrichedOrderItem[]
     onOpenChange(open: boolean): void;
     onAction(item: EnrichedOrderItem): void;
-    onClose(): void;
     isLoading: boolean;
     isOpen: boolean;
 }
+
+interface ReviewTargetRowProps {
+    item: EnrichedOrderItem;
+    onSelect(item: EnrichedOrderItem): void;
+}
+
+const ReviewTargetRow = ({ item, onSelect }: ReviewTargetRowProps) => (
+    <div
+        className={style['review-target']}
+        role="button"
+        tabIndex={0}
+        aria-label={`Rate ${item.product.title}`}
+        onClick={() => onSelect(item)}
+        onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onSelect(item);
+            }
+        }}
+    >
+        <OrderItem item={item} linkToProduct={false} />
+    </div>
+);
 
 export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
     orderItems,
     isOpen,
     onOpenChange,
     onAction,
-    onClose,
     isLoading,
 }) => {
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -58,9 +79,7 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
                                 <OrderItemSkeleton count={3} />
                             ) : (
                                 orderItems.map((product) => (
-                                    <div key={product.id} onClick={() => onAction(product)}>
-                                        <OrderItem item={product} onClose={onClose} />
-                                    </div>
+                                    <ReviewTargetRow key={product.id} item={product} onSelect={onAction} />
                                 ))
                             )}
                         </div>
@@ -99,9 +118,7 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
                             <OrderItemSkeleton count={3} />
                         ) : (
                             orderItems.map((product) => (
-                                <div key={product.id} onClick={() => onAction(product)}>
-                                    <OrderItem item={product} onClose={onClose} />
-                                </div>
+                                <ReviewTargetRow key={product.id} item={product} onSelect={onAction} />
                             ))
                         )}
                     </div>
