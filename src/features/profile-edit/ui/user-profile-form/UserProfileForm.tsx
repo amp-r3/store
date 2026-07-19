@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useNavigate } from "react-router"
 import { useUpdateProfileMutation } from "@/entities/session"
 import { editProfileSchema, EditProfileSchema } from "@/features/profile-edit"
 import { FormField, Loader } from "@/shared/ui"
@@ -13,14 +12,12 @@ import { getErrorMessage } from "@/shared/lib"
 
 interface UserProfileFormProps {
   user: SessionUser;
-  isTelegramUser: boolean;
   isGoogleUser: boolean;
   onCancel: () => void;
   onSuccess: () => void;
 }
 
 export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: UserProfileFormProps) => {
-  const navigate = useNavigate()
   const [updateProfile, { isLoading }] = useUpdateProfileMutation()
 
   const {
@@ -43,10 +40,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
     try {
       await updateProfile(data).unwrap()
       onSuccess()
-      navigate('/', { replace: true })
     } catch (err) {
-      console.error('Registration error details:', JSON.stringify(err, null, 2));
-
       const errorMessage = getErrorMessage(err);
 
       const errText = errorMessage.toLowerCase();
@@ -65,7 +59,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
       else {
         setError('root', {
           type: 'server',
-          message: errorMessage || 'An error occurred while registering. Please try again later.'
+          message: errorMessage || 'An error occurred while saving your profile. Please try again later.'
         });
       }
     }

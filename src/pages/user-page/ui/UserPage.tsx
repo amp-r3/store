@@ -15,7 +15,6 @@ export const UserPage = () => {
 
   const providers = user?.app_metadata?.providers || [];
   const isGoogleUser = providers.includes('google');
-  const isTelegramUser = providers.includes('telegram');
 
   const [isEditing, setIsEditing] = useState(false)
 
@@ -55,7 +54,6 @@ export const UserPage = () => {
         ) : (
           <UserProfileForm
             user={user}
-            isTelegramUser={isTelegramUser}
             isGoogleUser={isGoogleUser}
             onCancel={() => setIsEditing(false)}
             onSuccess={() => setIsEditing(false)}
