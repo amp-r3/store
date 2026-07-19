@@ -12,10 +12,11 @@ import { FormField, Loader } from "@/shared/ui";
 import { useAuthUrlError } from "@/entities/session";
 import { SignInButton } from "@/features/auth";
 import { PasswordRequirements } from "./password-requirements/PasswordRequirements";
+import { LocationState } from "@/shared/types";
 export const RegisterPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const from = (location.state as any)?.from || '/'
+  const from = (location.state as LocationState | null)?.from || '/'
   const [isEmail, setIsEmail] = useState(false)
   const [register, { isLoading }] = useRegisterMutation()
   const [signInWithGoogle] = useSignInWithGoogleMutation()
