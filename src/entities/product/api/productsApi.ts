@@ -208,7 +208,8 @@ export const productsApi = baseApi.injectEndpoints({
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
                 }
-            }
+            },
+            providesTags: (_result, _error, productId) => [{ type: 'Size', id: productId }]
         }),
 
         getDealsProducts: builder.query<Product[], { limit?: number } | void>({

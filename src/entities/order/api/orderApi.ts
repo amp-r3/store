@@ -230,7 +230,7 @@ export const orderApi = baseApi.injectEndpoints({
         // the RPC's generated return type is generic Json.
         return { data: data as unknown as CreateOrderResponse };
       },
-      invalidatesTags: ['Order'],
+      invalidatesTags: ['Order', 'Cart', 'Product'],
     }),
 
     getDeliveryMethods: builder.query<DeliveryMethod[], void>({
@@ -254,6 +254,7 @@ export const orderApi = baseApi.injectEndpoints({
         }));
         return { data: methods };
       },
+      providesTags: ['DeliveryMethod'],
     }),
 
     getPaymentMethods: builder.query<PaymentMethod[], void>({
@@ -275,6 +276,7 @@ export const orderApi = baseApi.injectEndpoints({
         }));
         return { data: methods };
       },
+      providesTags: ['PaymentMethod'],
     }),
   }),
 });
