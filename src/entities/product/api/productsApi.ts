@@ -70,12 +70,18 @@ export const productsApi = createApi({
                         };
                     }
 
-                    const items = (data as Product[]).reduce((acc, curr) => {
+                    // products_view is a Postgres view: PG cannot express NOT
+                    // NULL for view columns, so every generated column is
+                    // `| null`. The view's underlying columns are NOT NULL —
+                    // cast once here.
+                    const rows = data as unknown as Product[];
+
+                    const items = rows.reduce((acc, curr) => {
                         acc[curr.id] = curr;
                         return acc;
                     }, {} as Record<number, Product>);
 
-                    const ids = (data as Product[]).map((product) => product.id);
+                    const ids = rows.map((product) => product.id);
 
                     return {
                         data: {
@@ -117,7 +123,7 @@ export const productsApi = createApi({
                         name: 'All Products',
                     };
 
-                    return { data: [defaultCategory, ...(data || [])] as Categories };
+                    return { data: [defaultCategory, ...(data ?? [])] };
 
                 } catch (err) {
                     return {
@@ -143,7 +149,11 @@ export const productsApi = createApi({
                         };
                     }
 
-                    return { data: data as Product };
+                    // products_view is a Postgres view: PG cannot express NOT
+                    // NULL for view columns, so every generated column is
+                    // `| null`. The view's underlying columns are NOT NULL —
+                    // cast once here.
+                    return { data: data as unknown as Product };
                 } catch (err) {
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
@@ -167,7 +177,11 @@ export const productsApi = createApi({
                         };
                     }
 
-                    return { data: data as Product[] };
+                    // products_view is a Postgres view: PG cannot express NOT
+                    // NULL for view columns, so every generated column is
+                    // `| null`. The view's underlying columns are NOT NULL —
+                    // cast once here.
+                    return { data: data as unknown as Product[] };
                 } catch (err) {
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
@@ -192,7 +206,7 @@ export const productsApi = createApi({
                         };
                     }
 
-                    return { data: sizes as ProductSize[]}
+                    return { data: sizes }
                 } catch (error) {
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
@@ -220,7 +234,11 @@ export const productsApi = createApi({
                         };
                     }
 
-                    return { data: data as Product[] };
+                    // products_view is a Postgres view: PG cannot express NOT
+                    // NULL for view columns, so every generated column is
+                    // `| null`. The view's underlying columns are NOT NULL —
+                    // cast once here.
+                    return { data: data as unknown as Product[] };
                 } catch (err) {
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(err) }
@@ -241,6 +259,9 @@ export const productsApi = createApi({
                 try {
                     const { data, error } = await supabase.rpc('get_last_purchase_date', { p_product_id: productId });
                     if (error) throw error;
+                    // The generator infers a non-null Returns type, but the
+                    // function explicitly RETURNs NULL for guests, already-
+                    // reviewed products, and products with no purchase.
                     return { data: data as string | null };
                 } catch (error) {
                     return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };

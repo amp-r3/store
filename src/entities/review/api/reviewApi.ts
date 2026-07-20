@@ -1,4 +1,5 @@
 import { supabase } from "@/shared/api";
+import type { Database } from "@/shared/api";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { productsApi } from "@/entities/product";
 import { ProductReview, UnreviewedPurchase } from "@/entities/review";
@@ -17,32 +18,25 @@ const REVIEW_SELECT = `
     )
 `;
 
-interface ProductReviewResponse {
-    id: number;
-    product_id: number;
-    rating: number;
-    comment: string | null;
-    date: string;
-    user_id: string | null;
-    helpful_count: number;
-    reviewer_name: string | null;
-    reviewer_email: string | null;
-    is_edited: boolean;
-    profiles: {
-        first_name: string | null;
-        last_name: string | null;
-        username: string | null;
-        avatar_url: string | null;
-    } | null;
-}
+type ProductReviewRow = Database['public']['Tables']['product_reviews']['Row'] & {
+    profiles: Pick<
+        Database['public']['Tables']['profiles']['Row'],
+        'first_name' | 'last_name' | 'username' | 'avatar_url'
+    > | null;
+};
 
-interface UnreviewedPurchaseResponse {
-    product_id: number;
-    last_purchased_at: string;
-    purchase_count: number;
-}
+// product_reviews allows NULL product_id/rating/date at the schema level (no
+// NOT NULL constraint), even though every write path (add_or_update_review)
+// always sets them. Narrow to the fields the UI actually needs before mapping.
+const isCompleteReview = (
+    review: ProductReviewRow
+): review is ProductReviewRow & { product_id: number; rating: number; date: string } =>
+    review.product_id !== null && review.rating !== null && review.date !== null;
 
-const mapReview = (review: ProductReviewResponse, likedIds: Set<number>): ProductReview => {
+const mapReview = (
+    review: ProductReviewRow & { product_id: number; rating: number; date: string },
+    likedIds: Set<number>
+): ProductReview => {
     let finalName = review.reviewer_name || 'Anonymous';
 
     if (review.profiles) {
@@ -91,7 +85,7 @@ export const reviewApi = createApi({
                     const userLikes = new Set<number>();
 
                     if (user && reviewsData.length > 0) {
-                        const reviewIds = (reviewsData as ProductReviewResponse[]).map(r => r.id);
+                        const reviewIds = reviewsData.map(r => r.id);
 
                         const { data: likesData } = await supabase
                             .from('review_likes')
@@ -104,9 +98,9 @@ export const reviewApi = createApi({
                         }
                     }
 
-                    const reviews = (reviewsData as ProductReviewResponse[]).map(
-                        (review) => mapReview(review, userLikes)
-                    );
+                    const reviews = reviewsData
+                        .filter(isCompleteReview)
+                        .map((review) => mapReview(review, userLikes));
 
                     return { data: reviews };
                 } catch (error) {
@@ -133,9 +127,9 @@ export const reviewApi = createApi({
                     if (error) throw error;
                     if (!data) return { data: [] };
 
-                    const reviews = (data as ProductReviewResponse[]).map(
-                        (review) => mapReview(review, new Set<number>())
-                    );
+                    const reviews = data
+                        .filter(isCompleteReview)
+                        .map((review) => mapReview(review, new Set<number>()));
 
                     return { data: reviews };
                 } catch (error) {
@@ -158,7 +152,7 @@ export const reviewApi = createApi({
                         };
                     }
 
-                    const purchases = ((data ?? []) as UnreviewedPurchaseResponse[]).map((row) => ({
+                    const purchases = (data ?? []).map((row) => ({
                         productId: row.product_id,
                         lastPurchasedAt: row.last_purchased_at,
                         purchaseCount: row.purchase_count,

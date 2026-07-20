@@ -1,52 +1,20 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase } from '@/shared/api';
-import { DeliveryStatus, Order, OrderCounts, OrderStatus, OrdersScope, PaymentStatus, DeliveryMethod, PaymentMethod, DeliveryOptions, PaymentOptions } from '@/entities/order/model/types';
+import type { Database } from '@/shared/api';
+import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, PaymentOptions } from '@/entities/order/model/types';
 
-interface DeliveryMethodResponse {
-  id: string;
-  code: string;
-  name: string;
-  price: number;
-  estimated_time: string;
-  is_active: boolean;
-  free_from_price: number | null;
-}
-
-interface PaymentMethodResponse {
-  id: string;
-  code: string;
-  name: string;
-  fee_percentage: number;
-  fee_fixed: number;
-}
-
-interface OrderResponse {
-  id: string;
-  order_number: string;
-  user_id: string;
-  status: OrderStatus;
-  total_amount: number;
-  shipping_address: ShippingAddress;
-  created_at: string;
-  updated_at: string;
-  payment_methods: PaymentMethodResponse;
-  payment_status: PaymentStatus;
-  delivery_status: DeliveryStatus;
-  delivery_method_id: string | null;
-  delivery_cost: number;
-  payment_fee: number;
-  delivery_methods: DeliveryMethodResponse;
-  order_items: {
-    id: string;
-    order_id: string;
-    product_id: number;
-    size_id: number;
-    quantity: number;
-    price_at_purchase: number;
-    created_at: string;
-  }[];
-}
+// orders.delivery_method_id / payment_method_id are nullable (ON DELETE SET
+// NULL if the method is later removed), so a joined row could in theory come
+// back with a null method. The app has always assumed a method is present on
+// every order it created (same assumption the old hand-written OrderResponse
+// interface made) — kept as-is rather than widened, since relaxing it is a
+// product decision (how to render an order whose method was deleted).
+type OrderRow = Database['public']['Tables']['orders']['Row'] & {
+  delivery_methods: Database['public']['Tables']['delivery_methods']['Row'];
+  payment_methods: Database['public']['Tables']['payment_methods']['Row'];
+  order_items: Database['public']['Tables']['order_items']['Row'][];
+};
 
 export interface CreateOrderResponse {
   id: string;
@@ -84,15 +52,22 @@ const ORDERS_SELECT = `
 `;
 
 
-const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
+const mapOrderResponseToOrder = (order: OrderRow): Order => ({
   id: order.id,
-  orderId: order.order_number,
+  // order_number is nullable in the schema but always set by the create_order
+  // RPC (the only insert path); fall back to the row id rather than drop it.
+  orderId: order.order_number ?? order.id,
   userId: order.user_id,
   status: order.status,
   totalAmount: Number(order.total_amount),
-  shippingAddress: order.shipping_address,
+  // shipping_address is stored as jsonb with no schema-level shape guarantee;
+  // the app controls both write (create_order) and read side of this shape.
+  shippingAddress: order.shipping_address as unknown as ShippingAddress,
   createdAt: order.created_at,
   updatedAt: order.updated_at,
+  // payment_method_type has a legacy 'card_online' value the frontend
+  // PaymentOptions union doesn't model (pre-existing drift, not introduced
+  // by this refactor — the old code cast the same way).
   paymentMethod: order.payment_methods.code as PaymentOptions,
   paymentStatus: order.payment_status,
   deliveryStatus: order.delivery_status,
@@ -101,18 +76,20 @@ const mapOrderResponseToOrder = (order: OrderResponse): Order => ({
   paymentFee: Number(order.payment_fee),
   deliveryMethods: {
     id: order.delivery_methods.id,
-    code: order.delivery_methods.code as DeliveryOptions,
+    code: order.delivery_methods.code,
     label: order.delivery_methods.name,
-    isActive: order.delivery_methods.is_active,
-    duration: order.delivery_methods.estimated_time,
+    // is_active/estimated_time are nullable in the schema (no NOT NULL);
+    // fall back to the column's own DB default / an empty estimate.
+    isActive: order.delivery_methods.is_active ?? true,
+    duration: order.delivery_methods.estimated_time ?? '',
     price: order.delivery_methods.price,
     freeFromPrice: order.delivery_methods.free_from_price,
   },
-  orderItems: (order.order_items || []).map((item) => ({
+  orderItems: order.order_items.map((item) => ({
     id: item.id,
     orderId: item.order_id,
-    productId: Number(item.product_id),
-    sizeId: Number(item.size_id),
+    productId: item.product_id,
+    sizeId: item.size_id,
     quantity: item.quantity,
     priceAtPurchase: Number(item.price_at_purchase),
     createdAt: item.created_at,
@@ -148,7 +125,10 @@ const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
 
   return {
     data: {
-      items: (data as OrderResponse[]).map(mapOrderResponseToOrder),
+      // Multi-embed select (delivery_methods + payment_methods + order_items)
+      // isn't narrowed precisely by postgrest-js's select-string inference;
+      // OrderRow is composed entirely from generated table types.
+      items: (data as unknown as OrderRow[]).map(mapOrderResponseToOrder),
       totalCount: count || 0
     }
   };
@@ -206,7 +186,7 @@ export const orderApi = createApi({
           return { error: { status: 400, data: error.message } };
         }
 
-        return { data: mapOrderResponseToOrder(data as OrderResponse) };
+        return { data: mapOrderResponseToOrder(data as unknown as OrderRow) };
       },
       providesTags: ['Order']
     }),
@@ -250,13 +230,18 @@ export const orderApi = createApi({
         }
 
         const { data, error } = await supabase
-          .rpc('create_order', payload);
+          // create_order's Args are typed as generic Json server-side (the
+          // function accepts jsonb parameters); payload matches the expected
+          // shape but has no index signature to satisfy Json structurally.
+          .rpc('create_order', payload as unknown as Database['public']['Functions']['create_order']['Args']);
 
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
 
-        return { data };
+        // create_order returns jsonb_build_object('id', ..., 'order_number', ...);
+        // the RPC's generated return type is generic Json.
+        return { data: data as unknown as CreateOrderResponse };
       },
       invalidatesTags: ['Order'],
     }),
@@ -270,18 +255,16 @@ export const orderApi = createApi({
           return { error: { status: 400, data: error.message } };
         }
 
-        const methods = (data as DeliveryMethodResponse[]).map((method) => {
-          return {
-            id: method.id,
-            code: method.code as DeliveryOptions,
-            label: method.name,
-            price: method.price,
-            duration: method.estimated_time,
-            freeFromPrice: method.free_from_price,
-            isActive: method.is_active
-          };
-        });
-        return { data: methods as DeliveryMethod[] };
+        const methods: DeliveryMethod[] = (data ?? []).map((method) => ({
+          id: method.id,
+          code: method.code,
+          label: method.name,
+          price: method.price,
+          duration: method.estimated_time ?? '',
+          freeFromPrice: method.free_from_price,
+          isActive: method.is_active ?? true
+        }));
+        return { data: methods };
       },
     }),
 
@@ -295,16 +278,17 @@ export const orderApi = createApi({
           return { error: { status: 400, data: error.message } };
         }
 
-        const methods = (data as PaymentMethodResponse[]).map((method) => {
-          return {
-            id: method.id,
-            code: method.code as PaymentOptions,
-            name: method.name,
-            feePercentage: method.fee_percentage,
-            feeFixed: method.fee_fixed
-          };
-        });
-        return { data: methods as PaymentMethod[] };
+        const methods: PaymentMethod[] = (data ?? []).map((method) => ({
+          id: method.id,
+          // See the comment on paymentMethod in mapOrderResponseToOrder above:
+          // payment_method_type has a 'card_online' value not modeled in
+          // PaymentOptions (pre-existing drift, not introduced here).
+          code: method.code as PaymentOptions,
+          name: method.name,
+          feePercentage: method.fee_percentage,
+          feeFixed: method.fee_fixed
+        }));
+        return { data: methods };
       },
     }),
   }),

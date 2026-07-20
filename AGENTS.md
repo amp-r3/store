@@ -175,11 +175,30 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
   resort, with a comment. Forms: Zod + `react-hook-form` via `@hookform/resolvers/zod`.
 - Shared interfaces in `shared/types/`; local-only types stay in the
   component/model file.
-- `shared/api/supabase.ts` creates the client with no `Database` generic, so
-  `.from().select()` results are implicitly `any`. Define a local response
-  interface next to the `queryFn` (see `entities/order/api/orderApi.ts`'s
-  `*Response` interfaces) and cast once (`data as MyRow[]`) instead of leaving
-  fields untyped or adding explicit `any` on the callback that consumes them.
+- `shared/api/supabase.ts` creates the client with the generated `Database`
+  generic (`src/shared/api/database.types.ts`, re-exported from `shared/api`),
+  so `.from().select()`/`.rpc()` results are typed automatically — never
+  hand-write a local `*Response`/`*Row` interface to mirror a table shape.
+  Prefer inference from the query itself (see `entities/wishlist/api`,
+  `entities/cart/api`); when a query embeds a relation or needs a named type
+  (e.g. for a mapper's parameter), compose it from
+  `Database['public']['Tables']['x']['Row']` (see `entities/review/api`,
+  `entities/order/api`) rather than redeclaring the columns.
+  - Two narrow, **documented** cast patterns remain legitimate, both at the
+    query boundary only:
+    - **Views**: Postgres can't express `NOT NULL` for a view column, so
+      every column of a view (e.g. `products_view`) generates as `| null`
+      even when the underlying table enforces it. A single
+      `data as unknown as Domain[]` at the query site, commented with why, is
+      correct — don't write a defensive mapper for a nullability that isn't
+      real.
+    - **`Json` columns/RPC args**: `jsonb` columns and `SECURITY DEFINER`
+      RPC params/returns generate as `Json` with no shape guarantee from the
+      DB. A single documented cast at the boundary (e.g.
+      `shipping_address as unknown as ShippingAddress`) is correct.
+  - Genuinely nullable columns (no `NOT NULL` in `supabase/schema.sql`, not a
+    view/Json artifact) are real gaps — handle with a fallback or a filter/type
+    guard at the mapper, not a cast that hides the null.
 
 ## Routing & Performance
 

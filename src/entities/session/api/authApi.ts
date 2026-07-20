@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { LoginFormData, RegisterFormData, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
 import { supabase } from "@/shared/api";
+import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
 
 
@@ -129,7 +130,7 @@ export const authApi = createApi({
           return { error: { status: 401, data: 'The user is not authorized' } };
         }
 
-        const profilePayload: Record<string, string> = {};
+        const profilePayload: Database['public']['Tables']['profiles']['Update'] = {};
         if (userData.firstName !== undefined) profilePayload.first_name = userData.firstName;
         if (userData.lastName !== undefined) profilePayload.last_name = userData.lastName;
         if (userData.username !== undefined) profilePayload.username = userData.username;

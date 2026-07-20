@@ -107,10 +107,6 @@ export const wishlistApi = createApi({
             return { error: { status: 'CUSTOM_ERROR', data: 'The user is not authorized' } };
           }
 
-          if (!user) {
-            return { error: { status: 'CUSTOM_ERROR', data: 'The user is not authorized' } };
-          }
-
           const itemsToSync = Object.entries(localWishlist).map(([productId]) => ({
             user_id: user.id,
             product_id: Number(productId)

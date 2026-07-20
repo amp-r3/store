@@ -5,12 +5,6 @@ import { getErrorMessage } from "@/shared/lib";
 
 type QuantityAction = 'inc' | 'dec';
 
-interface CartItemRow {
-  size_id: number;
-  quantity: number;
-  product_sizes: { product_id: number } | { product_id: number }[] | null;
-}
-
 const calcQty = (current: number, action: QuantityAction) =>
   action === 'inc' ? current + 1 : Math.max(0, current - 1);
 
@@ -46,7 +40,7 @@ export const cartApi = createApi({
           const formattedCart: Record<number, CartData> = {};
 
           if (data) {
-            (data as CartItemRow[]).forEach((item) => {
+            data.forEach((item) => {
               const productSizes = item.product_sizes;
               const productId = Array.isArray(productSizes) ? productSizes[0]?.product_id : productSizes?.product_id;
 
