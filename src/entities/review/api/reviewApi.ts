@@ -1,9 +1,6 @@
-import { supabase } from "@/shared/api";
+import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import { productsApi } from "@/entities/product";
-import { ProductReview, UnreviewedPurchase } from "@/entities/review";
-import { SharedRootState } from "@/shared/model";
+import { ProductReview, UnreviewedPurchase } from "@/entities/review/model/types";
 import { getErrorMessage } from "@/shared/lib";
 
 const pendingLikes = new Set<number>();
@@ -55,10 +52,7 @@ const mapReview = (
     };
 };
 
-export const reviewApi = createApi({
-    reducerPath: 'reviewApi',
-    baseQuery: fakeBaseQuery(),
-    tagTypes: ['Review'],
+export const reviewApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getReviews: builder.query<ProductReview[], number>({
             async queryFn(id) {
@@ -183,10 +177,14 @@ export const reviewApi = createApi({
             invalidatesTags: (_result, _error, { productId }) => [
                 { type: 'Review', id: productId },
                 { type: 'Review', id: 'MY_LIST' },
-                { type: 'Review', id: 'PENDING_LIST' }
+                { type: 'Review', id: 'PENDING_LIST' },
+                'PurchaseHistory'
             ],
             async onQueryStarted({ productId, rating, comment, reviewerName, userId }, { dispatch, queryFulfilled, getState }) {
-                const state = getState() as unknown as SharedRootState;
+                // RTK Query types getState() against the API slice only; the
+                // ambient GlobalRootState (declared in app/store.ts) gives the
+                // real root shape without an upward import.
+                const state = getState() as GlobalRootState;
                 const authUser = state.auth?.user;
 
                 const resolvedUserId = userId || authUser?.id || 'temp-user-id';
@@ -225,7 +223,6 @@ export const reviewApi = createApi({
 
                 try {
                     await queryFulfilled;
-                    dispatch(productsApi.util.invalidateTags(['PurchaseHistory']));
                 } catch {
                     patchResult.undo();
                 }
@@ -316,7 +313,8 @@ export const reviewApi = createApi({
             invalidatesTags: (_result, _error, { productId }) => [
                 { type: 'Review', id: productId },
                 { type: 'Review', id: 'MY_LIST' },
-                { type: 'Review', id: 'PENDING_LIST' }
+                { type: 'Review', id: 'PENDING_LIST' },
+                'PurchaseHistory'
             ],
             async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
@@ -330,7 +328,6 @@ export const reviewApi = createApi({
 
                 try {
                     await queryFulfilled;
-                    dispatch(productsApi.util.invalidateTags(['PurchaseHistory']));
                 } catch {
                     patchResult.undo();
                 }

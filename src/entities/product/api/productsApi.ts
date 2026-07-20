@@ -1,6 +1,5 @@
-import { supabase } from "@/shared/api";
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Product, ProductSize } from "@/entities/product";
+import { supabase, baseApi } from "@/shared/api";
+import { Product, ProductSize } from "@/entities/product/model/types";
 import { getErrorMessage } from "@/shared/lib";
 
 
@@ -27,10 +26,7 @@ export interface ProductsResponse {
 
 
 
-export const productsApi = createApi({
-    reducerPath: 'productsApi',
-    baseQuery: fakeBaseQuery(),
-    tagTypes: ['Product', 'Category', 'PurchaseHistory'],
+export const productsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
         getProducts: builder.query<ProductsResponse, ProductParams>({

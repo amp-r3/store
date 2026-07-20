@@ -1,13 +1,10 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { LoginFormData, RegisterFormData, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
-import { supabase } from "@/shared/api";
+import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
 
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/' }),
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
     register: builder.mutation<SessionUser, RegisterFormData>({

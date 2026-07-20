@@ -1,11 +1,7 @@
-import { supabase } from "@/shared/api";
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import { supabase, baseApi } from "@/shared/api";
 import { getErrorMessage } from "@/shared/lib";
 
-export const wishlistApi = createApi({
-  reducerPath: 'wishlistApi',
-  baseQuery: fakeBaseQuery(),
-  tagTypes: ['Wishlist'],
+export const wishlistApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
     getWishlist: builder.query<Record<number, boolean>, void>({

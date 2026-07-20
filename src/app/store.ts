@@ -10,14 +10,18 @@ import {
 } from 'redux-persist';
 import { persistStore } from 'redux-persist';
 import storage from '@/app/providers/store/storage';
-import { productsApi } from '@/entities/product';
-import { reviewApi } from '@/entities/review';
-import { authApi, authReducer } from '@/entities/session';
-import { cartApi, cartReducer } from '@/entities/cart';
-import { wishlistApi, wishlistReducer } from '@/entities/wishlist';
+import { baseApi } from '@/shared/api';
+import { authReducer } from '@/entities/session';
+import { cartReducer } from '@/entities/cart';
+import { wishlistReducer } from '@/entities/wishlist';
 import { checkoutReducer } from '@/features/checkout-process';
-import { orderApi } from '@/entities/order';
 import { reviewModalReducer } from '@/features/order-review';
+// injectEndpoints only runs when the module is evaluated; these entities have
+// no reducer of their own to pull them in, so import them for the side effect
+// of registering their RTK Query endpoints on baseApi.
+import '@/entities/product';
+import '@/entities/review';
+import '@/entities/order';
 
 const checkoutPersistConfig = {
   key: 'checkout',
@@ -29,13 +33,7 @@ const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutR
 
 export const store = configureStore({
   reducer: {
-    [productsApi.reducerPath]: productsApi.reducer,
-    [reviewApi.reducerPath]: reviewApi.reducer,
-    [authApi.reducerPath]: authApi.reducer,
-    [cartApi.reducerPath]: cartApi.reducer,
-    [wishlistApi.reducerPath]: wishlistApi.reducer,
-
-    [orderApi.reducerPath]: orderApi.reducer,
+    [baseApi.reducerPath]: baseApi.reducer,
     auth: authReducer,
     cart: cartReducer,
     wishlist: wishlistReducer,
@@ -48,12 +46,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     })
-      .concat(productsApi.middleware)
-      .concat(reviewApi.middleware)
-      .concat(authApi.middleware)
-      .concat(cartApi.middleware)
-      .concat(wishlistApi.middleware)
-      .concat(orderApi.middleware)
+      .concat(baseApi.middleware)
 });
 
 export const persistor = persistStore(store);

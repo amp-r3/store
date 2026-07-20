@@ -1,6 +1,5 @@
-import { supabase } from "@/shared/api";
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import { CartData } from "@/entities/cart";
+import { supabase, baseApi } from "@/shared/api";
+import { CartData } from "@/entities/cart/model/types";
 import { getErrorMessage } from "@/shared/lib";
 
 type QuantityAction = 'inc' | 'dec';
@@ -8,10 +7,7 @@ type QuantityAction = 'inc' | 'dec';
 const calcQty = (current: number, action: QuantityAction) =>
   action === 'inc' ? current + 1 : Math.max(0, current - 1);
 
-export const cartApi = createApi({
-  reducerPath: 'cartApi',
-  baseQuery: fakeBaseQuery(),
-  tagTypes: ['Cart'],
+export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
     getCart: builder.query<Record<number, CartData>, void>({

@@ -1,6 +1,5 @@
-import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
-import { supabase } from '@/shared/api';
+import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
 import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod } from '@/entities/order/model/types';
 
@@ -125,10 +124,7 @@ const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
   };
 };
 
-export const orderApi = createApi({
-  reducerPath: 'orderApi',
-  baseQuery: fakeBaseQuery(),
-  tagTypes: ['Order'],
+export const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getOrdersPagination: builder.query<PaginatedOrders, OrdersQueryArgs>({
       queryFn: (args) => fetchOrders(args),

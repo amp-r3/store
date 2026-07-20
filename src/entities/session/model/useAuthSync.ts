@@ -1,9 +1,10 @@
 import { supabase } from "@/shared/api/supabase";
+import { baseApi } from "@/shared/api";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/shared/model";
 import { setSession } from "./authSlice";
-import { useSyncCartMutation, clearCart, cartApi } from "@/entities/cart";
-import { useSyncWishlistMutation, clearFavorite, wishlistApi } from "@/entities/wishlist";
+import { useSyncCartMutation, clearCart } from "@/entities/cart";
+import { useSyncWishlistMutation, clearFavorite } from "@/entities/wishlist";
 import { store } from "@/app/store";
 import { useNavigate } from "react-router";
 import { logout } from "@/entities/session";
@@ -112,8 +113,7 @@ export const useAuthSync = () => {
         }
 
         else if (event === 'SIGNED_OUT') {
-          dispatch(cartApi.util.resetApiState());
-          dispatch(wishlistApi.util.resetApiState());
+          dispatch(baseApi.util.resetApiState());
           dispatch(clearFavorite());
           dispatch(clearCart());
           dispatch(logout());
