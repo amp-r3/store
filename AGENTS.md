@@ -198,6 +198,36 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
   `SIGNED_OUT`: reset RTK Query cache and cart/wishlist/auth slices.
 - Supabase access outside `api/` segments is forbidden.
 
+## Database Schema & Migrations
+
+Project is linked via Supabase CLI (`supabase link`); `DATABASE_URL` (pooler,
+session mode) lives in `.env.local` — gitignored via `*.local`, never commit it.
+
+- **Generated TS types:** `src/shared/api/database.types.ts` — the `Database`
+  type (tables, views, enums, RPC signatures). Regenerate with
+  `supabase gen types typescript --linked > src/shared/api/database.types.ts`.
+- **Schema dump:** `supabase/schema.sql` — full `public` schema (tables, enums,
+  RLS policies, functions, triggers). Read it as the source of truth for table
+  shapes, constraints and RLS before writing any query. Refresh with
+  `supabase db dump --schema public > supabase/schema.sql`.
+- Both files are **generated** — never hand-edit them. They are snapshots: after
+  any schema change, regenerate both in the same task so they stay in sync with
+  the remote database.
+
+**Hard rule — schema changes only through the CLI.** To alter the database
+structure (tables, columns, enums, RLS policies, functions, triggers):
+
+```bash
+supabase migration new <descriptive_name>   # writes supabase/migrations/<ts>_<name>.sql
+# edit that SQL file, then:
+supabase db push
+```
+
+Never change the structure via the Supabase dashboard SQL editor, via
+`psql`/`DATABASE_URL` DDL, or with ad-hoc SQL run outside a migration file —
+that desyncs the repo from the database and the change is lost to review and
+to other environments. `DATABASE_URL` is for **read-only inspection** only.
+
 ## Accessibility
 
 - Semantic tags: `<article>` for cards/order rows; proper
