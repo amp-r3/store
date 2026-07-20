@@ -2,14 +2,9 @@ import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase } from '@/shared/api';
 import type { Database } from '@/shared/api';
-import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, PaymentOptions } from '@/entities/order/model/types';
+import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod } from '@/entities/order/model/types';
 
-// orders.delivery_method_id / payment_method_id are nullable (ON DELETE SET
-// NULL if the method is later removed), so a joined row could in theory come
-// back with a null method. The app has always assumed a method is present on
-// every order it created (same assumption the old hand-written OrderResponse
-// interface made) — kept as-is rather than widened, since relaxing it is a
-// product decision (how to render an order whose method was deleted).
+// embedded relations from the select below (postgrest-js doesn't infer these)
 type OrderRow = Database['public']['Tables']['orders']['Row'] & {
   delivery_methods: Database['public']['Tables']['delivery_methods']['Row'];
   payment_methods: Database['public']['Tables']['payment_methods']['Row'];
@@ -65,10 +60,7 @@ const mapOrderResponseToOrder = (order: OrderRow): Order => ({
   shippingAddress: order.shipping_address as unknown as ShippingAddress,
   createdAt: order.created_at,
   updatedAt: order.updated_at,
-  // payment_method_type has a legacy 'card_online' value the frontend
-  // PaymentOptions union doesn't model (pre-existing drift, not introduced
-  // by this refactor — the old code cast the same way).
-  paymentMethod: order.payment_methods.code as PaymentOptions,
+  paymentMethod: order.payment_methods.code,
   paymentStatus: order.payment_status,
   deliveryStatus: order.delivery_status,
   deliveryMethod_id: order.delivery_methods.id,
@@ -78,9 +70,8 @@ const mapOrderResponseToOrder = (order: OrderRow): Order => ({
     id: order.delivery_methods.id,
     code: order.delivery_methods.code,
     label: order.delivery_methods.name,
-    // is_active/estimated_time are nullable in the schema (no NOT NULL);
-    // fall back to the column's own DB default / an empty estimate.
-    isActive: order.delivery_methods.is_active ?? true,
+    isActive: order.delivery_methods.is_active,
+    // estimated_time is genuinely nullable in the schema (no NOT NULL).
     duration: order.delivery_methods.estimated_time ?? '',
     price: order.delivery_methods.price,
     freeFromPrice: order.delivery_methods.free_from_price,
@@ -250,7 +241,8 @@ export const orderApi = createApi({
       queryFn: async () => {
         const { data, error } = await supabase
           .from('delivery_methods')
-          .select('*');
+          .select('*')
+          .eq('is_active', true);
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
@@ -262,7 +254,7 @@ export const orderApi = createApi({
           price: method.price,
           duration: method.estimated_time ?? '',
           freeFromPrice: method.free_from_price,
-          isActive: method.is_active ?? true
+          isActive: method.is_active
         }));
         return { data: methods };
       },
@@ -280,10 +272,7 @@ export const orderApi = createApi({
 
         const methods: PaymentMethod[] = (data ?? []).map((method) => ({
           id: method.id,
-          // See the comment on paymentMethod in mapOrderResponseToOrder above:
-          // payment_method_type has a 'card_online' value not modeled in
-          // PaymentOptions (pre-existing drift, not introduced here).
-          code: method.code as PaymentOptions,
+          code: method.code,
           name: method.name,
           feePercentage: method.fee_percentage,
           feeFixed: method.fee_fixed

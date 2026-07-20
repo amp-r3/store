@@ -60,7 +60,6 @@ ALTER TYPE "public"."order_status" OWNER TO "postgres";
 
 CREATE TYPE "public"."payment_method_type" AS ENUM (
     'cash_on_delivery',
-    'card_online',
     'online_card',
     'paypal',
     'sepa',
@@ -88,10 +87,10 @@ SET default_table_access_method = "heap";
 
 CREATE TABLE IF NOT EXISTS "public"."product_reviews" (
     "id" bigint NOT NULL,
-    "product_id" bigint,
-    "rating" integer,
+    "product_id" bigint NOT NULL,
+    "rating" integer NOT NULL,
     "comment" "text",
-    "date" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
+    "date" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
     "user_id" "uuid" DEFAULT "auth"."uid"(),
     "helpful_count" integer DEFAULT 0 NOT NULL,
     "reviewer_name" "text",
@@ -698,7 +697,7 @@ CREATE TABLE IF NOT EXISTS "public"."delivery_methods" (
     "name" "text" NOT NULL,
     "price" numeric(10,2) DEFAULT 0 NOT NULL,
     "estimated_time" "text",
-    "is_active" boolean DEFAULT true,
+    "is_active" boolean DEFAULT true NOT NULL,
     "free_from_price" numeric(10,2),
     "code" "public"."delivery_method_type" NOT NULL
 );
@@ -742,10 +741,10 @@ CREATE TABLE IF NOT EXISTS "public"."orders" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "payment_status" "public"."payment_status" DEFAULT 'awaiting_payment'::"public"."payment_status" NOT NULL,
-    "delivery_method_id" "uuid",
+    "delivery_method_id" "uuid" NOT NULL,
     "delivery_cost" numeric(10,2) DEFAULT 0 NOT NULL,
     "payment_fee" numeric(10,2) DEFAULT 0 NOT NULL,
-    "payment_method_id" "uuid",
+    "payment_method_id" "uuid" NOT NULL,
     "order_number" character varying(15),
     "delivery_status" "public"."delivery_status" DEFAULT 'awaiting_dispatch'::"public"."delivery_status" NOT NULL
 );
@@ -1091,12 +1090,12 @@ ALTER TABLE ONLY "public"."order_items"
 
 
 ALTER TABLE ONLY "public"."orders"
-    ADD CONSTRAINT "orders_delivery_method_id_fkey" FOREIGN KEY ("delivery_method_id") REFERENCES "public"."delivery_methods"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "orders_delivery_method_id_fkey" FOREIGN KEY ("delivery_method_id") REFERENCES "public"."delivery_methods"("id") ON DELETE RESTRICT;
 
 
 
 ALTER TABLE ONLY "public"."orders"
-    ADD CONSTRAINT "orders_payment_method_id_fkey" FOREIGN KEY ("payment_method_id") REFERENCES "public"."payment_methods"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "orders_payment_method_id_fkey" FOREIGN KEY ("payment_method_id") REFERENCES "public"."payment_methods"("id") ON DELETE RESTRICT;
 
 
 

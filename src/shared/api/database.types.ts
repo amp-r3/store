@@ -95,7 +95,7 @@ export type Database = {
           estimated_time: string | null
           free_from_price: number | null
           id: string
-          is_active: boolean | null
+          is_active: boolean
           name: string
           price: number
         }
@@ -104,7 +104,7 @@ export type Database = {
           estimated_time?: string | null
           free_from_price?: number | null
           id?: string
-          is_active?: boolean | null
+          is_active?: boolean
           name: string
           price?: number
         }
@@ -113,7 +113,7 @@ export type Database = {
           estimated_time?: string | null
           free_from_price?: number | null
           id?: string
-          is_active?: boolean | null
+          is_active?: boolean
           name?: string
           price?: number
         }
@@ -182,12 +182,12 @@ export type Database = {
         Row: {
           created_at: string
           delivery_cost: number
-          delivery_method_id: string | null
+          delivery_method_id: string
           delivery_status: Database["public"]["Enums"]["delivery_status"]
           id: string
           order_number: string | null
           payment_fee: number
-          payment_method_id: string | null
+          payment_method_id: string
           payment_status: Database["public"]["Enums"]["payment_status"]
           shipping_address: Json
           status: Database["public"]["Enums"]["order_status"]
@@ -198,12 +198,12 @@ export type Database = {
         Insert: {
           created_at?: string
           delivery_cost?: number
-          delivery_method_id?: string | null
+          delivery_method_id: string
           delivery_status?: Database["public"]["Enums"]["delivery_status"]
           id?: string
           order_number?: string | null
           payment_fee?: number
-          payment_method_id?: string | null
+          payment_method_id: string
           payment_status?: Database["public"]["Enums"]["payment_status"]
           shipping_address: Json
           status?: Database["public"]["Enums"]["order_status"]
@@ -214,12 +214,12 @@ export type Database = {
         Update: {
           created_at?: string
           delivery_cost?: number
-          delivery_method_id?: string | null
+          delivery_method_id?: string
           delivery_status?: Database["public"]["Enums"]["delivery_status"]
           id?: string
           order_number?: string | null
           payment_fee?: number
-          payment_method_id?: string | null
+          payment_method_id?: string
           payment_status?: Database["public"]["Enums"]["payment_status"]
           shipping_address?: Json
           status?: Database["public"]["Enums"]["order_status"]
@@ -277,36 +277,36 @@ export type Database = {
       product_reviews: {
         Row: {
           comment: string | null
-          date: string | null
+          date: string
           helpful_count: number
           id: number
           is_edited: boolean
-          product_id: number | null
-          rating: number | null
+          product_id: number
+          rating: number
           reviewer_email: string | null
           reviewer_name: string | null
           user_id: string | null
         }
         Insert: {
           comment?: string | null
-          date?: string | null
+          date?: string
           helpful_count?: number
           id?: number
           is_edited?: boolean
-          product_id?: number | null
-          rating?: number | null
+          product_id: number
+          rating: number
           reviewer_email?: string | null
           reviewer_name?: string | null
           user_id?: string | null
         }
         Update: {
           comment?: string | null
-          date?: string | null
+          date?: string
           helpful_count?: number
           id?: number
           is_edited?: boolean
-          product_id?: number | null
-          rating?: number | null
+          product_id?: number
+          rating?: number
           reviewer_email?: string | null
           reviewer_name?: string | null
           user_id?: string | null
@@ -584,12 +584,12 @@ export type Database = {
         Args: { p_comment: string; p_product_id: number; p_rating: number }
         Returns: {
           comment: string | null
-          date: string | null
+          date: string
           helpful_count: number
           id: number
           is_edited: boolean
-          product_id: number | null
-          rating: number | null
+          product_id: number
+          rating: number
           reviewer_email: string | null
           reviewer_name: string | null
           user_id: string | null
@@ -641,7 +641,6 @@ export type Database = {
         | "cancelled"
       payment_method_type:
         | "cash_on_delivery"
-        | "card_online"
         | "online_card"
         | "paypal"
         | "sepa"
@@ -795,7 +794,6 @@ export const Constants = {
       ],
       payment_method_type: [
         "cash_on_delivery",
-        "card_online",
         "online_card",
         "paypal",
         "sepa",

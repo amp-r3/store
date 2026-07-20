@@ -26,6 +26,7 @@ export interface DeliveryMethod {
 export interface PaymentMethod {
   id: string;
   code: PaymentOptions;
+  name: string;
   feePercentage: number;
   feeFixed: number;
 }

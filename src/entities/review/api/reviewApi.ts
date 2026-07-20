@@ -25,16 +25,8 @@ type ProductReviewRow = Database['public']['Tables']['product_reviews']['Row'] &
     > | null;
 };
 
-// product_reviews allows NULL product_id/rating/date at the schema level (no
-// NOT NULL constraint), even though every write path (add_or_update_review)
-// always sets them. Narrow to the fields the UI actually needs before mapping.
-const isCompleteReview = (
-    review: ProductReviewRow
-): review is ProductReviewRow & { product_id: number; rating: number; date: string } =>
-    review.product_id !== null && review.rating !== null && review.date !== null;
-
 const mapReview = (
-    review: ProductReviewRow & { product_id: number; rating: number; date: string },
+    review: ProductReviewRow,
     likedIds: Set<number>
 ): ProductReview => {
     let finalName = review.reviewer_name || 'Anonymous';
@@ -99,7 +91,6 @@ export const reviewApi = createApi({
                     }
 
                     const reviews = reviewsData
-                        .filter(isCompleteReview)
                         .map((review) => mapReview(review, userLikes));
 
                     return { data: reviews };
@@ -128,7 +119,6 @@ export const reviewApi = createApi({
                     if (!data) return { data: [] };
 
                     const reviews = data
-                        .filter(isCompleteReview)
                         .map((review) => mapReview(review, new Set<number>()));
 
                     return { data: reviews };
