@@ -16,7 +16,6 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 // Styles
 import style from './productPage.module.scss';
 import { useGetSizesQuery, useCheckPurchaseStatusQuery } from '@/entities/product';
-import { useGetReviewsQuery } from '@/entities/review';
 import { ProductReviews } from '@/widgets/product-reviews';
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
 import { useCartActions } from "@/features/cart-actions";
@@ -37,7 +36,6 @@ export const ProductPage = () => {
     const isFavorite = wishlistItems.some(item => item?.id === +(id || 0))
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
-    const { data: reviews } = useGetReviewsQuery(+(id || 0))
     const { data: sizes, isLoading: isSizesLoading } = useGetSizesQuery(+(id || 0))
     const { cartItems } = useCartDetails()
     const hasSizes = !!(sizes && sizes.length > 0);
@@ -138,7 +136,7 @@ export const ProductPage = () => {
                     returnPolicy={returnPolicy}
                 />
 
-                <ProductReviews productId={productId} reviews={reviews || []} rating={rating} />
+                <ProductReviews productId={productId} rating={rating} />
             </div>
         </main>
     );

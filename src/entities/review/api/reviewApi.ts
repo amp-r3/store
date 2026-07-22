@@ -1,6 +1,13 @@
 import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
-import { ProductReview, UnreviewedPurchase, ReviewRatingStats } from "@/entities/review/model/types";
+import {
+    ProductReview,
+    UnreviewedPurchase,
+    ReviewRatingStats,
+    ReviewsQueryArgs,
+    PaginatedReviews,
+    REVIEWS_PAGE_SIZE
+} from "@/entities/review/model/types";
 import { buildRatingStats } from "@/entities/review/lib/reviewsHelper";
 import { getErrorMessage } from "@/shared/lib";
 
@@ -55,17 +62,22 @@ const mapReview = (
 
 export const reviewApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getReviews: builder.query<ProductReview[], number>({
-            async queryFn(id) {
+        getReviews: builder.query<PaginatedReviews, ReviewsQueryArgs>({
+            async queryFn({ productId, page = 1, limit = REVIEWS_PAGE_SIZE }) {
                 try {
-                    const { data: reviewsData, error: reviewsError } = await supabase
+                    const from = (page - 1) * limit;
+                    const to = page * limit - 1;
+
+                    const { data: reviewsData, error: reviewsError, count } = await supabase
                         .from('product_reviews')
-                        .select(REVIEW_SELECT)
-                        .eq('product_id', id)
-                        .order('date', { ascending: false });
+                        .select(REVIEW_SELECT, { count: 'exact' })
+                        .eq('product_id', productId)
+                        .order('date', { ascending: false })
+                        .order('id', { ascending: false })
+                        .range(from, to);
 
                     if (reviewsError) throw reviewsError;
-                    if (!reviewsData) return { data: [] };
+                    if (!reviewsData) return { data: { items: [], totalCount: 0 } };
 
                     const { data: { user } } = await supabase.auth.getUser();
 
@@ -85,17 +97,33 @@ export const reviewApi = baseApi.injectEndpoints({
                         }
                     }
 
-                    const reviews = reviewsData
+                    const items = reviewsData
                         .map((review) => mapReview(review, userLikes));
 
-                    return { data: reviews };
+                    return { data: { items, totalCount: count ?? 0 } };
                 } catch (error) {
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
                 }
             },
-            providesTags: (_result, _error, productId) => [{ type: 'Review', id: productId }]
+            serializeQueryArgs: ({ endpointName, queryArgs }) =>
+                `${endpointName}-${queryArgs.productId}`,
+            merge: (currentCache, newResponse, { arg }) => {
+                if (!arg.page || arg.page === 1) {
+                    currentCache.items = newResponse.items;
+                } else {
+                    const existingIds = new Set(currentCache.items.map((item) => item.id));
+                    const uniqueNewItems = newResponse.items.filter((item) => !existingIds.has(item.id));
+                    currentCache.items.push(...uniqueNewItems);
+                }
+                currentCache.totalCount = newResponse.totalCount;
+            },
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg?.page !== previousArg?.page
+                    || currentArg?.limit !== previousArg?.limit;
+            },
+            providesTags: (_result, _error, { productId }) => [{ type: 'Review', id: productId }]
         }),
 
         getReviewStats: builder.query<ReviewRatingStats, number>({
@@ -215,40 +243,49 @@ export const reviewApi = baseApi.injectEndpoints({
                 const resolvedName = reviewerName || (authUser ? `${authUser.firstName || ''} ${authUser.lastName || ''}`.trim() : null) || authUser?.username || 'Anonymous';
                 const resolvedEmail = authUser?.email || null;
 
-                const patchResult = dispatch(
-                    reviewApi.util.updateQueryData('getReviews', productId, (draft) => {
-                        const existingIndex = draft.findIndex((review) => review.userId === resolvedUserId);
+                // getReviews caches one entry per distinct query args (productId +
+                // sort + rating); patch every cached entry for this product, not
+                // just a single bare-productId key.
+                const patches = reviewApi.util
+                    .selectInvalidatedBy(getState(), [{ type: 'Review', id: productId }])
+                    .filter((entry) => entry.endpointName === 'getReviews')
+                    .map(({ originalArgs }) =>
+                        dispatch(
+                            reviewApi.util.updateQueryData('getReviews', originalArgs, (draft) => {
+                                const existingIndex = draft.items.findIndex((review) => review.userId === resolvedUserId);
 
-                        if (existingIndex !== -1) {
-                            draft[existingIndex] = {
-                                ...draft[existingIndex],
-                                rating,
-                                comment,
-                                date: new Date().toISOString(),
-                                isEdited: true
-                            };
-                        } else {
-                            draft.unshift({
-                                id: Date.now(),
-                                productId,
-                                rating,
-                                comment,
-                                date: new Date().toISOString(),
-                                userId: resolvedUserId,
-                                helpfulCount: 0,
-                                reviewerName: resolvedName,
-                                reviewerEmail: resolvedEmail,
-                                isLiked: false,
-                                isEdited: false
-                            });
-                        }
-                    })
-                );
+                                if (existingIndex !== -1) {
+                                    draft.items[existingIndex] = {
+                                        ...draft.items[existingIndex],
+                                        rating,
+                                        comment,
+                                        date: new Date().toISOString(),
+                                        isEdited: true
+                                    };
+                                } else {
+                                    draft.items.unshift({
+                                        id: Date.now(),
+                                        productId,
+                                        rating,
+                                        comment,
+                                        date: new Date().toISOString(),
+                                        userId: resolvedUserId,
+                                        helpfulCount: 0,
+                                        reviewerName: resolvedName,
+                                        reviewerEmail: resolvedEmail,
+                                        isLiked: false,
+                                        isEdited: false
+                                    });
+                                    draft.totalCount += 1;
+                                }
+                            })
+                        )
+                    );
 
                 try {
                     await queryFulfilled;
                 } catch {
-                    patchResult.undo();
+                    patches.forEach((patch) => patch.undo());
                 }
             }
         }),
@@ -279,36 +316,44 @@ export const reviewApi = baseApi.injectEndpoints({
                     pendingLikes.delete(reviewId);
                 }
             },
-            async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled }) {
+            async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled, getState }) {
                 if (pendingLikes.has(reviewId)) return;
 
-                const patchResult = dispatch(
-                    reviewApi.util.updateQueryData('getReviews', productId, (draft) => {
-                        const review = draft.find((r) => r.id === reviewId);
-                        if (review) {
-                            if (review.isLiked) {
-                                review.isLiked = false;
-                                review.helpfulCount = Math.max(0, review.helpfulCount - 1);
-                            } else {
-                                review.isLiked = true;
-                                review.helpfulCount += 1;
+                const cacheEntries = () => reviewApi.util
+                    .selectInvalidatedBy(getState(), [{ type: 'Review', id: productId }])
+                    .filter((entry) => entry.endpointName === 'getReviews');
+
+                const patches = cacheEntries().map(({ originalArgs }) =>
+                    dispatch(
+                        reviewApi.util.updateQueryData('getReviews', originalArgs, (draft) => {
+                            const review = draft.items.find((r) => r.id === reviewId);
+                            if (review) {
+                                if (review.isLiked) {
+                                    review.isLiked = false;
+                                    review.helpfulCount = Math.max(0, review.helpfulCount - 1);
+                                } else {
+                                    review.isLiked = true;
+                                    review.helpfulCount += 1;
+                                }
                             }
-                        }
-                    })
+                        })
+                    )
                 );
 
                 try {
                     const { data: isLiked } = await queryFulfilled;
-                    dispatch(
-                        reviewApi.util.updateQueryData('getReviews', productId, (draft) => {
-                            const review = draft.find((r) => r.id === reviewId);
-                            if (review) {
-                                review.isLiked = isLiked;
-                            }
-                        })
+                    cacheEntries().forEach(({ originalArgs }) =>
+                        dispatch(
+                            reviewApi.util.updateQueryData('getReviews', originalArgs, (draft) => {
+                                const review = draft.items.find((r) => r.id === reviewId);
+                                if (review) {
+                                    review.isLiked = isLiked;
+                                }
+                            })
+                        )
                     );
                 } catch {
-                    patchResult.undo();
+                    patches.forEach((patch) => patch.undo());
                 }
             }
         }),
@@ -340,20 +385,26 @@ export const reviewApi = baseApi.injectEndpoints({
                 { type: 'Review', id: 'PENDING_LIST' },
                 'PurchaseHistory'
             ],
-            async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled }) {
-                const patchResult = dispatch(
-                    reviewApi.util.updateQueryData('getReviews', productId, (draft) => {
-                        const index = draft.findIndex((r) => r.id === reviewId);
-                        if (index !== -1) {
-                            draft.splice(index, 1);
-                        }
-                    })
-                );
+            async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled, getState }) {
+                const patches = reviewApi.util
+                    .selectInvalidatedBy(getState(), [{ type: 'Review', id: productId }])
+                    .filter((entry) => entry.endpointName === 'getReviews')
+                    .map(({ originalArgs }) =>
+                        dispatch(
+                            reviewApi.util.updateQueryData('getReviews', originalArgs, (draft) => {
+                                const index = draft.items.findIndex((r) => r.id === reviewId);
+                                if (index !== -1) {
+                                    draft.items.splice(index, 1);
+                                    draft.totalCount = Math.max(0, draft.totalCount - 1);
+                                }
+                            })
+                        )
+                    );
 
                 try {
                     await queryFulfilled;
                 } catch {
-                    patchResult.undo();
+                    patches.forEach((patch) => patch.undo());
                 }
             }
         })

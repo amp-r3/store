@@ -11,5 +11,3 @@ export * from './ui/user-review-card/UserReviewCardSkeleton';
 export * from './ui/pending-review-card/PendingReviewCard';
 export * from './ui/pending-review-card/PendingReviewCardSkeleton';
 export * from './model/types';
-
-export * from './model/useProductReviews';

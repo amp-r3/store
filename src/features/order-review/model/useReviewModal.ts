@@ -6,8 +6,7 @@ import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
 import { closeReviewModal } from './reviewModalSlice';
 import { selectIsReviewModalOpen, selectReviewModalProductId, selectReviewModalInitialRating } from './reviewModalSelectors';
-import { useGetReviewsQuery, useAddOrUpdateReviewMutation } from '@/entities/review';
-import { selectUser } from '@/entities/session';
+import { useGetMyReviewsQuery, useAddOrUpdateReviewMutation } from '@/entities/review';
 import { useHaptics } from '@/shared/lib/hooks';
 
 export const useReviewModal = () => {
@@ -15,13 +14,12 @@ export const useReviewModal = () => {
   const isOpen = useAppSelector(selectIsReviewModalOpen);
   const productId = useAppSelector(selectReviewModalProductId);
   const initialRating = useAppSelector(selectReviewModalInitialRating);
-  const user = useAppSelector(selectUser);
   const haptics = useHaptics();
   
-  const { data: reviews } = useGetReviewsQuery(Number(productId), { skip: !productId });
+  const { data: myReviews } = useGetMyReviewsQuery(undefined, { skip: !productId });
   const [addOrUpdateReview, { isLoading }] = useAddOrUpdateReviewMutation();
 
-  const currentUserReview = reviews?.find(r => r.userId === user?.id);
+  const currentUserReview = myReviews?.find(r => r.productId === Number(productId));
 
   const form = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),

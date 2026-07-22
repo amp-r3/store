@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { FaComments } from 'react-icons/fa';
 
 import { ReviewsStats, ReviewsControls } from '@/entities/review';
@@ -5,23 +6,26 @@ import { ReviewsSort } from '@/features/product-reviews-sort';
 import style from './product-reviews.module.scss';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 import { ReviewCard } from '@/entities/review';
-import { ProductReview } from "@/entities/review";
-import { useProductReviews, useGetReviewStatsQuery } from "@/entities/review";
+import { useGetReviewsQuery, useGetReviewStatsQuery } from "@/entities/review";
 import { openReviewModal } from '@/features/order-review';
-import { useAppDispatch } from '@/shared/model';
+import { useAppDispatch, useAppSelector } from '@/shared/model';
+import { selectUser } from '@/entities/session';
 
 interface ProductReviewsProps {
     productId: number;
-    reviews: ProductReview[];
     rating: number;
 }
 
-export const ProductReviews = ({ productId, reviews, rating }: ProductReviewsProps) => {
-    const { sortedReviews, user } = useProductReviews(reviews);
+export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
+    const [page, setPage] = useState(1);
     const dispatch = useAppDispatch();
+    const user = useAppSelector(selectUser);
     const { data: stats } = useGetReviewStatsQuery(productId);
+    const { data: reviewsData, isFetching } = useGetReviewsQuery({ productId, page });
 
-    if (!reviews || !stats) return <ProductReviewsSkeleton />;
+    if (!reviewsData || !stats) return <ProductReviewsSkeleton />;
+
+    const { items, totalCount } = reviewsData;
 
     return (
         <section id="reviews" className={style['reviews']}>
@@ -42,11 +46,11 @@ export const ProductReviews = ({ productId, reviews, rating }: ProductReviewsPro
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>
                     <ReviewsControls sortSlot={<ReviewsSort />} />
-                        {sortedReviews.length === 0 ? (
+                        {items.length === 0 ? (
                             <div className={style['reviews__empty']}>No reviews yet. Be the first to write one!</div>
                         ) : (
                             <div className={style['reviews__list']} aria-live="polite">
-                                {sortedReviews.map((review) => (
+                                {items.map((review) => (
                                     <ReviewCard
                                         key={review.id}
                                         review={review}
@@ -55,6 +59,16 @@ export const ProductReviews = ({ productId, reviews, rating }: ProductReviewsPro
                                     />
                                 ))}
                             </div>
+                        )}
+                        {items.length < totalCount && (
+                            <button
+                                type="button"
+                                className={style['reviews__load-more']}
+                                onClick={() => setPage((prev) => prev + 1)}
+                                disabled={isFetching}
+                            >
+                                {isFetching ? 'Loading…' : `Load more (${items.length} of ${totalCount})`}
+                            </button>
                         )}
                 </div>
             </div>

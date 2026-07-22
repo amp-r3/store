@@ -45,3 +45,16 @@ export interface ReviewRatingStats {
     total: number;
     distribution: RatingStatsItem[];
 }
+
+export const REVIEWS_PAGE_SIZE = 10;
+
+export interface ReviewsQueryArgs {
+    productId: number;
+    page?: number;
+    limit?: number;
+}
+
+export interface PaginatedReviews {
+    items: ProductReview[];
+    totalCount: number;
+}

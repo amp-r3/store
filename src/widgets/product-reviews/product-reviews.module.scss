@@ -109,6 +109,29 @@
     }
 }
 
+.reviews__load-more {
+    align-self: center;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $radius-pill;
+    border: 1px solid var(--border-color-light);
+    background: var(--glass-background-subtle);
+    color: var(--text-primary);
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    cursor: pointer;
+    transition: background-color $transition-base;
+    min-height: $touch-target-min;
+
+    &:hover:not(:disabled) {
+        background: rgba(var(--primary-accent-rgb), 0.08);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: default;
+    }
+}
+
 .reviews__empty {
     padding: $spacing-xl;
     text-align: center;
