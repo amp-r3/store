@@ -12,6 +12,7 @@ export interface ProductReview {
     userId: string | null;
     isLiked: boolean;
     isEdited: boolean;
+    isVerified: boolean;
 
     author?: {
         name: string;

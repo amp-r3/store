@@ -6,6 +6,7 @@ import {
     ReviewRatingStats,
     ReviewsQueryArgs,
     PaginatedReviews,
+    ReviewSort,
     REVIEWS_PAGE_SIZE
 } from "@/entities/review/model/types";
 import { buildRatingStats } from "@/entities/review/lib/reviewsHelper";
@@ -57,7 +58,22 @@ const mapReview = (
         reviewerEmail: review.reviewer_email,
         isLiked: likedIds.has(review.id),
         isEdited: review.is_edited,
+        isVerified: review.is_verified,
     };
+};
+
+const insertBySort = (items: ProductReview[], review: ProductReview, sort: ReviewSort) => {
+    if (sort === 'oldest' || sort === 'most_helpful') {
+        items.push(review);
+    } else {
+        items.unshift(review);
+    }
+};
+
+const recalculatePercentages = (distribution: ReviewRatingStats['distribution'], total: number) => {
+    distribution.forEach((row) => {
+        row.percentage = total > 0 ? Math.round((row.count / total) * 100) : 0;
+    });
 };
 
 export const reviewApi = baseApi.injectEndpoints({
@@ -83,14 +99,15 @@ export const reviewApi = baseApi.injectEndpoints({
                         query = query.order('date', { ascending: sort === 'oldest' });
                     }
 
-                    const { data: reviewsData, error: reviewsError, count } = await query
-                        .order('id', { ascending: false })
-                        .range(from, to);
+                    query = query.order('id', { ascending: sort === 'oldest' }).range(from, to);
+
+                    const [{ data: reviewsData, error: reviewsError, count }, { data: { user } }] = await Promise.all([
+                        query,
+                        supabase.auth.getUser()
+                    ]);
 
                     if (reviewsError) throw reviewsError;
                     if (!reviewsData) return { data: { items: [], totalCount: 0 } };
-
-                    const { data: { user } } = await supabase.auth.getUser();
 
                     const userLikes = new Set<number>();
 
@@ -121,6 +138,11 @@ export const reviewApi = baseApi.injectEndpoints({
             serializeQueryArgs: ({ endpointName, queryArgs }) =>
                 `${endpointName}-${queryArgs.productId}-${queryArgs.sort ?? 'newest'}-${queryArgs.rating ?? 'all'}`,
             merge: (currentCache, newResponse, { arg }) => {
+                // Drop any optimistic placeholders (negative ids) once real server
+                // data arrives — they've either landed for real by now or belong on
+                // a page we haven't fetched, and totalCount below is authoritative.
+                currentCache.items = currentCache.items.filter((item) => item.id >= 0);
+
                 if (!arg.page || arg.page === 1) {
                     currentCache.items = newResponse.items;
                 } else {
@@ -132,9 +154,7 @@ export const reviewApi = baseApi.injectEndpoints({
             },
             forceRefetch({ currentArg, previousArg }) {
                 return currentArg?.page !== previousArg?.page
-                    || currentArg?.limit !== previousArg?.limit
-                    || currentArg?.sort !== previousArg?.sort
-                    || currentArg?.rating !== previousArg?.rating;
+                    || currentArg?.limit !== previousArg?.limit;
             },
             providesTags: (_result, _error, { productId }) => [{ type: 'Review', id: productId }]
         }),
@@ -256,6 +276,14 @@ export const reviewApi = baseApi.injectEndpoints({
                 const resolvedName = reviewerName || (authUser ? `${authUser.firstName || ''} ${authUser.lastName || ''}`.trim() : null) || authUser?.username || 'Anonymous';
                 const resolvedEmail = authUser?.email || null;
 
+                // The user's existing review may live on a page/cache entry that
+                // isn't currently loaded (e.g. editing while a differently sorted
+                // or filtered view is subscribed) — getMyReviews is the reliable
+                // source for "does a review already exist" and its prior rating.
+                const myReviews = reviewApi.endpoints.getMyReviews.select()(getState()).data;
+                const existingReview = myReviews?.find((review) => review.productId === productId);
+                const previousRating = existingReview?.rating ?? null;
+
                 // getReviews caches one entry per distinct query args (productId +
                 // sort + rating); patch every cached entry for this product, not
                 // just a single bare-productId key.
@@ -265,19 +293,32 @@ export const reviewApi = baseApi.injectEndpoints({
                     .map(({ originalArgs }) =>
                         dispatch(
                             reviewApi.util.updateQueryData('getReviews', originalArgs, (draft) => {
+                                const sort = originalArgs.sort ?? 'newest';
+                                const activeFilter = originalArgs.rating ?? null;
+                                const matchesFilter = activeFilter === null || activeFilter === rating;
                                 const existingIndex = draft.items.findIndex((review) => review.userId === resolvedUserId);
 
                                 if (existingIndex !== -1) {
-                                    draft.items[existingIndex] = {
+                                    const updated: ProductReview = {
                                         ...draft.items[existingIndex],
                                         rating,
                                         comment,
                                         date: new Date().toISOString(),
                                         isEdited: true
                                     };
-                                } else {
-                                    draft.items.unshift({
-                                        id: Date.now(),
+
+                                    if (!matchesFilter) {
+                                        draft.items.splice(existingIndex, 1);
+                                        draft.totalCount = Math.max(0, draft.totalCount - 1);
+                                    } else if (sort === 'most_helpful') {
+                                        draft.items[existingIndex] = updated;
+                                    } else {
+                                        draft.items.splice(existingIndex, 1);
+                                        insertBySort(draft.items, updated, sort);
+                                    }
+                                } else if (!existingReview && matchesFilter) {
+                                    insertBySort(draft.items, {
+                                        id: -Date.now(),
                                         productId,
                                         rating,
                                         comment,
@@ -287,18 +328,38 @@ export const reviewApi = baseApi.injectEndpoints({
                                         reviewerName: resolvedName,
                                         reviewerEmail: resolvedEmail,
                                         isLiked: false,
-                                        isEdited: false
-                                    });
+                                        isEdited: false,
+                                        isVerified: true
+                                    }, sort);
                                     draft.totalCount += 1;
                                 }
+                                // else: the user already has a review for this product
+                                // elsewhere (not loaded in this cache entry) — leave
+                                // items/totalCount alone, the invalidation refetch
+                                // reconciles it once it lands.
                             })
                         )
                     );
+
+                const statsPatch = dispatch(
+                    reviewApi.util.updateQueryData('getReviewStats', productId, (draft) => {
+                        if (previousRating !== null) {
+                            const oldRow = draft.distribution.find((row) => row.stars === previousRating);
+                            if (oldRow) oldRow.count = Math.max(0, oldRow.count - 1);
+                        } else {
+                            draft.total += 1;
+                        }
+                        const newRow = draft.distribution.find((row) => row.stars === rating);
+                        if (newRow) newRow.count += 1;
+                        recalculatePercentages(draft.distribution, draft.total);
+                    })
+                );
 
                 try {
                     await queryFulfilled;
                 } catch {
                     patches.forEach((patch) => patch.undo());
+                    statsPatch.undo();
                 }
             }
         }),
@@ -308,7 +369,6 @@ export const reviewApi = baseApi.injectEndpoints({
                 if (pendingLikes.has(reviewId)) {
                     return { error: { status: 'CUSTOM_ERROR', data: 'Request already in progress' } };
                 }
-                pendingLikes.add(reviewId);
                 try {
                     const { data, error } = await supabase.rpc('toggle_review_like', {
                         p_review_id: reviewId
@@ -325,12 +385,14 @@ export const reviewApi = baseApi.injectEndpoints({
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
-                } finally {
-                    pendingLikes.delete(reviewId);
                 }
             },
             async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled, getState }) {
+                // onQueryStarted's synchronous prefix runs before queryFn is ever
+                // invoked, so this is the only reliable place to claim the mutex —
+                // a guard inside queryFn itself would always see an empty set.
                 if (pendingLikes.has(reviewId)) return;
+                pendingLikes.add(reviewId);
 
                 const cacheEntries = () => reviewApi.util
                     .selectInvalidatedBy(getState(), [{ type: 'Review', id: productId }])
@@ -367,6 +429,8 @@ export const reviewApi = baseApi.injectEndpoints({
                     );
                 } catch {
                     patches.forEach((patch) => patch.undo());
+                } finally {
+                    pendingLikes.delete(reviewId);
                 }
             }
         }),
@@ -399,25 +463,47 @@ export const reviewApi = baseApi.injectEndpoints({
                 'PurchaseHistory'
             ],
             async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled, getState }) {
-                const patches = reviewApi.util
+                const invalidatedEntries = reviewApi.util
                     .selectInvalidatedBy(getState(), [{ type: 'Review', id: productId }])
-                    .filter((entry) => entry.endpointName === 'getReviews')
-                    .map(({ originalArgs }) =>
-                        dispatch(
-                            reviewApi.util.updateQueryData('getReviews', originalArgs, (draft) => {
-                                const index = draft.items.findIndex((r) => r.id === reviewId);
-                                if (index !== -1) {
-                                    draft.items.splice(index, 1);
-                                    draft.totalCount = Math.max(0, draft.totalCount - 1);
-                                }
-                            })
+                    .filter((entry) => entry.endpointName === 'getReviews');
+
+                const myReviews = reviewApi.endpoints.getMyReviews.select()(getState()).data;
+                const deletedRating = myReviews?.find((review) => review.id === reviewId)?.rating
+                    ?? invalidatedEntries
+                        .map(({ originalArgs }) =>
+                            reviewApi.endpoints.getReviews.select(originalArgs)(getState()).data
+                                ?.items.find((review) => review.id === reviewId)?.rating
                         )
-                    );
+                        .find((foundRating): foundRating is number => foundRating !== undefined);
+
+                const patches = invalidatedEntries.map(({ originalArgs }) =>
+                    dispatch(
+                        reviewApi.util.updateQueryData('getReviews', originalArgs, (draft) => {
+                            const index = draft.items.findIndex((r) => r.id === reviewId);
+                            if (index !== -1) {
+                                draft.items.splice(index, 1);
+                                draft.totalCount = Math.max(0, draft.totalCount - 1);
+                            }
+                        })
+                    )
+                );
+
+                const statsPatch = deletedRating !== undefined
+                    ? dispatch(
+                        reviewApi.util.updateQueryData('getReviewStats', productId, (draft) => {
+                            draft.total = Math.max(0, draft.total - 1);
+                            const row = draft.distribution.find((r) => r.stars === deletedRating);
+                            if (row) row.count = Math.max(0, row.count - 1);
+                            recalculatePercentages(draft.distribution, draft.total);
+                        })
+                    )
+                    : undefined;
 
                 try {
                     await queryFulfilled;
                 } catch {
                     patches.forEach((patch) => patch.undo());
+                    statsPatch?.undo();
                 }
             }
         })
