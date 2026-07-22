@@ -5,29 +5,34 @@ import { IoChevronDown, IoCheckmark } from 'react-icons/io5';
 import { FaSortAmountDown } from 'react-icons/fa';
 import style from './reviews-sort.module.scss';
 import { useHaptics, useMediaQuery } from "@/shared/lib/hooks";
+import type { ReviewSort } from '@/entities/review';
 
 export interface SortOption {
-    id: string;
+    id: ReviewSort;
     label: string;
 }
 
 const SORT_OPTIONS: SortOption[] = [
     { id: 'newest', label: 'Newest First' },
-    { id: 'highest', label: 'Highest Rated' },
-    { id: 'lowest', label: 'Lowest Rated' },
+    { id: 'oldest', label: 'Oldest First' },
+    { id: 'most_helpful', label: 'Most Helpful' },
 ];
 
-export const ReviewsSort = () => {
+interface ReviewsSortProps {
+    value: ReviewSort;
+    onChange: (sort: ReviewSort) => void;
+}
+
+export const ReviewsSort = ({ value, onChange }: ReviewsSortProps) => {
     const { soft, light } = useHaptics();
     const isMobile = useMediaQuery('(max-width: 549px)');
-    
-    // Manage local visual selected option (purely visual representation)
-    const [activeOption, setActiveOption] = useState<SortOption>(SORT_OPTIONS[0]);
+
+    const activeOption = SORT_OPTIONS.find((option) => option.id === value) ?? SORT_OPTIONS[0];
     const [isOpen, setIsOpen] = useState(false);
 
     const handleSelectOption = (option: SortOption) => {
         light(); // Haptic trigger for selection
-        setActiveOption(option);
+        onChange(option.id);
         setIsOpen(false);
     };
 

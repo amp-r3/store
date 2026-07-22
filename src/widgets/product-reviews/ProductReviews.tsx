@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { FaComments } from 'react-icons/fa';
 
 import { ReviewsStats, ReviewsControls } from '@/entities/review';
@@ -7,6 +8,7 @@ import style from './product-reviews.module.scss';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 import { ReviewCard } from '@/entities/review';
 import { useGetReviewsQuery, useGetReviewStatsQuery } from "@/entities/review";
+import type { ReviewSort } from '@/entities/review';
 import { openReviewModal } from '@/features/order-review';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
 import { selectUser } from '@/entities/session';
@@ -16,12 +18,28 @@ interface ProductReviewsProps {
     rating: number;
 }
 
+const VALID_SORTS: ReviewSort[] = ['newest', 'oldest', 'most_helpful'];
+
+const parseSort = (value: string | null): ReviewSort =>
+    VALID_SORTS.includes(value as ReviewSort) ? (value as ReviewSort) : 'newest';
+
 export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
     const [page, setPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
+    const sort = parseSort(searchParams.get('reviewSort'));
     const { data: stats } = useGetReviewStatsQuery(productId);
-    const { data: reviewsData, isFetching } = useGetReviewsQuery({ productId, page });
+    const { data: reviewsData, isFetching } = useGetReviewsQuery({ productId, page, sort });
+
+    const handleSortChange = (nextSort: ReviewSort) => {
+        setPage(1);
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set('reviewSort', nextSort);
+            return next;
+        }, { replace: true });
+    };
 
     if (!reviewsData || !stats) return <ProductReviewsSkeleton />;
 
@@ -45,7 +63,7 @@ export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
 
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>
-                    <ReviewsControls sortSlot={<ReviewsSort />} />
+                    <ReviewsControls sortSlot={<ReviewsSort value={sort} onChange={handleSortChange} />} />
                         {items.length === 0 ? (
                             <div className={style['reviews__empty']}>No reviews yet. Be the first to write one!</div>
                         ) : (

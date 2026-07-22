@@ -63,16 +63,23 @@ const mapReview = (
 export const reviewApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getReviews: builder.query<PaginatedReviews, ReviewsQueryArgs>({
-            async queryFn({ productId, page = 1, limit = REVIEWS_PAGE_SIZE }) {
+            async queryFn({ productId, page = 1, limit = REVIEWS_PAGE_SIZE, sort = 'newest' }) {
                 try {
                     const from = (page - 1) * limit;
                     const to = page * limit - 1;
 
-                    const { data: reviewsData, error: reviewsError, count } = await supabase
+                    let query = supabase
                         .from('product_reviews')
                         .select(REVIEW_SELECT, { count: 'exact' })
-                        .eq('product_id', productId)
-                        .order('date', { ascending: false })
+                        .eq('product_id', productId);
+
+                    if (sort === 'most_helpful') {
+                        query = query.order('helpful_count', { ascending: false }).order('date', { ascending: false });
+                    } else {
+                        query = query.order('date', { ascending: sort === 'oldest' });
+                    }
+
+                    const { data: reviewsData, error: reviewsError, count } = await query
                         .order('id', { ascending: false })
                         .range(from, to);
 
@@ -108,7 +115,7 @@ export const reviewApi = baseApi.injectEndpoints({
                 }
             },
             serializeQueryArgs: ({ endpointName, queryArgs }) =>
-                `${endpointName}-${queryArgs.productId}`,
+                `${endpointName}-${queryArgs.productId}-${queryArgs.sort ?? 'newest'}`,
             merge: (currentCache, newResponse, { arg }) => {
                 if (!arg.page || arg.page === 1) {
                     currentCache.items = newResponse.items;
@@ -121,7 +128,8 @@ export const reviewApi = baseApi.injectEndpoints({
             },
             forceRefetch({ currentArg, previousArg }) {
                 return currentArg?.page !== previousArg?.page
-                    || currentArg?.limit !== previousArg?.limit;
+                    || currentArg?.limit !== previousArg?.limit
+                    || currentArg?.sort !== previousArg?.sort;
             },
             providesTags: (_result, _error, { productId }) => [{ type: 'Review', id: productId }]
         }),

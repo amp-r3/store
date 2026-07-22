@@ -48,10 +48,13 @@ export interface ReviewRatingStats {
 
 export const REVIEWS_PAGE_SIZE = 10;
 
+export type ReviewSort = 'newest' | 'oldest' | 'most_helpful';
+
 export interface ReviewsQueryArgs {
     productId: number;
     page?: number;
     limit?: number;
+    sort?: ReviewSort;
 }
 
 export interface PaginatedReviews {
