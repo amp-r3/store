@@ -63,7 +63,7 @@ const mapReview = (
 export const reviewApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getReviews: builder.query<PaginatedReviews, ReviewsQueryArgs>({
-            async queryFn({ productId, page = 1, limit = REVIEWS_PAGE_SIZE, sort = 'newest' }) {
+            async queryFn({ productId, page = 1, limit = REVIEWS_PAGE_SIZE, sort = 'newest', rating = null }) {
                 try {
                     const from = (page - 1) * limit;
                     const to = page * limit - 1;
@@ -72,6 +72,10 @@ export const reviewApi = baseApi.injectEndpoints({
                         .from('product_reviews')
                         .select(REVIEW_SELECT, { count: 'exact' })
                         .eq('product_id', productId);
+
+                    if (rating) {
+                        query = query.eq('rating', rating);
+                    }
 
                     if (sort === 'most_helpful') {
                         query = query.order('helpful_count', { ascending: false }).order('date', { ascending: false });
@@ -115,7 +119,7 @@ export const reviewApi = baseApi.injectEndpoints({
                 }
             },
             serializeQueryArgs: ({ endpointName, queryArgs }) =>
-                `${endpointName}-${queryArgs.productId}-${queryArgs.sort ?? 'newest'}`,
+                `${endpointName}-${queryArgs.productId}-${queryArgs.sort ?? 'newest'}-${queryArgs.rating ?? 'all'}`,
             merge: (currentCache, newResponse, { arg }) => {
                 if (!arg.page || arg.page === 1) {
                     currentCache.items = newResponse.items;
@@ -129,7 +133,8 @@ export const reviewApi = baseApi.injectEndpoints({
             forceRefetch({ currentArg, previousArg }) {
                 return currentArg?.page !== previousArg?.page
                     || currentArg?.limit !== previousArg?.limit
-                    || currentArg?.sort !== previousArg?.sort;
+                    || currentArg?.sort !== previousArg?.sort
+                    || currentArg?.rating !== previousArg?.rating;
             },
             providesTags: (_result, _error, { productId }) => [{ type: 'Review', id: productId }]
         }),

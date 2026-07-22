@@ -23,20 +23,39 @@ const VALID_SORTS: ReviewSort[] = ['newest', 'oldest', 'most_helpful'];
 const parseSort = (value: string | null): ReviewSort =>
     VALID_SORTS.includes(value as ReviewSort) ? (value as ReviewSort) : 'newest';
 
+const parseRating = (value: string | null): number | null => {
+    const parsed = Number(value);
+    return value && Number.isInteger(parsed) && parsed >= 1 && parsed <= 5 ? parsed : null;
+};
+
 export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
     const [page, setPage] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
     const sort = parseSort(searchParams.get('reviewSort'));
+    const activeRating = parseRating(searchParams.get('stars'));
     const { data: stats } = useGetReviewStatsQuery(productId);
-    const { data: reviewsData, isFetching } = useGetReviewsQuery({ productId, page, sort });
+    const { data: reviewsData, isFetching } = useGetReviewsQuery({ productId, page, sort, rating: activeRating });
 
     const handleSortChange = (nextSort: ReviewSort) => {
         setPage(1);
         setSearchParams((prev) => {
             const next = new URLSearchParams(prev);
             next.set('reviewSort', nextSort);
+            return next;
+        }, { replace: true });
+    };
+
+    const handleRatingChange = (nextRating: number | null) => {
+        setPage(1);
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            if (nextRating) {
+                next.set('stars', String(nextRating));
+            } else {
+                next.delete('stars');
+            }
             return next;
         }, { replace: true });
     };
@@ -59,13 +78,27 @@ export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
 
             <div className={style['reviews__layout']}>
                 {/* Decomposed Left Column: Rating Statistics Summary */}
-                <ReviewsStats stats={stats} rating={rating} />
+                <ReviewsStats
+                    stats={stats}
+                    rating={rating}
+                    activeRating={activeRating}
+                    onRatingChange={handleRatingChange}
+                />
 
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>
-                    <ReviewsControls sortSlot={<ReviewsSort value={sort} onChange={handleSortChange} />} />
+                    <ReviewsControls
+                        stats={stats}
+                        activeRating={activeRating}
+                        onRatingChange={handleRatingChange}
+                        sortSlot={<ReviewsSort value={sort} onChange={handleSortChange} />}
+                    />
                         {items.length === 0 ? (
-                            <div className={style['reviews__empty']}>No reviews yet. Be the first to write one!</div>
+                            <div className={style['reviews__empty']}>
+                                {activeRating
+                                    ? 'No reviews with this rating.'
+                                    : 'No reviews yet. Be the first to write one!'}
+                            </div>
                         ) : (
                             <div className={style['reviews__list']} aria-live="polite">
                                 {items.map((review) => (

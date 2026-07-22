@@ -7,15 +7,19 @@ import { ReviewRatingStats } from "@/entities/review";
 interface ReviewStatsProps {
     stats: ReviewRatingStats;
     rating: number;
+    activeRating: number | null;
+    onRatingChange: (rating: number | null) => void;
 }
 
-export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating }) => {
+export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating, onRatingChange }) => {
     const { light } = useHaptics();
 
     const totalReviews = stats.total;
     const distribution = stats.distribution;
-    const handleRowClick = () => {
+
+    const handleRowClick = (stars: number) => {
         light();
+        onRatingChange(activeRating === stars ? null : stars);
     };
 
     const renderStars = (rating: number) => {
@@ -44,10 +48,14 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating }) => {
 
             <div className={style['reviews-stats__distribution']}>
                 {distribution.map((dist) => (
-                    <div
+                    <button
                         key={dist.stars}
-                        className={style['reviews-stats__dist-row']}
-                        onClick={handleRowClick}
+                        type="button"
+                        className={`${style['reviews-stats__dist-row']} ${
+                            activeRating === dist.stars ? style['reviews-stats__dist-row--active'] : ''
+                        }`}
+                        aria-pressed={activeRating === dist.stars}
+                        onClick={() => handleRowClick(dist.stars)}
                     >
                         <span className={style['reviews-stats__dist-label']}>
                             {dist.stars}★
@@ -61,7 +69,7 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating }) => {
                         <span className={style['reviews-stats__dist-value']}>
                             {dist.percentage}%
                         </span>
-                    </div>
+                    </button>
                 ))}
             </div>
         </div>

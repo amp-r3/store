@@ -55,6 +55,7 @@ export interface ReviewsQueryArgs {
     page?: number;
     limit?: number;
     sort?: ReviewSort;
+    rating?: number | null;
 }
 
 export interface PaginatedReviews {

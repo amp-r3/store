@@ -1,41 +1,51 @@
 import style from './reviews-controls.module.scss';
 import { useHaptics } from "@/shared/lib/hooks";
+import { ReviewRatingStats } from "@/entities/review";
 
 interface ReviewsControlsProps {
+    stats: ReviewRatingStats;
+    activeRating: number | null;
+    onRatingChange: (rating: number | null) => void;
     sortSlot?: React.ReactNode;
 }
 
-export const ReviewsControls = ({ sortSlot }: ReviewsControlsProps) => {
+export const ReviewsControls = ({ stats, activeRating, onRatingChange, sortSlot }: ReviewsControlsProps) => {
     const { light } = useHaptics();
 
-    const mockFilters = [
-        { label: 'All', count: 128, active: true },
-        { label: '5 ★', count: 96, active: false },
-        { label: '4 ★', count: 21, active: false },
-        { label: '3 ★', count: 8, active: false },
-    ];
-
-    const handleFilterClick = () => {
+    const handleFilterClick = (rating: number | null) => {
         light(); // Tactile vibration on filter action
+        onRatingChange(rating);
     };
 
     return (
         <div className={style['reviews-controls']}>
             <div className={style['reviews-controls__filters']}>
-                {mockFilters.map((filter, idx) => (
+                <button
+                    type="button"
+                    className={`${style['reviews-controls__filter-pill']} ${
+                        activeRating === null ? style['reviews-controls__filter-pill--active'] : ''
+                    }`}
+                    onClick={() => handleFilterClick(null)}
+                >
+                    <span className={style['reviews-controls__filter-pill-label']}>All</span>
+                    <span className={style['reviews-controls__filter-pill-count']}>
+                        ({stats.total})
+                    </span>
+                </button>
+                {stats.distribution.map((item) => (
                     <button
-                        key={idx}
+                        key={item.stars}
                         type="button"
                         className={`${style['reviews-controls__filter-pill']} ${
-                            filter.active ? style['reviews-controls__filter-pill--active'] : ''
+                            activeRating === item.stars ? style['reviews-controls__filter-pill--active'] : ''
                         }`}
-                        onClick={handleFilterClick}
+                        onClick={() => handleFilterClick(item.stars)}
                     >
                         <span className={style['reviews-controls__filter-pill-label']}>
-                            {filter.label}
+                            {item.stars} ★
                         </span>
                         <span className={style['reviews-controls__filter-pill-count']}>
-                            ({filter.count})
+                            ({item.count})
                         </span>
                     </button>
                 ))}

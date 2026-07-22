@@ -47,11 +47,19 @@ export const ProductPage = () => {
 
 
     const onImageClick = (): void => {
-        searchParams[1]({ view: 'true' }, { replace: true })
+        searchParams[1]((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set('view', 'true');
+            return next;
+        }, { replace: true })
     }
 
     const onCloseModal = (): void => {
-        searchParams[1]({}, { replace: true })
+        searchParams[1]((prev) => {
+            const next = new URLSearchParams(prev);
+            next.delete('view');
+            return next;
+        }, { replace: true })
     }
 
     const handleAddToWishlist = () => {
