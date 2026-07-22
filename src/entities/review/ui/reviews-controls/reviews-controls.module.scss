@@ -3,74 +3,66 @@
 .reviews-controls {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: $spacing-md;
     background: var(--glass-background-subtle);
     border: 1px solid var(--glass-border);
     padding: $spacing-md $spacing-lg;
     border-radius: $radius-lg;
     box-shadow: var(--shadow-xs);
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: $spacing-sm;
+    }
+}
+
+.reviews-controls__summary {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.reviews-controls__count {
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-secondary);
+}
+
+.reviews-controls__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xxs;
+    padding: $spacing-xxs $spacing-sm;
+    margin-left: auto;
+    border-radius: $radius-pill;
+    border: none;
+    background: rgba(var(--primary-accent-rgb), 0.1);
+    color: var(--primary-accent);
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    cursor: pointer;
+    transition: background $transition-base $ease-in-out-smooth;
+
+    &:hover {
+        background: rgba(var(--primary-accent-rgb), 0.18);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
 }
 
 .reviews-controls__sort {
     flex-shrink: 0;
 }
 
-.reviews-controls__filters {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xs;
-    flex: 1;
-    min-width: 0;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-}
-
-.reviews-controls__filter-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: $spacing-xs;
-    padding: $spacing-xs $spacing-md;
-    border-radius: $radius-pill;
-    border: 1px solid var(--border-color-light);
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: $fs-xs;
-    font-weight: $fw-bold;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all $transition-base $ease-in-out-smooth;
-
-    &:hover {
-        color: var(--text-primary);
-        border-color: var(--border-color);
-        background: rgba(var(--primary-accent-rgb), 0.02);
-    }
-}
-
-.reviews-controls__filter-pill--active {
-    background: var(--primary-accent) !important;
-    border-color: var(--primary-accent) !important;
-    color: var(--text-inverse) !important;
-    box-shadow: var(--shadow-accent-sm);
-}
-
-.reviews-controls__filter-pill-count {
-    opacity: 0.75;
-    font-weight: $fw-semibold;
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .reviews-controls__filter-pill {
+    .reviews-controls__chip {
         transition: none !important;
-    }
-
-    .reviews-controls__filters {
-        scroll-behavior: auto;
     }
 }

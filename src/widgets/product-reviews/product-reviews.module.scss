@@ -73,6 +73,7 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-lg;
+    min-width: 0;
 }
 
 .reviews__list {

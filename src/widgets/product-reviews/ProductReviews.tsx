@@ -90,53 +90,54 @@ export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>
                     <ReviewsControls
-                        stats={stats}
+                        shownCount={items.length}
+                        totalCount={totalCount}
                         activeRating={activeRating}
                         onRatingChange={handleRatingChange}
                         sortSlot={<ReviewsSort value={sort} onChange={handleSortChange} />}
                     />
-                        {items.length === 0 ? (
-                            <div className={style['reviews__empty']}>
-                                {activeRating
-                                    ? 'No reviews with this rating.'
-                                    : 'No reviews yet. Be the first to write one!'}
-                            </div>
-                        ) : (
-                            <div className={style['reviews__list']} aria-live="polite">
-                                {items.map((review) => (
-                                    <ReviewCard
-                                        key={review.id}
-                                        review={review}
-                                        isCurrentUser={user?.id === review.userId}
-                                        onEdit={() => dispatch(openReviewModal(review.productId.toString()))}
-                                    />
-                                ))}
-                                {isFetching && page > 1 && Array.from({
-                                    length: Math.min(REVIEWS_PAGE_SIZE, totalCount - items.length)
-                                }).map((_, i) => (
-                                    <ReviewCardSkeleton key={`load-more-skeleton-${i}`} />
-                                ))}
-                            </div>
-                        )}
-                        {items.length < totalCount && !isFetching && (
-                            <button
-                                type="button"
-                                className={style['reviews__load-more']}
-                                onClick={() => setPage((prev) => prev + 1)}
-                            >
-                                {`Load more (${items.length} of ${totalCount})`}
-                            </button>
-                        )}
-                        {items.length > REVIEWS_PAGE_SIZE && (
-                            <button
-                                type="button"
-                                className={style['reviews__back-to-top']}
-                                onClick={() => scrollToElement('reviews')}
-                            >
-                                <FaArrowUp />
-                                <span>Back to top</span>
-                            </button>
-                        )}
+                    {items.length === 0 ? (
+                        <div className={style['reviews__empty']}>
+                            {activeRating
+                                ? 'No reviews with this rating.'
+                                : 'No reviews yet. Be the first to write one!'}
+                        </div>
+                    ) : (
+                        <div className={style['reviews__list']} aria-live="polite">
+                            {items.map((review) => (
+                                <ReviewCard
+                                    key={review.id}
+                                    review={review}
+                                    isCurrentUser={user?.id === review.userId}
+                                    onEdit={() => dispatch(openReviewModal(review.productId.toString()))}
+                                />
+                            ))}
+                            {isFetching && page > 1 && Array.from({
+                                length: Math.min(REVIEWS_PAGE_SIZE, totalCount - items.length)
+                            }).map((_, i) => (
+                                <ReviewCardSkeleton key={`load-more-skeleton-${i}`} />
+                            ))}
+                        </div>
+                    )}
+                    {items.length < totalCount && !isFetching && (
+                        <button
+                            type="button"
+                            className={style['reviews__load-more']}
+                            onClick={() => setPage((prev) => prev + 1)}
+                        >
+                            {`Load more (${items.length} of ${totalCount})`}
+                        </button>
+                    )}
+                    {items.length > REVIEWS_PAGE_SIZE && (
+                        <button
+                            type="button"
+                            className={style['reviews__back-to-top']}
+                            onClick={() => scrollToElement('reviews')}
+                        >
+                            <FaArrowUp />
+                            <span>Back to top</span>
+                        </button>
+                    )}
                 </div>
             </div>
         </section>

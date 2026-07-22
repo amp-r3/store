@@ -1,4 +1,4 @@
-import { FaRegStar, FaStar } from 'react-icons/fa';
+import { FaRegStar, FaStar, FaTimes } from 'react-icons/fa';
 import style from './reviews-stats.module.scss';
 import { FC } from 'react';
 import { useHaptics } from "@/shared/lib/hooks";
@@ -46,7 +46,8 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating
                 </div>
             </div>
 
-            <div className={style['reviews-stats__distribution']}>
+            <div className={style['reviews-stats__distribution']} role="group" aria-label="Filter reviews by rating">
+                <div className={style['reviews-stats__dist-title']}>Filter by rating</div>
                 {distribution.map((dist) => (
                     <button
                         key={dist.stars}
@@ -55,6 +56,7 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating
                             activeRating === dist.stars ? style['reviews-stats__dist-row--active'] : ''
                         }`}
                         aria-pressed={activeRating === dist.stars}
+                        aria-label={`${dist.stars} star reviews, ${dist.count} of ${totalReviews}`}
                         onClick={() => handleRowClick(dist.stars)}
                     >
                         <span className={style['reviews-stats__dist-label']}>
@@ -69,8 +71,24 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating
                         <span className={style['reviews-stats__dist-value']}>
                             {dist.percentage}%
                         </span>
+                        <span className={style['reviews-stats__dist-count']}>
+                            ({dist.count})
+                        </span>
                     </button>
                 ))}
+                {activeRating !== null && (
+                    <button
+                        type="button"
+                        className={style['reviews-stats__dist-clear']}
+                        onClick={() => {
+                            light();
+                            onRatingChange(null);
+                        }}
+                    >
+                        <FaTimes />
+                        <span>Clear filter</span>
+                    </button>
+                )}
             </div>
         </div>
     );

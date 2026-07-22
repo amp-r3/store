@@ -70,13 +70,22 @@
     padding: $spacing-lg;
 }
 
+.reviews-stats__dist-title {
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: $spacing-xxs;
+}
+
 .reviews-stats__dist-row {
     display: flex;
     align-items: center;
     width: 100%;
     gap: $spacing-sm;
     cursor: pointer;
-    padding: 2px;
+    padding: $spacing-xxs $spacing-xs;
     border: none;
     background: none;
     font: inherit;
@@ -86,6 +95,8 @@
     transition: background $transition-base $ease-in-out-smooth;
 
     &:hover {
+        background: rgba(var(--primary-accent-rgb), 0.04);
+
         .reviews-stats__dist-bar-fill {
             background-color: var(--primary-accent-dark);
         }
@@ -93,12 +104,21 @@
             color: var(--text-primary);
         }
     }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
+
+    @media (pointer: coarse) {
+        min-height: $touch-target-min;
+    }
 }
 
 .reviews-stats__dist-row--active {
     background: rgba(var(--primary-accent-rgb), 0.08);
 
-    .reviews-stats__dist-label, .reviews-stats__dist-value {
+    .reviews-stats__dist-label, .reviews-stats__dist-value, .reviews-stats__dist-count {
         color: var(--primary-accent);
     }
 }
@@ -131,9 +151,46 @@
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     color: var(--text-muted);
-    min-width: 38px;
+    min-width: 32px;
     text-align: right;
     transition: color $transition-base $ease-in-out-smooth;
+}
+
+.reviews-stats__dist-count {
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    color: var(--text-muted);
+    min-width: 34px;
+    text-align: right;
+    transition: color $transition-base $ease-in-out-smooth;
+}
+
+.reviews-stats__dist-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    width: 100%;
+    margin-top: $spacing-xxs;
+    padding: $spacing-xs;
+    min-height: $touch-target-min;
+    border: none;
+    border-radius: $radius-sm;
+    background: none;
+    color: var(--text-secondary);
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    cursor: pointer;
+    transition: color $transition-base $ease-in-out-smooth;
+
+    &:hover {
+        color: var(--text-primary);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {

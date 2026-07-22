@@ -1,58 +1,44 @@
 import style from './reviews-controls.module.scss';
+import { FaTimes } from 'react-icons/fa';
 import { useHaptics } from "@/shared/lib/hooks";
-import { ReviewRatingStats } from "@/entities/review";
 
 interface ReviewsControlsProps {
-    stats: ReviewRatingStats;
+    shownCount: number;
+    totalCount: number;
     activeRating: number | null;
     onRatingChange: (rating: number | null) => void;
     sortSlot?: React.ReactNode;
 }
 
-export const ReviewsControls = ({ stats, activeRating, onRatingChange, sortSlot }: ReviewsControlsProps) => {
+export const ReviewsControls = ({ shownCount, totalCount, activeRating, onRatingChange, sortSlot }: ReviewsControlsProps) => {
     const { light } = useHaptics();
 
-    const handleFilterClick = (rating: number | null) => {
+    const handleClearFilter = () => {
         light(); // Tactile vibration on filter action
-        onRatingChange(rating);
+        onRatingChange(null);
     };
 
     return (
         <div className={style['reviews-controls']}>
-            <div className={style['reviews-controls__sort']}>
-                {sortSlot}
+            <div className={style['reviews-controls__summary']}>
+                <span className={style['reviews-controls__count']} aria-live="polite">
+                    Showing {shownCount} of {totalCount} reviews
+                </span>
+                {activeRating !== null && (
+                    <button
+                        type="button"
+                        className={style['reviews-controls__chip']}
+                        onClick={handleClearFilter}
+                        aria-label={`Clear ${activeRating} star filter`}
+                    >
+                        <span>{activeRating} ★</span>
+                        <FaTimes aria-hidden="true" />
+                    </button>
+                )}
             </div>
 
-            <div className={style['reviews-controls__filters']}>
-                <button
-                    type="button"
-                    className={`${style['reviews-controls__filter-pill']} ${
-                        activeRating === null ? style['reviews-controls__filter-pill--active'] : ''
-                    }`}
-                    onClick={() => handleFilterClick(null)}
-                >
-                    <span className={style['reviews-controls__filter-pill-label']}>All</span>
-                    <span className={style['reviews-controls__filter-pill-count']}>
-                        ({stats.total})
-                    </span>
-                </button>
-                {stats.distribution.map((item) => (
-                    <button
-                        key={item.stars}
-                        type="button"
-                        className={`${style['reviews-controls__filter-pill']} ${
-                            activeRating === item.stars ? style['reviews-controls__filter-pill--active'] : ''
-                        }`}
-                        onClick={() => handleFilterClick(item.stars)}
-                    >
-                        <span className={style['reviews-controls__filter-pill-label']}>
-                            {item.stars} ★
-                        </span>
-                        <span className={style['reviews-controls__filter-pill-count']}>
-                            ({item.count})
-                        </span>
-                    </button>
-                ))}
+            <div className={style['reviews-controls__sort']}>
+                {sortSlot}
             </div>
         </div>
     );

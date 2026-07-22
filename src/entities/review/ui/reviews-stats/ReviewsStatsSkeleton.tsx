@@ -11,6 +11,7 @@ export const ReviewsStatsSkeleton = () => {
             </div>
 
             <div className={style['reviews-stats__distribution']}>
+                <Skeleton width={110} height={12} style={{ marginBottom: '4px' }} />
                 {Array.from({ length: 5 }).map((_, i) => (
                     <div key={i} className={style['reviews-stats__dist-row']} style={{ cursor: 'default' }}>
                         <span className={style['reviews-stats__dist-label']}>
@@ -21,6 +22,9 @@ export const ReviewsStatsSkeleton = () => {
                         </div>
                         <span className={style['reviews-stats__dist-value']}>
                             <Skeleton width={32} height={16} />
+                        </span>
+                        <span className={style['reviews-stats__dist-count']}>
+                            <Skeleton width={30} height={16} />
                         </span>
                     </div>
                 ))}
