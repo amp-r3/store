@@ -614,6 +614,13 @@ export type Database = {
         Args: { p_product_id: number }
         Returns: string
       }
+      get_review_stats: {
+        Args: { p_product_id: number }
+        Returns: {
+          rating: number
+          review_count: number
+        }[]
+      }
       get_unreviewed_purchases: {
         Args: never
         Returns: {

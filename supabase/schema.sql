@@ -1,3 +1,5 @@
+Initialising login role...
+Dumping schemas from remote database...
 
 
 
@@ -370,6 +372,20 @@ $$;
 
 
 ALTER FUNCTION "public"."get_last_purchase_date"("p_product_id" bigint) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_review_stats"("p_product_id" bigint) RETURNS TABLE("rating" integer, "review_count" bigint)
+    LANGUAGE "sql" STABLE
+    AS $$
+  select pr.rating, count(*)::bigint as review_count
+  from public.product_reviews pr
+  where pr.product_id = p_product_id
+  group by pr.rating
+  order by pr.rating desc;
+$$;
+
+
+ALTER FUNCTION "public"."get_review_stats"("p_product_id" bigint) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."get_unreviewed_purchases"() RETURNS TABLE("product_id" bigint, "last_purchased_at" timestamp with time zone, "purchase_count" bigint)
@@ -1040,6 +1056,18 @@ CREATE INDEX "idx_order_items_order" ON "public"."order_items" USING "btree" ("o
 
 
 
+CREATE INDEX "idx_product_reviews_product_date" ON "public"."product_reviews" USING "btree" ("product_id", "date" DESC);
+
+
+
+CREATE INDEX "idx_product_reviews_product_helpful" ON "public"."product_reviews" USING "btree" ("product_id", "helpful_count" DESC);
+
+
+
+CREATE INDEX "idx_product_reviews_product_rating" ON "public"."product_reviews" USING "btree" ("product_id", "rating");
+
+
+
 CREATE INDEX "idx_product_sizes_product" ON "public"."product_sizes" USING "btree" ("product_id");
 
 
@@ -1322,6 +1350,12 @@ GRANT ALL ON FUNCTION "public"."create_order"("p_items" "jsonb", "p_delivery_met
 GRANT ALL ON FUNCTION "public"."get_last_purchase_date"("p_product_id" bigint) TO "anon";
 GRANT ALL ON FUNCTION "public"."get_last_purchase_date"("p_product_id" bigint) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."get_last_purchase_date"("p_product_id" bigint) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_review_stats"("p_product_id" bigint) TO "anon";
+GRANT ALL ON FUNCTION "public"."get_review_stats"("p_product_id" bigint) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_review_stats"("p_product_id" bigint) TO "service_role";
 
 
 
