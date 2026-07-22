@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_reviews" (
     "reviewer_name" "text",
     "reviewer_email" "text",
     "is_edited" boolean DEFAULT false NOT NULL,
+    "is_verified" boolean DEFAULT false NOT NULL,
     CONSTRAINT "product_reviews_rating_check" CHECK ((("rating" >= 1) AND ("rating" <= 5)))
 );
 
@@ -109,60 +110,61 @@ CREATE OR REPLACE FUNCTION "public"."add_or_update_review"("p_product_id" bigint
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
     AS $$
-DECLARE
+declare
   v_user_id uuid := auth.uid();
   v_review public.product_reviews;
   v_has_purchased boolean;
   v_comment text;
-BEGIN
+begin
   -- 1. Проверка авторизации
-  IF v_user_id IS NULL THEN
-    RAISE EXCEPTION 'Not authenticated';
-  END IF;
+  if v_user_id is null then
+    raise exception 'Not authenticated';
+  end if;
 
   -- 2. Валидация рейтинга
-  IF p_rating IS NULL OR p_rating NOT BETWEEN 1 AND 5 THEN
-    RAISE EXCEPTION 'Rating must be between 1 and 5';
-  END IF;
+  if p_rating is null or p_rating not between 1 and 5 then
+    raise exception 'Rating must be between 1 and 5';
+  end if;
 
   -- 3. Санитизация комментария
-  v_comment := NULLIF(trim(p_comment), '');
-  IF v_comment IS NOT NULL AND length(v_comment) > 2000 THEN
-    RAISE EXCEPTION 'Comment is too long (max 2000 characters)';
-  END IF;
+  v_comment := nullif(trim(p_comment), '');
+  if v_comment is not null and length(v_comment) > 2000 then
+    raise exception 'Comment is too long (max 2000 characters)';
+  end if;
 
   -- 4. Проверка существования товара
-  IF NOT EXISTS (SELECT 1 FROM public.products WHERE id = p_product_id) THEN
-    RAISE EXCEPTION 'Product not found';
-  END IF;
+  if not exists (select 1 from public.products where id = p_product_id) then
+    raise exception 'Product not found';
+  end if;
 
   -- 5. Проверка факта покупки и статуса заказа 'completed'
-  SELECT EXISTS (
-    SELECT 1
-    FROM public.order_items oi
-    JOIN public.orders o ON oi.order_id = o.id
-    WHERE o.user_id = v_user_id
-      AND oi.product_id = p_product_id
-      AND o.status = 'completed'::order_status
-  ) INTO v_has_purchased;
+  select exists (
+    select 1
+    from public.order_items oi
+    join public.orders o on oi.order_id = o.id
+    where o.user_id = v_user_id
+      and oi.product_id = p_product_id
+      and o.status = 'completed'::order_status
+  ) into v_has_purchased;
 
-  IF NOT v_has_purchased THEN
-    RAISE EXCEPTION 'You can only review products from completed orders.';
-  END IF;
+  if not v_has_purchased then
+    raise exception 'You can only review products from completed orders.';
+  end if;
 
   -- 6. Добавление или обновление отзыва
-  INSERT INTO public.product_reviews (product_id, user_id, rating, comment)
-  VALUES (p_product_id, v_user_id, p_rating, v_comment)
-  ON CONFLICT (product_id, user_id)
-  DO UPDATE SET
-    rating = EXCLUDED.rating,
-    comment = EXCLUDED.comment,
+  insert into public.product_reviews (product_id, user_id, rating, comment, is_verified)
+  values (p_product_id, v_user_id, p_rating, v_comment, true)
+  on conflict (product_id, user_id)
+  do update set
+    rating = excluded.rating,
+    comment = excluded.comment,
     date = timezone('utc'::text, now()),
-    is_edited = true
-  RETURNING * INTO v_review;
+    is_edited = true,
+    is_verified = true
+  returning * into v_review;
 
-  RETURN v_review;
-END;
+  return v_review;
+end;
 $$;
 
 
@@ -1201,10 +1203,6 @@ CREATE POLICY "Anyone can view reviews" ON "public"."product_reviews" FOR SELECT
 
 
 
-CREATE POLICY "Authenticated users can create reviews" ON "public"."product_reviews" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "user_id"));
-
-
-
 CREATE POLICY "Enable read access for all users" ON "public"."categories" FOR SELECT USING (true);
 
 
@@ -1252,10 +1250,6 @@ CREATE POLICY "Users can insert their own wishlist" ON "public"."wishlist_items"
 
 
 CREATE POLICY "Users can update own profile." ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id"));
-
-
-
-CREATE POLICY "Users can update own reviews" ON "public"."product_reviews" FOR UPDATE TO "authenticated" USING (("auth"."uid"() = "user_id"));
 
 
 

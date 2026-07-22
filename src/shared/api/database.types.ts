@@ -281,6 +281,7 @@ export type Database = {
           helpful_count: number
           id: number
           is_edited: boolean
+          is_verified: boolean
           product_id: number
           rating: number
           reviewer_email: string | null
@@ -293,6 +294,7 @@ export type Database = {
           helpful_count?: number
           id?: number
           is_edited?: boolean
+          is_verified?: boolean
           product_id: number
           rating: number
           reviewer_email?: string | null
@@ -305,6 +307,7 @@ export type Database = {
           helpful_count?: number
           id?: number
           is_edited?: boolean
+          is_verified?: boolean
           product_id?: number
           rating?: number
           reviewer_email?: string | null
@@ -588,6 +591,7 @@ export type Database = {
           helpful_count: number
           id: number
           is_edited: boolean
+          is_verified: boolean
           product_id: number
           rating: number
           reviewer_email: string | null
