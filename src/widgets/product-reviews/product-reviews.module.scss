@@ -167,3 +167,38 @@
     border-radius: $radius-lg;
     border: 1px dashed var(--border-color-subtle);
 }
+
+.reviews__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-xl;
+    text-align: center;
+    background: var(--glass-background-subtle);
+    border: 1px solid var(--error-color);
+    border-radius: $radius-lg;
+
+    p {
+        margin: 0;
+        font-size: $fs-md;
+        color: var(--error-color);
+    }
+}
+
+.reviews__retry {
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $radius-pill;
+    border: 1px solid var(--error-color);
+    background: transparent;
+    color: var(--error-color);
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    cursor: pointer;
+    transition: background-color $transition-base;
+    min-height: $touch-target-min;
+
+    &:hover {
+        background: rgba(var(--error-color-rgb), 0.08);
+    }
+}
