@@ -132,6 +132,30 @@
     }
 }
 
+.reviews__back-to-top {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    cursor: pointer;
+    transition: color $transition-base;
+    min-height: $touch-target-min;
+
+    &:hover {
+        color: var(--primary-accent);
+    }
+
+    svg {
+        font-size: $fs-xs;
+    }
+}
+
 .reviews__empty {
     padding: $spacing-xl;
     text-align: center;

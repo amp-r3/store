@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { FaComments } from 'react-icons/fa';
+import { FaComments, FaArrowUp } from 'react-icons/fa';
 
 import { ReviewsStats, ReviewsControls } from '@/entities/review';
 import { ReviewsSort } from '@/features/product-reviews-sort';
 import style from './product-reviews.module.scss';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
-import { ReviewCard } from '@/entities/review';
+import { ReviewCard, ReviewCardSkeleton } from '@/entities/review';
 import { useGetReviewsQuery, useGetReviewStatsQuery } from "@/entities/review";
 import type { ReviewSort } from '@/entities/review';
+import { REVIEWS_PAGE_SIZE } from '@/entities/review';
 import { openReviewModal } from '@/features/order-review';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
 import { selectUser } from '@/entities/session';
+import { scrollToElement } from '@/shared/lib';
 
 interface ProductReviewsProps {
     productId: number;
@@ -109,16 +111,30 @@ export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
                                         onEdit={() => dispatch(openReviewModal(review.productId.toString()))}
                                     />
                                 ))}
+                                {isFetching && page > 1 && Array.from({
+                                    length: Math.min(REVIEWS_PAGE_SIZE, totalCount - items.length)
+                                }).map((_, i) => (
+                                    <ReviewCardSkeleton key={`load-more-skeleton-${i}`} />
+                                ))}
                             </div>
                         )}
-                        {items.length < totalCount && (
+                        {items.length < totalCount && !isFetching && (
                             <button
                                 type="button"
                                 className={style['reviews__load-more']}
                                 onClick={() => setPage((prev) => prev + 1)}
-                                disabled={isFetching}
                             >
-                                {isFetching ? 'Loading…' : `Load more (${items.length} of ${totalCount})`}
+                                {`Load more (${items.length} of ${totalCount})`}
+                            </button>
+                        )}
+                        {items.length > REVIEWS_PAGE_SIZE && (
+                            <button
+                                type="button"
+                                className={style['reviews__back-to-top']}
+                                onClick={() => scrollToElement('reviews')}
+                            >
+                                <FaArrowUp />
+                                <span>Back to top</span>
                             </button>
                         )}
                 </div>
