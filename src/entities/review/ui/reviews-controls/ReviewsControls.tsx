@@ -19,6 +19,10 @@ export const ReviewsControls = ({ stats, activeRating, onRatingChange, sortSlot 
 
     return (
         <div className={style['reviews-controls']}>
+            <div className={style['reviews-controls__sort']}>
+                {sortSlot}
+            </div>
+
             <div className={style['reviews-controls__filters']}>
                 <button
                     type="button"
@@ -50,8 +54,6 @@ export const ReviewsControls = ({ stats, activeRating, onRatingChange, sortSlot 
                     </button>
                 ))}
             </div>
-
-            {sortSlot}
         </div>
     );
 };
