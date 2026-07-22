@@ -6,20 +6,22 @@ import style from './product-reviews.module.scss';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 import { ReviewCard } from '@/entities/review';
 import { ProductReview } from "@/entities/review";
-import { useProductReviews } from "@/entities/review";
+import { useProductReviews, useGetReviewStatsQuery } from "@/entities/review";
 import { openReviewModal } from '@/features/order-review';
 import { useAppDispatch } from '@/shared/model';
 
 interface ProductReviewsProps {
+    productId: number;
     reviews: ProductReview[];
     rating: number;
 }
 
-export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
+export const ProductReviews = ({ productId, reviews, rating }: ProductReviewsProps) => {
     const { sortedReviews, user } = useProductReviews(reviews);
     const dispatch = useAppDispatch();
+    const { data: stats } = useGetReviewStatsQuery(productId);
 
-    if (!reviews) return <ProductReviewsSkeleton />;
+    if (!reviews || !stats) return <ProductReviewsSkeleton />;
 
     return (
         <section id="reviews" className={style['reviews']}>
@@ -29,13 +31,13 @@ export const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
                     <span>Customer Feedback</span>
                 </h2>
                 <span className={style['reviews__count-badge']}>
-                    {reviews.length} total
+                    {stats.total} total
                 </span>
             </div>
 
             <div className={style['reviews__layout']}>
                 {/* Decomposed Left Column: Rating Statistics Summary */}
-                <ReviewsStats reviews={reviews} rating={rating} />
+                <ReviewsStats stats={stats} rating={rating} />
 
                 {/* Right Column: Controls and Reviews List */}
                 <div className={style['reviews__list-panel']}>

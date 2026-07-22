@@ -1,6 +1,7 @@
 import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
-import { ProductReview, UnreviewedPurchase } from "@/entities/review/model/types";
+import { ProductReview, UnreviewedPurchase, ReviewRatingStats } from "@/entities/review/model/types";
+import { buildRatingStats } from "@/entities/review/lib/reviewsHelper";
 import { getErrorMessage } from "@/shared/lib";
 
 const pendingLikes = new Set<number>();
@@ -88,6 +89,29 @@ export const reviewApi = baseApi.injectEndpoints({
                         .map((review) => mapReview(review, userLikes));
 
                     return { data: reviews };
+                } catch (error) {
+                    return {
+                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
+                    };
+                }
+            },
+            providesTags: (_result, _error, productId) => [{ type: 'Review', id: productId }]
+        }),
+
+        getReviewStats: builder.query<ReviewRatingStats, number>({
+            async queryFn(productId) {
+                try {
+                    const { data, error } = await supabase.rpc('get_review_stats', {
+                        p_product_id: productId
+                    });
+
+                    if (error) {
+                        return {
+                            error: { status: error.code, data: error.message }
+                        };
+                    }
+
+                    return { data: buildRatingStats(data ?? []) };
                 } catch (error) {
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
@@ -338,6 +362,7 @@ export const reviewApi = baseApi.injectEndpoints({
 
 export const {
     useGetReviewsQuery,
+    useGetReviewStatsQuery,
     useGetMyReviewsQuery,
     useGetUnreviewedPurchasesQuery,
     useAddOrUpdateReviewMutation,

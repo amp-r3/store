@@ -2,19 +2,18 @@ import { FaRegStar, FaStar } from 'react-icons/fa';
 import style from './reviews-stats.module.scss';
 import { FC } from 'react';
 import { useHaptics } from "@/shared/lib/hooks";
-import { calculateRatingStats } from "@/entities/review";
-import { ProductReview } from "@/entities/review";
+import { ReviewRatingStats } from "@/entities/review";
 
 interface ReviewStatsProps {
-    reviews: ProductReview[];
+    stats: ReviewRatingStats;
     rating: number;
 }
 
-export const ReviewsStats: FC<ReviewStatsProps> = ({ reviews, rating }) => {
+export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating }) => {
     const { light } = useHaptics();
 
-    const totalReviews = reviews.length;
-    const distribution = calculateRatingStats(reviews)
+    const totalReviews = stats.total;
+    const distribution = stats.distribution;
     const handleRowClick = () => {
         light();
     };

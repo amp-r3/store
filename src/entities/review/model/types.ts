@@ -34,3 +34,14 @@ export interface UnreviewedPurchase {
     lastPurchasedAt: string;
     purchaseCount: number;
 }
+
+export interface RatingStatsItem {
+    stars: number;
+    count: number;
+    percentage: number;
+}
+
+export interface ReviewRatingStats {
+    total: number;
+    distribution: RatingStatsItem[];
+}
