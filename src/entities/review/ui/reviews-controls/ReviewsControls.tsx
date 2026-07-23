@@ -37,9 +37,11 @@ export const ReviewsControls = ({ shownCount, totalCount, activeRating, onRating
                 )}
             </div>
 
-            <div className={style['reviews-controls__sort']}>
-                {sortSlot}
-            </div>
+            {totalCount > 0 && (
+                <div className={style['reviews-controls__sort']}>
+                    {sortSlot}
+                </div>
+            )}
         </div>
     );
 };

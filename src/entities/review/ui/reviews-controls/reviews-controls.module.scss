@@ -37,7 +37,7 @@
     align-items: center;
     gap: $spacing-xxs;
     padding: $spacing-xxs $spacing-sm;
-    margin-left: auto;
+    min-height: $touch-target-min;
     border-radius: $radius-pill;
     border: none;
     background: rgba(var(--primary-accent-rgb), 0.1);

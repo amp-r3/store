@@ -78,14 +78,16 @@
     &--with-menu {
         .review-card__rating {
             padding-top: $spacing-sm;
-            padding-right: 4rem;
+            // Reserves room for the absolutely positioned ReviewMenu trigger
+            // (its own size plus the inset it's offset by) so the rating
+            // never sits underneath it.
+            padding-right: calc(#{$touch-target-min} + #{$spacing-md} + #{$spacing-xxs});
         }
     }
 
     @media (max-width: 480px) {
         flex-direction: column;
         align-items: flex-start;
-        // gap: $spacing-xs;
 
         &--with-menu {
             .review-card__rating {
@@ -116,7 +118,9 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
     flex-shrink: 0;
     box-shadow: var(--shadow-sm);
-    color: #fff;
+    // The generated hue is kept dark (see getAvatarStyle's l:35) so this
+    // light token stays legible against any hash-derived background.
+    color: var(--text-primary);
 }
 
 .review-card__author-info {
@@ -211,6 +215,11 @@
     color: var(--text-secondary);
     font-size: $fs-sm;
     line-height: $lh-relaxed;
+
+    &--empty {
+        color: var(--text-muted);
+        font-style: italic;
+    }
 }
 
 .review-card__footer {
@@ -226,6 +235,7 @@
     align-items: center;
     gap: $spacing-sm;
     padding: $spacing-xs $spacing-md;
+    min-height: $touch-target-min;
     background: transparent;
     border: 1px solid var(--border-color-light);
     border-radius: $radius-pill;
@@ -301,6 +311,12 @@
     animation: reviewCardFadeIn $transition-base $ease-out-expo;
 }
 
+.review-card__error-link {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: $fw-bold;
+}
+
 @keyframes reviewCardFadeIn {
     from {
         opacity: 0;
@@ -315,6 +331,7 @@
 @media (prefers-reduced-motion: reduce) {
 
     .review-card,
+    .review-card--current-user::before,
     .review-card__helpful-btn,
     .review-card__error-msg {
         transition: none !important;

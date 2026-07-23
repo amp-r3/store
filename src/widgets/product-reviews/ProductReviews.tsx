@@ -17,7 +17,6 @@ import { scrollToElement, getErrorMessage } from '@/shared/lib';
 
 interface ProductReviewsProps {
     productId: number;
-    rating: number;
 }
 
 const VALID_SORTS: ReviewSort[] = ['newest', 'oldest', 'most_helpful'];
@@ -35,7 +34,7 @@ const parsePage = (value: string | null): number => {
     return value && Number.isInteger(parsed) && parsed >= 1 ? parsed : 1;
 };
 
-export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
+export const ProductReviews = ({ productId }: ProductReviewsProps) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
@@ -153,7 +152,6 @@ export const ProductReviews = ({ productId, rating }: ProductReviewsProps) => {
                     {stats ? (
                         <ReviewsStats
                             stats={stats}
-                            rating={rating}
                             activeRating={activeRating}
                             onRatingChange={handleRatingChange}
                         />

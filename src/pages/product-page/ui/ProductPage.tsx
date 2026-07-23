@@ -144,7 +144,7 @@ export const ProductPage = () => {
                     returnPolicy={returnPolicy}
                 />
 
-                <ProductReviews productId={productId} rating={rating} />
+                <ProductReviews productId={productId} />
             </div>
         </main>
     );

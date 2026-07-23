@@ -1,11 +1,15 @@
 import { ReviewMenu } from "./components";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 import { FaStar, FaRegStar, FaCalendarDay, FaUserCheck, FaThumbsUp } from 'react-icons/fa';
 import { useDeleteReviewMutation, useToggleReviewLikeMutation } from '@/entities/review';
 import style from './review-card.module.scss';
 import { useHaptics } from "@/shared/lib/hooks";
+import { ExpandableContent } from '@/shared/ui';
 import { ProductReview } from "@/entities/review";
 import { useAppSelector } from "@/shared/model";
+import { selectUser } from "@/entities/session";
+import { getErrorMessage } from "@/shared/lib";
 
 interface ReviewCardProps {
     review: ProductReview;
@@ -20,7 +24,8 @@ const getAvatarStyle = (name: string) => {
     }
     const h = Math.abs(hash) % 360;
     const s = 65;
-    const l = 45;
+    // Kept dark enough that white initials stay legible across the full hue range.
+    const l = 35;
     return {
         background: `linear-gradient(135deg, hsl(${h}, ${s}%, ${l}%), hsl(${(h + 40) % 360}, ${s}%, ${l - 10}%))`,
     };
@@ -37,33 +42,40 @@ const getInitials = (name: string) => {
 
 export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) => {
     const { soft } = useHaptics();
-    const user = useAppSelector(state => state.auth.user);
+    const user = useAppSelector(selectUser);
     const [deleteReview] = useDeleteReviewMutation();
     const [toggleLike, { isLoading: isToggleLikeLoading }] = useToggleReviewLikeMutation();
     const [likeError, setLikeError] = useState<string | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
+
+    // The "sign in to like" message must not linger after the user actually
+    // signs in — it was only ever cleared on a successful like before.
+    useEffect(() => {
+        setLikeError(null);
+    }, [user?.id]);
 
     const handleDelete = async () => {
         try {
             await deleteReview({ reviewId: review.id, productId: review.productId }).unwrap();
             soft();
         } catch (error) {
-            console.error('Failed to delete review:', error);
+            setDeleteError(getErrorMessage(error));
         }
     };
 
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }, (_, i) =>
             i < Math.round(rating) ? (
-                <FaStar key={i} className={style['review-card__star--filled']} />
+                <FaStar key={i} className={style['review-card__star--filled']} aria-hidden="true" />
             ) : (
-                <FaRegStar key={i} className={style['review-card__star--empty']} />
+                <FaRegStar key={i} className={style['review-card__star--empty']} aria-hidden="true" />
             )
         );
     };
 
     const handleHelpfulClick = async () => {
         if (!user) {
-            setLikeError('Only registered users can like');
+            setLikeError('Sign in to mark reviews as helpful.');
             return;
         }
 
@@ -74,7 +86,7 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
         try {
             await toggleLike({ reviewId: review.id, productId: review.productId }).unwrap();
         } catch (error) {
-            console.error('Failed to toggle helpful:', error);
+            setLikeError(getErrorMessage(error));
         }
     };
 
@@ -91,6 +103,7 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
                     <div
                         className={style['review-card__avatar']}
                         style={getAvatarStyle(review.reviewerName || 'Anonymous')}
+                        aria-hidden="true"
                     >
                         {getInitials(review.reviewerName || 'Anonymous')}
                     </div>
@@ -100,21 +113,22 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
                         </span>
                         {isCurrentUser ? (
                             <span className={`${style['review-card__badge']} ${style['review-card__badge--own']}`}>
-                                <FaUserCheck className={style['review-card__badge-icon']} />
+                                <FaUserCheck className={style['review-card__badge-icon']} aria-hidden="true" />
                                 Your Review
                             </span>
-                        ) : (
+                        ) : review.isVerified ? (
                             <span className={style['review-card__badge']}>
-                                <FaUserCheck className={style['review-card__badge-icon']} />
+                                <FaUserCheck className={style['review-card__badge-icon']} aria-hidden="true" />
                                 Verified Purchase
                             </span>
-                        )}
+                        ) : null}
                     </div>
                 </div>
 
                 <div className={style['review-card__actions']}>
                     <div
                         className={style['review-card__rating']}
+                        role="img"
                         aria-label={`Rated ${review.rating} out of 5 stars`}
                     >
                         {renderStars(review.rating)}
@@ -123,8 +137,8 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
             </div>
 
             <div className={style['review-card__meta']}>
-                <FaCalendarDay className={style['review-card__meta-icon']} />
-                <time className={style['review-card__date']}>
+                <FaCalendarDay className={style['review-card__meta-icon']} aria-hidden="true" />
+                <time className={style['review-card__date']} dateTime={review.date}>
                     {new Date(review.date).toLocaleString('en-US', {
                         year: 'numeric',
                         month: 'short',
@@ -134,7 +148,15 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
                 {review.isEdited && <span className={style['review-card__edited']}>(edited)</span>}
             </div>
 
-            <p className={style['review-card__comment']}>{review.comment}</p>
+            {review.comment ? (
+                <ExpandableContent maxHeight={120}>
+                    <p className={style['review-card__comment']}>{review.comment}</p>
+                </ExpandableContent>
+            ) : (
+                <p className={`${style['review-card__comment']} ${style['review-card__comment--empty']}`}>
+                    No comment provided.
+                </p>
+            )}
 
             <div className={style['review-card__footer']}>
                 <div className={style['review-card__helpful-wrapper']}>
@@ -142,16 +164,29 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
                         type="button"
                         className={`${style['review-card__helpful-btn']} ${review.isLiked ? style['review-card__helpful-btn--liked'] : ''}`}
                         onClick={handleHelpfulClick}
+                        disabled={isToggleLikeLoading}
+                        aria-pressed={review.isLiked}
                     >
-                        <FaThumbsUp className={style['review-card__helpful-icon']} />
+                        <FaThumbsUp className={style['review-card__helpful-icon']} aria-hidden="true" />
                         <span>Helpful</span>
                         <span className={style['review-card__helpful-count']}>
                             ({review.helpfulCount})
                         </span>
                     </button>
                     {likeError && (
-                        <span className={style['review-card__error-msg']}>
+                        <span className={style['review-card__error-msg']} role="alert">
                             {likeError}
+                            {!user && (
+                                <>
+                                    {' '}
+                                    <Link to="/login" className={style['review-card__error-link']}>Sign in</Link>
+                                </>
+                            )}
+                        </span>
+                    )}
+                    {deleteError && (
+                        <span className={style['review-card__error-msg']} role="alert">
+                            {deleteError}
                         </span>
                     )}
                 </div>

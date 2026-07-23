@@ -35,19 +35,21 @@
 }
 
 .reviews-stats__average-score {
+    // Intentionally above the type scale ($fs-xxl tops out at 40px) — this is
+    // a hero figure, not body/heading text, so it doesn't share that scale.
     font-size: 56px;
     font-weight: $fw-black;
     line-height: 1;
     color: var(--text-primary);
-    letter-spacing: -0.02em;
+    letter-spacing: $letter-spacing-tight;
 }
 
 .reviews-stats__average-stars {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: $spacing-xxs;
     font-size: $fs-icon-md;
-    margin-block: 4px;
+    margin-block: $spacing-xxs;
 }
 
 .reviews-stats__average-star {
@@ -110,9 +112,20 @@
         outline-offset: 2px;
     }
 
-    @media (pointer: coarse) {
-        min-height: $touch-target-min;
+    &:disabled {
+        cursor: default;
+        opacity: 0.5;
+
+        &:hover {
+            background: none;
+        }
     }
+
+    min-height: $touch-target-min;
+}
+
+.reviews-stats__dist-row--skeleton {
+    cursor: default;
 }
 
 .reviews-stats__dist-row--active {
@@ -144,7 +157,7 @@
     height: 100%;
     background-color: var(--primary-accent);
     border-radius: $radius-pill;
-    transition: width 1s $ease-out-expo, background-color $transition-base $ease-in-out-smooth;
+    transition: width $transition-base $ease-out-expo, background-color $transition-base $ease-in-out-smooth;
 }
 
 .reviews-stats__dist-value {
@@ -165,36 +178,12 @@
     transition: color $transition-base $ease-in-out-smooth;
 }
 
-.reviews-stats__dist-clear {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: $spacing-xs;
-    width: 100%;
-    margin-top: $spacing-xxs;
-    padding: $spacing-xs;
-    min-height: $touch-target-min;
-    border: none;
-    border-radius: $radius-sm;
-    background: none;
-    color: var(--text-secondary);
-    font-size: $fs-xs;
-    font-weight: $fw-semibold;
-    cursor: pointer;
-    transition: color $transition-base $ease-in-out-smooth;
-
-    &:hover {
-        color: var(--text-primary);
-    }
-
-    &:focus-visible {
-        outline: 2px solid var(--focus-ring-color);
-        outline-offset: 2px;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .reviews-stats__dist-bar-fill {
+    .reviews-stats__dist-row,
+    .reviews-stats__dist-bar-fill,
+    .reviews-stats__dist-label,
+    .reviews-stats__dist-value,
+    .reviews-stats__dist-count {
         transition: none !important;
     }
 }

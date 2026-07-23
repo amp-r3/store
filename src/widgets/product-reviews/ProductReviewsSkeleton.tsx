@@ -1,20 +1,19 @@
+import Skeleton from 'react-loading-skeleton';
 import { FaComments } from 'react-icons/fa';
 import { ReviewCardSkeleton, ReviewsStatsSkeleton, ReviewsControlsSkeleton } from '@/entities/review';
 import style from './product-reviews.module.scss';
 
 export const ProductReviewsSkeleton = () => {
     return (
-        <section id="reviews" className={style['reviews']}>
+        <section id="reviews" className={style['reviews']} role="status">
+            <span className="sr-only">Loading reviews…</span>
             <div className={style['reviews__header']}>
                 <h2 className={style['reviews__title']}>
-                    <FaComments className={style['reviews__title-icon']} />
+                    <FaComments className={style['reviews__title-icon']} aria-hidden="true" />
                     <span>Customer Feedback</span>
                 </h2>
-                <div className={style['reviews__count-badge']} style={{ background: 'none', border: 'none', padding: 0 }}>
-                    <div style={{ width: '80px', height: '24px', overflow: 'hidden', borderRadius: '12px' }}>
-                        {/* A nice skeleton inside the same placeholder dimensions */}
-                        <div style={{ background: 'var(--skeleton-base)', width: '100%', height: '100%' }} />
-                    </div>
+                <div className={style['reviews__count-badge']} style={{ background: 'none', border: 'none', padding: 0 }} aria-hidden="true">
+                    <Skeleton width={80} height={24} borderRadius={12} />
                 </div>
             </div>
 

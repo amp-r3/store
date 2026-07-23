@@ -1,4 +1,4 @@
-import { FaRegStar, FaStar, FaTimes } from 'react-icons/fa';
+import { FaRegStar, FaStar } from 'react-icons/fa';
 import style from './reviews-stats.module.scss';
 import { FC } from 'react';
 import { useHaptics } from "@/shared/lib/hooks";
@@ -6,16 +6,22 @@ import { ReviewRatingStats } from "@/entities/review";
 
 interface ReviewStatsProps {
     stats: ReviewRatingStats;
-    rating: number;
     activeRating: number | null;
     onRatingChange: (rating: number | null) => void;
 }
 
-export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating, onRatingChange }) => {
+export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, activeRating, onRatingChange }) => {
     const { light } = useHaptics();
 
     const totalReviews = stats.total;
     const distribution = stats.distribution;
+
+    // Derived from the same distribution the histogram renders, rather than
+    // a separately fetched product.rating, so an optimistic add/edit/delete
+    // (which patches stats.distribution) can't leave this number stale.
+    const averageRating = totalReviews > 0
+        ? distribution.reduce((sum, dist) => sum + dist.stars * dist.count, 0) / totalReviews
+        : 0;
 
     const handleRowClick = (stars: number) => {
         light();
@@ -25,9 +31,9 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }, (_, i) =>
             i < Math.round(rating) ? (
-                <FaStar key={i} className={style['reviews-stats__average-star']} />
+                <FaStar key={i} className={style['reviews-stats__average-star']} aria-hidden="true" />
             ) : (
-                <FaRegStar key={i} className={style['reviews-stats__average-star']} />
+                <FaRegStar key={i} className={style['reviews-stats__average-star']} aria-hidden="true" />
             )
         );
     };
@@ -36,10 +42,14 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating
         <div className={style['reviews-stats']}>
             <div className={style['reviews-stats__average-card']}>
                 <div className={style['reviews-stats__average-score']}>
-                    {Math.round(rating * 10) / 10}
+                    {Math.round(averageRating * 10) / 10}
                 </div>
-                <div className={style['reviews-stats__average-stars']}>
-                    {renderStars(rating)}
+                <div
+                    className={style['reviews-stats__average-stars']}
+                    role="img"
+                    aria-label={`${Math.round(averageRating * 10) / 10} out of 5 stars`}
+                >
+                    {renderStars(averageRating)}
                 </div>
                 <div className={style['reviews-stats__average-text']}>
                     Based on {totalReviews} global ratings
@@ -55,6 +65,8 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating
                         className={`${style['reviews-stats__dist-row']} ${
                             activeRating === dist.stars ? style['reviews-stats__dist-row--active'] : ''
                         }`}
+                        disabled={dist.count === 0}
+                        aria-disabled={dist.count === 0}
                         aria-pressed={activeRating === dist.stars}
                         aria-label={`${dist.stars} star reviews, ${dist.count} of ${totalReviews}`}
                         onClick={() => handleRowClick(dist.stars)}
@@ -76,19 +88,6 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, rating, activeRating
                         </span>
                     </button>
                 ))}
-                {activeRating !== null && (
-                    <button
-                        type="button"
-                        className={style['reviews-stats__dist-clear']}
-                        onClick={() => {
-                            light();
-                            onRatingChange(null);
-                        }}
-                    >
-                        <FaTimes />
-                        <span>Clear filter</span>
-                    </button>
-                )}
             </div>
         </div>
     );
