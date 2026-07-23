@@ -20,7 +20,7 @@ import { useAppDispatch } from "@/shared/model";
 import { SearchForm } from "@/features/product-search";
 
 export const Navbar = () => {
-  const { handleSearch, inputValue, handleClear, isCatalogPage } = useSearch();
+  const { handleSearch, inputValue, handleClear, submitSearch } = useSearch();
   const { soft } = useHaptics()
   const navRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ export const Navbar = () => {
           inputValue={inputValue}
           handleSearch={handleSearch}
           handleClear={handleClear}
-          isCatalogPage={isCatalogPage}
+          onSubmit={submitSearch}
         />
       </div>
 

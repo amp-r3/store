@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { useLocation, useSearchParams } from "react-router";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 
 export function useSearch() {
     const location = useLocation();
+    const navigate = useNavigate();
     const isCatalogPage = location.pathname === '/catalog';
     const [searchParams, setSearchParams] = useSearchParams();
-    
+
     const queryFromUrl = searchParams.get('q') || '';
     const [inputValue, setInputValue] = useState(queryFromUrl);
 
@@ -14,6 +15,8 @@ export function useSearch() {
     }, [queryFromUrl]);
 
     useEffect(() => {
+        if (!isCatalogPage) return;
+
         const trimmedQuery = inputValue.trim();
 
         if (trimmedQuery === queryFromUrl) return;
@@ -28,10 +31,10 @@ export function useSearch() {
             }
 
             setSearchParams(params, { replace: true });
-        }, 300); 
+        }, 300);
 
         return () => clearTimeout(timerId);
-    }, [inputValue, queryFromUrl, searchParams, setSearchParams]);
+    }, [inputValue, queryFromUrl, searchParams, setSearchParams, isCatalogPage]);
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value);
@@ -39,16 +42,28 @@ export function useSearch() {
 
     const handleClear = useCallback(() => {
         setInputValue('');
-        
+
+        if (!isCatalogPage) return;
+
         const params = new URLSearchParams(searchParams);
         params.delete('q');
         setSearchParams(params, { replace: true });
-    }, [searchParams, setSearchParams]);
+    }, [searchParams, setSearchParams, isCatalogPage]);
+
+    const submitSearch = useCallback(() => {
+        if (isCatalogPage) return;
+
+        const trimmedQuery = inputValue.trim();
+        if (!trimmedQuery) return;
+
+        navigate(`/catalog?q=${encodeURIComponent(trimmedQuery)}`);
+    }, [isCatalogPage, inputValue, navigate]);
 
     return {
         inputValue,
         handleSearch,
         handleClear,
+        submitSearch,
         isCatalogPage
     };
 }

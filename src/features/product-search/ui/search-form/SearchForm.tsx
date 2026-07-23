@@ -7,7 +7,7 @@ interface SearchFormProps {
     inputValue: string;
     handleSearch: (e: ChangeEvent<HTMLInputElement>) => void;
     handleClear: () => void;
-    isCatalogPage: boolean;
+    onSubmit?: () => void;
     onFocus?: () => void;
     onBlur?: () => void;
 }
@@ -16,7 +16,7 @@ export const SearchForm: FC<SearchFormProps> = ({
     inputValue,
     handleSearch,
     handleClear,
-    isCatalogPage,
+    onSubmit,
     onFocus,
     onBlur
 
@@ -29,16 +29,18 @@ export const SearchForm: FC<SearchFormProps> = ({
         }
     }
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            soft();
-            blurInput();
-        }
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        soft();
+        onSubmit?.();
+        blurInput();
     }
 
     return (
-        <div
+        <form
             className={styles.searchForm}
+            role="search"
+            onSubmit={handleFormSubmit}
         >
             <div className={styles.searchForm__wrapper}>
                 <input
@@ -49,8 +51,6 @@ export const SearchForm: FC<SearchFormProps> = ({
                     placeholder='Search'
                     value={inputValue}
                     onChange={handleSearch}
-                    onKeyDown={handleKeyDown}
-                    disabled={!isCatalogPage}
                     onFocus={onFocus}
                     onBlur={onBlur}
                 />
@@ -64,6 +64,6 @@ export const SearchForm: FC<SearchFormProps> = ({
                     <IoClose />
                 </button>
             </div>
-        </div>
+        </form>
     );
 }
