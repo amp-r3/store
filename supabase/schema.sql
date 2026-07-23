@@ -505,6 +505,7 @@ ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."handle_updated_at"() RETURNS "trigger"
     LANGUAGE "plpgsql"
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 BEGIN
     NEW.updated_at = NOW();
@@ -550,6 +551,7 @@ ALTER FUNCTION "public"."rls_auto_enable"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."sync_order_main_status"() RETURNS "trigger"
     LANGUAGE "plpgsql"
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 BEGIN
   -- 1. Если отмена или ошибка оплаты -> Cancelled
