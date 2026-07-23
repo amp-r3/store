@@ -44,7 +44,7 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
     const { soft } = useHaptics();
     const user = useAppSelector(selectUser);
     const [deleteReview] = useDeleteReviewMutation();
-    const [toggleLike, { isLoading: isToggleLikeLoading }] = useToggleReviewLikeMutation();
+    const [toggleLike] = useToggleReviewLikeMutation();
     const [likeError, setLikeError] = useState<string | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -79,14 +79,17 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
             return;
         }
 
-        if (isToggleLikeLoading) return;
-
         soft();
         setLikeError(null);
         try {
             await toggleLike({ reviewId: review.id, productId: review.productId }).unwrap();
         } catch (error) {
-            setLikeError(getErrorMessage(error));
+            const message = getErrorMessage(error);
+            // The API mutex rejects an overlapping click for a request that's
+            // already in flight — the first click is already handling it, so
+            // this isn't a real failure worth surfacing to the user.
+            if (message === 'Request already in progress') return;
+            setLikeError(message);
         }
     };
 
@@ -164,7 +167,6 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
                         type="button"
                         className={`${style['review-card__helpful-btn']} ${review.isLiked ? style['review-card__helpful-btn--liked'] : ''}`}
                         onClick={handleHelpfulClick}
-                        disabled={isToggleLikeLoading}
                         aria-pressed={review.isLiked}
                     >
                         <FaThumbsUp className={style['review-card__helpful-icon']} aria-hidden="true" />

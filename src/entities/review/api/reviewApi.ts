@@ -366,9 +366,15 @@ export const reviewApi = baseApi.injectEndpoints({
 
         toggleReviewLike: builder.mutation<boolean, { reviewId: number; productId: number }>({
             async queryFn({ reviewId }) {
+                // The mutex has to be claimed and released here, not in
+                // onQueryStarted: queryFn is the only hook that actually fires the
+                // network call, so it's the only place that can stop a genuine
+                // double-dispatch from hitting Supabase twice. Check-then-add is
+                // safe as a single synchronous block before the first await.
                 if (pendingLikes.has(reviewId)) {
                     return { error: { status: 'CUSTOM_ERROR', data: 'Request already in progress' } };
                 }
+                pendingLikes.add(reviewId);
                 try {
                     const { data, error } = await supabase.rpc('toggle_review_like', {
                         p_review_id: reviewId
@@ -385,14 +391,17 @@ export const reviewApi = baseApi.injectEndpoints({
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
                     };
+                } finally {
+                    pendingLikes.delete(reviewId);
                 }
             },
             async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled, getState }) {
                 // onQueryStarted's synchronous prefix runs before queryFn is ever
-                // invoked, so this is the only reliable place to claim the mutex —
-                // a guard inside queryFn itself would always see an empty set.
+                // invoked, so by the time a second, overlapping dispatch reaches
+                // this point, an in-flight first request has already claimed the
+                // mutex in its own queryFn. Skip the optimistic patch for it —
+                // queryFn will reject it and no rollback will be needed.
                 if (pendingLikes.has(reviewId)) return;
-                pendingLikes.add(reviewId);
 
                 const cacheEntries = () => reviewApi.util
                     .selectInvalidatedBy(getState(), [{ type: 'Review', id: productId }])
@@ -429,8 +438,6 @@ export const reviewApi = baseApi.injectEndpoints({
                     );
                 } catch {
                     patches.forEach((patch) => patch.undo());
-                } finally {
-                    pendingLikes.delete(reviewId);
                 }
             }
         }),

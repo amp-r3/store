@@ -249,14 +249,14 @@
         box-shadow $transition-base $ease-in-out-smooth,
         transform $transition-fast $ease-spring;
 
-    &:not(&--liked):not(:disabled):hover {
+    &:not(&--liked):hover {
         color: var(--primary-accent-light);
         border-color: var(--border-color);
         background: var(--glass-background-subtle);
         transform: translateY(-1px);
     }
 
-    &:not(&--liked):not(:disabled):active {
+    &:not(&--liked):active {
         transform: translateY(1px);
         background: var(--glass-background);
     }
@@ -267,24 +267,18 @@
         color: var(--text-on-accent);
         box-shadow: var(--shadow-accent-sm);
 
-        &:hover:not(:disabled) {
+        &:hover {
             background: var(--primary-accent-dark);
             border-color: var(--primary-accent-dark);
             box-shadow: var(--shadow-accent-hover);
             transform: translateY(-1px);
         }
 
-        &:active:not(:disabled) {
+        &:active {
             background: var(--primary-accent-dark);
             transform: translateY(1px);
             box-shadow: var(--shadow-accent-sm);
         }
-    }
-
-    &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
     }
 }
 
