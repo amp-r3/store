@@ -5,25 +5,31 @@
     align-items: center;
     justify-content: space-between;
     gap: $spacing-lg;
-    padding: $spacing-sm $spacing-lg;
+    padding: $spacing-xs $spacing-md;
     border-radius: $radius-pill;
-    position: fixed;
-    top: $header-height-mobile;
-    z-index: $z-index-fixed;
+    position: sticky;
+    top: calc($topbar-height + $spacing-xs);
+    margin-top: $spacing-xs;
+    z-index: $z-index-sticky;
     max-width: 50rem;
     width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
     inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
     margin-inline: auto;
     background: var(--navbar-bg-default);
-    border: 2px solid var(--border-color-subtle);
+    border: 1px solid var(--border-color-subtle);
     backdrop-filter: $backdrop-blur-sm;
     box-shadow: none;
     transition: background-color $transition-base, border-color $transition-base, backdrop-filter $transition-base ;
 
+    &--overlay {
+        position: fixed;
+        z-index: $z-index-fixed;
+    }
+
     &:global(.scrolled) {
         background: var(--navbar-bg-scrolled);
         backdrop-filter: $backdrop-blur;
-        border: 2px solid var(--border-color);
+        border: 1px solid var(--border-color);
         box-shadow: var(--shadow-default);
     }
 
@@ -37,15 +43,15 @@
         position: relative;
         display: grid;
         place-items: center;
-        width: $touch-target-comfortable;
-        height: $touch-target-comfortable;
+        width: $touch-target-min;
+        height: $touch-target-min;
         padding: 0;
         border-radius: $radius-circle;
-        border: 2px solid var(--border-color);
+        border: 1px solid var(--border-color);
         background: var(--glass-background-subtle);
         color: var(--text-secondary);
         transition: $transition-base;
-        font-size: $fs-icon-lg;
+        font-size: $fs-icon-md;
 
         &:hover {
             background: rgba(var(--primary-accent-rgb), 0.1);
@@ -80,22 +86,11 @@
     }
 }
 
-@media (max-width: 600px) {
-    .nav {
-
-        &__btn {
-            font-size: $fs-icon-md;
-            width: $touch-target-min;
-            height: $touch-target-min;
-        }
-    }
-}
-
 @media (max-width: 525px) {
     .nav {
         background: var(--glass-background-subtle);
         backdrop-filter: $backdrop-blur;
-        border: 2px solid var(--border-color);
+        border: 1px solid var(--border-color);
         box-shadow: var(--shadow-default);
         padding: $spacing-xxs $spacing-lg;
 

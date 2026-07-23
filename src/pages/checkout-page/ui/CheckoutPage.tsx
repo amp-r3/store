@@ -8,7 +8,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckoutContacts, CheckoutPayments, CheckoutSummary, CheckoutShipping } from "@/features/checkout-process"
 import { CheckoutFormValues, checkoutMasterSchema } from "@/features/checkout-process"
-import { Header } from "@/widgets/header"
+import { TopBar } from "@/widgets/top-bar"
 import { useGetDeliveryMethodsQuery, useGetPaymentMethodsQuery } from "@/entities/order"
 import { useCreateOrderMutation } from "@/entities/order"
 import { DeliveryOptions, PaymentOptions } from "@/entities/order";
@@ -20,6 +20,7 @@ import { useCheckoutDetails } from "@/features/checkout-process";
 import { selectCartItemsArray } from "@/entities/cart";
 import { STEPS_ORDER, StepType } from "@/features/checkout-process";
 import { getErrorMessage } from "@/shared/lib";
+import { notify } from "@/entities/notification";
 
 export const CheckoutPage = () => {
   const navigate = useNavigate()
@@ -151,7 +152,8 @@ export const CheckoutPage = () => {
     try {
       const { order_number: orderId } = await createOrder(payload).unwrap();
       await clearServerCart(undefined).unwrap();
-      
+      dispatch(notify({ type: 'success', text: 'Order placed' }));
+
       navigate('/checkout/success', {
         state: { orderId },
         replace: true
@@ -177,7 +179,7 @@ export const CheckoutPage = () => {
   return (
     <>
       <main className={styles.checkout}>
-        <Header />
+        <TopBar />
         <div className={styles.checkout__container + ' container'}>
 
           {/* Header */}

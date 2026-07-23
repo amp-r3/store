@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { Navbar } from '@/widgets/navbar';
 import { MobileBar } from '@/widgets/mobile-bar';
 import { Footer } from '@/widgets/footer';
-import { Header } from '@/widgets/header';
+import { TopBar } from '@/widgets/top-bar';
 
 // Redux Hooks
 // Functions and Selectors
@@ -37,9 +37,9 @@ export const MainLayout = () => {
 
     return (
         <>
-            <Header isOverlay={isHomePage} />
-            <div className={`${style.layout} ${isHomePage ? style['layout--flush'] : ''}`}>
-                <Navbar />
+            <TopBar isOverlay={isHomePage} />
+            <div className={style.layout}>
+                <Navbar isOverlay={isHomePage} />
                 <TopBarLoader isLoading={isLoading} />
                 <Suspense fallback={<Loader />}>
                     <Outlet />

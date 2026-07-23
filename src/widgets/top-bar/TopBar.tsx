@@ -1,57 +1,64 @@
-import { Link } from 'react-router';
-import { FaUserPlus, FaArrowRightToBracket, FaUser } from 'react-icons/fa6';
-import { FaGithub } from 'react-icons/fa';
-import { selectIsAuth, selectUserName } from '@/entities/session';
-import style from './header.module.scss';
-import { useAppSelector } from "@/shared/model";
+import { useEffect } from 'react';
+import { IoClose } from 'react-icons/io5';
+import {
+  selectNotification,
+  useOfflineNotifier,
+  dismissNotification,
+  AUTO_DISMISS_MS,
+  NotificationType,
+} from '@/entities/notification';
+import { useAppDispatch, useAppSelector } from '@/shared/model';
+import style from './top-bar.module.scss';
 
-interface HeaderProps {
+const DEFAULT_TEXT = 'Portfolio site: materials are not commercial.';
+
+const TYPE_CLASS: Record<NotificationType, string> = {
+  info: '',
+  success: style['topbar--success'],
+  warning: style['topbar--warning'],
+  error: style['topbar--error'],
+};
+
+interface TopBarProps {
   isOverlay?: boolean;
 }
 
-export const Header = ({ isOverlay = false }: HeaderProps) => {
-  const isAuth = useAppSelector(selectIsAuth);
-  const userName = useAppSelector(selectUserName);
+export const TopBar = ({ isOverlay = false }: TopBarProps) => {
+  const dispatch = useAppDispatch();
+  const notification = useAppSelector(selectNotification);
+  useOfflineNotifier();
+
+  useEffect(() => {
+    if (!notification || notification.sticky) return;
+    if (notification.type === 'error' || notification.type === 'warning') return;
+
+    const timeoutId = setTimeout(
+      () => dispatch(dismissNotification(notification.id)),
+      AUTO_DISMISS_MS
+    );
+
+    return () => clearTimeout(timeoutId);
+  }, [notification, dispatch]);
+
+  const type = notification?.type ?? 'info';
 
   return (
-    <header className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''}`}>
-      <div className={`${style.container} container`}>
-        <div className={style.navGroup}>
-          <a
-            href="https://github.com/amp-r3/store"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={style.ghostButton}
+    <header className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''} ${TYPE_CLASS[type]}`}>
+      <div className={`${style.topbar__container} container`}>
+        <p className={style.topbar__text} aria-live="polite">
+          {notification?.text ?? DEFAULT_TEXT}
+        </p>
+
+        {notification && notification.id !== -1 && (
+          <button
+            type="button"
+            className={style.topbar__dismiss}
+            aria-label="Dismiss notification"
+            onClick={() => dispatch(dismissNotification(notification.id))}
           >
-            <FaGithub className={style.icon} />
-            <span className={style.optionalText}>source code</span>
-          </a>
-        </div>
-
-        <span className={style.text}>
-          Portfolio site: materials are not commercial.
-        </span>
-
-        <div className={style.actionsGroup}>
-
-          {isAuth ?
-            <Link to={'/user'} className={style.primaryButton}>
-              <FaUser className={style.icon} />
-              <span>{userName}</span>
-            </Link>
-            :
-            <div className={style.authButtons}>
-              <Link to={'/register'} className={style.ghostButton}>
-                <FaUserPlus className={style.icon} />
-                <span>Sign up</span>
-              </Link>
-              <Link to={'/login'} className={style.primaryButton}>
-                <FaArrowRightToBracket className={style.icon} />
-                <span>Sign in</span>
-              </Link>
-            </div>
-          }
-        </div>
+            <IoClose />
+          </button>
+        )}
       </div>
     </header>
   );
