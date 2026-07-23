@@ -377,6 +377,7 @@ ALTER FUNCTION "public"."get_last_purchase_date"("p_product_id" bigint) OWNER TO
 
 CREATE OR REPLACE FUNCTION "public"."get_review_stats"("p_product_id" bigint) RETURNS TABLE("rating" integer, "review_count" bigint)
     LANGUAGE "sql" STABLE
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
   select pr.rating, count(*)::bigint as review_count
   from public.product_reviews pr
@@ -391,6 +392,7 @@ ALTER FUNCTION "public"."get_review_stats"("p_product_id" bigint) OWNER TO "post
 
 CREATE OR REPLACE FUNCTION "public"."get_unreviewed_purchases"() RETURNS TABLE("product_id" bigint, "last_purchased_at" timestamp with time zone, "purchase_count" bigint)
     LANGUAGE "sql" STABLE
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$select oi.product_id,
        max(o.created_at) as last_purchased_at,
        count(*)          as purchase_count
