@@ -18,7 +18,10 @@
     font-weight: $fw-bold;
     cursor: pointer;
     outline: none;
-    transition: all $transition-base $ease-in-out-smooth;
+    transition:
+        border-color $transition-base $ease-in-out-smooth,
+        color $transition-base $ease-in-out-smooth,
+        background $transition-base $ease-in-out-smooth;
 
     &:hover {
         border-color: var(--border-color);
@@ -118,7 +121,7 @@
 .reviews-sort__backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--overlay-backdrop);
     backdrop-filter: $backdrop-blur-sm;
     z-index: $z-index-modal-backdrop;
     animation: reviews-fade-in $transition-base $ease-out-expo;
@@ -181,6 +184,11 @@
         background: rgba(var(--primary-accent-rgb), 0.05);
         color: var(--text-primary);
     }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow-focus-button);
+    }
 }
 
 .reviews-sort__sheet-content {
@@ -214,7 +222,11 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: all $transition-fast $ease-in-out-smooth;
+    transition:
+        background $transition-fast $ease-in-out-smooth,
+        color $transition-fast $ease-in-out-smooth,
+        border-color $transition-fast $ease-in-out-smooth,
+        transform $transition-fast $ease-in-out-smooth;
 
     &:hover:not(.reviews-sort__item--active) {
         background: rgba(var(--primary-accent-rgb), 0.02);
@@ -227,13 +239,12 @@
 
     &:focus-visible {
         outline: none;
-        background: rgba(var(--primary-accent-rgb), 0.03);
-        border-color: var(--primary-accent);
+        box-shadow: inset 0 0 0 $focus-ring-width var(--focus-ring-color);
     }
 }
 
 .reviews-sort__item--active {
-    background: rgba(var(--primary-accent-rgb), 0.06) !important;
+    background: rgba(var(--primary-accent-rgb), 0.06);
     border-color: rgba(var(--primary-accent-rgb), 0.15);
     color: var(--primary-accent);
 
@@ -286,11 +297,19 @@
     .reviews-sort__trigger-arrow,
     .reviews-sort__dropdown,
     .reviews-sort__backdrop,
-    .reviews-sort__bottom-sheet,
+    .reviews-sort__sheet-close,
     .reviews-sort__item,
     .reviews-sort__item-check {
         transition: none !important;
         animation: none !important;
         transform: none !important;
+    }
+
+    // Vaul drives .reviews-sort__bottom-sheet with its own inline transform
+    // during drag/animation — resetting transform here would fight that and
+    // can leave the sheet stuck mid-position.
+    .reviews-sort__bottom-sheet {
+        transition: none !important;
+        animation: none !important;
     }
 }
