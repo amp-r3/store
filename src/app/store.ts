@@ -14,6 +14,7 @@ import { baseApi } from '@/shared/api';
 import { authReducer } from '@/entities/session';
 import { cartReducer } from '@/entities/cart';
 import { wishlistReducer } from '@/entities/wishlist';
+import { notificationReducer, notificationMiddleware } from '@/entities/notification';
 import { checkoutReducer } from '@/features/checkout-process';
 import { reviewModalReducer } from '@/features/order-review';
 // injectEndpoints only runs when the module is evaluated; these entities have
@@ -39,6 +40,7 @@ export const store = configureStore({
     wishlist: wishlistReducer,
     checkout: persistedCheckoutReducer,
     reviewModal: reviewModalReducer,
+    notification: notificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -46,7 +48,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     })
-      .concat(baseApi.middleware)
+      .concat(baseApi.middleware, notificationMiddleware)
 });
 
 export const persistor = persistStore(store);
