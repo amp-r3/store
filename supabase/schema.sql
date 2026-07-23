@@ -1,5 +1,3 @@
-Initialising login role...
-Dumping schemas from remote database...
 
 
 
@@ -96,7 +94,6 @@ CREATE TABLE IF NOT EXISTS "public"."product_reviews" (
     "user_id" "uuid" DEFAULT "auth"."uid"(),
     "helpful_count" integer DEFAULT 0 NOT NULL,
     "reviewer_name" "text",
-    "reviewer_email" "text",
     "is_edited" boolean DEFAULT false NOT NULL,
     "is_verified" boolean DEFAULT false NOT NULL,
     CONSTRAINT "product_reviews_rating_check" CHECK ((("rating" >= 1) AND ("rating" <= 5)))
@@ -173,7 +170,8 @@ ALTER FUNCTION "public"."add_or_update_review"("p_product_id" bigint, "p_rating"
 
 CREATE OR REPLACE FUNCTION "public"."create_order"("p_items" "jsonb", "p_delivery_method_id" "uuid", "p_payment_method_id" "uuid", "p_shipping_address" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    AS $$declare 
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$declare
   v_order_id uuid;
   v_order_number text;
   v_items_total numeric(10, 2) := 0;
@@ -335,6 +333,7 @@ ALTER FUNCTION "public"."create_order"("p_items" "jsonb", "p_delivery_method_id"
 
 CREATE OR REPLACE FUNCTION "public"."get_last_purchase_date"("p_product_id" bigint) RETURNS timestamp with time zone
     LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 DECLARE
   v_user_id uuid := auth.uid();
@@ -361,7 +360,7 @@ BEGIN
   SELECT o.created_at INTO v_purchase_date
   FROM public.order_items oi
   JOIN public.orders o ON oi.order_id = o.id
-  WHERE o.user_id = v_user_id 
+  WHERE o.user_id = v_user_id
     AND oi.product_id = p_product_id
     AND o.status = 'completed' -- Строгое условие на статус заказа
   ORDER BY o.created_at DESC
@@ -413,6 +412,7 @@ ALTER FUNCTION "public"."get_unreviewed_purchases"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$declare
   final_nick text;
   first_n text;
@@ -582,6 +582,7 @@ ALTER FUNCTION "public"."sync_order_main_status"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."toggle_review_like"("p_review_id" bigint) RETURNS boolean
     LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 DECLARE
   v_user_id uuid := auth.uid();
@@ -593,18 +594,18 @@ BEGIN
 
   -- Проверяем, стоит ли уже лайк
   SELECT EXISTS (
-    SELECT 1 FROM public.review_likes 
+    SELECT 1 FROM public.review_likes
     WHERE review_id = p_review_id AND user_id = v_user_id
   ) INTO v_exists;
 
   IF v_exists THEN
     -- Если стоит, убираем
-    DELETE FROM public.review_likes 
+    DELETE FROM public.review_likes
     WHERE review_id = p_review_id AND user_id = v_user_id;
     RETURN false; -- Возвращает false (лайк снят)
   ELSE
     -- Если не стоит, ставим
-    INSERT INTO public.review_likes (review_id, user_id) 
+    INSERT INTO public.review_likes (review_id, user_id)
     VALUES (p_review_id, v_user_id);
     RETURN true; -- Возвращает true (лайк поставлен)
   END IF;
@@ -617,6 +618,7 @@ ALTER FUNCTION "public"."toggle_review_like"("p_review_id" bigint) OWNER TO "pos
 
 CREATE OR REPLACE FUNCTION "public"."update_product_rating"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 declare
   _product_id bigint;
@@ -630,15 +632,15 @@ begin
 
   -- Обновляем средний рейтинг и счетчик отзывов в таблице продуктов
   update public.products
-  set 
+  set
     rating = coalesce((
-      select round(avg(rating)::numeric, 2) 
-      from public.product_reviews 
+      select round(avg(rating)::numeric, 2)
+      from public.product_reviews
       where product_id = _product_id
     ), 0),
     reviews_count = (
-      select count(*) 
-      from public.product_reviews 
+      select count(*)
+      from public.product_reviews
       where product_id = _product_id
     )
   where id = _product_id;
@@ -653,6 +655,7 @@ ALTER FUNCTION "public"."update_product_rating"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."update_review_likes_count"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
@@ -660,7 +663,7 @@ BEGIN
     UPDATE public.product_reviews
     SET helpful_count = helpful_count + 1
     WHERE id = NEW.review_id;
-    
+
   ELSIF TG_OP = 'DELETE' THEN
     -- Если лайк убрали, отнимаем 1, но не даем уйти в минус
     UPDATE public.product_reviews
@@ -900,6 +903,16 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
 
 
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."public_profiles" WITH ("security_invoker"='off') AS
+ SELECT "id",
+    "username",
+    "avatar_url"
+   FROM "public"."profiles";
+
+
+ALTER VIEW "public"."public_profiles" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."review_likes" (
@@ -1183,10 +1196,6 @@ CREATE POLICY "Allow everyone to read payment methods" ON "public"."payment_meth
 
 
 
-CREATE POLICY "Allow public read" ON "public"."product_reviews" FOR SELECT USING (true);
-
-
-
 CREATE POLICY "Allow read for all" ON "public"."product_sizes" FOR SELECT USING (true);
 
 
@@ -1204,10 +1213,6 @@ CREATE POLICY "Anyone can view reviews" ON "public"."product_reviews" FOR SELECT
 
 
 CREATE POLICY "Enable read access for all users" ON "public"."categories" FOR SELECT USING (true);
-
-
-
-CREATE POLICY "Public profiles are viewable by everyone." ON "public"."profiles" FOR SELECT USING (true);
 
 
 
@@ -1235,16 +1240,6 @@ CREATE POLICY "Users can insert their own cart items" ON "public"."cart_items" F
 
 
 
-CREATE POLICY "Users can insert their own order items" ON "public"."order_items" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
-   FROM "public"."orders"
-  WHERE (("orders"."id" = "order_items"."order_id") AND ("orders"."user_id" = "auth"."uid"())))));
-
-
-
-CREATE POLICY "Users can insert their own orders" ON "public"."orders" FOR INSERT WITH CHECK (("auth"."uid"() = "user_id"));
-
-
-
 CREATE POLICY "Users can insert their own wishlist" ON "public"."wishlist_items" FOR INSERT WITH CHECK (("auth"."uid"() = "user_id"));
 
 
@@ -1268,6 +1263,10 @@ CREATE POLICY "Users can view their own order items" ON "public"."order_items" F
 
 
 CREATE POLICY "Users can view their own orders" ON "public"."orders" FOR SELECT USING (("auth"."uid"() = "user_id"));
+
+
+
+CREATE POLICY "Users can view their own profile" ON "public"."profiles" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "id"));
 
 
 
@@ -1488,6 +1487,12 @@ GRANT ALL ON TABLE "public"."products_view" TO "service_role";
 GRANT ALL ON TABLE "public"."profiles" TO "anon";
 GRANT ALL ON TABLE "public"."profiles" TO "authenticated";
 GRANT ALL ON TABLE "public"."profiles" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."public_profiles" TO "anon";
+GRANT ALL ON TABLE "public"."public_profiles" TO "authenticated";
+GRANT ALL ON TABLE "public"."public_profiles" TO "service_role";
 
 
 

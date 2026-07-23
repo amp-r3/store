@@ -284,7 +284,6 @@ export type Database = {
           is_verified: boolean
           product_id: number
           rating: number
-          reviewer_email: string | null
           reviewer_name: string | null
           user_id: string | null
         }
@@ -297,7 +296,6 @@ export type Database = {
           is_verified?: boolean
           product_id: number
           rating: number
-          reviewer_email?: string | null
           reviewer_name?: string | null
           user_id?: string | null
         }
@@ -310,7 +308,6 @@ export type Database = {
           is_verified?: boolean
           product_id?: number
           rating?: number
-          reviewer_email?: string | null
           reviewer_name?: string | null
           user_id?: string | null
         }
@@ -334,6 +331,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -581,6 +585,24 @@ export type Database = {
         }
         Relationships: []
       }
+      public_profiles: {
+        Row: {
+          avatar_url: string | null
+          id: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          id?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          id?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_or_update_review: {
@@ -594,7 +616,6 @@ export type Database = {
           is_verified: boolean
           product_id: number
           rating: number
-          reviewer_email: string | null
           reviewer_name: string | null
           user_id: string | null
         }

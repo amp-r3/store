@@ -7,7 +7,6 @@ export interface ProductReview {
     helpfulCount: number;
 
     reviewerName: string | null;
-    reviewerEmail: string | null;
 
     userId: string | null;
     isLiked: boolean;

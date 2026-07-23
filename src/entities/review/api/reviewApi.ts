@@ -16,18 +16,15 @@ const pendingLikes = new Set<number>();
 
 const REVIEW_SELECT = `
     *,
-    profiles (
-        first_name,
-        last_name,
-        username,
-        avatar_url
+    public_profiles (
+        username
     )
 `;
 
 type ProductReviewRow = Database['public']['Tables']['product_reviews']['Row'] & {
-    profiles: Pick<
-        Database['public']['Tables']['profiles']['Row'],
-        'first_name' | 'last_name' | 'username' | 'avatar_url'
+    public_profiles: Pick<
+        Database['public']['Views']['public_profiles']['Row'],
+        'username'
     > | null;
 };
 
@@ -35,16 +32,7 @@ const mapReview = (
     review: ProductReviewRow,
     likedIds: Set<number>
 ): ProductReview => {
-    let finalName = review.reviewer_name || 'Anonymous';
-
-    if (review.profiles) {
-        const { first_name, last_name, username } = review.profiles;
-        if (first_name || last_name) {
-            finalName = `${first_name || ''} ${last_name || ''}`.trim();
-        } else if (username) {
-            finalName = username;
-        }
-    }
+    const finalName = review.public_profiles?.username || review.reviewer_name || 'Anonymous';
 
     return {
         id: review.id,
@@ -55,7 +43,6 @@ const mapReview = (
         userId: review.user_id,
         helpfulCount: review.helpful_count,
         reviewerName: finalName,
-        reviewerEmail: review.reviewer_email,
         isLiked: likedIds.has(review.id),
         isEdited: review.is_edited,
         isVerified: review.is_verified,
@@ -272,8 +259,7 @@ export const reviewApi = baseApi.injectEndpoints({
                 const authUser = state.auth?.user;
 
                 const resolvedUserId = userId || authUser?.id || 'temp-user-id';
-                const resolvedName = reviewerName || (authUser ? `${authUser.firstName || ''} ${authUser.lastName || ''}`.trim() : null) || authUser?.username || 'Anonymous';
-                const resolvedEmail = authUser?.email || null;
+                const resolvedName = reviewerName || authUser?.username || 'Anonymous';
 
                 // The user's existing review may live on a page/cache entry that
                 // isn't currently loaded (e.g. editing while a differently sorted
@@ -325,7 +311,6 @@ export const reviewApi = baseApi.injectEndpoints({
                                         userId: resolvedUserId,
                                         helpfulCount: 0,
                                         reviewerName: resolvedName,
-                                        reviewerEmail: resolvedEmail,
                                         isLiked: false,
                                         isEdited: false,
                                         isVerified: true
