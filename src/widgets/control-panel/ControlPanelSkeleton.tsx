@@ -11,6 +11,10 @@ export const ControlPanelSkeleton = () => {
         <div className={style['control-panel__btn']}>
           <Skeleton width={140} height={20} />
         </div>
+
+        <div className={style['control-panel__btn']}>
+          <Skeleton width={70} height={20} />
+        </div>
       </div>
     </div>
   )

@@ -49,6 +49,8 @@ export const CatalogPage = () => {
             changeCategory={filters.changeCategory}
             activeCategoryOption={filters.activeCategoryOption || null}
             isFetching={!!(status.productsFetching || status.categoriesFetching)}
+            isDealsActive={filters.isDealsActive}
+            toggleDeals={filters.toggleDeals}
           />
       }
 

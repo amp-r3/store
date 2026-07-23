@@ -17,7 +17,7 @@ export function useProductCatalog() {
     const categoryId = filters.activeCategoryOption?.slug;
     const categoryName = filters.activeCategoryOption?.name;
 
-    const filterKey = `${query || ''}-${categoryId || 'all'}-${filters.activeSortOption?.id || 'default'}`;
+    const filterKey = `${query || ''}-${categoryId || 'all'}-${filters.activeSortOption?.id || 'default'}-${filters.isDealsActive ? 'deals' : 'all'}`;
     const [lastKnownTotal, setLastKnownTotal] = useState<number | null>(null);
 
     useEffect(() => {
@@ -32,9 +32,10 @@ export function useProductCatalog() {
             p.order = filters.activeSortOption.order;
         }
         if (categoryId !== 'all' && categoryName) p.category = categoryName;
+        if (filters.isDealsActive) p.deals = true;
 
         return p;
-    }, [filters.page, query, filters.activeSortOption, categoryId, categoryName]);
+    }, [filters.page, query, filters.activeSortOption, categoryId, categoryName, filters.isDealsActive]);
 
     const totalPages = lastKnownTotal !== null ? Math.ceil(lastKnownTotal / ITEMS_PER_PAGE) : null;
     const shouldSkip = lastKnownTotal !== null && totalPages !== null && totalPages > 0 && filters.page > totalPages;

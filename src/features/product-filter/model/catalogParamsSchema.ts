@@ -11,5 +11,6 @@ export const catalogParamsSchema = z.object({
     ).catch(1),
     sortBy: z.enum(['price', 'title', 'stock']).nullable().catch(null),
     order: z.enum(['asc', 'desc']).nullable().catch(null),
-    category: z.string().catch('all')
+    category: z.string().catch('all'),
+    deals: z.preprocess((val) => val === 'true', z.boolean()).catch(false)
 });

@@ -16,6 +16,7 @@ export interface ProductParams {
     search?: string | null;
     category?: string | null;
     limit?: number | null;
+    deals?: boolean;
 }
 
 export interface ProductsResponse {
@@ -32,7 +33,7 @@ export const productsApi = baseApi.injectEndpoints({
         getProducts: builder.query<ProductsResponse, ProductParams>({
             async queryFn(params) {
                 try {
-                    const { page = 1, search, sortBy, order, category } = params;
+                    const { page = 1, search, sortBy, order, category, deals } = params;
                     const limit = params.limit ?? 12;
 
                     const from = (page - 1) * limit;
@@ -50,8 +51,16 @@ export const productsApi = baseApi.injectEndpoints({
                         query = query.eq('category', category);
                     }
 
+                    if (deals) {
+                        query = query.gt('discountPercentage', 0);
+                    }
+
                     if (sortBy && order) {
                         query = query.order(sortBy, { ascending: order === 'asc' });
+                    } else if (deals) {
+                        query = query
+                            .order('discountPercentage', { ascending: false })
+                            .order('id', { ascending: true });
                     } else {
                         query = query.order('id', { ascending: true });
                     }

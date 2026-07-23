@@ -25,7 +25,7 @@ export const DealsShowcase = memo(() => {
                         <IoFlame className={style.dealsShowcase__titleIcon} aria-hidden="true" />
                         Hot Deals
                     </h2>
-                    <Link to="/catalog" className={style.dealsShowcase__viewAll} onClick={soft}>
+                    <Link to="/catalog?deals=true" className={style.dealsShowcase__viewAll} onClick={soft}>
                         View All
                     </Link>
                 </div>

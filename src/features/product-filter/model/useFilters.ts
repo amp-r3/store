@@ -16,9 +16,11 @@ export interface UseFilterReturn {
     activeSortOption: SortingOption;
     activeCategoryOption?: Category;
     sortingOptions: SortingOption[];
+    isDealsActive: boolean;
     changeSort(newSortBy: string | null, newOrder: string | null): void;
     changeCategory(newCategory: string | null): void;
     setPage(newPage: number): void;
+    toggleDeals(): void;
     clearAllFilters(): void;
 }
 
@@ -47,11 +49,12 @@ export function useFilters(
             sortBy: searchParams.get('sortBy'),
             order: searchParams.get('order'),
             category: searchParams.get('category'),
+            deals: searchParams.get('deals'),
         };
         return catalogParamsSchema.parse(rawParams);
     }, [searchParams]);
 
-    const { page, sortBy, order, category: currentCategory } = parsed;
+    const { page, sortBy, order, category: currentCategory, deals: isDealsActive } = parsed;
 
     const activeSortOption = useMemo(() => {
         return sortingOptions.find(
@@ -113,11 +116,16 @@ export function useFilters(
         updateParams({ page: newPage }, 'push');
     }, [updateParams]);
 
+    const toggleDeals = useCallback(() => {
+        updateParams({ deals: isDealsActive ? null : 'true' });
+    }, [updateParams, isDealsActive]);
+
     const clearAllFilters = useCallback(() => {
         updateParams({
             sortBy: null,
             order: null,
             category: null,
+            deals: null,
             page: null
         });
     }, [updateParams]);
@@ -134,9 +142,11 @@ export function useFilters(
         activeSortOption,
         activeCategoryOption,
         sortingOptions,
+        isDealsActive,
         changeSort,
         changeCategory,
         setPage,
+        toggleDeals,
         clearAllFilters
     };
 }

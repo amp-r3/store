@@ -1,5 +1,5 @@
 import { FC, useState, useRef, useEffect, useCallback } from 'react';
-import { IoSwapVertical, IoGrid } from 'react-icons/io5';
+import { IoSwapVertical, IoGrid, IoFlame } from 'react-icons/io5';
 import style from './control-panel.module.scss';
 import { SortingOption, SortControl } from '@/features/product-sort';
 import { CategoryControl } from '@/features/product-filter';
@@ -16,6 +16,8 @@ interface ControlPanelProps {
   categoryOptions: Categories;
   activeCategoryOption: Category | null;
   isFetching: boolean;
+  isDealsActive: boolean;
+  toggleDeals: () => void;
 }
 
 export const ControlPanel: FC<ControlPanelProps> = ({
@@ -27,12 +29,14 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   activeCategoryOption,
   clearAll,
   isFetching,
+  isDealsActive,
+  toggleDeals,
 }) => {
 
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
-  const isFilter = activeCategoryOption?.slug !== 'all' || activeSortOption.id !== 'default'
+  const isFilter = activeCategoryOption?.slug !== 'all' || activeSortOption.id !== 'default' || isDealsActive
 
   const panelRef = useRef<HTMLDivElement>(null);
   const sortBtnRef = useRef<HTMLButtonElement>(null);
@@ -72,6 +76,11 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   const handleCategoryChange = (newCategory: string | null) => {
     light()
     changeCategory(newCategory);
+  };
+
+  const handleToggleDeals = () => {
+    light()
+    toggleDeals();
   };
 
   return (
@@ -114,6 +123,17 @@ export const ControlPanel: FC<ControlPanelProps> = ({
             <span className={style['control-panel__btn-value']}>
               {activeCategoryOption?.name || 'All'}
             </span>
+          </button>
+
+          <button
+            className={`${style['control-panel__btn']} ${isDealsActive ? style['control-panel__btn--active'] : ''}`}
+            type="button"
+            onClick={handleToggleDeals}
+            aria-pressed={isDealsActive}
+            aria-label={isDealsActive ? 'Deals filter on' : 'Show deals only'}
+          >
+            <IoFlame className={style['control-panel__btn-icon']} aria-hidden="true" />
+            <span className={style['control-panel__btn-value']}>Deals</span>
           </button>
 
           {isFilter && (
