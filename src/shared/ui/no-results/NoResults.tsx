@@ -5,15 +5,16 @@ import { useHaptics } from "@/shared/lib/hooks";
 
 interface NoResultsProps {
   query?: string;
+  description?: string;
 }
 
-export const NoResults = ({ query }: NoResultsProps) => {
+export const NoResults = ({ query, description }: NoResultsProps) => {
   const navigate = useNavigate()
   const { light } = useHaptics()
 
   const handleReset = () => {
     light()
-    navigate('/', { replace: true })
+    navigate('/catalog', { replace: true })
   }
 
   return (
@@ -28,7 +29,9 @@ export const NoResults = ({ query }: NoResultsProps) => {
         </h2>
 
         <p className={style.noResults__desc}>
-          {query ? (
+          {description ? (
+            description
+          ) : query ? (
             <>
               We couldn't find any items matching <span className={style.noResults__highlight}>"{query}"</span>.
             </>
@@ -38,7 +41,7 @@ export const NoResults = ({ query }: NoResultsProps) => {
         </p>
 
         <button onClick={handleReset} className={style.noResults__btn}>
-          Clear Search
+          Reset Filters
         </button>
       </div>
     </div>

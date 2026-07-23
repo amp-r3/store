@@ -84,7 +84,14 @@ export const CatalogPage = () => {
 
       {
         status.isEmpty && (
-          <NoResults query={products.query || undefined} />
+          <NoResults
+            query={products.query || undefined}
+            description={
+              filters.isDealsActive
+                ? 'No discounted items right now — check back soon or browse the full catalog.'
+                : undefined
+            }
+          />
         )
       }
     </main >
