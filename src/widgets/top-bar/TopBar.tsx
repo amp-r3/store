@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router';
 import { IoClose } from 'react-icons/io5';
 import {
   selectNotification,
+  selectPendingCount,
   useOfflineNotifier,
   dismissNotification,
   AUTO_DISMISS_MS,
@@ -26,6 +28,7 @@ interface TopBarProps {
 export const TopBar = ({ isOverlay = false }: TopBarProps) => {
   const dispatch = useAppDispatch();
   const notification = useAppSelector(selectNotification);
+  const pendingCount = useAppSelector(selectPendingCount);
   useOfflineNotifier();
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
 
     const timeoutId = setTimeout(
       () => dispatch(dismissNotification(notification.id)),
-      AUTO_DISMISS_MS
+      notification.durationMs ?? AUTO_DISMISS_MS
     );
 
     return () => clearTimeout(timeoutId);
@@ -45,9 +48,26 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
   return (
     <header className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''} ${TYPE_CLASS[type]}`}>
       <div className={`${style.topbar__container} container`}>
+        {pendingCount > 0 && (
+          <button
+            type="button"
+            className={style.topbar__count}
+            aria-label={`${pendingCount} more notification${pendingCount > 1 ? 's' : ''}`}
+            onClick={() => notification && dispatch(dismissNotification(notification.id))}
+          >
+            +{pendingCount}
+          </button>
+        )}
+
         <p className={style.topbar__text} aria-live="polite">
           {notification?.text ?? DEFAULT_TEXT}
         </p>
+
+        {notification?.action && (
+          <Link to={notification.action.to} className={style.topbar__action}>
+            {notification.action.label}
+          </Link>
+        )}
 
         {notification && notification.id !== -1 && (
           <button

@@ -17,7 +17,6 @@ import style from './main-layout.module.scss';
 import { Loader, TopBarLoader } from "@/shared/ui";
 import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
-import { useAuthSync } from "@/entities/session";
 import { CartDrawer } from "@/widgets/cart-drawer";
 import { ReviewModal } from "@/features/order-review";
 
@@ -25,7 +24,6 @@ export const MainLayout = () => {
     const navigation = useNavigation();
     const location = useLocation();
     const dispatch = useAppDispatch();
-    useAuthSync();
     const isOpen = useAppSelector(selectIsCartOpen);
     const isLoading = navigation.state === 'loading';
     const isHomePage = location.pathname === '/';

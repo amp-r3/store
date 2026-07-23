@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/shared/model";
 import { selectIsAuth } from "@/entities/session";
 import { useUpsertCartItemMutation, useDeleteCartItemMutation, useClearCartMutation, changeQuantity, removeFromCart, clearCart } from "@/entities/cart";
+import { notify } from "@/entities/notification";
 
 interface UseCartActionsReturn {
   onIncrease(sizeId: number, productId: number): void;
@@ -28,6 +29,7 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(changeQuantity({ sizeId, productId, type: 'inc' }));
     }
+    dispatch(notify({ type: 'success', text: 'Added to cart', key: 'cart' }));
   }, [isAuth, upsertItem, dispatch])
 
   const onDecrease = useCallback((sizeId: number, productId: number) => {
@@ -36,6 +38,7 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(changeQuantity({ sizeId, productId, type: 'dec' }));
     }
+    dispatch(notify({ type: 'info', text: 'Removed from cart', key: 'cart' }));
   }, [isAuth, upsertItem, dispatch]);
 
   const onRemove = useCallback((sizeId: number) => {
@@ -44,6 +47,7 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(removeFromCart(sizeId));
     }
+    dispatch(notify({ type: 'info', text: 'Removed from cart', key: 'cart' }));
   }, [isAuth, deleteItem, dispatch]);
 
   const onClearCart = useCallback(() => {
@@ -52,6 +56,7 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(clearCart());
     }
+    dispatch(notify({ type: 'info', text: 'Cart cleared', key: 'cart' }));
   }, [isAuth, clearServerCart, dispatch]);
 
   return { onIncrease, onDecrease, onRemove, onClearCart, isUpdating };

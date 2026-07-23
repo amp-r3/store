@@ -50,12 +50,58 @@
     font-family: $font-display;
     text-align: center;
     padding: 0 $spacing-xl;
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
     @media (prefers-reduced-motion: no-preference) {
       transition: color $transition-base;
+    }
+  }
+
+  &__action {
+    flex-shrink: 0;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: opacity $transition-base;
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  &__count {
+    position: absolute;
+    left: $container-padding;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    padding: $spacing-xxs $spacing-sm;
+    border-radius: $radius-lg;
+    color: inherit;
+    background: var(--glass-background);
+    border: 1px solid var(--border-color-subtle);
+    font-size: $fs-xs;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -$spacing-sm;
+    }
+
+    &:hover {
+      opacity: 0.7;
     }
   }
 
