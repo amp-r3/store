@@ -164,10 +164,10 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
 - Selectors reading only their own slice: type `state` against that slice's own
   state type via a same-slice import (e.g. `(state: { auth: AuthState }) => ...`
   in `entities/session/model/authSelectors.ts`), not a hand-rolled `any`. Reserve
-  `SharedRootState` (`shared/model` + `shared/types`) for the genuine cross-entity
-  case — e.g. `reviewApi`'s `onQueryStarted` needing to read `auth.user` from
-  inside the `review` entity, where `getState()`'s own RTK Query type only knows
-  about `reviewApi`'s own slice.
+  the ambient `GlobalRootState` (declared via `declare global` in `app/store.ts`)
+  for the genuine cross-entity case — e.g. `reviewApi`'s `onQueryStarted` needing
+  to read `auth.user` from inside the `review` entity, where `getState()`'s own
+  RTK Query type only knows about `reviewApi`'s own slice.
 
 ## Typing
 

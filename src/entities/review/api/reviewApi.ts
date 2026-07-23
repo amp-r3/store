@@ -137,19 +137,13 @@ export const reviewApi = baseApi.injectEndpoints({
             },
             serializeQueryArgs: ({ endpointName, queryArgs }) =>
                 `${endpointName}-${queryArgs.productId}-${queryArgs.sort ?? 'newest'}-${queryArgs.rating ?? 'all'}`,
-            merge: (currentCache, newResponse, { arg }) => {
-                // Drop any optimistic placeholders (negative ids) once real server
-                // data arrives — they've either landed for real by now or belong on
-                // a page we haven't fetched, and totalCount below is authoritative.
-                currentCache.items = currentCache.items.filter((item) => item.id >= 0);
-
-                if (!arg.page || arg.page === 1) {
-                    currentCache.items = newResponse.items;
-                } else {
-                    const existingIds = new Set(currentCache.items.map((item) => item.id));
-                    const uniqueNewItems = newResponse.items.filter((item) => !existingIds.has(item.id));
-                    currentCache.items.push(...uniqueNewItems);
-                }
+            merge: (currentCache, newResponse) => {
+                // The caller always fetches cumulatively (page: 1, limit scaled to
+                // cover every page loaded so far), so every response is already the
+                // full accumulated list — a plain replace is correct and also drops
+                // any optimistic placeholder (negative id) left over from before the
+                // real server data arrived.
+                currentCache.items = newResponse.items;
                 currentCache.totalCount = newResponse.totalCount;
             },
             forceRefetch({ currentArg, previousArg }) {
@@ -263,6 +257,11 @@ export const reviewApi = baseApi.injectEndpoints({
                 { type: 'Review', id: productId },
                 { type: 'Review', id: 'MY_LIST' },
                 { type: 'Review', id: 'PENDING_LIST' },
+                // on_review_change (schema.sql) recomputes products.rating /
+                // reviews_count server-side on every insert/update/delete —
+                // invalidate the product so that number stays in sync with
+                // the optimistically-patched stats shown inside this block.
+                { type: 'Product', id: productId },
                 'PurchaseHistory'
             ],
             async onQueryStarted({ productId, rating, comment, reviewerName, userId }, { dispatch, queryFulfilled, getState }) {
@@ -467,6 +466,11 @@ export const reviewApi = baseApi.injectEndpoints({
                 { type: 'Review', id: productId },
                 { type: 'Review', id: 'MY_LIST' },
                 { type: 'Review', id: 'PENDING_LIST' },
+                // on_review_change (schema.sql) recomputes products.rating /
+                // reviews_count server-side on every insert/update/delete —
+                // invalidate the product so that number stays in sync with
+                // the optimistically-patched stats shown inside this block.
+                { type: 'Product', id: productId },
                 'PurchaseHistory'
             ],
             async onQueryStarted({ reviewId, productId }, { dispatch, queryFulfilled, getState }) {
