@@ -12,12 +12,12 @@ import { FormField, Loader } from "@/shared/ui";
 import { useAuthUrlError } from "@/entities/session";
 import { SignInButton } from "@/features/auth";
 import { LocationState } from "@/shared/types";
-import { getErrorMessage } from "@/shared/lib";
+import { getErrorMessage, safeRedirectPath } from "@/shared/lib";
 
 export const LoginPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const from = (location.state as LocationState | null)?.from || '/'
+  const from = safeRedirectPath((location.state as LocationState | null)?.from)
   const [isEmail, setIsEmail] = useState(false)
   const [login, { isLoading }] = useLoginMutation()
   const [signInWithGoogle] = useSignInWithGoogleMutation()

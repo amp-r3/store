@@ -8,6 +8,7 @@ import { useSyncWishlistMutation, clearFavorite } from "@/entities/wishlist";
 import { store } from "@/app/store";
 import { useNavigate } from "react-router";
 import { logout } from "@/entities/session";
+import { safeRedirectPath } from "@/shared/lib";
 
 export const useAuthSync = () => {
   const [syncCart] = useSyncCartMutation();
@@ -35,7 +36,7 @@ export const useAuthSync = () => {
           const storedFrom = sessionStorage.getItem('auth_redirect_from');
           if (storedFrom) {
             sessionStorage.removeItem('auth_redirect_from');
-            navigate(storedFrom, { replace: true });
+            navigate(safeRedirectPath(storedFrom), { replace: true });
           }
         }
 
