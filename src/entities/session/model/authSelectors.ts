@@ -4,7 +4,7 @@ export const selectUser = (state: { auth: AuthState }) => state.auth.user
 
 export const selectToken = (state: { auth: AuthState }) => state.auth.token
 
-export const selectIsAuth = (state: { auth: AuthState }) => !!state.auth.token
+export const selectIsAuth = (state: { auth: AuthState }) => !!state.auth.user
 
 export const selectUserName = (state: { auth: AuthState }) => {
   const user = state.auth.user

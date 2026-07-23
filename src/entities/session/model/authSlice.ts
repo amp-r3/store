@@ -1,7 +1,7 @@
 import { authApi } from "@/entities/session";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import storage from "@/app/providers/store/storage";
-import { persistReducer } from "redux-persist";
+import { createTransform, persistReducer } from "redux-persist";
 import { SessionUser } from "@/entities/session/model/types";
 import { purgeStoredState } from "redux-persist";
 
@@ -17,10 +17,25 @@ const initialState: AuthState = {
   token: null
 }
 
+// Strips the JWT before it reaches localStorage: the access token already
+// lives in supabase-js's own session storage and useAuthSync restores it into
+// memory on INITIAL_SESSION, so persisting it here too would just be a second
+// XSS-exfiltratable copy with no functional benefit.
+const stripAccessToken = createTransform<AuthState, AuthState>(
+  (inboundState) => ({
+    ...inboundState,
+    token: null,
+    user: inboundState.user ? { ...inboundState.user, accessToken: '' } : null,
+  }),
+  (outboundState) => outboundState,
+  { whitelist: ['auth'] }
+);
+
 const authPersistConfig = {
   key: 'auth',
   storage,
-  whitelist: ['user', 'token']
+  whitelist: ['user'],
+  transforms: [stripAccessToken]
 }
 
 export const authSlice = createSlice({
