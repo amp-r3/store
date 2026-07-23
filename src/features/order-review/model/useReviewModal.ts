@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { reviewSchema, ReviewFormData } from '@/features/order-review/model/reviewSchema';
@@ -8,6 +8,7 @@ import { closeReviewModal } from './reviewModalSlice';
 import { selectIsReviewModalOpen, selectReviewModalProductId, selectReviewModalInitialRating } from './reviewModalSelectors';
 import { useGetMyReviewsQuery, useAddOrUpdateReviewMutation } from '@/entities/review';
 import { useHaptics } from '@/shared/lib/hooks';
+import { getErrorMessage } from '@/shared/lib';
 
 export const useReviewModal = () => {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ export const useReviewModal = () => {
   
   const { data: myReviews } = useGetMyReviewsQuery(undefined, { skip: !productId });
   const [addOrUpdateReview, { isLoading }] = useAddOrUpdateReviewMutation();
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const currentUserReview = myReviews?.find(r => r.productId === Number(productId));
 
@@ -30,6 +32,7 @@ export const useReviewModal = () => {
 
   useEffect(() => {
     if (isOpen) {
+      setSubmitError(null);
       if (currentUserReview) {
         reset({
           rating: currentUserReview.rating,
@@ -49,17 +52,18 @@ export const useReviewModal = () => {
 
   const onSubmit = async (data: ReviewFormData) => {
     if (!productId) return;
+    setSubmitError(null);
     try {
       await addOrUpdateReview({
         productId: Number(productId),
         rating: data.rating,
         comment: data.comment || '',
       }).unwrap();
-      
+
       haptics.success();
       handleClose();
     } catch (err) {
-      console.error(err);
+      setSubmitError(getErrorMessage(err));
     }
   };
 
@@ -71,6 +75,7 @@ export const useReviewModal = () => {
     handleOpenChange,
     handleClose,
     onSubmit,
+    submitError,
     haptics
   };
 };

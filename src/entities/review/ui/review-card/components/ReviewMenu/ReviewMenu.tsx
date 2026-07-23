@@ -44,9 +44,9 @@ export const ReviewMenu = ({ onEdit, onDelete }: ReviewMenuProps) => {
                     <button
                         type="button"
                         className={`${style['review-menu__btn']} ${isOpen ? style['review-menu__btn--open'] : ''}`}
-                        aria-label="Review options"
+                        aria-label="Options for your review"
                     >
-                        <FaEllipsisV />
+                        <FaEllipsisV aria-hidden="true" />
                     </button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
@@ -54,13 +54,12 @@ export const ReviewMenu = ({ onEdit, onDelete }: ReviewMenuProps) => {
                         className={style['review-menu__dropdown']}
                         sideOffset={8}
                         align="end"
-                        
                     >
                         <DropdownMenu.Item className={style['review-menu__item']} onSelect={handleEditClick}>
-                            <FaEdit className={style['review-menu__icon']} /> Edit
+                            <FaEdit className={style['review-menu__icon']} aria-hidden="true" /> Edit
                         </DropdownMenu.Item>
                         <DropdownMenu.Item className={`${style['review-menu__item']} ${style['review-menu__item--danger']}`} onSelect={handleDeleteClick}>
-                            <FaTrash className={style['review-menu__icon']} /> Delete
+                            <FaTrash className={style['review-menu__icon']} aria-hidden="true" /> Delete
                         </DropdownMenu.Item>
                     </DropdownMenu.Content>
                 </DropdownMenu.Portal>

@@ -78,14 +78,14 @@
     text-align: left;
     transition: background $transition-fast $ease-in-out-smooth,
                 border-color $transition-fast $ease-in-out-smooth,
-                padding-left $transition-fast $ease-out-expo;
+                transform $transition-fast $ease-out-expo;
     outline: none;
 
     &:hover,
     &:focus-visible {
         background: var(--glass-background-subtle);
         border-color: var(--border-color-subtle);
-        padding-left: $spacing-md;
+        transform: translateX($spacing-xxs);
     }
 
     &:focus-visible {

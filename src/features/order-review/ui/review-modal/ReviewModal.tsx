@@ -14,6 +14,7 @@ export const ReviewModal: React.FC = () => {
     handleOpenChange,
     handleClose,
     onSubmit,
+    submitError,
     haptics,
   } = useReviewModal();
 
@@ -21,10 +22,11 @@ export const ReviewModal: React.FC = () => {
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = form;
 
-  if (!isOpen) return null;
+  const commentLength = watch('comment')?.length ?? 0;
 
   return (
     <Dialog.Root open={!!isOpen} onOpenChange={handleOpenChange}>
@@ -37,23 +39,30 @@ export const ReviewModal: React.FC = () => {
           <Dialog.Description className={style['review-modal__description']}>
             Share your thoughts about this product with other customers.
           </Dialog.Description>
-          
+
           <Dialog.Close className={style['review-modal__close']} aria-label="Close">
-            <FaTimes />
+            <FaTimes aria-hidden="true" />
           </Dialog.Close>
 
-          <div className={style['review-modal__form']}>
+          <form className={style['review-modal__form']} onSubmit={handleSubmit(onSubmit)}>
             <div className={style['review-modal__field']}>
-              <span className={style['review-modal__label']}>Rating *</span>
+              <span id="review-rating-label" className={style['review-modal__label']}>Rating *</span>
               <Controller
                 name="rating"
                 control={control}
                 render={({ field }) => (
-                  <div className={style['review-modal__stars']}>
+                  <div
+                    className={style['review-modal__stars']}
+                    role="radiogroup"
+                    aria-labelledby="review-rating-label"
+                    aria-describedby={errors.rating ? 'review-rating-error' : undefined}
+                  >
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         type="button"
+                        role="radio"
+                        aria-checked={field.value === star}
                         onClick={() => {
                           field.onChange(star);
                           haptics.light();
@@ -63,27 +72,48 @@ export const ReviewModal: React.FC = () => {
                         }`}
                         aria-label={`Rate ${star} stars`}
                       >
-                        <FaStar />
+                        <FaStar aria-hidden="true" />
                       </button>
                     ))}
                   </div>
                 )}
               />
-              {errors.rating && <span className={style['review-modal__error']}>{errors.rating.message}</span>}
+              {errors.rating && (
+                <span id="review-rating-error" className={style['review-modal__error']} role="alert">
+                  {errors.rating.message}
+                </span>
+              )}
             </div>
 
             <div className={style['review-modal__field']}>
-              <label htmlFor="comment" className={style['review-modal__label']}>
-                Comment (optional)
-              </label>
+              <div className={style['review-modal__label-row']}>
+                <label htmlFor="comment" className={style['review-modal__label']}>
+                  Comment (optional)
+                </label>
+                <span className={style['review-modal__char-count']}>
+                  {commentLength}/2000
+                </span>
+              </div>
               <textarea
                 id="comment"
                 {...register('comment')}
                 className={style['review-modal__textarea']}
                 placeholder="What did you like or dislike? What is this product used for?"
+                maxLength={2000}
+                aria-describedby={errors.comment ? 'review-comment-error' : undefined}
               />
-              {errors.comment && <span className={style['review-modal__error']}>{errors.comment.message}</span>}
+              {errors.comment && (
+                <span id="review-comment-error" className={style['review-modal__error']} role="alert">
+                  {errors.comment.message}
+                </span>
+              )}
             </div>
+
+            {submitError && (
+              <span className={style['review-modal__error']} role="alert">
+                {submitError}
+              </span>
+            )}
 
             <div className={style['review-modal__footer']}>
               <button
@@ -94,15 +124,14 @@ export const ReviewModal: React.FC = () => {
                 Cancel
               </button>
               <button
-                type="button"
-                onClick={handleSubmit(onSubmit)}
+                type="submit"
                 disabled={isLoading}
                 className={`${style['review-modal__button']} ${style['review-modal__button--submit']}`}
               >
                 {isLoading ? 'Saving...' : 'Submit Review'}
               </button>
             </div>
-          </div>
+          </form>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

@@ -59,6 +59,19 @@
     font-weight: 500;
   }
 
+  &__label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-sm;
+  }
+
+  &__char-count {
+    font-size: $fs-xs;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
   &__textarea {
     width: 100%;
     min-height: 100px;
