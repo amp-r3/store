@@ -284,7 +284,6 @@ export type Database = {
           is_verified: boolean
           product_id: number
           rating: number
-          reviewer_name: string | null
           user_id: string | null
         }
         Insert: {
@@ -296,7 +295,6 @@ export type Database = {
           is_verified?: boolean
           product_id: number
           rating: number
-          reviewer_name?: string | null
           user_id?: string | null
         }
         Update: {
@@ -308,7 +306,6 @@ export type Database = {
           is_verified?: boolean
           product_id?: number
           rating?: number
-          reviewer_name?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -616,7 +613,6 @@ export type Database = {
           is_verified: boolean
           product_id: number
           rating: number
-          reviewer_name: string | null
           user_id: string | null
         }
         SetofOptions: {

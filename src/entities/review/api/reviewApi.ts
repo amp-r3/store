@@ -32,7 +32,7 @@ const mapReview = (
     review: ProductReviewRow,
     likedIds: Set<number>
 ): ProductReview => {
-    const finalName = review.public_profiles?.username || review.reviewer_name || 'Anonymous';
+    const finalName = review.public_profiles?.username || 'Anonymous';
 
     return {
         id: review.id,

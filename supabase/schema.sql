@@ -93,7 +93,6 @@ CREATE TABLE IF NOT EXISTS "public"."product_reviews" (
     "date" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
     "user_id" "uuid" DEFAULT "auth"."uid"(),
     "helpful_count" integer DEFAULT 0 NOT NULL,
-    "reviewer_name" "text",
     "is_edited" boolean DEFAULT false NOT NULL,
     "is_verified" boolean DEFAULT false NOT NULL,
     CONSTRAINT "product_reviews_rating_check" CHECK ((("rating" >= 1) AND ("rating" <= 5)))
@@ -739,6 +738,7 @@ CREATE TABLE IF NOT EXISTS "public"."order_items" (
     "price_at_purchase" numeric(10,2) NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "size_id" bigint NOT NULL,
+    CONSTRAINT "order_items_price_at_purchase_nonneg" CHECK (("price_at_purchase" >= (0)::numeric)),
     CONSTRAINT "order_items_quantity_check" CHECK (("quantity" > 0))
 );
 
@@ -807,7 +807,8 @@ CREATE TABLE IF NOT EXISTS "public"."product_sizes" (
     "id" bigint NOT NULL,
     "product_id" bigint,
     "value" "text" NOT NULL,
-    "stock" integer DEFAULT 0 NOT NULL
+    "stock" integer DEFAULT 0 NOT NULL,
+    CONSTRAINT "product_sizes_stock_nonneg" CHECK (("stock" >= 0))
 );
 
 
@@ -848,7 +849,8 @@ CREATE TABLE IF NOT EXISTS "public"."products" (
     "images" "text"[] DEFAULT '{}'::"text"[],
     "base_price" numeric(10,2) NOT NULL,
     "reviews_count" integer DEFAULT 0 NOT NULL,
-    "price" numeric GENERATED ALWAYS AS ("round"(("base_price" * (1.0 - (COALESCE("discount_percentage", 0.0) / 100.0))), 2)) STORED
+    "price" numeric GENERATED ALWAYS AS ("round"(("base_price" * (1.0 - (COALESCE("discount_percentage", 0.0) / 100.0))), 2)) STORED,
+    CONSTRAINT "products_base_price_nonneg" CHECK (("base_price" >= (0)::numeric))
 );
 
 
