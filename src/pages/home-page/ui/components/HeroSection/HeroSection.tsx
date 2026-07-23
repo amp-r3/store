@@ -11,7 +11,7 @@ interface HeroSectionProps {
 export const HeroSection = ({ scrollTargetId }: HeroSectionProps) => {
     const { soft } = useHaptics();
 
-    const handleShopNowClick = () => {
+    const handleExploreCategoriesClick = () => {
         soft();
         scrollToElement(scrollTargetId);
     };
@@ -38,23 +38,23 @@ export const HeroSection = ({ scrollTargetId }: HeroSectionProps) => {
                 </p>
 
                 <div className={style.hero__actions}>
-                    <button type="button" className={style.hero__cta} onClick={handleShopNowClick}>
+                    <Link to="/catalog" className={style.hero__cta} onClick={soft}>
                         Shop Now
-                    </button>
-                    <Link
-                        to="/catalog"
-                        className={`${style.hero__cta} ${style['hero__cta--secondary']}`}
-                        onClick={soft}
-                    >
-                        Browse Catalog
                     </Link>
+                    <button
+                        type="button"
+                        className={`${style.hero__cta} ${style['hero__cta--secondary']}`}
+                        onClick={handleExploreCategoriesClick}
+                    >
+                        Explore Categories
+                    </button>
                 </div>
             </div>
 
             <button
                 type="button"
                 className={style.hero__scrollHint}
-                onClick={handleShopNowClick}
+                onClick={handleExploreCategoriesClick}
                 aria-label="Scroll to categories"
             >
                 <IoArrowDown aria-hidden="true" />
