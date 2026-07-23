@@ -39,13 +39,7 @@ export const MainLayout = () => {
         <>
             <Header isOverlay={isHomePage} />
             <div className={`${style.layout} ${isHomePage ? style['layout--flush'] : ''}`}>
-                {
-                    !isHomePage && (
-                        <div className={style.header}>
-                            <Navbar />
-                        </div>
-                    )
-                }
+                <Navbar />
                 <TopBarLoader isLoading={isLoading} />
                 <Suspense fallback={<Loader />}>
                     <Outlet />
