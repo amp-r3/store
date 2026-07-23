@@ -130,7 +130,7 @@ export const ProductReviews = ({ productId }: ProductReviewsProps) => {
         >
             <div className={style['reviews__header']}>
                 <h2 id="reviews-heading" className={style['reviews__title']}>
-                    <FaComments className={style['reviews__title-icon']} />
+                    <FaComments className={style['reviews__title-icon']} aria-hidden="true" />
                     <span>Customer Feedback</span>
                 </h2>
                 {stats && (
@@ -218,7 +218,7 @@ export const ProductReviews = ({ productId }: ProductReviewsProps) => {
                                 className={style['reviews__back-to-top']}
                                 onClick={handleBackToTop}
                             >
-                                <FaArrowUp />
+                                <FaArrowUp aria-hidden="true" />
                                 <span>Back to top</span>
                             </button>
                         )}

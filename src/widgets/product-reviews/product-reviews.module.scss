@@ -29,7 +29,7 @@
     color: var(--text-primary);
     margin: 0;
 
-    @media (max-width: 425px) {
+    @media (max-width: 480px) {
         font-size: $fs-lg;
     }
 }
@@ -92,6 +92,12 @@
     }
 }
 
+// The stagger only covers the first page (REVIEWS_PAGE_SIZE = 10); items appended
+// by "Load more" get no entrance animation instead of fading in as one un-staggered block.
+.reviews__list > *:nth-child(n + 11) {
+    animation: none;
+}
+
 @keyframes review-fade-in {
     from {
         opacity: 0;
@@ -131,6 +137,11 @@
         opacity: 0.6;
         cursor: default;
     }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+    }
 }
 
 .reviews__back-to-top {
@@ -150,6 +161,11 @@
 
     &:hover {
         color: var(--primary-accent);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
     }
 
     svg {
@@ -200,5 +216,10 @@
 
     &:hover {
         background: rgba(var(--error-color-rgb), 0.08);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
     }
 }
