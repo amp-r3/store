@@ -1494,8 +1494,8 @@ GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."public_profiles" TO "anon";
-GRANT ALL ON TABLE "public"."public_profiles" TO "authenticated";
+GRANT SELECT,MAINTAIN ON TABLE "public"."public_profiles" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."public_profiles" TO "authenticated";
 GRANT ALL ON TABLE "public"."public_profiles" TO "service_role";
 
 
