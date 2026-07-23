@@ -774,6 +774,8 @@ CREATE TABLE IF NOT EXISTS "public"."orders" (
     "delivery_status" "public"."delivery_status" DEFAULT 'awaiting_dispatch'::"public"."delivery_status" NOT NULL
 );
 
+ALTER TABLE ONLY "public"."orders" REPLICA IDENTITY FULL;
+
 
 ALTER TABLE "public"."orders" OWNER TO "postgres";
 

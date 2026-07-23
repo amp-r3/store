@@ -1,4 +1,5 @@
 export * from './api/orderApi';
+export * from './api/ordersRealtime';
 export * from './ui/order-card/OrderCard';
 export * from './ui/order-card/OrderCardSkeleton';
 export { OrderItem } from './ui/order-item/OrderItem';
