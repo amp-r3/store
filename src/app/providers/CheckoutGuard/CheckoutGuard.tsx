@@ -9,7 +9,7 @@ export const CheckoutGuard = () => {
   const data = useAppSelector(state => state.checkout.items)
 
   if (!isAuth) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location.pathname + location.search }} replace />;
   }
 
   const hasItems = data && Object.keys(data).length > 0;
