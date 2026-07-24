@@ -119,6 +119,45 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          action_path: string | null
+          body: string | null
+          category: Database["public"]["Enums"]["notification_category"]
+          created_at: string
+          entity_id: string | null
+          id: string
+          is_read: boolean
+          level: Database["public"]["Enums"]["notification_level"]
+          title: string
+          user_id: string
+        }
+        Insert: {
+          action_path?: string | null
+          body?: string | null
+          category: Database["public"]["Enums"]["notification_category"]
+          created_at?: string
+          entity_id?: string | null
+          id?: string
+          is_read?: boolean
+          level?: Database["public"]["Enums"]["notification_level"]
+          title: string
+          user_id: string
+        }
+        Update: {
+          action_path?: string | null
+          body?: string | null
+          category?: Database["public"]["Enums"]["notification_category"]
+          created_at?: string
+          entity_id?: string | null
+          id?: string
+          is_read?: boolean
+          level?: Database["public"]["Enums"]["notification_level"]
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -521,18 +560,21 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          price_at_add: number | null
           product_id: number
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
+          price_at_add?: number | null
           product_id: number
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
+          price_at_add?: number | null
           product_id?: number
           user_id?: string
         }
@@ -661,6 +703,12 @@ export type Database = {
         | "delivered"
         | "returned"
         | "cancelled"
+      notification_category:
+        | "order_status"
+        | "review_reminder"
+        | "price_drop"
+        | "system"
+      notification_level: "info" | "success" | "warning" | "error"
       order_status:
         | "pending"
         | "processing"
@@ -813,6 +861,13 @@ export const Constants = {
         "returned",
         "cancelled",
       ],
+      notification_category: [
+        "order_status",
+        "review_reminder",
+        "price_drop",
+        "system",
+      ],
+      notification_level: ["info", "success", "warning", "error"],
       order_status: [
         "pending",
         "processing",

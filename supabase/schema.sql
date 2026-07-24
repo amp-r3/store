@@ -46,6 +46,28 @@ CREATE TYPE "public"."delivery_status" AS ENUM (
 ALTER TYPE "public"."delivery_status" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."notification_category" AS ENUM (
+    'order_status',
+    'review_reminder',
+    'price_drop',
+    'system'
+);
+
+
+ALTER TYPE "public"."notification_category" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."notification_level" AS ENUM (
+    'info',
+    'success',
+    'warning',
+    'error'
+);
+
+
+ALTER TYPE "public"."notification_level" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."order_status" AS ENUM (
     'pending',
     'processing',
@@ -502,6 +524,90 @@ end;$$;
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."handle_order_notifications"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+  _label text;
+  _level public.notification_level;
+begin
+  if NEW.delivery_status is distinct from OLD.delivery_status then
+    _label := case NEW.delivery_status
+      when 'awaiting_dispatch' then 'Awaiting Dispatch'
+      when 'dispatched' then 'Dispatched'
+      when 'in_transit' then 'In Transit'
+      when 'delivered' then 'Delivered'
+      when 'returned' then 'Returned'
+      when 'cancelled' then 'Cancelled'
+    end;
+    _level := case
+      when NEW.delivery_status in ('cancelled', 'returned') then 'error'
+      when NEW.delivery_status = 'delivered' then 'success'
+      else 'info'
+    end;
+  elsif NEW.payment_status is distinct from OLD.payment_status then
+    _label := case NEW.payment_status
+      when 'awaiting_payment' then 'Awaiting Payment'
+      when 'paid' then 'Paid Successfully'
+      when 'failed' then 'Payment Failed'
+      when 'refunded' then 'Refunded'
+    end;
+    _level := case
+      when NEW.payment_status = 'failed' then 'error'
+      when NEW.payment_status = 'paid' then 'success'
+      else 'info'
+    end;
+  elsif NEW.status is distinct from OLD.status then
+    _label := case NEW.status
+      when 'pending' then 'Pending'
+      when 'processing' then 'Processing'
+      when 'shipped' then 'Shipped'
+      when 'completed' then 'Completed'
+      when 'cancelled' then 'Cancelled'
+    end;
+    _level := case
+      when NEW.status = 'cancelled' then 'error'
+      when NEW.status = 'completed' then 'success'
+      else 'info'
+    end;
+  else
+    _label := null;
+  end if;
+
+  if _label is not null then
+    insert into public.notifications (user_id, category, level, title, action_path, entity_id)
+    values (
+      NEW.user_id,
+      'order_status',
+      _level,
+      'Order ' || coalesce(NEW.order_number, NEW.id::text) || ' — ' || _label,
+      '/user/orders',
+      NEW.id::text
+    );
+  end if;
+
+  if NEW.delivery_status = 'delivered'::public.delivery_status and OLD.delivery_status is distinct from 'delivered'::public.delivery_status then
+    insert into public.notifications (user_id, category, level, title, body, action_path, entity_id)
+    values (
+      NEW.user_id,
+      'review_reminder',
+      'info',
+      'Share your experience',
+      'Your order was delivered — leave a review',
+      '/user/reviews',
+      NEW.id::text
+    );
+  end if;
+
+  return NEW;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."handle_order_notifications"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."handle_updated_at"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public', 'pg_temp'
@@ -514,6 +620,26 @@ $$;
 
 
 ALTER FUNCTION "public"."handle_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."handle_wishlist_price_drop"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+begin
+  insert into public.notifications (user_id, category, level, title, body, action_path, entity_id)
+  select wi.user_id, 'price_drop', 'success', 'Price drop',
+         NEW.title || ' is now cheaper', '/wishlist', NEW.id::text
+  from public.wishlist_items wi
+  where wi.product_id = NEW.id
+    and (wi.price_at_add is null or NEW.price < wi.price_at_add);
+
+  return NEW;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."handle_wishlist_price_drop"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."rls_auto_enable"() RETURNS "event_trigger"
@@ -730,6 +856,23 @@ CREATE TABLE IF NOT EXISTS "public"."delivery_methods" (
 ALTER TABLE "public"."delivery_methods" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."notifications" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "category" "public"."notification_category" NOT NULL,
+    "level" "public"."notification_level" DEFAULT 'info'::"public"."notification_level" NOT NULL,
+    "title" "text" NOT NULL,
+    "body" "text",
+    "action_path" "text",
+    "entity_id" "text",
+    "is_read" boolean DEFAULT false NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."notifications" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."order_items" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "order_id" "uuid" NOT NULL,
@@ -773,8 +916,6 @@ CREATE TABLE IF NOT EXISTS "public"."orders" (
     "order_number" character varying(15),
     "delivery_status" "public"."delivery_status" DEFAULT 'awaiting_dispatch'::"public"."delivery_status" NOT NULL
 );
-
-ALTER TABLE ONLY "public"."orders" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."orders" OWNER TO "postgres";
@@ -949,7 +1090,8 @@ CREATE TABLE IF NOT EXISTS "public"."wishlist_items" (
     "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
     "user_id" "uuid" NOT NULL,
     "product_id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"())
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
+    "price_at_add" numeric(10,2)
 );
 
 
@@ -988,6 +1130,11 @@ ALTER TABLE ONLY "public"."delivery_methods"
 
 ALTER TABLE ONLY "public"."delivery_methods"
     ADD CONSTRAINT "delivery_methods_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1099,6 +1246,22 @@ CREATE INDEX "idx_products_category" ON "public"."products" USING "btree" ("cate
 
 
 
+CREATE INDEX "notifications_user_created_idx" ON "public"."notifications" USING "btree" ("user_id", "created_at" DESC);
+
+
+
+CREATE INDEX "notifications_user_unread_idx" ON "public"."notifications" USING "btree" ("user_id") WHERE (NOT "is_read");
+
+
+
+CREATE OR REPLACE TRIGGER "notify_on_order_change" AFTER UPDATE ON "public"."orders" FOR EACH ROW EXECUTE FUNCTION "public"."handle_order_notifications"();
+
+
+
+CREATE OR REPLACE TRIGGER "notify_on_price_drop" AFTER UPDATE ON "public"."products" FOR EACH ROW WHEN (("new"."price" < "old"."price")) EXECUTE FUNCTION "public"."handle_wishlist_price_drop"();
+
+
+
 CREATE OR REPLACE TRIGGER "on_like_change" AFTER INSERT OR DELETE ON "public"."review_likes" FOR EACH ROW EXECUTE FUNCTION "public"."update_review_likes_count"();
 
 
@@ -1122,6 +1285,11 @@ ALTER TABLE ONLY "public"."cart_items"
 
 ALTER TABLE ONLY "public"."cart_items"
     ADD CONSTRAINT "cart_items_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
 
 
@@ -1236,6 +1404,10 @@ CREATE POLICY "Users can delete their own cart items" ON "public"."cart_items" F
 
 
 
+CREATE POLICY "Users can delete their own notifications" ON "public"."notifications" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
 CREATE POLICY "Users can delete their own wishlist" ON "public"."wishlist_items" FOR DELETE USING (("auth"."uid"() = "user_id"));
 
 
@@ -1260,7 +1432,15 @@ CREATE POLICY "Users can update their own cart items" ON "public"."cart_items" F
 
 
 
+CREATE POLICY "Users can update their own notifications" ON "public"."notifications" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
 CREATE POLICY "Users can view their own cart items" ON "public"."cart_items" FOR SELECT USING (("auth"."uid"() = "user_id"));
+
+
+
+CREATE POLICY "Users can view their own notifications" ON "public"."notifications" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1293,6 +1473,9 @@ ALTER TABLE "public"."categories" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."delivery_methods" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."notifications" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."order_items" ENABLE ROW LEVEL SECURITY;
@@ -1372,9 +1555,21 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."handle_order_notifications"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_order_notifications"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_order_notifications"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."handle_wishlist_price_drop"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_wishlist_price_drop"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_wishlist_price_drop"() TO "service_role";
 
 
 
@@ -1429,6 +1624,12 @@ GRANT ALL ON SEQUENCE "public"."categories_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."delivery_methods" TO "anon";
 GRANT ALL ON TABLE "public"."delivery_methods" TO "authenticated";
 GRANT ALL ON TABLE "public"."delivery_methods" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."notifications" TO "anon";
+GRANT ALL ON TABLE "public"."notifications" TO "authenticated";
+GRANT ALL ON TABLE "public"."notifications" TO "service_role";
 
 
 
