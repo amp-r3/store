@@ -6,16 +6,17 @@ import style from './wishlist-toggle-button.module.scss';
 
 interface WishlistToggleButtonProps {
     productId: number;
+    price?: number;
 }
 
-export const WishlistToggleButton: FC<WishlistToggleButtonProps> = ({ productId }) => {
+export const WishlistToggleButton: FC<WishlistToggleButtonProps> = ({ productId, price }) => {
     const { wishlistItems } = useWishlistDetails();
     const isFavorite = wishlistItems.some(item => item?.id === productId);
     const { onWishlist } = useWishlistActions();
 
     const handleAddToWishlist = (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent link click
-        onWishlist(productId);
+        onWishlist(productId, price);
     };
 
     return (

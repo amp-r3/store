@@ -37,8 +37,8 @@ export const wishlistApi = baseApi.injectEndpoints({
       providesTags: ['Wishlist']
     }),
 
-    toggleWishlist: builder.mutation<null, { productId: number; isInWishlist: boolean }>({
-      queryFn: async ({ productId, isInWishlist }) => {
+    toggleWishlist: builder.mutation<null, { productId: number; isInWishlist: boolean; priceAtAdd?: number }>({
+      queryFn: async ({ productId, isInWishlist, priceAtAdd }) => {
         try {
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
@@ -58,7 +58,7 @@ export const wishlistApi = baseApi.injectEndpoints({
             const { error } = await supabase
               .from('wishlist_items')
               .upsert(
-                { user_id: user.id, product_id: productId },
+                { user_id: user.id, product_id: productId, price_at_add: priceAtAdd },
                 { onConflict: 'user_id, product_id' }
               );
             dbError = error;

@@ -63,7 +63,7 @@ export const ProductPage = () => {
     }
 
     const handleAddToWishlist = () => {
-        onWishlist(+(id || 0))
+        onWishlist(+(id || 0), product?.price)
     }
 
     useEffect(() => {
@@ -74,7 +74,8 @@ export const ProductPage = () => {
     const handleCart = (sizeId: number, type: 'inc' | 'dec') => {
         if (!product) return;
         if (type === 'inc') {
-            onIncrease(sizeId, product.id);
+            const stock = sizes?.find((size) => size.id === sizeId)?.stock;
+            onIncrease(sizeId, product.id, stock);
         } else {
             onDecrease(sizeId, product.id);
         }

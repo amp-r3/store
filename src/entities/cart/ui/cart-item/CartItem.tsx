@@ -13,7 +13,7 @@ import { selectIsMaxReached } from "@/entities/cart";
 
 interface CartItemProps {
     product: CartItemType;
-    onIncrease?: (sizeId: number, productId: number) => void;
+    onIncrease?: (sizeId: number, productId: number, stock?: number) => void;
     onDecrease?: (sizeId: number, productId: number) => void;
     onRemove?: (sizeId: number) => void;
     onClose?: () => void;
@@ -100,7 +100,7 @@ export const CartItem = memo<CartItemProps>(({
 
                         <button
                             className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
-                            onClick={() => onIncrease?.(sizeId, id)}
+                            onClick={() => onIncrease?.(sizeId, id, stock)}
                             aria-label="Increase quantity"
                             disabled={isMaxReached}
                             aria-disabled={isMaxReached}

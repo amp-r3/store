@@ -5,8 +5,12 @@ import { selectIsAuth } from "@/entities/session";
 import { useUpsertCartItemMutation, useDeleteCartItemMutation, useClearCartMutation, changeQuantity, removeFromCart, clearCart } from "@/entities/cart";
 import { notify } from "@/entities/notification";
 
+// Mirrors the aggregate threshold in ProductStockBadge ("There are a few
+// left" at <= 10), applied here to the single size being added to the cart.
+const LOW_STOCK_THRESHOLD = 10;
+
 interface UseCartActionsReturn {
-  onIncrease(sizeId: number, productId: number): void;
+  onIncrease(sizeId: number, productId: number, stock?: number): void;
   onDecrease(sizeId: number, productId: number): void;
   onRemove(sizeId: number): void;
   onClearCart(): void;
@@ -23,13 +27,18 @@ export const useCartActions = (): UseCartActionsReturn => {
 
   const isUpdating = isUpserting || isDeleting || isClearing;
 
-  const onIncrease = useCallback((sizeId: number, productId: number) => {
+  const onIncrease = useCallback((sizeId: number, productId: number, stock?: number) => {
     if (isAuth) {
       upsertItem({ sizeId, productId, action: 'inc' });
     } else {
       dispatch(changeQuantity({ sizeId, productId, type: 'inc' }));
     }
-    dispatch(notify({ type: 'success', text: 'Added to cart', key: 'cart' }));
+
+    if (stock !== undefined && stock <= LOW_STOCK_THRESHOLD) {
+      dispatch(notify({ type: 'warning', text: `Only ${stock} left in stock`, key: 'cart' }));
+    } else {
+      dispatch(notify({ type: 'success', text: 'Added to cart', key: 'cart' }));
+    }
   }, [isAuth, upsertItem, dispatch])
 
   const onDecrease = useCallback((sizeId: number, productId: number) => {

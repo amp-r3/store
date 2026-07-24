@@ -56,7 +56,7 @@ export const CategoryRow = memo(({ category, priority = false }: CategoryRowProp
                                     <ProductCard
                                         product={product}
                                         priority={priority && index < PRIORITY_CARD_COUNT}
-                                        actionSlot={<WishlistToggleButton productId={product.id} />}
+                                        actionSlot={<WishlistToggleButton productId={product.id} price={product.price} />}
                                     />
                                 </div>
                             );

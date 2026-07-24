@@ -5,7 +5,7 @@ import { useGetWishlistQuery, useToggleWishlistMutation, toogleFavorite, Wishlis
 import { notify } from "@/entities/notification";
 
 interface useWishlistActionsProps {
-  onWishlist(id: number): void;
+  onWishlist(id: number, price?: number): void;
   isUpdating: boolean;
 }
 
@@ -18,11 +18,11 @@ export const useWishlistActions = (): useWishlistActionsProps => {
 
   const [toggleWishlist, { isLoading: isToggling }] = useToggleWishlistMutation();
 
-  const onWishlist = useCallback((id: number) => {
+  const onWishlist = useCallback((id: number, price?: number) => {
     const isInWishlist = isAuth ? !!wishlistData?.[id] : !!guestFavoriteItems[id];
 
     if (isAuth) {
-      toggleWishlist({ productId: id, isInWishlist })
+      toggleWishlist({ productId: id, isInWishlist, priceAtAdd: isInWishlist ? undefined : price })
     } else {
       dispatch(toogleFavorite(id))
     }

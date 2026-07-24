@@ -42,7 +42,7 @@ export const DealsShowcase = memo(() => {
                                 <div key={product.id} className={style.dealsShowcase__item}>
                                     <ProductCard
                                         product={product}
-                                        actionSlot={<WishlistToggleButton productId={product.id} />}
+                                        actionSlot={<WishlistToggleButton productId={product.id} price={product.price} />}
                                     />
                                 </div>
                             ))

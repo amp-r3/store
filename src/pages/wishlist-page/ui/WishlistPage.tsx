@@ -38,7 +38,7 @@ export const WishListPage = () => {
                 key={item.id}
                 product={wishlistDetails[index]}
                 priority={index < 8}
-                actionSlot={<WishlistToggleButton productId={item.id} />}
+                actionSlot={<WishlistToggleButton productId={item.id} price={wishlistDetails[index].price} />}
               />
             ))
           }

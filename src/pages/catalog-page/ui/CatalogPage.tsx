@@ -65,7 +65,7 @@ export const CatalogPage = () => {
                 key={product.id}
                 product={product as Product}
                 priority={index < 8}
-                actionSlot={<WishlistToggleButton productId={product.id} />}
+                actionSlot={<WishlistToggleButton productId={product.id} price={(product as Product).price} />}
               />
           )
         })}
