@@ -1,43 +1,74 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
-export const useHideOnScroll = (forceVisible = false): boolean => {
-    const [isVisible, setIsVisible] = useState(true);
-    const lastScrollY = useRef(0);
+const TOP_THRESHOLD = 50;
+const HIDE_THRESHOLD = 24;
+const SHOW_THRESHOLD = 12;
+
+export const useHideOnScroll = <T extends HTMLElement>(
+    hiddenClass: string,
+    forceVisible = false,
+): ((node: T | null) => void) => {
+    const nodeRef = useRef<T | null>(null);
+    const visibleRef = useRef(true);
+    const lastYRef = useRef(0);
+    const frameRef = useRef<number | null>(null);
+
+    const applyVisible = useCallback((visible: boolean) => {
+        if (visibleRef.current === visible) return;
+        visibleRef.current = visible;
+        nodeRef.current?.classList.toggle(hiddenClass, !visible);
+    }, [hiddenClass]);
+
+    const refCallback = useCallback((node: T | null) => {
+        nodeRef.current = node;
+        if (node) {
+            lastYRef.current = window.scrollY;
+            node.classList.toggle(hiddenClass, !visibleRef.current);
+        }
+    }, [hiddenClass]);
+
+    useEffect(() => {
+        if (forceVisible) applyVisible(true);
+    }, [forceVisible, applyVisible]);
 
     useEffect(() => {
         const handleScroll = () => {
-            if (forceVisible) {
-                setIsVisible(true);
-                return;
-            }
+            if (frameRef.current !== null) return;
 
-            const currentScrollY = window.scrollY;
-            const lastY = lastScrollY.current;
-            const actionThreshold = 10;
+            frameRef.current = requestAnimationFrame(() => {
+                frameRef.current = null;
 
-            if (currentScrollY < 0) return;
+                if (forceVisible) return;
+                if (document.body.hasAttribute('data-scroll-locked')) return;
 
-            if (currentScrollY < 50) {
-                setIsVisible(true);
-                lastScrollY.current = currentScrollY;
-                return;
-            }
+                const currentY = window.scrollY;
+                if (currentY < 0) return;
 
-            if (Math.abs(currentScrollY - lastY) < actionThreshold) return;
+                if (currentY < TOP_THRESHOLD) {
+                    applyVisible(true);
+                    lastYRef.current = currentY;
+                    return;
+                }
 
-            if (currentScrollY > lastY) {
-                setIsVisible(false);
-            } else {
-                setIsVisible(true);
-            }
+                const delta = currentY - lastYRef.current;
 
-            lastScrollY.current = currentScrollY;
+                if (delta > HIDE_THRESHOLD) {
+                    applyVisible(false);
+                    lastYRef.current = currentY;
+                } else if (delta < -SHOW_THRESHOLD) {
+                    applyVisible(true);
+                    lastYRef.current = currentY;
+                }
+            });
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
 
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [forceVisible]);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+        };
+    }, [forceVisible, applyVisible]);
 
-    return isVisible;
+    return refCallback;
 };

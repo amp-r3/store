@@ -68,7 +68,8 @@
   &.icon-only {
     width: $touch-target-min;
     flex-shrink: 0;
-    transition: width $transition-smooth $ease-spring, box-shadow $transition-smooth $ease-spring, transform $transition-fast, border-color $transition-base $ease-in-out-smooth;
+    // Only rendered inside MobileBar; kept short and non-bouncy to stay off the scroll path.
+    transition: width $transition-base $ease-out-expo, box-shadow $transition-smooth $ease-spring, transform $transition-fast, border-color $transition-base $ease-in-out-smooth;
 
     .add-btn {
       padding: 0;

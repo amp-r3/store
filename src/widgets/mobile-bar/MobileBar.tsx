@@ -138,12 +138,12 @@ export const MobileBar = () => {
         navigate('/checkout');
     };
 
-    const hiddenClass = useHideOnScroll(activeLayer !== 'nav') ? '' : style['navbar--hidden'];
+    const barRef = useHideOnScroll<HTMLElement>(style['navbar--hidden'], activeLayer !== 'nav');
     const hasDiscount = !!displayProduct && displayProduct.discountPercentage > 0;
 
     return (
         <>
-            <nav className={`${style.navbar} ${hiddenClass}`}>
+            <nav ref={barRef} className={style.navbar}>
                 <div className={style.navbar__cluster} inert={activeLayer !== 'nav' || undefined}>
                     <div className={style.navbar__pill}>
                         <NavLink to="/" end aria-label="Home" className={navLinkClass} onClick={() => soft()}>

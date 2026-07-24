@@ -8,32 +8,34 @@
     width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
     inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
     margin-inline: auto;
-    
+
     display: grid;
-    
-    transition: opacity $transition-base $ease-in-out-smooth, transform $transition-base $ease-in-out-smooth;
-    
-    opacity: 1;
-    
+
+    will-change: transform;
+
+    transform: translate3d(0, 0, 0);
+    transition: transform $transition-base $ease-in-out-smooth;
+
+    // Hidden state moves the whole bar off-screen instead of fading opacity:
+    // opacity < 1 disables this element's own backdrop-filter, and a
+    // transform-only change stays on the compositor (no repaint per frame).
     &--hidden {
-        transform: translateY(calc(100% + #{$spacing-xl} + #{$spacing-md}));
-        opacity: 0;
+        transform: translate3d(0, calc(100% + #{$spacing-xl} + #{$spacing-md}), 0);
         pointer-events: none;
     }
-    
+
     @media (prefers-reduced-motion: reduce) {
-        transition: opacity $transition-fast ease;
+        transition: none;
     }
-    
+
     @media(max-width: 349px) {
         width: calc(100% - #{$spacing-md} * 2 - var(--removed-body-scroll-bar-size, 0px));
-        
+
     }
 }
 
 :global(body[data-scroll-locked]) .navbar {
-    transform: translateY(calc(100% + #{$spacing-xl} + #{$spacing-md}));
-    opacity: 0;
+    transform: translate3d(0, calc(100% + #{$spacing-xl} + #{$spacing-md}), 0);
     pointer-events: none;
 }
 
@@ -108,7 +110,8 @@
     overflow: hidden;
     width: $touch-target-min;
     opacity: 1;
-    transition: width $transition-smooth $ease-spring, opacity $transition-base ease, margin $transition-smooth $ease-spring;
+    // Short and non-bouncy so this width change stays off the scroll path.
+    transition: width $transition-base $ease-out-expo, opacity $transition-fast ease, margin $transition-base $ease-out-expo;
 
     &--hidden {
         width: 0;
