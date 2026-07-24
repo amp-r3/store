@@ -8,9 +8,11 @@ interface ProductsFetchReturn {
   isError: boolean;
 }
 
+const EMPTY_PRODUCTS: Product[] = [];
+
 export const useProductsByIds = (ids: number[], isOpen: boolean = true): ProductsFetchReturn => {
-  const { data: products = [], isLoading, isError, isFetching } = useGetProductArrayByIdQuery(
-    ids, 
+  const { data: products = EMPTY_PRODUCTS, isLoading, isError, isFetching } = useGetProductArrayByIdQuery(
+    ids,
     { skip: !isOpen || ids.length === 0 }
   );
 

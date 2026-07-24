@@ -17,6 +17,7 @@ import style from './main-layout.module.scss';
 import { Loader, TopBarLoader } from "@/shared/ui";
 import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
+import { useMediaQuery } from "@/shared/lib/hooks";
 import { CartDrawer } from "@/widgets/cart-drawer";
 import { ReviewModal } from "@/features/order-review";
 
@@ -27,6 +28,7 @@ export const MainLayout = () => {
     const isOpen = useAppSelector(selectIsCartOpen);
     const isLoading = navigation.state === 'loading';
     const isHomePage = location.pathname === '/';
+    const isMobileBarWidth = useMediaQuery('(max-width: 525px)');
 
     const handleClose = () => {
         dispatch(closeCart())
@@ -46,9 +48,11 @@ export const MainLayout = () => {
                         onClose={handleClose}
                     />
                     <ReviewModal />
-                    <div className={style.mobileBar}>
-                        <MobileBar />
-                    </div>
+                    {isMobileBarWidth && (
+                        <div className={style.mobileBar}>
+                            <MobileBar />
+                        </div>
+                    )}
                 </Suspense>
             </div>
             <Footer />
