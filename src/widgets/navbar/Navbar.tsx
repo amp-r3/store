@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { useRef } from 'react';
 // Icons
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline, IoNotificationsOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 import { FaArrowRightToBracket, FaUser } from "react-icons/fa6";
 // Custom Hooks
@@ -10,6 +10,7 @@ import { FaArrowRightToBracket, FaUser } from "react-icons/fa6";
 // Functions and Selectors
 import { openCart } from '@/entities/cart';
 import { selectIsAuth } from '@/entities/session';
+import { useGetUnreadNotificationsCountQuery } from '@/entities/notification';
 
 // Styles
 import style from './navbar.module.scss';
@@ -33,10 +34,12 @@ export const Navbar = ({ isOverlay = false }: NavbarProps) => {
   const isAuth = useAppSelector(selectIsAuth);
   const { totalQuantity: cartTotals } = useCartDetails()
   const { totalQuantity: wishlistTotals } = useWishlistDetails()
+  const { data: unreadCount } = useGetUnreadNotificationsCountQuery(undefined, { skip: !isAuth });
   useNavbarScroll(navRef);
 
   const isCartLoaded = (cartTotals ?? 0) >= 1
   const isWishlistLoaded = (wishlistTotals ?? 0) >= 1
+  const hasUnread = (unreadCount ?? 0) >= 1
 
   return (
     <nav ref={navRef} className={`${style.nav} ${isOverlay ? style['nav--overlay'] : ''}`}>
@@ -66,6 +69,15 @@ export const Navbar = ({ isOverlay = false }: NavbarProps) => {
           }
           <IoCartOutline />
         </button>
+
+        {isAuth && (
+          <Link to={'/user/notifications'} aria-label='open notifications' className={style.nav__btn}>
+            {
+              hasUnread && <span className={style.nav__btn__count}>{(unreadCount ?? 0) > 9 ? '9+' : unreadCount}</span>
+            }
+            <IoNotificationsOutline />
+          </Link>
+        )}
 
         {isAuth ? (
           <Link to={'/user'} aria-label='open profile' className={style.nav__btn}>

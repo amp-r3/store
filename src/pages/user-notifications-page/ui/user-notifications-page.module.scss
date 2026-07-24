@@ -1,0 +1,98 @@
+@use '@/app/styles/index' as *;
+
+.user-notifications-page__content-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-md;
+  border-bottom: 1px solid var(--border-color-subtle);
+  padding-bottom: $spacing-lg;
+
+  @media (max-width: 549px) {
+    flex-direction: column;
+  }
+}
+
+.user-notifications-page__heading {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.user-notifications-page__title {
+  font-family: $font-display;
+  font-size: $fs-xl;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: $letter-spacing-tight;
+}
+
+.user-notifications-page__subtitle {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: $lh-relaxed;
+}
+
+.user-notifications-page__mark-all {
+  flex-shrink: 0;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-lg;
+  border: 1px solid var(--border-color-subtle);
+  background: var(--glass-background);
+  color: var(--text-primary);
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: opacity $transition-base, border-color $transition-base;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    border-color: var(--border-color-light);
+  }
+}
+
+.user-notifications-page__content-body {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding-top: $spacing-lg;
+}
+
+.user-notifications-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $spacing-sm;
+  padding: $spacing-xxl $spacing-md;
+}
+
+.user-notifications-page__empty-icon {
+  font-size: $fs-icon-lg;
+  color: var(--text-muted);
+}
+
+.user-notifications-page__empty-title {
+  font-family: $font-display;
+  font-size: $fs-lg;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.user-notifications-page__empty-text {
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 32ch;
+}

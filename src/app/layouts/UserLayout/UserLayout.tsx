@@ -15,6 +15,7 @@ const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
     '/user': [HOME, { label: 'Profile' }],
     '/user/orders': [HOME, PROFILE, { label: 'Orders' }],
     '/user/reviews': [HOME, PROFILE, { label: 'My Reviews' }],
+    '/user/notifications': [HOME, PROFILE, { label: 'Notifications' }],
 };
 
 export const UserLayout = () => {

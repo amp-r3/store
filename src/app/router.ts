@@ -70,6 +70,13 @@ export const router = createBrowserRouter([
                       const module = await import("@/pages/user-orders-page")
                       return { Component: module.default }
                     }
+                  },
+                  {
+                    path: 'notifications',
+                    lazy: async () => {
+                      const module = await import("@/pages/user-notifications-page")
+                      return { Component: module.default }
+                    }
                   }
                 ]
               }
