@@ -109,6 +109,22 @@
   transition: color $transition-fast $ease-in-out-smooth;
 }
 
+.profile-sidebar__badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding: 0 $spacing-xxs;
+  border-radius: $radius-pill;
+  background: var(--primary-accent);
+  color: var(--text-inverse);
+  font-size: $fs-xs;
+  font-weight: $fw-bold;
+  line-height: 1;
+}
+
 .profile-sidebar__logout-button {
   display: flex;
   align-items: center;

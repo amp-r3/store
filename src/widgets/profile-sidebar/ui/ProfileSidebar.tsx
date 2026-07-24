@@ -1,10 +1,12 @@
 import { memo, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import { FaUser, FaBoxOpen, FaStar } from 'react-icons/fa6';
+import { IoNotificationsOutline } from 'react-icons/io5';
 import { CgLogOut } from 'react-icons/cg';
 
 import { useAppDispatch } from '@/shared/model';
 import { logout, SessionUser, useSignOutMutation } from '@/entities/session';
+import { useGetUnreadNotificationsCountQuery } from '@/entities/notification';
 import { Modal } from '@/shared/ui';
 
 import style from './profile-sidebar.module.scss';
@@ -18,6 +20,8 @@ export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
   const navigate = useNavigate();
   const [signOut] = useSignOutMutation();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { data: unreadCount } = useGetUnreadNotificationsCountQuery();
+  const hasUnread = (unreadCount ?? 0) >= 1;
 
   const handleLogout = async () => {
     setIsLogoutModalOpen(false);
@@ -66,15 +70,28 @@ export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
           <span>Orders History</span>
         </NavLink>
 
-        <NavLink 
-          to="/user/reviews" 
+        <NavLink
+          to="/user/reviews"
           className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
         >
           <FaStar className={style['profile-sidebar__icon']} />
           <span>My Reviews</span>
         </NavLink>
 
-        <button 
+        <NavLink
+          to="/user/notifications"
+          className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
+        >
+          <IoNotificationsOutline className={style['profile-sidebar__icon']} />
+          <span>Notifications</span>
+          {hasUnread && (
+            <span className={style['profile-sidebar__badge']}>
+              {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </NavLink>
+
+        <button
           className={style['profile-sidebar__logout-button']}
           onClick={() => setIsLogoutModalOpen(true)}
         >
