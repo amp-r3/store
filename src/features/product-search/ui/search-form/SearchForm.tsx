@@ -10,6 +10,7 @@ interface SearchFormProps {
     onSubmit?: () => void;
     onFocus?: () => void;
     onBlur?: () => void;
+    autoFocus?: boolean;
 }
 
 export const SearchForm: FC<SearchFormProps> = ({
@@ -18,7 +19,8 @@ export const SearchForm: FC<SearchFormProps> = ({
     handleClear,
     onSubmit,
     onFocus,
-    onBlur
+    onBlur,
+    autoFocus
 
 }) => {
     const inputRef = useRef<HTMLInputElement>(null)
@@ -53,6 +55,7 @@ export const SearchForm: FC<SearchFormProps> = ({
                     onChange={handleSearch}
                     onFocus={onFocus}
                     onBlur={onBlur}
+                    autoFocus={autoFocus}
                 />
                 <button
                     type="button"

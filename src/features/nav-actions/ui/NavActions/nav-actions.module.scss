@@ -1,0 +1,60 @@
+@use '@/app/styles/index' as *;
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    transition: $transition-layout $ease-out-expo;
+
+    &--mobile {
+        flex: 1;
+        justify-content: space-around;
+        gap: $spacing-xxs;
+    }
+}
+
+.nav-actions__btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: $touch-target-min;
+    height: $touch-target-min;
+    padding: 0;
+    border-radius: $radius-circle;
+    border: 1px solid var(--border-color);
+    background: var(--glass-background-subtle);
+    color: var(--text-secondary);
+    transition: $transition-base;
+    font-size: $fs-icon-md;
+
+    &:hover {
+        background: rgba(var(--primary-accent-rgb), 0.1);
+        color: var(--primary-accent);
+        border-color: var(--primary-accent);
+    }
+
+    &--mobile {
+        width: $touch-target-comfortable;
+        height: $touch-target-comfortable;
+        background: rgba(var(--background-body-rgb), 0.4);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-color: var(--border-color);
+    }
+}
+
+.nav-actions__btn__count {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-accent);
+    color: var(--text-inverse);
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    height: 1.125rem;
+    min-width: 1.125rem;
+    padding: 0 $spacing-xxs;
+    border-radius: $radius-pill;
+}
