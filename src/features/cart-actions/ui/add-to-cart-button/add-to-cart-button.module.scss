@@ -64,6 +64,20 @@
       animation: none !important;
     }
   }
+
+  &.icon-only {
+    width: $touch-target-min;
+    flex-shrink: 0;
+    transition: width $transition-smooth $ease-spring, box-shadow $transition-smooth $ease-spring, transform $transition-fast, border-color $transition-base $ease-in-out-smooth;
+
+    .add-btn {
+      padding: 0;
+    }
+
+    &.is-active {
+      width: 6rem;
+    }
+  }
 }
 
 .add-btn,

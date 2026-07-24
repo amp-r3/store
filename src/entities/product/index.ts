@@ -7,3 +7,5 @@ export * from './model/useProduct';
 export * from './model/useProductByIds';
 export * from './model/useProductCatalog';
 export * from './lib/formatters';
+export * from './lib/useSelectedSize';
+export * from './lib/getPurchaseState';

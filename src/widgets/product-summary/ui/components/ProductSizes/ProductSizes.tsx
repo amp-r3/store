@@ -7,6 +7,7 @@ export interface ProductSizesProps {
     sizes: ProductSize[];
     activeSizeId: number | null | undefined;
     onSizeSelect: (id: number) => void;
+    isHighlighted?: boolean;
     // isCompact удален за ненадобностью
 }
 
@@ -14,6 +15,7 @@ export const ProductSizes = ({
     sizes,
     activeSizeId,
     onSizeSelect,
+    isHighlighted = false,
 }: ProductSizesProps) => {
     const { light } = useHaptics();
 
@@ -36,8 +38,12 @@ export const ProductSizes = ({
         onSizeSelect(id);
     };
 
+    const rootClassName = isHighlighted
+        ? `${style['product-sizes']} ${style['product-sizes--highlighted']}`
+        : style['product-sizes'];
+
     return (
-        <div className={style['product-sizes']}>
+        <div className={rootClassName}>
             <span className={style['product-sizes__title']} aria-hidden="true">
                 Select Size
             </span>

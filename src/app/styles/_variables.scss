@@ -94,6 +94,12 @@ $container-width: 1100px !default;
 $container-width-fluid: min(1100px, 95vw) !default;
 $container-padding: 1rem !default;
 
+// Bottom tab bar (mobile-bar) floating dock, incl. the raised FAB
+$mobile-bar-fab-size: 56px !default;
+$mobile-bar-fab-raise: 14px !default;
+$mobile-bar-button-size: 44px !default;
+$mobile-bar-dock-height: calc(#{$spacing-md} + #{$spacing-xs} * 2 + #{$mobile-bar-button-size} + #{$mobile-bar-fab-raise}) !default;
+
 // --- Safe Area Insets ---
 $safe-area-top: env(safe-area-inset-top, 0px) !default;
 $safe-area-bottom: env(safe-area-inset-bottom, 0px) !default;

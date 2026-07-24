@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import style from './product-summary.module.scss';
 import { ProductSizes } from './components/ProductSizes/ProductSizes';
 import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton';
 import { ProductSize } from "@/entities/product";
 import { ProductInfo, ProductPurchaseStatusBadge, ProductPurchaseBox } from './components';
+import { REQUEST_SIZE_EVENT } from '@/shared/lib';
 
 interface ProductSummaryProps {
     productId: number;
@@ -43,11 +45,22 @@ export const ProductSummary = ({
     hasSizes,
     isSizesLoading = false,
 }: ProductSummaryProps) => {
+    const [isSizesHighlighted, setIsSizesHighlighted] = useState(false);
+
+    useEffect(() => {
+        const handleRequestSize = () => {
+            setIsSizesHighlighted(true);
+            window.setTimeout(() => setIsSizesHighlighted(false), 500);
+        };
+
+        window.addEventListener(REQUEST_SIZE_EVENT, handleRequestSize);
+        return () => window.removeEventListener(REQUEST_SIZE_EVENT, handleRequestSize);
+    }, []);
 
     return (
         <div className={style.summary}>
             <div className={style.top}>
-                <ProductInfo 
+                <ProductInfo
                     category={category}
                     brand={brand}
                     title={title}
@@ -56,14 +69,14 @@ export const ProductSummary = ({
                 />
 
                 {lastPurchaseDate && (
-                    <ProductPurchaseStatusBadge 
-                        productId={productId} 
-                        purchaseDate={lastPurchaseDate} 
+                    <ProductPurchaseStatusBadge
+                        productId={productId}
+                        purchaseDate={lastPurchaseDate}
                     />
                 )}
 
                 {(isSizesLoading || (sizes && sizes.length > 0)) && (
-                    <div className={style.sizesContainer}>
+                    <div className={style.sizesContainer} id="product-sizes">
                         {isSizesLoading ? (
                             <ProductSizesSkeleton />
                         ) : (
@@ -72,6 +85,7 @@ export const ProductSummary = ({
                                     sizes={sizes}
                                     activeSizeId={selectedSizeId}
                                     onSizeSelect={setSelectedSizeId}
+                                    isHighlighted={isSizesHighlighted}
                                 />
                             )
                         )}
@@ -79,8 +93,8 @@ export const ProductSummary = ({
                 )}
             </div>
 
-            <div className={style.bottom}>
-                <ProductPurchaseBox 
+            <div className={style.bottom} id="product-purchase-box">
+                <ProductPurchaseBox
                     productId={productId}
                     quantity={quantity}
                     hasDiscount={hasDiscount}

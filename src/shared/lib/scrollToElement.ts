@@ -1,4 +1,4 @@
-export function scrollToElement(target: HTMLElement | string | null) {
+export function scrollToElement(target: HTMLElement | string | null, block: ScrollLogicalPosition = 'start') {
     const element = typeof target === 'string' ? document.getElementById(target) : target;
     if (!element) return;
 
@@ -6,6 +6,6 @@ export function scrollToElement(target: HTMLElement | string | null) {
 
     element.scrollIntoView({
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
-        block: 'start',
+        block,
     });
 }

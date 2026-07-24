@@ -26,6 +26,10 @@
         margin: $spacing-md auto;
         width: calc(100% - 2 * #{$spacing-md});
     }
+
+    @media (max-width: 525px) {
+        margin-bottom: calc(#{$mobile-bar-dock-height} + #{$spacing-md} + #{$safe-area-bottom});
+    }
 }
 
 .footer__container {

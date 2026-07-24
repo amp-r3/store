@@ -1,7 +1,7 @@
 import { ProductHeader, ProductSpecs, ProductImageModal } from "./components";
 import { ProductSummary } from "@/widgets/product-summary";
 // React
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 // Router
 import { useParams, Navigate, useSearchParams } from 'react-router';
@@ -15,7 +15,7 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 // Custom Hooks
 // Styles
 import style from './productPage.module.scss';
-import { useGetSizesQuery, useCheckPurchaseStatusQuery } from '@/entities/product';
+import { useGetSizesQuery, useCheckPurchaseStatusQuery, useSelectedSize } from '@/entities/product';
 import { ProductReviews } from '@/widgets/product-reviews';
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
 import { useCartActions } from "@/features/cart-actions";
@@ -32,11 +32,11 @@ export const ProductPage = () => {
     const { onIncrease, onDecrease } = useCartActions()
     const { onWishlist } = useWishlistActions()
     const { wishlistItems } = useWishlistDetails()
-    const [selectedSizeId, setSelectedSizeId] = useState<number | undefined>(undefined);
     const isFavorite = wishlistItems.some(item => item?.id === +(id || 0))
     const openedImage = searchParams[0].get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const { data: sizes, isLoading: isSizesLoading } = useGetSizesQuery(+(id || 0))
+    const { selectedSizeId, setSelectedSizeId } = useSelectedSize(sizes);
     const { cartItems } = useCartDetails()
     const hasSizes = !!(sizes && sizes.length > 0);
     const isAuth = useAppSelector(selectIsAuth);

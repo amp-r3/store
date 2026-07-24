@@ -39,14 +39,12 @@
 
 .purchase-box__discount-badge {
     padding: $spacing-xxs $spacing-sm;
-    background: rgba(var(--secondary-accent-rgb), 0.08); 
+    background: rgba(var(--secondary-accent-rgb), 0.08);
     color: var(--secondary-accent);
-    border-radius: $radius-sm; 
+    border-radius: $radius-sm;
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     margin-left: auto;
-
-    @media (max-width: 480px) { display: none; }
 }
 
 .purchase-box__stock {

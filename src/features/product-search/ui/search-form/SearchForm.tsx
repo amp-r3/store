@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useRef } from 'react';
+import { ChangeEvent, FC, useEffect, useRef } from 'react';
 import { useHaptics } from '@/shared/lib/hooks';
 import { IoClose } from "react-icons/io5";
 import styles from './search-form.module.scss';
@@ -30,6 +30,12 @@ export const SearchForm: FC<SearchFormProps> = ({
             inputRef.current.blur();
         }
     }
+
+    useEffect(() => {
+        if (autoFocus) {
+            inputRef.current?.focus();
+        }
+    }, [autoFocus]);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

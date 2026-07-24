@@ -43,25 +43,4 @@
     padding-top: $spacing-md;
     border-top: 1px solid var(--border-color-subtle);
     margin-top: auto;
-
-    @media (max-width: 768px) {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: $z-index-fixed;
-        background: var(--glass-background-strong);
-        backdrop-filter: $backdrop-blur;
-        border-top: 1px solid var(--border-color-light);
-        padding: $spacing-sm;
-        padding-bottom: calc($spacing-sm + $safe-area-bottom);
-        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
-        gap: $spacing-xs;
-        animation: slide-up $transition-layout $ease-out-expo;
-    }
-}
-
-@keyframes slide-up {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
 }

@@ -2,67 +2,258 @@
 
 .navbar {
     position: fixed;
-    bottom: $spacing-md;
+    bottom: calc(#{$spacing-md} + #{$safe-area-bottom});
     z-index: calc($z-index-fixed + 1);
 
     width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
     inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
     margin-inline: auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: $spacing-xs;
-
-    background: var(--glass-background-strong);
-    backdrop-filter: $backdrop-blur;
-    border: 1px solid var(--glass-border);
-    border-radius: $radius-pill;
-    box-shadow: var(--shadow-default), var(--shadow-card);
-
-    will-change: transform, opacity;
-    transition: transform 0.4s $ease-in-out-smooth, opacity 0.3s ease;
-
+    
+    display: grid;
+    
+    transition: opacity $transition-base $ease-in-out-smooth, transform $transition-base $ease-in-out-smooth;
+    
     opacity: 1;
-
+    
     &--hidden {
         transform: translateY(calc(100% + #{$spacing-xl} + #{$spacing-md}));
         opacity: 0;
         pointer-events: none;
     }
+    
+    @media (prefers-reduced-motion: reduce) {
+        transition: opacity $transition-fast ease;
+    }
+    
+    @media(max-width: 349px) {
+        width: calc(100% - #{$spacing-md} * 2 - var(--removed-body-scroll-bar-size, 0px));
+        
+    }
+}
 
-    &--expanded {
-        justify-content: flex-start;
-        gap: $spacing-xs;
+:global(body[data-scroll-locked]) .navbar {
+    transform: translateY(calc(100% + #{$spacing-xl} + #{$spacing-md}));
+    opacity: 0;
+    pointer-events: none;
+}
+
+// Kept deliberately short: any opacity < 1 disables the element's own
+// backdrop-filter, so the glass blur is absent for the whole cross-fade and
+// snaps back when opacity hits 1. A shorter fade keeps that window brief.
+.navbar__cluster,
+.navbar__search,
+.navbar__purchase {
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    transition: opacity $transition-micro $ease-in-out-smooth, transform $transition-micro $ease-in-out-smooth;
+
+    &[inert] {
+        opacity: 0;
+        pointer-events: none;
     }
 
-    &__trigger,
-    &__back {
-        flex-shrink: 0;
-        display: grid;
-        place-items: center;
-        width: $touch-target-comfortable;
-        height: $touch-target-comfortable;
-        border-radius: $radius-circle;
-        border: 1px solid var(--border-color);
-        background: rgba(var(--background-body-rgb), 0.4);
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        color: var(--text-secondary);
-        font-size: $fs-icon-md;
+    @media (prefers-reduced-motion: reduce) {
+        transition: opacity $transition-micro ease;
 
-        @media (prefers-reduced-motion: no-preference) {
-            transition: background-color $transition-fast, color $transition-fast;
+        &[inert] {
+            transform: none;
         }
+    }
+}
 
-        &:active {
-            background: rgba(var(--text-muted-rgb), 0.3);
-        }
+.navbar__cluster {
+    justify-content: space-between;
+    gap: $spacing-sm;
+
+    &[inert] {
+        transform: scale(0.94);
+    }
+}
+
+.navbar__search {
+    gap: $spacing-xs;
+    width: 100%;
+    padding: $spacing-xs;
+
+    background: var(--glass-background);
+    backdrop-filter: $backdrop-blur-sm;
+    border: 1px solid var(--glass-border);
+    border-radius: $radius-pill;
+    box-shadow: var(--shadow-default), var(--shadow-card);
+
+    &[inert] {
+        transform: scale(1.04);
+    }
+}
+
+.navbar__purchase {
+    gap: $spacing-xs;
+    width: 100%;
+    padding: $spacing-xs;
+
+    background: var(--glass-background);
+    backdrop-filter: $backdrop-blur-sm;
+    border: 1px solid var(--glass-border);
+    border-radius: $radius-pill;
+    box-shadow: var(--shadow-default), var(--shadow-card);
+
+    &[inert] {
+        transform: scale(1.04);
+    }
+}
+
+.navbar__buy-wrapper {
+    flex-shrink: 0;
+    overflow: hidden;
+    width: $touch-target-min;
+    opacity: 1;
+    transition: width $transition-smooth $ease-spring, opacity $transition-base ease, margin $transition-smooth $ease-spring;
+
+    &--hidden {
+        width: 0;
+        opacity: 0;
+        margin-inline-start: -$spacing-xs;
+        pointer-events: none;
     }
 
-    &__backdrop {
-        position: fixed;
-        inset: 0;
-        z-index: $z-index-fixed;
-        background-color: rgba(0, 0, 0, 0.5);
+    @media (prefers-reduced-motion: reduce) {
+        transition: opacity $transition-fast ease;
     }
+}
+
+.navbar__price {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-xs;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.navbar__price-current {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.navbar__price-original {
+    font-size: $fs-sm;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(var(--text-muted-rgb), 0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.navbar__pill {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xxs;
+    padding: $spacing-sm;
+
+    background: var(--glass-background);
+    backdrop-filter: $backdrop-blur-sm;
+    border: 1px solid var(--glass-border);
+    border-radius: $radius-pill;
+    box-shadow: var(--shadow-default), var(--shadow-card);
+    @media (max-width: 460px) {
+        padding: $spacing-xs;
+    }
+}
+
+.navbar__tab {
+    position: relative;
+    flex: 0 0 auto;
+    width: $mobile-bar-button-size;
+    height: $mobile-bar-button-size;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-pill;
+    color: var(--text-secondary);
+    font-size: $fs-icon-md;
+
+    @media (prefers-reduced-motion: no-preference) {
+        transition: color $transition-fast, background-color $transition-fast;
+    }
+
+    &:active {
+        background: rgba(var(--text-muted-rgb), 0.15);
+    }
+
+    &--active {
+        color: var(--primary-accent);
+    }
+}
+
+.navbar__fab {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: $mobile-bar-fab-size;
+    height: $mobile-bar-fab-size;
+    margin-top: -$mobile-bar-fab-raise;
+    border-radius: $radius-circle;
+    border: 1px solid var(--glass-border);
+    background: var(--primary-accent);
+    color: var(--text-inverse);
+    font-size: $fs-icon-lg;
+    box-shadow: var(--shadow-accent), var(--shadow-card);
+    transition: transform $transition-fast;
+
+    &:active {
+        transform: scale($button-pressed-scale);
+    }
+}
+
+.navbar__back {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: $mobile-bar-button-size;
+    height: $mobile-bar-button-size;
+    border-radius: $radius-circle;
+    border: 1px solid var(--border-color);
+    background: rgba(var(--background-body-rgb), 0.4);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: var(--text-secondary);
+    font-size: $fs-icon-md;
+
+    @media (prefers-reduced-motion: no-preference) {
+        transition: background-color $transition-fast, color $transition-fast;
+    }
+
+    &:active {
+        background: rgba(var(--text-muted-rgb), 0.3);
+    }
+}
+
+.navbar__badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-accent);
+    color: var(--text-inverse);
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    height: 1.125rem;
+    min-width: 1.125rem;
+    padding: 0 $spacing-xxs;
+    border-radius: $radius-pill;
+}
+
+.navbar__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: $z-index-fixed;
+    background-color: rgba(0, 0, 0, 0.5);
 }

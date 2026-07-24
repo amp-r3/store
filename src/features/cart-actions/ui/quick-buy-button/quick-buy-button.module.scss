@@ -26,6 +26,13 @@
     height: $touch-target-min;
   }
 
+  &--icon-only {
+    padding: 0;
+    width: $touch-target-min;
+    height: $touch-target-min;
+    flex-shrink: 0;
+  }
+
   .icon {
     font-size: $fs-icon-md;
     color: var(--secondary-accent);

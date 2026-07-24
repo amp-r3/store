@@ -11,11 +11,7 @@ import { useHaptics } from '@/shared/lib/hooks';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
 import style from './nav-actions.module.scss';
 
-interface NavActionsProps {
-    variant?: 'navbar' | 'mobile';
-}
-
-export const NavActions = ({ variant = 'navbar' }: NavActionsProps) => {
+export const NavActions = () => {
     const { soft } = useHaptics();
     const dispatch = useAppDispatch();
     const isAuth = useAppSelector(selectIsAuth);
@@ -27,10 +23,10 @@ export const NavActions = ({ variant = 'navbar' }: NavActionsProps) => {
     const isWishlistLoaded = (wishlistTotals ?? 0) >= 1;
     const hasUnread = (unreadCount ?? 0) >= 1;
 
-    const btnClass = `${style['nav-actions__btn']} ${variant === 'mobile' ? style['nav-actions__btn--mobile'] : ''}`;
+    const btnClass = style['nav-actions__btn'];
 
     return (
-        <div className={`${style['nav-actions']} ${variant === 'mobile' ? style['nav-actions--mobile'] : ''}`}>
+        <div className={style['nav-actions']}>
             <Link to={'/wishlist'} aria-label="open wishlist" className={btnClass}>
                 {isWishlistLoaded && <span className={style['nav-actions__btn__count']}>{wishlistTotals}</span>}
                 <FaRegHeart />

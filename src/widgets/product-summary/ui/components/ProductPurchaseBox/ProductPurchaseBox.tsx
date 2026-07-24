@@ -4,9 +4,8 @@ import { CartProduct } from '@/entities/cart';
 import { addToCheckout, clearCheckout } from '@/features/checkout-process';
 import { useNavigate } from 'react-router';
 import { formatPrice } from "@/shared/lib";
-import { ProductSize } from "@/entities/product";
-import { useAppDispatch, useAppSelector } from "@/shared/model";
-import { selectIsMaxReached } from "@/entities/cart";
+import { ProductSize, getPurchaseState } from "@/entities/product";
+import { useAppDispatch } from "@/shared/model";
 import { AddToCartButton, QuickBuyButton } from "@/features/cart-actions";
 
 interface ProductPurchaseBoxProps {
@@ -37,15 +36,15 @@ export const ProductPurchaseBox = ({
     const [isWarning, setIsWarning] = useState(false);
     const [isShaking, setIsShaking] = useState(false);
 
-    const isSizeSelected = !hasSizes || (selectedSizeId !== undefined && selectedSizeId !== null);
-    const selectedSize = hasSizes && sizes ? sizes.find(s => s.id === selectedSizeId) : null;
+    const {
+        isSizeSelected,
+        currentStock,
+        currentInStock,
+        isLowStock,
+        isOutOfStock,
+        isMaxReached,
+    } = getPurchaseState({ quantity, sizes, selectedSizeId, hasSizes });
 
-    const currentStock = hasSizes && sizes
-        ? (selectedSize ? selectedSize.stock : (sizes.some(s => s.stock > 0) ? 5 : 0))
-        : 0;
-    const currentInStock = currentStock > 0;
-
-    const isMaxReached = useAppSelector(() => selectIsMaxReached(quantity ?? 0, currentStock ?? 0));
     const cartProduct: CartProduct[] = [{ sizeId: selectedSizeId as number, productId: productId, quantity: 1 }];
 
     const triggerWarning = () => {
@@ -77,9 +76,6 @@ export const ProductPurchaseBox = ({
             setIsWarning(false);
         }
     }, [isSizeSelected]);
-
-    const isLowStock = currentStock > 0 && currentStock < 5;
-    const isOutOfStock = currentStock === 0;
 
     let stockClass = style['purchase-box__stock'];
     if (!hasSizes || selectedSizeId) {
