@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { CheckoutFormValues } from '../../model/checkoutMasterSchema'
 import { useCheckoutContext } from '../../model/CheckoutContext';
 import { PAYMENT_CONFIG } from '@/entities/order';
-import { InfoBanner } from '@/shared/ui';
+import { InfoBanner, Alert } from '@/shared/ui';
 
 export const CheckoutPayments = () => {
   const { formState: { errors } } = useFormContext<CheckoutFormValues>()
@@ -15,13 +15,11 @@ export const CheckoutPayments = () => {
 
   return (
     <section className={style['payment']}>
-      <div className={style['payment__wrapper']}>
+      <div className={style['payment__group-block']}>
         {errors.paymentMethodId && (
-          <div className={style['payment__message']} role="alert">
-            {errors.paymentMethodId.message}
-          </div>
+          <Alert variant="error">{errors.paymentMethodId.message}</Alert>
         )}
-        <h2 className={style['payment__title']}>Payment method</h2>
+        <h3 className={style['payment__title']}>Payment method</h3>
 
         <div className={style['payment__methods-grid']} role="radiogroup" aria-label="Payment method">
           {
@@ -46,9 +44,12 @@ export const CheckoutPayments = () => {
       </div>
 
       {banner && (
-        <div className={style['payment__wrapper']}>
-          <InfoBanner {...banner} />
-        </div>
+        <>
+          <div className={style['payment__divider']} role="presentation" />
+          <div className={style['payment__group-block']}>
+            <InfoBanner {...banner} />
+          </div>
+        </>
       )}
     </section>
   )

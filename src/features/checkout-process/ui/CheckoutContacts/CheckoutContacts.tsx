@@ -12,14 +12,11 @@ export const CheckoutContacts = () => {
 
   return (
     <section className={style['contacts']}>
-      <div className={style['contacts__header']}>
-        <h2 className={style['contacts__title']}>Recipient's contacts</h2>
-        {showPreviousAddressChip && hasPreviousAddress && (
-          <button type="button" className={style['contacts__prefill']} onClick={applyPreviousAddress}>
-            Use my previous address
-          </button>
-        )}
-      </div>
+      {showPreviousAddressChip && hasPreviousAddress && (
+        <button type="button" className={style['contacts__prefill']} onClick={applyPreviousAddress}>
+          Use my previous address
+        </button>
+      )}
       <div className={style['contacts__row']}>
         <FormField
           label="First name"

@@ -1,0 +1,74 @@
+@use '@/app/styles/index' as *;
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-input;
+  border: 1px solid transparent;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  line-height: $lh-normal;
+  animation: slideDown $transition-fast $ease-out-expo;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  &--error {
+    border-color: var(--status-danger-border);
+    background-color: var(--status-danger-bg);
+    color: var(--status-danger-text);
+  }
+
+  &--warning {
+    border-color: var(--status-warning-border);
+    background-color: var(--status-warning-bg);
+    color: var(--status-warning-text);
+  }
+
+  &--info {
+    border-color: var(--status-info-border);
+    background-color: var(--status-info-bg);
+    color: var(--status-info-text);
+  }
+
+  &--success {
+    border-color: rgba(var(--success-color-rgb), 0.12);
+    background-color: var(--success-background);
+    color: var(--success-color-dark);
+  }
+}
+
+.alert__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  border-radius: $radius-circle;
+  border: 1.5px solid currentColor;
+  font-size: 10px;
+  font-weight: $fw-bold;
+  line-height: 1;
+}
+
+.alert__text {
+  flex: 1;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

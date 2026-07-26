@@ -2,7 +2,7 @@
 
 .summary {
   position: sticky;
-  top: calc($header-height + $spacing-md);
+  top: calc($topbar-height + $spacing-md);
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
@@ -88,26 +88,21 @@
   }
 
   // ─── Collapsible Content ───────────────────────────────────────────────────
+  // Desktop: always expanded, plain flex column.
+  // Mobile: grid-rows 0fr → 1fr so the accordion animates to its real content
+  // height instead of a big fixed max-height (no pause on short lists).
 
   &__collapsible {
     display: flex;
     flex-direction: column;
-    gap: $spacing-md;
 
     @media (max-width: 860px) {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition:
-        max-height $transition-layout $ease-in-out-smooth,
-        opacity $transition-layout $ease-in-out-smooth,
-        padding $transition-layout $ease-in-out-smooth;
-      padding-inline: $spacing-sm;
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows $transition-layout $ease-in-out-smooth;
 
       &--expanded {
-        max-height: 2000px;
-        opacity: 1;
-        padding-block: $spacing-sm;
+        grid-template-rows: 1fr;
         background-color: var(--background-component);
         border-inline: 1px solid var(--border-color-light);
         border-bottom: 1px solid var(--border-color-light);
@@ -118,7 +113,26 @@
     }
   }
 
+  &__collapsible_inner {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    min-height: 0;
+
+    @media (max-width: 860px) {
+      overflow: hidden;
+      padding-inline: $spacing-sm;
+
+      .summary__collapsible--expanded & {
+        padding-block: $spacing-sm;
+      }
+    }
+  }
+
   &__title {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-xs;
     margin: 0;
     font-family: $font-display;
     font-size: $fs-base;
@@ -131,9 +145,37 @@
     }
   }
 
+  &__count {
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-normal;
+    color: var(--text-muted);
+  }
+
   &__divider {
     height: 1px;
     background-color: var(--border-color-subtle);
+  }
+
+  &__trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-secondary);
+
+    @media (max-width: 860px) {
+      justify-content: flex-start;
+    }
+  }
+
+  &__trust-icon {
+    font-size: $fs-icon-sm;
+    color: var(--primary-accent);
   }
 
   &__policy {
@@ -160,48 +202,10 @@
     }
   }
 
-  &__error {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    padding: $spacing-sm $spacing-md;
-    border-radius: $radius-lg;
-    border: 1px solid var(--error-color);
-    background-color: var(--background-component);
-    box-shadow: var(--shadow-sm);
-    animation: summary-error-slide-down $transition-base $ease-out-expo both;
-
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
+  @media (prefers-reduced-motion: reduce) {
+    &__collapsible,
+    &__mobile_toggle {
+      transition: none;
     }
-
-    @media (max-width: 860px) {
-      margin: $spacing-md $spacing-lg;
-    }
-  }
-
-  &__error-icon {
-    flex-shrink: 0;
-    font-size: $fs-xl;
-    color: var(--error-color);
-  }
-
-  &__error-text {
-    font-family: $font-primary;
-    font-size: $fs-sm;
-    font-weight: $fw-normal;
-    color: var(--error-color);
-    line-height: $lh-normal;
-  }
-}
-
-@keyframes summary-error-slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }

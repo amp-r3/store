@@ -6,16 +6,22 @@ import {
   CheckoutPayments,
   CheckoutSummary,
   CheckoutShipping,
-  CheckoutStepBar,
+  CheckoutSection,
+  CheckoutStepActions,
   CheckoutProvider,
   useCheckoutContext,
   CheckoutFormValues,
+  STEPS_ORDER,
 } from "@/features/checkout-process"
 import { TopBar } from "@/widgets/top-bar"
+import { useMediaQuery } from "@/shared/lib/hooks"
+
+const MOBILE_QUERY = '(max-width: 860px)';
 
 const CheckoutPageContent = () => {
-  const { step, submitOrder } = useCheckoutContext();
+  const { stepIndex, submitOrder } = useCheckoutContext();
   const { handleSubmit } = useFormContext<CheckoutFormValues>();
+  const isMobile = useMediaQuery(MOBILE_QUERY);
 
   return (
     <div className={styles.checkout}>
@@ -26,19 +32,28 @@ const CheckoutPageContent = () => {
       >
         <header className={styles.checkout__header}>
           <h1 className={styles.checkout__title}>Checkout</h1>
+          <p className={styles.checkout__step_count}>
+            Step {stepIndex + 1} of {STEPS_ORDER.length}
+          </p>
         </header>
 
-        <form onSubmit={handleSubmit(submitOrder)} id='checkout-form' className={styles.checkout__body}>
-          <section className={styles.checkout__form}>
-            <CheckoutStepBar />
-
-            {step === 'contacts' && <CheckoutContacts />}
-            {step === 'delivery' && <CheckoutShipping />}
-            {step === 'payment' && <CheckoutPayments />}
-          </section>
+        <div className={styles.checkout__body}>
+          <form onSubmit={handleSubmit(submitOrder)} id='checkout-form' className={styles.checkout__steps}>
+            <CheckoutSection step="contacts">
+              <CheckoutContacts />
+            </CheckoutSection>
+            <CheckoutSection step="delivery">
+              <CheckoutShipping />
+            </CheckoutSection>
+            <CheckoutSection step="payment">
+              <CheckoutPayments />
+            </CheckoutSection>
+          </form>
 
           <CheckoutSummary />
-        </form>
+        </div>
+
+        {isMobile && <CheckoutStepActions variant="bar" />}
       </PageLayout>
     </div>
   )

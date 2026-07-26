@@ -34,6 +34,7 @@
   min-height: 100vh;
   min-height: 100svh;
   --checkout-footer-height: 100px;
+  --checkout-footer-height-compact: 60px;
 
   &__container {
     display: flex;
@@ -54,9 +55,10 @@
 
   &__header {
     display: flex;
-    align-items: start;
-    flex-direction: column;
-    gap: $spacing-xxs;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $spacing-md;
   }
 
   &__title {
@@ -67,6 +69,16 @@
     color: var(--text-primary);
     letter-spacing: $letter-spacing-tight;
     line-height: $lh-tight;
+  }
+
+  &__step_count {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
   }
 
   // ── Body ────────────────────────────────────
@@ -85,14 +97,18 @@
         order: -1;
       }
     }
+
+    @media (max-width: 420px) {
+      padding-bottom: calc(var(--checkout-footer-height-compact) + #{$spacing-sm});
+    }
   }
 
-  // ── Form column ─────────────────────────────
+  // ── Steps column ─────────────────────────────
 
-  &__form {
+  &__steps {
     display: flex;
     flex-direction: column;
-    gap: $spacing-lg;
+    gap: $spacing-sm;
     animation: fade-up $transition-layout $ease-out-expo 80ms both;
 
     @media (max-width: 860px) {

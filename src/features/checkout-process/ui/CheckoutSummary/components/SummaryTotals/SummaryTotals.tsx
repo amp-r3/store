@@ -67,6 +67,10 @@ export const SummaryTotals = () => {
           )}
         </>
       )}
+
+      <div className={style.divider} role="presentation" />
+
+      <SummaryTotalRow isFinal label="Total" value={formatPrice(orderTotals.finalTotalPrice)} />
     </div>
   );
 };

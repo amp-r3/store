@@ -6,6 +6,12 @@
   gap: $spacing-xs;
 }
 
+.divider {
+  height: 1px;
+  margin-top: $spacing-xxs;
+  background-color: var(--border-color-subtle);
+}
+
 .shipping-hint {
   margin: 0;
   font-family: $font-primary;

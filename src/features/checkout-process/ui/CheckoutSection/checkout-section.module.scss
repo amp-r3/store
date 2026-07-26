@@ -1,0 +1,202 @@
+@use '@/app/styles/index' as *;
+@use '@/app/styles/surfaces' as surface;
+
+.section {
+  @include surface.panel;
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: $spacing-md;
+}
+
+// ─── Rail: marker + connecting line ─────────────────────────────────────────
+
+.section__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section__marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-circle;
+  border: 1.5px solid var(--border-color);
+  background-color: var(--background-body);
+  color: var(--text-muted);
+  font-family: $font-primary;
+  font-size: $fs-xs;
+  font-weight: $fw-black;
+  letter-spacing: $letter-spacing-wider;
+
+  transition:
+    background-color $transition-fast $ease-in-out-smooth,
+    border-color $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth;
+
+  svg {
+    width: $icon-size-sm;
+    height: $icon-size-sm;
+  }
+
+  [data-state='active'] & {
+    background-color: var(--primary-accent);
+    border-color: var(--primary-accent);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-accent-sm);
+  }
+
+  [data-state='completed'] & {
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+    background-color: rgba(var(--primary-accent-rgb), 0.08);
+  }
+}
+
+.section__line {
+  flex: 1;
+  width: 2px;
+  min-height: $spacing-lg;
+  margin-block: $spacing-xs;
+  background-color: var(--border-color-light);
+  transition: background-color $transition-fast $ease-in-out-smooth;
+
+  [data-state='completed'] & {
+    background-color: var(--primary-accent);
+  }
+}
+
+// ─── Main column: header + collapsible body ─────────────────────────────────
+
+.section__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.section__titleWrap {
+  margin: 0;
+}
+
+.section__header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  width: 100%;
+  padding: 0;
+  min-height: 32px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+
+  [data-state='active'] & {
+    cursor: default;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    .section__label {
+      color: var(--primary-accent);
+    }
+  }
+}
+
+.section__headingText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.section__label {
+  font-family: $font-display;
+  font-size: $fs-base;
+  font-weight: $fw-bold;
+  color: var(--text-primary);
+  letter-spacing: $letter-spacing-tight;
+  transition: color $transition-fast $ease-in-out-smooth;
+
+  [data-state='locked'] & {
+    color: var(--text-muted);
+  }
+}
+
+.section__recap {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section__edit {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: $spacing-xxs $spacing-sm;
+  border-radius: $radius-pill;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--primary-accent);
+}
+
+.section__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows $transition-layout $ease-out-expo;
+
+  &--expanded {
+    grid-template-rows: 1fr;
+  }
+}
+
+.section__inner {
+  // Padding on every side keeps children's own box-shadows (the CTA button's
+  // accent glow, focused-input glow, etc.) from getting hard-clipped by
+  // `overflow: hidden` below, which would show as a straight-edged "ghost"
+  // instead of a soft fade.
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-lg $spacing-xxs;
+  opacity: 0;
+  transition: opacity $transition-base $ease-in-out-smooth;
+
+  .section__body--expanded & {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    column-gap: $spacing-sm;
+  }
+
+  .section__marker {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section__marker,
+  .section__line,
+  .section__label,
+  .section__body,
+  .section__inner {
+    transition: none;
+  }
+}

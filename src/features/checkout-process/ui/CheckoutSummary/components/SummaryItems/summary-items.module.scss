@@ -1,5 +1,9 @@
 @use '@/app/styles/index' as *;
 
+.wrapper {
+  position: relative;
+}
+
 .items {
   display: flex;
   flex-direction: column;
@@ -28,5 +32,19 @@
   &::-webkit-scrollbar-thumb {
     background-color: var(--border-color);
     border-radius: $radius-pill;
+  }
+}
+
+.fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: $spacing-xxs;
+  height: 32px;
+  background: linear-gradient(to bottom, transparent, var(--background-component));
+  pointer-events: none;
+
+  @media (max-width: 860px) {
+    display: none;
   }
 }

@@ -1,3 +1,4 @@
+export * from './alert/Alert';
 export * from './breadcrumbs/Breadcrumbs';
 export * from './breadcrumbs/crumbs';
 export * from './page-layout/PageLayout';

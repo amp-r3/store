@@ -1,0 +1,22 @@
+@use './variables' as *;
+
+// ── Solid content panel ──────────────────────────────────────────────────────
+// The card recipe repeated across CheckoutContacts/Shipping/Payments/Summary:
+// opaque background, hairline border, radius that shrinks with viewport.
+@mixin panel {
+    padding: $spacing-xl;
+    background-color: var(--background-component);
+    border: 1px solid var(--border-color-light);
+    border-radius: $radius-xl;
+    box-shadow: var(--shadow-sm);
+
+    @media (max-width: 768px) {
+        border-radius: $radius-lg;
+        padding: $spacing-lg;
+    }
+
+    @media (max-width: 480px) {
+        border-radius: $radius-md;
+        padding: $spacing-md;
+    }
+}

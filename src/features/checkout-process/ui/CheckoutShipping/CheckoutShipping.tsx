@@ -1,4 +1,4 @@
-import { FormField, MaskedFormField, InfoBanner } from "@/shared/ui"
+import { FormField, MaskedFormField, InfoBanner, Alert } from "@/shared/ui"
 import style from './checkout-shipping.module.scss'
 import { Controller, useFormContext } from "react-hook-form";
 import { CheckoutFormValues } from "../../model/checkoutMasterSchema";
@@ -17,13 +17,11 @@ export const CheckoutShipping = () => {
 
   return (
     <section className={style['shipping']}>
-      <div className={style['shipping__wrapper']}>
+      <div className={style['shipping__group-block']}>
         {errors.deliveryMethodId && (
-          <div className={style['shipping__delivery-message']} role="alert">
-            {errors.deliveryMethodId.message}
-          </div>
+          <Alert variant="error">{errors.deliveryMethodId.message}</Alert>
         )}
-        <h2 className={style['shipping__title']}>Delivery Method</h2>
+        <h3 className={style['shipping__title']}>Delivery Method</h3>
         <div className={style['shipping__group']} role="radiogroup" aria-label="Delivery Method">
           {
             isDeliveryLoading ? Array.from({ length: 3 }).map((_, index) => (
@@ -45,14 +43,16 @@ export const CheckoutShipping = () => {
         </div>
       </div>
 
-      <div className={style['shipping__wrapper']}>
+      <div className={style['shipping__divider']} role="presentation" />
+
+      <div className={style['shipping__group-block']}>
         {
           !isShippingRequired ?
             <InfoBanner {...PICKUP_BANNER} />
             :
             <>
               <div className={style['shipping__header']}>
-                <h2 className={style['shipping__title']}>Shipping details</h2>
+                <h3 className={style['shipping__title']}>Shipping details</h3>
                 {showPreviousAddressChip && hasPreviousAddress && (
                   <button type="button" className={style['shipping__prefill']} onClick={applyPreviousAddress}>
                     Use my previous address

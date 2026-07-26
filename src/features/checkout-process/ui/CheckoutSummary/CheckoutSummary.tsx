@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { HiChevronDown, HiExclamationCircle } from "react-icons/hi";
+import { HiChevronDown, HiLockClosed } from "react-icons/hi";
 import { CheckoutFormValues } from '../../model/checkoutMasterSchema';
 import { useCheckoutContext } from '../../model/CheckoutContext';
 import style from './checkout-summary.module.scss';
 import { formatPrice } from "@/shared/lib";
 import { useHaptics } from "@/shared/lib/hooks";
-import { SummaryItems, SummaryTotals, SummaryFooter } from './components';
+import { Alert } from '@/shared/ui';
+import { SummaryItems, SummaryTotals } from './components';
 
 export const CheckoutSummary = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { soft } = useHaptics();
 
-  const { orderTotals } = useCheckoutContext();
+  const { orderTotals, checkoutItems } = useCheckoutContext();
   const { formState: { errors } } = useFormContext<CheckoutFormValues>();
 
   const toggleExpanded = () => {
@@ -38,31 +39,36 @@ export const CheckoutSummary = () => {
 
       {/* Collapsible Content */}
       <div className={`${style.summary__collapsible} ${isExpanded ? style['summary__collapsible--expanded'] : ''}`}>
-        <h2 className={style.summary__title}>Order Summary</h2>
+        <div className={style.summary__collapsible_inner}>
+          <h2 className={style.summary__title}>
+            Order Summary
+            <span className={style.summary__count}>{checkoutItems.length} items</span>
+          </h2>
 
-        <SummaryItems />
+          <SummaryItems />
 
-        <div className={style.summary__divider} role="presentation" />
+          <div className={style.summary__divider} role="presentation" />
 
-        <SummaryTotals />
+          <SummaryTotals />
 
-        <div className={style.summary__divider} role="presentation" />
+          <div className={style.summary__divider} role="presentation" />
 
-        <p className={style.summary__policy}>
-          By placing an order, you agree to our{' '}
-          <a href="#" className={style.summary__link}>Terms</a> and{' '}
-          <a href="#" className={style.summary__link}>Privacy Policy</a>.
-        </p>
-      </div>
+          {errors.root?.message && (
+            <Alert variant="error">{errors.root.message}</Alert>
+          )}
 
-      {errors.root?.message && (
-        <div className={style.summary__error} role="alert">
-          <HiExclamationCircle className={style['summary__error-icon']} />
-          <span className={style['summary__error-text']}>{errors.root.message}</span>
+          <p className={style.summary__trust}>
+            <HiLockClosed className={style['summary__trust-icon']} />
+            Secure checkout
+          </p>
+
+          <p className={style.summary__policy}>
+            By placing an order, you agree to our{' '}
+            <a href="#" className={style.summary__link}>Terms</a> and{' '}
+            <a href="#" className={style.summary__link}>Privacy Policy</a>.
+          </p>
         </div>
-      )}
-
-      <SummaryFooter />
+      </div>
     </aside>
   );
 };
