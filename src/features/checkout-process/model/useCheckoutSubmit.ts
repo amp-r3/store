@@ -7,7 +7,6 @@ import { getErrorMessage } from '@/shared/lib';
 import { notify } from '@/entities/notification';
 import { useClearCartMutation, CartProduct } from '@/entities/cart';
 import { useCreateOrderMutation, CreateOrderPayload } from '@/entities/order';
-import { clearCheckout, clearCheckoutDraft } from './checkoutSlice';
 import { CheckoutFormValues } from './checkoutMasterSchema';
 
 interface UseCheckoutSubmitParams {
@@ -49,8 +48,8 @@ export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError 
       const { order_number: orderId } = await createOrder(payload).unwrap();
       // The order already exists at this point; a failed cart cleanup shouldn't read as a failed order.
       await clearServerCart().unwrap().catch(() => {});
-      dispatch(clearCheckout());
-      dispatch(clearCheckoutDraft());
+      // checkout.items is cleared on the success page itself, not here — clearing it
+      // before navigating races CheckoutGuard against the lazy-loaded success route.
       dispatch(notify({ type: 'success', text: 'Order placed' }));
       success();
 
