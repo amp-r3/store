@@ -1,0 +1,20 @@
+@use '@/app/styles/index' as *;
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.shipping-hint {
+  margin: 0;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  color: var(--text-muted);
+  line-height: $lh-normal;
+
+  &--active {
+    color: var(--primary-accent);
+  }
+}

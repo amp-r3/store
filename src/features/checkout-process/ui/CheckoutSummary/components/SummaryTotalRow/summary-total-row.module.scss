@@ -1,0 +1,90 @@
+@use '@/app/styles/index' as *;
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &--final {
+    padding-top: $spacing-xxs;
+
+    @media (max-width: 860px) {
+      padding-top: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .total-row__label {
+      font-size: $fs-base;
+      font-weight: $fw-bold;
+      color: var(--text-primary);
+
+      @media (max-width: 860px) {
+        font-size: $fs-xs;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: $letter-spacing-wider;
+      }
+    }
+
+    .total-row__value {
+      font-size: $fs-md;
+      font-weight: $fw-black;
+      color: var(--primary-accent);
+      letter-spacing: $letter-spacing-tight;
+
+      @media (max-width: 860px) {
+        font-size: $fs-base;
+      }
+    }
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-normal;
+    color: var(--text-secondary);
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: $spacing-xxs $spacing-xs;
+    border-radius: $radius-pill;
+    background-color: rgba(var(--primary-accent-rgb), 0.10);
+    color: var(--primary-accent);
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    letter-spacing: $letter-spacing-wide;
+    line-height: $lh-ui;
+
+    &--discount {
+      background-color: rgba(var(--secondary-accent-rgb), 0.12);
+      color: var(--secondary-accent);
+    }
+  }
+
+  &__value {
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+
+    &--free {
+      color: var(--primary-accent);
+    }
+
+    &--discount {
+      color: var(--secondary-accent);
+    }
+
+    &--fee {
+      color: var(--text-primary);
+    }
+  }
+}
