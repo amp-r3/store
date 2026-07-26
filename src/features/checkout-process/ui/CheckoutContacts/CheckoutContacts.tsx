@@ -51,7 +51,7 @@ export const CheckoutContacts = () => {
         render={({ field }) => (
           <MaskedFormField
             label="Phone"
-            placeholder="+1 (000) 000-0000"
+            placeholder="+15551234567"
             maskOptions={PHONE_MASK}
             value={field.value ?? ''}
             onAccept={field.onChange}

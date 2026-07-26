@@ -1,7 +1,9 @@
 import type { FactoryOpts } from 'imask';
 
+// General international format (E.164-ish): optional leading +, 7-15 digits.
+// Not tied to a specific country, since the checkout address is free-text.
 export const PHONE_MASK: FactoryOpts = {
-  mask: '+{1} (000) 000-0000',
+  mask: /^\+?\d{0,15}$/,
 };
 
 // Keyed by lowercased country name — the checkout address form takes free-text

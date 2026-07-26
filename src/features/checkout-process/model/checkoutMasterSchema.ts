@@ -7,7 +7,7 @@ const contactShape = {
   firstName: z.string().min(2, "The first name is too short"),
   lastName: z.string().min(2, "The last name is too short"),
   email: z.string().regex(emailRegex, { message: "Incorrect email format" }),
-  phone: z.string().regex(/^1\d{10}$/, "Incorrect phone number")
+  phone: z.string().regex(/^\+?\d{7,15}$/, "Incorrect phone number")
 };
 
 const deliveryShape = {

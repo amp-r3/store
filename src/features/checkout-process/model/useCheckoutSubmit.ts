@@ -14,10 +14,9 @@ interface UseCheckoutSubmitParams {
   checkoutItems: CartProduct[];
   isShippingRequired: boolean;
   setError: UseFormSetError<CheckoutFormValues>;
-  markSubmitted: () => void;
 }
 
-export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError, markSubmitted }: UseCheckoutSubmitParams) => {
+export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError }: UseCheckoutSubmitParams) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { success } = useHaptics();
@@ -55,12 +54,11 @@ export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError,
       dispatch(notify({ type: 'success', text: 'Order placed' }));
       success();
 
-      markSubmitted();
       navigate('/checkout/success', { state: { orderId }, replace: true });
     } catch (err) {
       setError('root', { type: 'server', message: getErrorMessage(err) });
     }
-  }, [checkoutItems, isShippingRequired, createOrder, clearServerCart, dispatch, navigate, success, setError, markSubmitted]);
+  }, [checkoutItems, isShippingRequired, createOrder, clearServerCart, dispatch, navigate, success, setError]);
 
   return {
     submitOrder,
