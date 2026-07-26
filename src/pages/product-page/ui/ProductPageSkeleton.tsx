@@ -1,25 +1,23 @@
-import { ProductHeader, ProductSpecsSkeleton } from "./components";
+import { ProductSpecsSkeleton } from "./components";
 import { ProductSummarySkeleton } from "@/widgets/product-summary";
 import style from './productPage.module.scss'
 import { ProductGallerySkeleton } from '@/widgets/product-gallery'
+import { PageLayout, ShareCopyBtn, HOME_CRUMB, CATALOG_CRUMB } from '@/shared/ui'
+
 export const ProductPageSkeleton = () => {
 
   return (
-    <main className={style['product-page']}>
-      <div className="container">
-        <ProductHeader category='...' title='...' />
-
-        <div className={style['layout']}>
-          <div className={style['gallery-column']}>
-            <ProductGallerySkeleton />
-          </div>
-          <div className={style['details-column']}>
-            <ProductSummarySkeleton />
-          </div>
+    <PageLayout breadcrumbs={[HOME_CRUMB, CATALOG_CRUMB, { label: '…' }]} actions={<ShareCopyBtn />}>
+      <div className={style['layout']}>
+        <div className={style['gallery-column']}>
+          <ProductGallerySkeleton />
         </div>
-
-        <ProductSpecsSkeleton />
+        <div className={style['details-column']}>
+          <ProductSummarySkeleton />
+        </div>
       </div>
-    </main>
+
+      <ProductSpecsSkeleton />
+    </PageLayout>
   )
 }

@@ -1,7 +1,7 @@
 import { ControlPanel } from "@/widgets/control-panel";
 import { useEffect } from 'react'
 // Common components
-import { Breadcrumbs, ErrorView, NoResults } from '@/shared/ui'
+import { ErrorView, NoResults, PageLayout, HOME_CRUMB } from '@/shared/ui'
 // Custom Components
 // Custom Hooks
 // Utils
@@ -14,7 +14,6 @@ import { useProductCatalog } from "@/entities/product";
 import { Pagination } from "@/shared/ui";
 import { ProductCard } from "@/entities/product";
 import { WishlistToggleButton } from "@/features/wishlist-toggle";
-import style from './catalog-page.module.scss';
 
 export const CatalogPage = () => {
   const { products, status, filters } = useProductCatalog();
@@ -33,11 +32,7 @@ export const CatalogPage = () => {
   }
 
   return (
-    <main className='container'>
-      <div className={style.catalogPage__breadcrumbs}>
-        <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Catalog' }]} />
-      </div>
-
+    <PageLayout breadcrumbs={[HOME_CRUMB, { label: 'Catalog' }]}>
       {
         status.productsLoading || status.categoriesLoading ? <ControlPanelSkeleton /> :
           <ControlPanel
@@ -94,6 +89,6 @@ export const CatalogPage = () => {
           />
         )
       }
-    </main >
+    </PageLayout>
   )
 }

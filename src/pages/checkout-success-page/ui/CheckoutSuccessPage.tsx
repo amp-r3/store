@@ -1,4 +1,4 @@
-import { Modal } from '@/shared/ui';
+import { Modal, PageLayout, HOME_CRUMB } from '@/shared/ui';
 import { useEffect } from 'react';
 import { TbShoppingCartCheck } from 'react-icons/tb';
 import { useLocation, useNavigate } from 'react-router';
@@ -15,7 +15,7 @@ export const CheckoutSuccessPage = () => {
 
   if (!orderId) return null
   return (
-    <main className='container'>
+    <PageLayout breadcrumbs={[HOME_CRUMB, { label: 'Checkout' }, { label: 'Order Confirmed' }]}>
       <Modal
         isOpen={true}
         onOpenChange={() => { navigate('/', { replace: true }) }}
@@ -26,6 +26,6 @@ export const CheckoutSuccessPage = () => {
         onAction={() => { navigate('/user/orders', { replace: true }) }}
         actionVariant='success'
       />
-    </main>
+    </PageLayout>
   )
 }

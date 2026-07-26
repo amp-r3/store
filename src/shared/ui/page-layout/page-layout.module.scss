@@ -1,0 +1,17 @@
+@use '@/app/styles/index' as *;
+
+.page-layout {
+    padding-block: $spacing-xl $spacing-xxl;
+
+    @media (max-width: 768px) {
+        padding-block: $spacing-md $spacing-lg;
+    }
+}
+
+.page-layout__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+}

@@ -3,19 +3,16 @@ import { Outlet, useLocation } from 'react-router';
 
 import { selectUser } from '@/entities/session';
 import { useAppSelector } from '@/shared/model';
-import { Breadcrumbs, Loader, type BreadcrumbItem } from '@/shared/ui';
+import { Loader, PageLayout, HOME_CRUMB, PROFILE_CRUMB, type BreadcrumbItem } from '@/shared/ui';
 import { ProfileSidebar } from '@/widgets/profile-sidebar';
 
 import style from './user-layout.module.scss';
 
-const HOME: BreadcrumbItem = { label: 'Home', path: '/' };
-const PROFILE: BreadcrumbItem = { label: 'Profile', path: '/user' };
-
 const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
-    '/user': [HOME, { label: 'Profile' }],
-    '/user/orders': [HOME, PROFILE, { label: 'Orders' }],
-    '/user/reviews': [HOME, PROFILE, { label: 'My Reviews' }],
-    '/user/notifications': [HOME, PROFILE, { label: 'Notifications' }],
+    '/user': [HOME_CRUMB, { label: 'Profile' }],
+    '/user/orders': [HOME_CRUMB, PROFILE_CRUMB, { label: 'Orders' }],
+    '/user/reviews': [HOME_CRUMB, PROFILE_CRUMB, { label: 'My Reviews' }],
+    '/user/notifications': [HOME_CRUMB, PROFILE_CRUMB, { label: 'Notifications' }],
 };
 
 export const UserLayout = () => {
@@ -24,12 +21,13 @@ export const UserLayout = () => {
 
     if (!user) return null;
 
-    return (
-        <main className={`container ${style['user-layout']}`}>
-            <div className={style['user-layout__breadcrumbs']}>
-                <Breadcrumbs items={BREADCRUMBS[pathname] ?? BREADCRUMBS['/user']} />
-            </div>
+    const key = pathname.replace(/\/+$/, '') || '/user';
 
+    return (
+        <PageLayout
+            breadcrumbs={BREADCRUMBS[key] ?? BREADCRUMBS['/user']}
+            className={style['user-layout']}
+        >
             <article className={style['user-layout__grid']}>
                 <ProfileSidebar user={user} />
 
@@ -45,6 +43,6 @@ export const UserLayout = () => {
                     </Suspense>
                 </section>
             </article>
-        </main>
+        </PageLayout>
     );
 };

@@ -1,4 +1,4 @@
-import { ProductHeader, ProductSpecs, ProductImageModal } from "./components";
+import { ProductSpecs, ProductImageModal } from "./components";
 import { ProductSummary } from "@/widgets/product-summary";
 // React
 import { useEffect } from 'react';
@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { useParams, Navigate, useSearchParams } from 'react-router';
 
 // Components
-import { ErrorView, ExpandableContent } from '@/shared/ui';
+import { ErrorView, ExpandableContent, PageLayout, ShareCopyBtn, HOME_CRUMB, CATALOG_CRUMB, categoryCrumb } from '@/shared/ui';
 import { ProductGallery } from '@/widgets/product-gallery';
 import { ProductPageSkeleton } from './ProductPageSkeleton';
 
@@ -15,7 +15,7 @@ import { ProductPageSkeleton } from './ProductPageSkeleton';
 // Custom Hooks
 // Styles
 import style from './productPage.module.scss';
-import { useGetSizesQuery, useCheckPurchaseStatusQuery, useSelectedSize } from '@/entities/product';
+import { useGetSizesQuery, useCheckPurchaseStatusQuery, useSelectedSize, useGetCategoriesQuery } from '@/entities/product';
 import { ProductReviews } from '@/widgets/product-reviews';
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
 import { useCartActions } from "@/features/cart-actions";
@@ -43,6 +43,7 @@ export const ProductPage = () => {
     const { data: lastPurchaseDate } = useCheckPurchaseStatusQuery(+(id || 0), {
         skip: !isAuth || !id
     });
+    const { data: categories } = useGetCategoriesQuery();
 
 
 
@@ -90,14 +91,14 @@ export const ProductPage = () => {
     const hasDiscount = discountPercentage > 0;
     const itemInCart = cartItems.find(item => item?.productId === product.id && item?.sizeId === selectedSizeId)
     const quantity = itemInCart?.quantity || 0
+    const categorySlug = categories?.find((c) => c.name === category)?.slug;
+    const crumbs = [HOME_CRUMB, CATALOG_CRUMB, categoryCrumb(category, categorySlug), { label: title }];
 
 
     return (
-        <main className={style['product-page']}>
+        <PageLayout breadcrumbs={crumbs} actions={<ShareCopyBtn />}>
             <ProductImageModal imageSrc={images[0]} imageAlt={title} onClose={onCloseModal} isOpen={openedImage} />
-            <div className="container" key={productId}>
-                <ProductHeader category={category} title={title} />
-
+            <div key={productId}>
                 <div className={style['layout']}>
                     <div className={style['gallery-column']}>
                         <ProductGallery
@@ -147,6 +148,6 @@ export const ProductPage = () => {
 
                 <ProductReviews productId={productId} />
             </div>
-        </main>
+        </PageLayout>
     );
 };

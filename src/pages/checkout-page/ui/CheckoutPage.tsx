@@ -1,5 +1,5 @@
 import { CheckoutStepBar } from "./components";
-import { Breadcrumbs } from "@/shared/ui"
+import { PageLayout, HOME_CRUMB } from "@/shared/ui"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import styles from './checkout-page.module.scss'
@@ -98,7 +98,7 @@ export const CheckoutPage = () => {
     }
   }
 
-  const handleBreadcrumbClick = async (targetStep: StepType) => {
+  const handleStepChange = async (targetStep: StepType) => {
     const targetIndex = STEPS_ORDER.indexOf(targetStep);
     const currentIndex = STEPS_ORDER.indexOf(step);
 
@@ -178,13 +178,13 @@ export const CheckoutPage = () => {
 
   return (
     <>
-      <main className={styles.checkout}>
+      <div className={styles.checkout}>
         <TopBar />
-        <div className={styles.checkout__container + ' container'}>
-
-          {/* Header */}
+        <PageLayout
+          breadcrumbs={[HOME_CRUMB, { label: 'Checkout' }]}
+          className={styles.checkout__container}
+        >
           <header className={styles.checkout__header}>
-            <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Checkout' }]} />
             <h1 className={styles.checkout__title}>Checkout</h1>
           </header>
 
@@ -197,7 +197,7 @@ export const CheckoutPage = () => {
                   currentStep={step}
                   stepsOrder={STEPS_ORDER}
                   highestStepIndex={highestStepIndex}
-                  setStep={handleBreadcrumbClick}
+                  setStep={handleStepChange}
                 />
 
                 {step === 'contacts' && (
@@ -248,8 +248,8 @@ export const CheckoutPage = () => {
             </form>
 
           </FormProvider>
-        </div>
-      </main>
+        </PageLayout>
+      </div>
     </>
   )
 }

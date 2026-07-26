@@ -1,4 +1,6 @@
 export * from './breadcrumbs/Breadcrumbs';
+export * from './breadcrumbs/crumbs';
+export * from './page-layout/PageLayout';
 export * from './error-view/ErrorView';
 export * from './expandable-content/ExpandableContent';
 export * from './form-field/FormField';

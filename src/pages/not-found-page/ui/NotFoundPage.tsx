@@ -2,11 +2,12 @@ import style from './page404.module.scss'
 import { Link } from 'react-router-dom';
 import { TbHome } from 'react-icons/tb';
 import { useHaptics } from "@/shared/lib/hooks";
+import { PageLayout, HOME_CRUMB } from '@/shared/ui';
 
 export const Page404 = () => {
   const { light } = useHaptics()
   return (
-    <main className={style.notFoundPage}>
+    <PageLayout breadcrumbs={[HOME_CRUMB, { label: 'Page Not Found' }]} className={style.notFoundPage}>
       <div className={style.content}>
         <h1 className={style.errorCode}>404</h1>
         <h2 className={style.title}>Page Not Found</h2>
@@ -18,6 +19,6 @@ export const Page404 = () => {
           <span>Go to Homepage</span>
         </Link>
       </div>
-    </main>
+    </PageLayout>
   );
 };
