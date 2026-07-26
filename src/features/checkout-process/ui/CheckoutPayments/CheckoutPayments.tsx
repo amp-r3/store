@@ -1,13 +1,13 @@
 import { PaymentOption, PaymentOptionSkeleton } from "./components";
 import style from './checkout-payments.module.scss'
 import { useFormContext } from 'react-hook-form'
-import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema'
-import { useCheckoutContext } from '@/features/checkout-process/model/CheckoutContext';
+import { CheckoutFormValues } from '../../model/checkoutMasterSchema'
+import { useCheckoutContext } from '../../model/CheckoutContext';
 import { PAYMENT_CONFIG } from '@/entities/order';
 import { InfoBanner } from '@/shared/ui';
 
 export const CheckoutPayments = () => {
-  const { formState: { errors, isSubmitted } } = useFormContext<CheckoutFormValues>()
+  const { formState: { errors } } = useFormContext<CheckoutFormValues>()
   const { paymentMethods, selectedPayment, isPaymentLoading, selectPayment } = useCheckoutContext();
 
   const paymentInfo = PAYMENT_CONFIG.find(m => m.id === selectedPayment?.code)
@@ -16,7 +16,7 @@ export const CheckoutPayments = () => {
   return (
     <section className={style['payment']}>
       <div className={style['payment__wrapper']}>
-        {errors.paymentMethodId && isSubmitted && (
+        {errors.paymentMethodId && (
           <div className={style['payment__message']} role="alert">
             {errors.paymentMethodId.message}
           </div>

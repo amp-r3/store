@@ -1,8 +1,8 @@
 import { FormField, MaskedFormField, InfoBanner } from "@/shared/ui"
 import style from './checkout-shipping.module.scss'
 import { Controller, useFormContext } from "react-hook-form";
-import { CheckoutFormValues } from "@/features/checkout-process/model/checkoutMasterSchema";
-import { useCheckoutContext } from "@/features/checkout-process/model/CheckoutContext";
+import { CheckoutFormValues } from "../../model/checkoutMasterSchema";
+import { useCheckoutContext } from "../../model/CheckoutContext";
 import { getPostcodeMask } from "@/shared/config";
 import { PICKUP_BANNER } from "@/entities/order";
 import { DeliveryOption, DeliveryOptionSkeleton } from "./components";
@@ -95,6 +95,7 @@ export const CheckoutShipping = () => {
                   control={control}
                   render={({ field }) => (
                     <MaskedFormField
+                      ref={field.ref}
                       label="ZIP / Postal Code"
                       placeholder="10001"
                       maskOptions={getPostcodeMask(country)}

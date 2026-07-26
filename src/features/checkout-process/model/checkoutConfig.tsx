@@ -9,7 +9,6 @@ import { StepType } from './types';
 import { CheckoutFormValues } from './checkoutMasterSchema';
 
 interface CheckoutStepConfig {
-  index: number;
   order: string;
   label: string;
   cta: string;
@@ -21,7 +20,6 @@ interface CheckoutStepConfig {
 
 export const CHECKOUT_STEPS: Record<StepType, CheckoutStepConfig> = {
   contacts: {
-    index: 0,
     order: '01',
     label: 'Contacts',
     cta: 'Continue to Delivery',
@@ -31,7 +29,6 @@ export const CHECKOUT_STEPS: Record<StepType, CheckoutStepConfig> = {
     fields: ['firstName', 'lastName', 'email', 'phone'],
   },
   delivery: {
-    index: 1,
     order: '02',
     label: 'Delivery',
     cta: 'Continue to Payment',
@@ -41,7 +38,6 @@ export const CHECKOUT_STEPS: Record<StepType, CheckoutStepConfig> = {
     fields: ['deliveryMethodId', 'deliveryMethodCode', 'country', 'city', 'street', 'housenumber', 'postcode'],
   },
   payment: {
-    index: 2,
     order: '03',
     label: 'Payment',
     cta: 'Place Order',

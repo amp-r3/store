@@ -1,5 +1,5 @@
-import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema';
-import { useCheckoutContext } from '@/features/checkout-process/model/CheckoutContext';
+import { CheckoutFormValues } from '../../model/checkoutMasterSchema';
+import { useCheckoutContext } from '../../model/CheckoutContext';
 import style from './checkout-contacts.module.scss'
 import { FormField, MaskedFormField } from "@/shared/ui";
 import { Controller, useFormContext } from 'react-hook-form';
@@ -50,6 +50,7 @@ export const CheckoutContacts = () => {
         control={control}
         render={({ field }) => (
           <MaskedFormField
+            ref={field.ref}
             label="Phone"
             placeholder="+15551234567"
             maskOptions={PHONE_MASK}

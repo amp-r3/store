@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { HiChevronDown, HiExclamationCircle } from "react-icons/hi";
-import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema';
-import { useCheckoutContext } from '@/features/checkout-process/model/CheckoutContext';
+import { CheckoutFormValues } from '../../model/checkoutMasterSchema';
+import { useCheckoutContext } from '../../model/CheckoutContext';
 import style from './checkout-summary.module.scss';
 import { formatPrice } from "@/shared/lib";
 import { useHaptics } from "@/shared/lib/hooks";
