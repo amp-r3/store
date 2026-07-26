@@ -1226,6 +1226,10 @@ CREATE INDEX "idx_order_items_order" ON "public"."order_items" USING "btree" ("o
 
 
 
+CREATE INDEX "idx_orders_user_created" ON "public"."orders" USING "btree" ("user_id", "created_at" DESC);
+
+
+
 CREATE INDEX "idx_product_reviews_product_date" ON "public"."product_reviews" USING "btree" ("product_id", "date" DESC);
 
 
@@ -1392,15 +1396,15 @@ CREATE POLICY "Enable read access for all users" ON "public"."categories" FOR SE
 
 
 
-CREATE POLICY "Users can delete own likes" ON "public"."review_likes" FOR DELETE TO "authenticated" USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can delete own likes" ON "public"."review_likes" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "Users can delete own reviews" ON "public"."product_reviews" FOR DELETE TO "authenticated" USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can delete own reviews" ON "public"."product_reviews" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "Users can delete their own cart items" ON "public"."cart_items" FOR DELETE USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can delete their own cart items" ON "public"."cart_items" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1408,27 +1412,27 @@ CREATE POLICY "Users can delete their own notifications" ON "public"."notificati
 
 
 
-CREATE POLICY "Users can delete their own wishlist" ON "public"."wishlist_items" FOR DELETE USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can delete their own wishlist" ON "public"."wishlist_items" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "Users can insert own likes" ON "public"."review_likes" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can insert own likes" ON "public"."review_likes" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "Users can insert their own cart items" ON "public"."cart_items" FOR INSERT WITH CHECK (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can insert their own cart items" ON "public"."cart_items" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "Users can insert their own wishlist" ON "public"."wishlist_items" FOR INSERT WITH CHECK (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can insert their own wishlist" ON "public"."wishlist_items" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "Users can update own profile." ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id"));
+CREATE POLICY "Users can update own profile." ON "public"."profiles" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "id"));
 
 
 
-CREATE POLICY "Users can update their own cart items" ON "public"."cart_items" FOR UPDATE USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can update their own cart items" ON "public"."cart_items" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1436,7 +1440,7 @@ CREATE POLICY "Users can update their own notifications" ON "public"."notificati
 
 
 
-CREATE POLICY "Users can view their own cart items" ON "public"."cart_items" FOR SELECT USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can view their own cart items" ON "public"."cart_items" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1446,11 +1450,11 @@ CREATE POLICY "Users can view their own notifications" ON "public"."notification
 
 CREATE POLICY "Users can view their own order items" ON "public"."order_items" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM "public"."orders"
-  WHERE (("orders"."id" = "order_items"."order_id") AND ("orders"."user_id" = "auth"."uid"())))));
+  WHERE (("orders"."id" = "order_items"."order_id") AND ("orders"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Users can view their own orders" ON "public"."orders" FOR SELECT USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can view their own orders" ON "public"."orders" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1458,7 +1462,7 @@ CREATE POLICY "Users can view their own profile" ON "public"."profiles" FOR SELE
 
 
 
-CREATE POLICY "Users can view their own wishlist" ON "public"."wishlist_items" FOR SELECT USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Users can view their own wishlist" ON "public"."wishlist_items" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
