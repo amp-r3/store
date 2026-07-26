@@ -57,7 +57,7 @@ business-entity concept (order status, product size) — then it belongs in
 `entities`, not behind this exception.
 
 ```ts
-import type { CheckoutStep } from '@/features/checkout-process';   // ✅
+import type { StepType } from '@/features/checkout-process';   // ✅
 import { useCheckoutTotals } from '@/features/checkout-process';   // ❌ runtime
 ```
 
@@ -136,7 +136,7 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
   525, 549, 600, 640, 768, 1024, 1440px.
 - `@keyframes` in the module that uses them; timing via tokens. Every animation
   needs `@media (prefers-reduced-motion: reduce)`.
-- Status badges: only `shared/styles/_statuses.scss` mixins; modifier via
+- Status badges: only `app/styles/_statuses.scss` mixins; modifier via
   `data-status` or `--${status}` class.
 
 ## Components & UI
