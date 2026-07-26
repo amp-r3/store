@@ -64,6 +64,11 @@
 
 }
 
+.card__imageSkeleton {
+    display: block;
+    height: 100%;
+}
+
 .card__promo-block {
     display: flex;
     gap: $spacing-xs;

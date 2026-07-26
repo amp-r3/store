@@ -6,8 +6,8 @@ export const ProductCardSkeleton = () => {
 
   return (
     <article className={style.card}>
-      <div className={style.card__body}>
-        <Skeleton height={241} />
+      <div className={style.card__imageWrapper}>
+        <Skeleton height="100%" containerClassName={style.card__imageSkeleton} />
       </div>
       <div className={style.card__body}>
         <Skeleton width="130px" height="16px" />
