@@ -1,0 +1,27 @@
+import type { FactoryOpts } from 'imask';
+
+export const PHONE_MASK: FactoryOpts = {
+  mask: '+{1} (000) 000-0000',
+  lazy: false,
+};
+
+// Keyed by lowercased country name — the checkout address form takes free-text
+// country input, not an ISO-coded select.
+const POSTCODE_MASKS: Record<string, FactoryOpts> = {
+  'united states': { mask: '00000[-0000]' },
+  'usa': { mask: '00000[-0000]' },
+  'us': { mask: '00000[-0000]' },
+  'germany': { mask: '00000' },
+  'de': { mask: '00000' },
+  'poland': { mask: '00-000' },
+  'pl': { mask: '00-000' },
+  'united kingdom': { mask: 'a[a]0[0a] 0aa', prepare: (chars: string) => chars.toUpperCase() },
+  'uk': { mask: 'a[a]0[0a] 0aa', prepare: (chars: string) => chars.toUpperCase() },
+};
+
+export const DEFAULT_POSTCODE_MASK: FactoryOpts = { mask: /^[A-Za-z0-9 -]{0,10}$/ };
+
+export const getPostcodeMask = (country?: string): FactoryOpts => {
+  if (!country) return DEFAULT_POSTCODE_MASK;
+  return POSTCODE_MASKS[country.trim().toLowerCase()] ?? DEFAULT_POSTCODE_MASK;
+};

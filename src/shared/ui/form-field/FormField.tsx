@@ -2,7 +2,7 @@ import { InputHTMLAttributes, ReactNode, forwardRef, useId, useState } from "rea
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import style from './form-field.module.scss';
 
-interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string | boolean;
   optional?: boolean;

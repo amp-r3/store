@@ -4,6 +4,7 @@ export * from './page-layout/PageLayout';
 export * from './error-view/ErrorView';
 export * from './expandable-content/ExpandableContent';
 export * from './form-field/FormField';
+export * from './masked-form-field/MaskedFormField';
 export * from './loader/Loader';
 export * from './logo/Logo';
 export * from './modal/Modal';
