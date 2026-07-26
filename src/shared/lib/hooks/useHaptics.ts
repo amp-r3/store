@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { HAPTIC_PRESETS, HapticOptions, HapticPresetName, HapticStep } from "@/shared/lib/hapticPresets";
 import { useWebHaptics } from "web-haptics/react";
 
@@ -10,13 +11,15 @@ export type UseHapticsReturn = PresetTriggers & {
 export function useHaptics(): UseHapticsReturn {
     const { trigger } = useWebHaptics();
 
-    const presets = (Object.keys(HAPTIC_PRESETS) as HapticPresetName[]).reduce(
-        (acc, name) => {
-            acc[name] = () => trigger(HAPTIC_PRESETS[name].pattern, HAPTIC_PRESETS[name].options);
-            return acc;
-        },
-        {} as PresetTriggers
-    );
+    return useMemo(() => {
+        const presets = (Object.keys(HAPTIC_PRESETS) as HapticPresetName[]).reduce(
+            (acc, name) => {
+                acc[name] = () => trigger(HAPTIC_PRESETS[name].pattern, HAPTIC_PRESETS[name].options);
+                return acc;
+            },
+            {} as PresetTriggers
+        );
 
-    return { trigger, ...presets };
+        return { trigger, ...presets };
+    }, [trigger]);
 }
