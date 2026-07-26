@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { FaCreditCard, FaPaypal } from 'react-icons/fa'
 import { SiKlarna, SiSepa } from 'react-icons/si'
-import { LuBanknote, LuHandCoins, LuClipboardCheck, LuCircleAlert, LuShieldCheck, LuClock, LuTruck, LuPlaneTakeoff, LuStore, LuRefreshCw } from 'react-icons/lu'
+import { LuBanknote, LuHandCoins, LuClipboardCheck, LuCircleAlert, LuShieldCheck, LuClock, LuTruck, LuPlaneTakeoff, LuStore, LuRefreshCw, LuHouse, LuPackageOpen, LuMapPin } from 'react-icons/lu'
 import { DeliveryStatus, OrderStatus, PaymentStatus } from '@/entities/order/model/types'
 
 export interface PaymentDetailItem {
@@ -102,6 +102,17 @@ export const PAYMENT_CONFIG: PaymentConfig[] = [
     },
   },
 ]
+
+export const PICKUP_BANNER: PaymentBanner = {
+  icon: <LuHouse />,
+  title: 'Pick up at a nearby location',
+  description: "Your order will be ready for pickup at the nearest collection point. We'll send you a notification with the exact address and a confirmation code once your order is prepared.",
+  details: [
+    { icon: <LuClock />, text: 'Ready within 2–4 hours after payment' },
+    { icon: <LuPackageOpen />, text: 'Bring a valid ID and your confirmation code' },
+    { icon: <LuMapPin />, text: 'The pickup address will be confirmed via email' },
+  ],
+}
 
 export interface DeliveryConfig { id: string; label: string; icon: ReactNode }
 export const DELIVERY_CONFIG: DeliveryConfig[] = [

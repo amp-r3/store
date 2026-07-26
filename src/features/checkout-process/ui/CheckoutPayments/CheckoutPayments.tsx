@@ -22,7 +22,7 @@ export const CheckoutPayments = () => {
         )}
         <h2 className={style['payment__title']}>Payment method</h2>
 
-        <div className={style['payment__methods-grid']}>
+        <div className={style['payment__methods-grid']} role="radiogroup" aria-label="Payment method">
           {
             isPaymentLoading ? Array.from({ length: 5 }).map((_, i) => <PaymentOptionSkeleton key={i} />) :
               paymentMethods?.map(opt => {

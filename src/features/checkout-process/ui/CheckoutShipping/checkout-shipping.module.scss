@@ -69,6 +69,12 @@
     }
   }
 
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
   &__wrapper {
     display: flex;
     flex-direction: column;
