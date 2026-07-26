@@ -7,7 +7,7 @@ export const useNavbarScroll = (navRef: RefObject<HTMLElement | null>): void => 
 
         const applyScrolled = (isScrolled: boolean) => {
             const node = navRef.current;
-            if (!node || node.offsetParent === null) return;
+            if (!node) return;
             if (isScrolledRef.current === isScrolled) return;
 
             isScrolledRef.current = isScrolled;
