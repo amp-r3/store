@@ -27,7 +27,7 @@ import '@/entities/order';
 const checkoutPersistConfig = {
   key: 'checkout',
   storage,
-  whitelist: ['items']
+  whitelist: ['items', 'draft']
 };
 
 const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutReducer);

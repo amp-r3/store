@@ -257,6 +257,33 @@ export const orderApi = baseApi.injectEndpoints({
       providesTags: ['DeliveryMethod'],
     }),
 
+    getLastShippingAddress: builder.query<ShippingAddress | null, void>({
+      queryFn: async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+          return { error: { status: 401, data: 'The user is not authorized' } };
+        }
+
+        const { data, error } = await supabase
+          .from('orders')
+          .select('shipping_address')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        // shipping_address is stored as jsonb with no schema-level shape guarantee;
+        // the app controls both write (create_order) and read side of this shape.
+        return { data: (data?.shipping_address as unknown as ShippingAddress) ?? null };
+      },
+      providesTags: ['Order'],
+    }),
+
     getPaymentMethods: builder.query<PaymentMethod[], void>({
       queryFn: async () => {
         const { data, error } = await supabase
@@ -288,5 +315,6 @@ export const {
   useGetOrderCountsQuery,
   useCreateOrderMutation,
   useGetDeliveryMethodsQuery,
-  useGetPaymentMethodsQuery
+  useGetPaymentMethodsQuery,
+  useGetLastShippingAddressQuery
 } = orderApi;

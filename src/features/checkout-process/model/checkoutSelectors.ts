@@ -3,6 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { CartProduct } from "@/entities/cart";
 
 export const selectCheckoutItemsMap = (state: RootState) => state.checkout.items;
+export const selectCheckoutDraft = (state: RootState) => state.checkout.draft;
 
 export const selectCheckoutItemsArray = createSelector(
     [selectCheckoutItemsMap],

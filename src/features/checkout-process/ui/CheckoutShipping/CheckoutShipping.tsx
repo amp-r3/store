@@ -10,7 +10,10 @@ import { DeliveryOptionSkeleton } from "./DeliveryOption/DeliveryOptionSkeleton"
 
 export const CheckoutShipping = () => {
   const { register, control, watch, formState: { errors } } = useFormContext<CheckoutFormValues>();
-  const { deliveryMethods, selectedDelivery, isDeliveryLoading, isShippingRequired, totals, selectDelivery } = useCheckoutContext();
+  const {
+    deliveryMethods, selectedDelivery, isDeliveryLoading, isShippingRequired, totals, selectDelivery,
+    hasPreviousAddress, showPreviousAddressChip, applyPreviousAddress,
+  } = useCheckoutContext();
   const country = watch('country');
 
   return (
@@ -71,7 +74,14 @@ export const CheckoutShipping = () => {
             </div>
             :
             <>
-              <h2 className={style['shipping__title']}>Shipping details </h2>
+              <div className={style['shipping__header']}>
+                <h2 className={style['shipping__title']}>Shipping details</h2>
+                {showPreviousAddressChip && hasPreviousAddress && (
+                  <button type="button" className={style['shipping__prefill']} onClick={applyPreviousAddress}>
+                    Use my previous address
+                  </button>
+                )}
+              </div>
               <div className={style['shipping__row']}>
                 <FormField
                   label="Country"

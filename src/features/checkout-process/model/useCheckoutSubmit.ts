@@ -7,7 +7,7 @@ import { getErrorMessage } from '@/shared/lib';
 import { notify } from '@/entities/notification';
 import { useClearCartMutation, CartProduct } from '@/entities/cart';
 import { useCreateOrderMutation, CreateOrderPayload } from '@/entities/order';
-import { clearCheckout } from './checkoutSlice';
+import { clearCheckout, clearCheckoutDraft } from './checkoutSlice';
 import { CheckoutFormValues } from './checkoutMasterSchema';
 
 interface UseCheckoutSubmitParams {
@@ -50,6 +50,7 @@ export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError 
       // The order already exists at this point; a failed cart cleanup shouldn't read as a failed order.
       await clearServerCart().unwrap().catch(() => {});
       dispatch(clearCheckout());
+      dispatch(clearCheckoutDraft());
       dispatch(notify({ type: 'success', text: 'Order placed' }));
       success();
 

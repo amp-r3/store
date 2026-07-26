@@ -10,6 +10,7 @@ import {
 } from '@/entities/cart';
 import { DeliveryMethod, PaymentMethod, DeliveryOptions, PaymentOptions } from '@/entities/order';
 import { addToCheckout } from './checkoutSlice';
+import { selectCheckoutDraft } from './checkoutSelectors';
 import { StepType } from './types';
 import { useCheckoutForm } from './useCheckoutForm';
 import { useCheckoutDelivery } from './useCheckoutDelivery';
@@ -17,6 +18,7 @@ import { useCheckoutDetails } from './useCheckoutDetails';
 import { useCheckoutStepper } from './useCheckoutStepper';
 import { useCheckoutSubmit } from './useCheckoutSubmit';
 import { useCheckoutTotals } from './useCheckoutTotals';
+import { useCheckoutDraft } from './useCheckoutDraft';
 import { CheckoutFormValues } from './checkoutMasterSchema';
 
 interface CheckoutContextValue {
@@ -42,6 +44,9 @@ interface CheckoutContextValue {
   isLoading: boolean;
   isSubmitting: boolean;
   submitOrder(formData: CheckoutFormValues): Promise<void>;
+  applyPreviousAddress(): void;
+  hasPreviousAddress: boolean;
+  showPreviousAddressChip: boolean;
 }
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
@@ -49,6 +54,7 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector(selectCartItemsArray);
+  const draft = useAppSelector(selectCheckoutDraft);
 
   const { methods, selectDelivery, selectPayment, applyPaymentSelection } = useCheckoutForm();
   const { watch, setError } = methods;
@@ -59,7 +65,13 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const delivery = useCheckoutDelivery(deliveryCode, paymentCode);
   const details = useCheckoutDetails(delivery.freeShippingThreshold);
-  const stepper = useCheckoutStepper(methods);
+  const stepper = useCheckoutStepper(methods, draft);
+
+  const { applyPreviousAddress, hasPreviousAddress, showPreviousAddressChip } = useCheckoutDraft({
+    methods,
+    deliveryMethods: delivery.deliveryMethods,
+    paymentMethods: delivery.paymentMethods,
+  });
 
   useEffect(() => {
     if (details.isEmpty && cartItems.length > 0) {
@@ -108,7 +120,13 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
     isLoading: details.isLoading || details.isFetching,
     isSubmitting,
     submitOrder,
-  }), [details, orderTotals, delivery, selectDelivery, selectPayment, stepper, isSubmitting, submitOrder]);
+    applyPreviousAddress,
+    hasPreviousAddress,
+    showPreviousAddressChip,
+  }), [
+    details, orderTotals, delivery, selectDelivery, selectPayment, stepper, isSubmitting, submitOrder,
+    applyPreviousAddress, hasPreviousAddress, showPreviousAddressChip,
+  ]);
 
   return (
     <FormProvider {...methods}>
