@@ -31,7 +31,8 @@
 // ─────────────────────────────────────────────
 
 .checkout {
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   --checkout-footer-height: 100px;
 
   &__container {
