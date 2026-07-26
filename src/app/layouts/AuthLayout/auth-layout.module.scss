@@ -11,7 +11,7 @@
 
   background:
     radial-gradient(circle at top, rgba(var(--primary-accent-rgb), 0.12), transparent 38%),
-    var(--auth-background, var(--background));
+    var(--background-body);
 }
 
 .card {
