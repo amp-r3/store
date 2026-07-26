@@ -1,4 +1,4 @@
-import { FormField, MaskedFormField } from "@/shared/ui"
+import { FormField, MaskedFormField, InfoBanner } from "@/shared/ui"
 import style from './checkout-shipping.module.scss'
 import { Controller, useFormContext } from "react-hook-form";
 import { CheckoutFormValues } from "@/features/checkout-process/model/checkoutMasterSchema";
@@ -49,25 +49,7 @@ export const CheckoutShipping = () => {
       <div className={style['shipping__wrapper']}>
         {
           !isShippingRequired ?
-            <div className={style['shipping__pickup-banner']}>
-              <div className={style['shipping__pickup-banner__icon-wrap']}>
-                {PICKUP_BANNER.icon}
-              </div>
-              <div className={style['shipping__pickup-banner__body']}>
-                <span className={style['shipping__pickup-banner__title']}>{PICKUP_BANNER.title}</span>
-                <p className={style['shipping__pickup-banner__description']}>
-                  {PICKUP_BANNER.description}
-                </p>
-                <ul className={style['shipping__pickup-banner__details']}>
-                  {PICKUP_BANNER.details.map((item, index) => (
-                    <li key={index}>
-                      {item.icon}
-                      {item.text}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <InfoBanner {...PICKUP_BANNER} />
             :
             <>
               <div className={style['shipping__header']}>

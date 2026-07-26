@@ -3,18 +3,10 @@ import { FaCreditCard, FaPaypal } from 'react-icons/fa'
 import { SiKlarna, SiSepa } from 'react-icons/si'
 import { LuBanknote, LuHandCoins, LuClipboardCheck, LuCircleAlert, LuShieldCheck, LuClock, LuTruck, LuPlaneTakeoff, LuStore, LuRefreshCw, LuHouse, LuPackageOpen, LuMapPin } from 'react-icons/lu'
 import { DeliveryStatus, OrderStatus, PaymentStatus } from '@/entities/order/model/types'
+import type { InfoBannerItem, InfoBannerProps } from '@/shared/ui'
 
-export interface PaymentDetailItem {
-  icon: ReactNode
-  text: string
-}
-
-export interface PaymentBanner {
-  icon: ReactNode
-  title: string
-  description: string
-  details: PaymentDetailItem[]
-}
+export type PaymentDetailItem = InfoBannerItem
+export type PaymentBanner = InfoBannerProps
 
 export interface PaymentConfig {
   id: string

@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema'
 import { useCheckoutContext } from '@/features/checkout-process/model/CheckoutContext';
 import { PAYMENT_CONFIG } from '@/entities/order';
+import { InfoBanner } from '@/shared/ui';
 
 export const CheckoutPayments = () => {
   const { formState: { errors, isSubmitted } } = useFormContext<CheckoutFormValues>()
@@ -46,23 +47,7 @@ export const CheckoutPayments = () => {
 
       {banner && (
         <div className={style['payment__wrapper']}>
-          <div className={style['payment__cash-banner']}>
-            <div className={style['payment__cash-banner__icon-wrap']}>
-              {banner.icon}
-            </div>
-            <div className={style['payment__cash-banner__body']}>
-              <span className={style['payment__cash-banner__title']}>{banner.title}</span>
-              <p className={style['payment__cash-banner__description']}>{banner.description}</p>
-              <ul className={style['payment__cash-banner__details']}>
-                {banner.details.map((item, i) => (
-                  <li key={i}>
-                    {item.icon}
-                    {item.text}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <InfoBanner {...banner} />
         </div>
       )}
     </section>
