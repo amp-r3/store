@@ -5,7 +5,6 @@ import { useProductsByIds } from '@/entities/product';
 import { calculateCartTotals } from '@/entities/cart';
 import { selectCheckoutItemsArray } from "@/features/checkout-process";
 import { CartItemDetails, CartProduct } from "@/entities/cart";
-import { useGetDeliveryMethodsQuery } from '@/entities/order';
 
 interface CheckoutDetailsReturn {
   checkoutItems: CartProduct[];
@@ -17,13 +16,8 @@ interface CheckoutDetailsReturn {
   isEmpty: boolean;
 }
 
-export const useCheckoutDetails = (): CheckoutDetailsReturn => {
+export const useCheckoutDetails = (freeShippingThreshold: number | null): CheckoutDetailsReturn => {
   const checkoutItems = useAppSelector(selectCheckoutItemsArray);
-  const { data: deliveryMethods, isLoading: isDeliveryLoading, isFetching: isDeliveryFetching, isError: isDeliveryError } = useGetDeliveryMethodsQuery();
-
-  const freeShippingThreshold = deliveryMethods?.find(
-    (method) => method && method.freeFromPrice !== null && method.freeFromPrice > 0
-  )?.freeFromPrice ?? null;
 
   const productIds = useMemo(
     () => checkoutItems.map((item: CartProduct) => item.productId),
@@ -61,9 +55,9 @@ export const useCheckoutDetails = (): CheckoutDetailsReturn => {
     checkoutItems,
     checkoutDetails,
     totals,
-    isLoading: isProductsLoading || isDeliveryLoading,
-    isFetching: isProductsFetching || isDeliveryFetching,
-    isError: isProductsError || isDeliveryError,
+    isLoading: isProductsLoading,
+    isFetching: isProductsFetching,
+    isError: isProductsError,
     isEmpty: checkoutItems.length === 0,
   };
 };

@@ -1,23 +1,17 @@
-import { FC } from 'react';
-import { StepType, CHECKOUT_STEPS } from '@/features/checkout-process';
+import { STEPS_ORDER, CHECKOUT_STEPS, useCheckoutContext } from '@/features/checkout-process';
 import style from './checkout-step-bar.module.scss';
 
-interface CheckoutStepBarProps {
-  currentStep: StepType;
-  highestStepIndex: number;
-  stepsOrder: readonly StepType[];
-  setStep(step: StepType): void;
-}
+export const CheckoutStepBar = () => {
+  const { step: currentStep, maxReachedIndex, goToStep } = useCheckoutContext();
 
-export const CheckoutStepBar: FC<CheckoutStepBarProps> = ({ currentStep, stepsOrder, highestStepIndex, setStep }) => {
   return (
     <nav className={style['step-bar']}>
       {
-        stepsOrder.map((step, index) => {
-          const isClickable = index <= highestStepIndex;
+        STEPS_ORDER.map((step, index) => {
+          const isClickable = index <= maxReachedIndex;
           const isActive = step === currentStep;
           const config = CHECKOUT_STEPS[step];
-          const isLast = index === stepsOrder.length - 1;
+          const isLast = index === STEPS_ORDER.length - 1;
 
           return (
             <button
@@ -26,7 +20,7 @@ export const CheckoutStepBar: FC<CheckoutStepBarProps> = ({ currentStep, stepsOr
               className={`${style['step-bar__tab']} ${isActive ? style['step-bar__tab--active'] : ''}`}
               disabled={!isClickable}
               aria-current={isActive ? 'step' : undefined}
-              onClick={() => setStep(step)}
+              onClick={() => goToStep(step)}
             >
               <span className={style['step-bar__num']}>{config.order}</span>
               <span className={style['step-bar__label']}>{config.label}</span>

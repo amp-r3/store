@@ -20,6 +20,7 @@ export const PaymentOption: FC<PaymentOptionProps> = ({ option, isSelected, icon
         type="radio"
         name="paymentMethod"
         value={option.id}
+        checked={isSelected}
         onChange={() => handleSelect(option.id, option.code)}
         className={style['payment__option__radio']}
       />

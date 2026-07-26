@@ -1,25 +1,15 @@
 import { FormField } from "@/shared/ui"
 import style from './checkout-shipping.module.scss'
-import { FC } from "react"
 import { useFormContext } from "react-hook-form";
 import { CheckoutFormValues } from "@/features/checkout-process/model/checkoutMasterSchema";
 import { LuHouse, LuClock, LuPackageOpen, LuMapPin } from "react-icons/lu";
-import { DeliveryMethod, DeliveryOptions } from "@/entities/order";
+import { useCheckoutContext } from "@/features/checkout-process/model/CheckoutContext";
 import { DeliveryOption } from "./DeliveryOption/DeliveryOption";
 import { DeliveryOptionSkeleton } from "./DeliveryOption/DeliveryOptionSkeleton";
 
-
-interface CheckoutShippingProps {
-  isLoading: boolean;
-  selectedDelivery?: DeliveryMethod;
-  deliveryOptions?: DeliveryMethod[];
-  isShippingRequiered: boolean;
-  cartTotal: number;
-  handleSelect(id: string, name: DeliveryOptions): void;
-}
-
-export const CheckoutShipping: FC<CheckoutShippingProps> = ({ deliveryOptions, isLoading, selectedDelivery, handleSelect, isShippingRequiered, cartTotal }) => {
+export const CheckoutShipping = () => {
   const { register, formState: { errors } } = useFormContext<CheckoutFormValues>();
+  const { deliveryMethods, selectedDelivery, isDeliveryLoading, isShippingRequired, totals, selectDelivery } = useCheckoutContext();
 
   return (
     <section className={style['shipping']}>
@@ -31,16 +21,16 @@ export const CheckoutShipping: FC<CheckoutShippingProps> = ({ deliveryOptions, i
         )}
         <h2 className={style['shipping__title']}>Delivery Method</h2>
         {
-          isLoading ? Array.from({ length: 3 }).map((_, index) => (
+          isDeliveryLoading ? Array.from({ length: 3 }).map((_, index) => (
             <DeliveryOptionSkeleton key={`skeleton-mock-${index}`} />
           )) :
-            deliveryOptions?.map(opt => {
+            deliveryMethods?.map(opt => {
               const isSelected = selectedDelivery?.id === opt.id;
               return (
                 <DeliveryOption
-                  handleSelect={handleSelect}
+                  handleSelect={selectDelivery}
                   isSelected={isSelected}
-                  cartTotal={cartTotal}
+                  cartTotal={totals.total}
                   option={opt}
                   key={opt.id}
                 />
@@ -51,7 +41,7 @@ export const CheckoutShipping: FC<CheckoutShippingProps> = ({ deliveryOptions, i
 
       <div className={style['shipping__wrapper']}>
         {
-          !isShippingRequiered ?
+          !isShippingRequired ?
             <div className={style['shipping__pickup-banner']}>
               <div className={style['shipping__pickup-banner__icon-wrap']}>
                 <LuHouse aria-hidden="true" />

@@ -1,75 +1,37 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import {
-  HiLocationMarker,
-  HiCreditCard,
-  HiArrowRight,
-  HiCheckCircle,
-  HiChevronDown,
-  HiExclamationCircle
-} from "react-icons/hi";
-import { CartProduct, CartItemDetails } from '@/entities/cart';
-import { StepType } from '../../model/types';
-import { DeliveryMethod, PaymentMethod, remainingForFreeDelivery } from '@/entities/order';
+import { HiArrowRight, HiChevronDown, HiExclamationCircle } from "react-icons/hi";
+import { remainingForFreeDelivery } from '@/entities/order';
 import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema';
+import { CHECKOUT_STEPS } from '@/features/checkout-process/model/checkoutConfig';
+import { useCheckoutContext } from '@/features/checkout-process/model/CheckoutContext';
 import style from './checkout-summary.module.scss';
 import { formatPrice } from "@/shared/lib";
 import { useHaptics } from "@/shared/lib/hooks";
-import { useCheckoutTotals } from "@/features/checkout-process";
 import { CartItem, CartItemSkeleton } from "@/entities/cart";
 
-interface CheckoutSummaryProps {
-  cartItems: CartProduct[];
-  cartDetails: (CartItemDetails | null)[];
-  subtotal: number;
-  cartTotal: number;
-  discountAmount: number;
-  discountPercent: number;
-  step: StepType;
-  selectedDelivery?: DeliveryMethod;
-  selectedPayment?: PaymentMethod;
-  error?: string;
-  isLastStep: boolean;
-  isCreating: boolean;
-  isLoading: boolean;
-  handleNextStep(): void;
-  onSubmit: (formData: CheckoutFormValues) => Promise<void>;
-}
-
-export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
-  cartDetails,
-  cartItems,
-  cartTotal,
-  subtotal,
-  discountAmount,
-  discountPercent,
-  step,
-  selectedDelivery,
-  selectedPayment,
-  isLastStep,
-  isLoading,
-  isCreating,
-  handleNextStep,
-  error,
-  onSubmit,
-}) => {
+export const CheckoutSummary = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { soft } = useHaptics();
 
   const {
-    deliveryCost,
-    feePercentage,
-    feePercentageAmount,
-    feeFixed,
-    finalTotalPrice
-  } = useCheckoutTotals({
-    cartTotal,
+    checkoutItems,
+    checkoutDetails,
+    totals,
+    orderTotals,
     selectedDelivery,
     selectedPayment,
-  });
+    step,
+    isLastStep,
+    isLoading,
+    isSubmitting,
+    goNext,
+  } = useCheckoutContext();
 
+  const { subtotal, discountAmount, discountPercent, total: cartTotal } = totals;
+  const { deliveryCost, feePercentage, feePercentageAmount, feeFixed, finalTotalPrice } = orderTotals;
 
-  const methods = useFormContext<CheckoutFormValues>();
+  const { formState: { errors } } = useFormContext<CheckoutFormValues>();
 
   const hasDiscount = discountAmount > 0;
   const hasFreeShipping = deliveryCost === 0;
@@ -81,23 +43,7 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  const getButtonText = () => {
-    switch (step) {
-      case 'contacts': return 'Continue to Delivery';
-      case 'delivery': return 'Continue to Payment';
-      case 'payment': return 'Place Order';
-      default: return 'Continue';
-    }
-  };
-
-  const getButtonIcon = () => {
-    switch (step) {
-      case 'contacts': return <HiLocationMarker />;
-      case 'delivery': return <HiCreditCard />;
-      case 'payment': return <HiCheckCircle />;
-      default: return null;
-    }
-  };
+  const { cta, ctaIcon } = CHECKOUT_STEPS[step];
 
   return (
     <aside className={style.summary}>
@@ -124,8 +70,8 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
             ? Array.from({ length: 3 }).map((_, index) => (
               <CartItemSkeleton key={`skeleton-mock-${index}`} />
             ))
-            : cartItems.map((item, index) => {
-              const details = cartDetails[index];
+            : checkoutItems.map((item, index) => {
+              const details = checkoutDetails[index];
               if (!details) return null;
               return (
               <CartItem
@@ -224,10 +170,10 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
         </p>
       </div>
 
-      {error && (
+      {errors.root?.message && (
         <div className={style.summary__error} role="alert">
           <HiExclamationCircle className={style['summary__error-icon']} />
-          <span className={style['summary__error-text']}>{error}</span>
+          <span className={style['summary__error-text']}>{errors.root.message}</span>
         </div>
       )}
 
@@ -240,19 +186,18 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
 
         <button
           className={style.summary__cta}
-          disabled={isCreating}
-          type="button"
-          onClick={isLastStep ? methods.handleSubmit(onSubmit) : handleNextStep}
+          disabled={isSubmitting}
+          type={isLastStep ? 'submit' : 'button'}
+          form={isLastStep ? 'checkout-form' : undefined}
+          onClick={isLastStep ? undefined : goNext}
         >
-          {isCreating ? 'Loading...' : (
+          {isSubmitting ? 'Loading...' : (
             <>
-              {getButtonIcon() && (
-                <span className={style.summary__cta__icon_step}>
-                  {getButtonIcon()}
-                </span>
-              )}
+              <span className={style.summary__cta__icon_step}>
+                {ctaIcon}
+              </span>
               <span className={style.summary__cta__label}>
-                {getButtonText()}
+                {cta}
               </span>
               <span className={style.summary__cta__icon_arrow}>
                 <HiArrowRight />
