@@ -2,7 +2,6 @@ import type { FactoryOpts } from 'imask';
 
 export const PHONE_MASK: FactoryOpts = {
   mask: '+{1} (000) 000-0000',
-  lazy: false,
 };
 
 // Keyed by lowercased country name — the checkout address form takes free-text

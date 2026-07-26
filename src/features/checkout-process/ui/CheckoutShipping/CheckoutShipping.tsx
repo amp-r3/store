@@ -1,15 +1,17 @@
-import { FormField } from "@/shared/ui"
+import { FormField, MaskedFormField } from "@/shared/ui"
 import style from './checkout-shipping.module.scss'
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { CheckoutFormValues } from "@/features/checkout-process/model/checkoutMasterSchema";
 import { LuHouse, LuClock, LuPackageOpen, LuMapPin } from "react-icons/lu";
 import { useCheckoutContext } from "@/features/checkout-process/model/CheckoutContext";
+import { getPostcodeMask } from "@/shared/config";
 import { DeliveryOption } from "./DeliveryOption/DeliveryOption";
 import { DeliveryOptionSkeleton } from "./DeliveryOption/DeliveryOptionSkeleton";
 
 export const CheckoutShipping = () => {
-  const { register, formState: { errors } } = useFormContext<CheckoutFormValues>();
+  const { register, control, watch, formState: { errors } } = useFormContext<CheckoutFormValues>();
   const { deliveryMethods, selectedDelivery, isDeliveryLoading, isShippingRequired, totals, selectDelivery } = useCheckoutContext();
+  const country = watch('country');
 
   return (
     <section className={style['shipping']}>
@@ -74,12 +76,14 @@ export const CheckoutShipping = () => {
                 <FormField
                   label="Country"
                   placeholder="United States"
+                  autoComplete="country-name"
                   error={errors.country?.message}
                   {...register('country')}
                 />
                 <FormField
                   label="City"
                   placeholder="New York"
+                  autoComplete="address-level2"
                   error={errors.city?.message}
                   {...register('city')}
                 />
@@ -87,6 +91,7 @@ export const CheckoutShipping = () => {
               <FormField
                 label="Street Address"
                 placeholder="123 Main Street"
+                autoComplete="address-line1"
                 error={errors.street?.message}
                 {...register('street')}
               />
@@ -94,14 +99,26 @@ export const CheckoutShipping = () => {
                 <FormField
                   label="House number"
                   placeholder="67"
+                  autoComplete="address-line2"
                   error={errors.housenumber?.message}
                   {...register('housenumber')}
                 />
-                <FormField
-                  label="ZIP / Postal Code"
-                  placeholder="10001"
-                  error={errors.postcode?.message}
-                  {...register('postcode')}
+                <Controller
+                  name="postcode"
+                  control={control}
+                  render={({ field }) => (
+                    <MaskedFormField
+                      label="ZIP / Postal Code"
+                      placeholder="10001"
+                      maskOptions={getPostcodeMask(country)}
+                      value={field.value ?? ''}
+                      onAccept={field.onChange}
+                      onBlur={field.onBlur}
+                      inputMode="text"
+                      autoComplete="postal-code"
+                      error={errors.postcode?.message}
+                    />
+                  )}
                 />
               </div>
             </>
