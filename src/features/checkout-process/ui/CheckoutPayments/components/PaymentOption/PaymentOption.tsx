@@ -1,4 +1,5 @@
 import { PaymentMethod, PaymentOptions } from '@/entities/order';
+import { RadioCard } from '@/shared/ui';
 import style from './payment-option.module.scss'
 import { FC } from 'react';
 
@@ -12,20 +13,15 @@ interface PaymentOptionProps {
 
 export const PaymentOption: FC<PaymentOptionProps> = ({ option, isSelected, icon, label, handleSelect }) => {
   return (
-    <label
-      key={option.id}
-      className={`${style['payment__option']} ${isSelected ? style['payment__option--active'] : ''}`}
+    <RadioCard
+      variant="tile"
+      name="paymentMethod"
+      value={option.id}
+      isSelected={isSelected}
+      onSelect={() => handleSelect(option.id, option.code)}
     >
-      <input
-        type="radio"
-        name="paymentMethod"
-        value={option.id}
-        checked={isSelected}
-        onChange={() => handleSelect(option.id, option.code)}
-        className={style['payment__option__radio']}
-      />
       <span className={style['payment__option__icon']}>{icon}</span>
       <span className={style['payment__option__label']}>{label}</span>
-    </label>
+    </RadioCard>
   )
 }

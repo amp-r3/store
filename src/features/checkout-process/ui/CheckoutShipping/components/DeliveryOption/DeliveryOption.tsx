@@ -1,4 +1,5 @@
 import { DeliveryMethod, DeliveryOptions, isDeliveryFree } from '@/entities/order';
+import { RadioCard } from '@/shared/ui';
 import style from './delivery-option.module.scss'
 import { formatPrice } from '@/shared/lib';
 import { FC } from 'react';
@@ -14,23 +15,13 @@ export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, ca
   const isFree = isDeliveryFree(option, cartTotal);
 
   return (
-    <label
-      key={option.id}
-      className={[
-        style['delivery-option'],
-        isSelected ? style['delivery-option--active'] : '',
-        !option.isActive ? style['delivery-option--disabled'] : '',
-      ].filter(Boolean).join(' ')}
+    <RadioCard
+      name="deliveryMethod"
+      value={option.id}
+      isSelected={isSelected}
+      disabled={!option.isActive}
+      onSelect={() => handleSelect(option.id, option.code)}
     >
-      <input
-        type="radio"
-        name="deliveryMethod"
-        value={option.id}
-        checked={isSelected}
-        disabled={!option.isActive}
-        className={style['delivery-option__radio']}
-        onChange={() => handleSelect(option.id, option.code)}
-      />
       <span className={style['delivery-option__dot']}></span>
       <div className={style['delivery-option__info']}>
         <span className={style['delivery-option__label']}>
@@ -46,6 +37,6 @@ export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, ca
       <span className={style['delivery-option__price']}>
         {isFree ? 'Free' : formatPrice(option.price)}
       </span>
-    </label>
+    </RadioCard>
   )
 }

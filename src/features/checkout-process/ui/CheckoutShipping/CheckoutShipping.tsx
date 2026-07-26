@@ -5,8 +5,7 @@ import { CheckoutFormValues } from "@/features/checkout-process/model/checkoutMa
 import { useCheckoutContext } from "@/features/checkout-process/model/CheckoutContext";
 import { getPostcodeMask } from "@/shared/config";
 import { PICKUP_BANNER } from "@/entities/order";
-import { DeliveryOption } from "./DeliveryOption/DeliveryOption";
-import { DeliveryOptionSkeleton } from "./DeliveryOption/DeliveryOptionSkeleton";
+import { DeliveryOption, DeliveryOptionSkeleton } from "./components";
 
 export const CheckoutShipping = () => {
   const { register, control, watch, formState: { errors } } = useFormContext<CheckoutFormValues>();
