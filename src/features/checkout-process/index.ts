@@ -9,6 +9,7 @@ export * from './ui/CheckoutContacts/CheckoutContacts';
 export * from './ui/CheckoutPayments/CheckoutPayments';
 export * from './ui/CheckoutShipping/CheckoutShipping';
 export * from './ui/CheckoutSummary/CheckoutSummary';
+export * from './ui/CheckoutStepBar/CheckoutStepBar';
 
 export * from './model/useCheckoutDetails';
 export * from './model/useCheckoutTotals';

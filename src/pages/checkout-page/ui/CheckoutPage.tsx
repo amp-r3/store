@@ -1,4 +1,3 @@
-import { CheckoutStepBar } from "./components";
 import { PageLayout, HOME_CRUMB } from "@/shared/ui"
 import styles from './checkout-page.module.scss'
 import { useFormContext } from "react-hook-form";
@@ -7,6 +6,7 @@ import {
   CheckoutPayments,
   CheckoutSummary,
   CheckoutShipping,
+  CheckoutStepBar,
   CheckoutProvider,
   useCheckoutContext,
   CheckoutFormValues,
