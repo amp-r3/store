@@ -1,10 +1,5 @@
 import { FC } from 'react';
-import { StepType } from '@/features/checkout-process';
-import {
-  HiOutlineUser, HiUser,
-  HiOutlineMapPin, HiMapPin,
-  HiOutlineCreditCard, HiCreditCard
-} from "react-icons/hi2";
+import { StepType, CHECKOUT_STEPS } from '@/features/checkout-process';
 import style from './checkout-step-bar.module.scss';
 
 interface CheckoutStepBarProps {
@@ -21,6 +16,8 @@ export const CheckoutStepBar: FC<CheckoutStepBarProps> = ({ currentStep, stepsOr
         stepsOrder.map((step, index) => {
           const isClickable = index <= highestStepIndex;
           const isActive = step === currentStep;
+          const config = CHECKOUT_STEPS[step];
+          const isLast = index === stepsOrder.length - 1;
 
           return (
             <button
@@ -28,44 +25,15 @@ export const CheckoutStepBar: FC<CheckoutStepBarProps> = ({ currentStep, stepsOr
               type="button"
               className={`${style['step-bar__tab']} ${isActive ? style['step-bar__tab--active'] : ''}`}
               disabled={!isClickable}
+              aria-current={isActive ? 'step' : undefined}
               onClick={() => setStep(step)}
             >
-              {
-                step === 'contacts' && (
-                  <>
-                    <span className={style['step-bar__num']}>01</span>
-                    <span className={style['step-bar__label']}>Contacts</span>
-                    <span className={style['step-bar__icon']}>
-                      {step === 'contacts' ? <HiUser /> : <HiOutlineUser />}
-                    </span>
-                    <div className={style['step-bar__divider']} />
-                  </>
-                )
-              }
-              {
-                step === 'delivery' && (
-                  <>
-                    <span className={style['step-bar__num']}>02</span>
-                    <span className={style['step-bar__label']}>Delivery</span>
-                    <span className={style['step-bar__icon']}>
-                      {step === 'delivery' ? <HiMapPin /> : <HiOutlineMapPin />}
-                    </span>
-                    <div className={style['step-bar__divider']} />
-                  </>
-                )
-              }
-              {
-                step === 'payment' && (
-                  <>
-                    <span className={style['step-bar__num']}>03</span>
-                    <span className={style['step-bar__label']}>Payment</span>
-                    <span className={style['step-bar__icon']}>
-                      {step === 'payment' ? <HiCreditCard /> : <HiOutlineCreditCard />}
-                    </span>
-
-                  </>
-                )
-              }
+              <span className={style['step-bar__num']}>{config.order}</span>
+              <span className={style['step-bar__label']}>{config.label}</span>
+              <span className={style['step-bar__icon']}>
+                {isActive ? config.iconActive : config.icon}
+              </span>
+              {!isLast && <div className={style['step-bar__divider']} />}
             </button>
           )
         })
