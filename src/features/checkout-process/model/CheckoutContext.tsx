@@ -1,6 +1,7 @@
 import { createContext, FC, ReactNode, useContext, useEffect, useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
+import { Modal } from '@/shared/ui';
 import {
   selectCartItemsArray,
   CartProduct,
@@ -19,6 +20,7 @@ import { useCheckoutStepper } from './useCheckoutStepper';
 import { useCheckoutSubmit } from './useCheckoutSubmit';
 import { useCheckoutTotals } from './useCheckoutTotals';
 import { useCheckoutDraft } from './useCheckoutDraft';
+import { useCheckoutLeaveGuard } from './useCheckoutLeaveGuard';
 import { CheckoutFormValues } from './checkoutMasterSchema';
 
 interface CheckoutContextValue {
@@ -73,6 +75,8 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
     paymentMethods: delivery.paymentMethods,
   });
 
+  const { blocker, markSubmitted } = useCheckoutLeaveGuard(methods.formState.isDirty);
+
   useEffect(() => {
     if (details.isEmpty && cartItems.length > 0) {
       dispatch(addToCheckout(cartItems));
@@ -95,6 +99,7 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
     checkoutItems: details.checkoutItems,
     isShippingRequired: delivery.isShippingRequired,
     setError,
+    markSubmitted,
   });
 
   const value = useMemo<CheckoutContextValue>(() => ({
@@ -132,6 +137,18 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
     <FormProvider {...methods}>
       <CheckoutContext.Provider value={value}>
         {children}
+
+        <Modal
+          isOpen={blocker.state === 'blocked'}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) blocker.reset?.();
+          }}
+          title="Leave checkout?"
+          description="You have unsaved changes. Your progress is saved as a draft, but delivery and payment selections will need another look next time."
+          actionLabel="Leave"
+          actionVariant="danger"
+          onAction={() => blocker.proceed?.()}
+        />
       </CheckoutContext.Provider>
     </FormProvider>
   );
