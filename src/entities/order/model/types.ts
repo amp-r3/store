@@ -1,3 +1,5 @@
+import { Product } from "@/entities/product";
+
 export type PaymentOptions = 'cash_on_delivery' | 'online_card' | 'paypal' | 'sepa' | 'klarna';
 export type DeliveryOptions = 'standard' | 'express' | 'pickup';
 
@@ -43,7 +45,6 @@ export interface CreateOrderPayload {
   p_delivery_method_id: string;
   p_items: CheckoutCartItem[];
 }
-import { Product } from "@/entities/product";
 
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled';
 export type PaymentStatus = 'awaiting_payment' | 'paid' | 'failed' | 'refunded';

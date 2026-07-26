@@ -9,15 +9,16 @@ import { DeliveryOption } from "./DeliveryOption/DeliveryOption";
 import { DeliveryOptionSkeleton } from "./DeliveryOption/DeliveryOptionSkeleton";
 
 
-interface CheckoutShipping {
+interface CheckoutShippingProps {
   isLoading: boolean;
   selectedDelivery?: DeliveryMethod;
   deliveryOptions?: DeliveryMethod[];
   isShippingRequiered: boolean;
+  cartTotal: number;
   handleSelect(id: string, name: DeliveryOptions): void;
 }
 
-export const CheckoutShipping: FC<CheckoutShipping> = ({ deliveryOptions, isLoading, selectedDelivery, handleSelect, isShippingRequiered }) => {
+export const CheckoutShipping: FC<CheckoutShippingProps> = ({ deliveryOptions, isLoading, selectedDelivery, handleSelect, isShippingRequiered, cartTotal }) => {
   const { register, formState: { errors } } = useFormContext<CheckoutFormValues>();
 
   return (
@@ -36,7 +37,13 @@ export const CheckoutShipping: FC<CheckoutShipping> = ({ deliveryOptions, isLoad
             deliveryOptions?.map(opt => {
               const isSelected = selectedDelivery?.id === opt.id;
               return (
-                <DeliveryOption handleSelect={handleSelect} isSelected={isSelected} option={opt} key={opt.id} />
+                <DeliveryOption
+                  handleSelect={handleSelect}
+                  isSelected={isSelected}
+                  cartTotal={cartTotal}
+                  option={opt}
+                  key={opt.id}
+                />
               )
             })
         }

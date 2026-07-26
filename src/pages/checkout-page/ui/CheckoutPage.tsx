@@ -164,15 +164,7 @@ export const CheckoutPage = () => {
   };
 
 
-  const updatedDeliveryMethods = deliveryMethods?.map((opt) => {
-
-    if (opt.code === 'standard' && totals.remainingForFreeShipping <= 0) {
-      return { ...opt, price: 0 }
-    }
-
-    return opt
-  })
-  const selectedDeliveryMethod = updatedDeliveryMethods?.find(method => method?.code === deliveryCode);
+  const selectedDeliveryMethod = deliveryMethods?.find(method => method?.code === deliveryCode);
   const selectedPaymentMethod = paymentMethods?.find(method => method.code === paymentCode)
 
 
@@ -208,8 +200,9 @@ export const CheckoutPage = () => {
                   <CheckoutShipping
                     isLoading={isDeliveryLoading}
                     selectedDelivery={selectedDeliveryMethod}
-                    deliveryOptions={updatedDeliveryMethods}
+                    deliveryOptions={deliveryMethods}
                     isShippingRequiered={isShippingRequired}
+                    cartTotal={totals.total}
                     handleSelect={handleDeliverySelect}
                   />
                 )}
@@ -231,7 +224,6 @@ export const CheckoutPage = () => {
                 cartTotal={totals.total}
                 discountAmount={totals.discountAmount}
                 discountPercent={totals.discountPercent}
-                remainingForFreeShipping={totals.remainingForFreeShipping}
 
                 selectedDelivery={selectedDeliveryMethod}
                 selectedPayment={selectedPaymentMethod}

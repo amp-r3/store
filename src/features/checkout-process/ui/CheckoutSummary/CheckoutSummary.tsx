@@ -10,7 +10,7 @@ import {
 } from "react-icons/hi";
 import { CartProduct, CartItemDetails } from '@/entities/cart';
 import { StepType } from '../../model/types';
-import { DeliveryMethod, PaymentMethod } from '@/entities/order';
+import { DeliveryMethod, PaymentMethod, remainingForFreeDelivery } from '@/entities/order';
 import { CheckoutFormValues } from '@/features/checkout-process/model/checkoutMasterSchema';
 import style from './checkout-summary.module.scss';
 import { formatPrice } from "@/shared/lib";
@@ -25,7 +25,6 @@ interface CheckoutSummaryProps {
   cartTotal: number;
   discountAmount: number;
   discountPercent: number;
-  remainingForFreeShipping: number;
   step: StepType;
   selectedDelivery?: DeliveryMethod;
   selectedPayment?: PaymentMethod;
@@ -44,7 +43,6 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   subtotal,
   discountAmount,
   discountPercent,
-  remainingForFreeShipping,
   step,
   selectedDelivery,
   selectedPayment,
@@ -66,7 +64,6 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
     finalTotalPrice
   } = useCheckoutTotals({
     cartTotal,
-    freeShippingThreshold: remainingForFreeShipping <= 0 ? 0 : null,
     selectedDelivery,
     selectedPayment,
   });
@@ -76,7 +73,8 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
 
   const hasDiscount = discountAmount > 0;
   const hasFreeShipping = deliveryCost === 0;
-  const almostFreeShipping = remainingForFreeShipping > 0 && selectedDelivery?.code === 'standard';
+  const remainingForDeliveryFree = remainingForFreeDelivery(selectedDelivery, cartTotal);
+  const almostFreeShipping = remainingForDeliveryFree > 0;
 
   const toggleExpanded = () => {
     soft();
@@ -170,11 +168,11 @@ export const CheckoutSummary: FC<CheckoutSummaryProps> = ({
 
               {almostFreeShipping && (
                 <p className={style['summary__shipping-hint']}>
-                  Add {formatPrice(remainingForFreeShipping)} more for free shipping
+                  Add {formatPrice(remainingForDeliveryFree)} more for free shipping
                 </p>
               )}
 
-              {hasFreeShipping && selectedDelivery?.id.toLowerCase().includes('standard') && (
+              {hasFreeShipping && selectedDelivery?.code === 'standard' && (
                 <p className={`${style['summary__shipping-hint']} ${style['summary__shipping-hint--active']}`}>
                   ✓ Free shipping applied
                 </p>

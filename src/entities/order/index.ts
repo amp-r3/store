@@ -7,3 +7,4 @@ export * from './ui/order-item/OrderItemSkeleton';
 export * from './model/useEnrichedOrderItems';
 export * from './model/types';
 export * from './config/order-management.config';
+export * from './lib/deliveryHelper';

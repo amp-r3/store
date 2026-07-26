@@ -1,4 +1,4 @@
-import { DeliveryMethod, DeliveryOptions } from '@/entities/order';
+import { DeliveryMethod, DeliveryOptions, isDeliveryFree } from '@/entities/order';
 import style from './delivery-option.module.scss'
 import { formatPrice } from '@/shared/lib';
 import { FC } from 'react';
@@ -6,10 +6,13 @@ import { FC } from 'react';
 interface DeliveryOptionProps {
   option: DeliveryMethod;
   isSelected: boolean;
+  cartTotal: number;
   handleSelect(id: string, code: DeliveryOptions): void;
 }
 
-export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, handleSelect }) => {
+export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, cartTotal, handleSelect }) => {
+  const isFree = isDeliveryFree(option, cartTotal);
+
   return (
     <label
       key={option.id}
@@ -23,6 +26,7 @@ export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, ha
         type="radio"
         name="deliveryMethod"
         value={option.id}
+        checked={isSelected}
         disabled={!option.isActive}
         className={style['delivery-option__radio']}
         onChange={() => handleSelect(option.id, option.code)}
@@ -40,7 +44,7 @@ export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, ha
         <span className={style['delivery-option__duration']}>{option.duration}</span>
       </div>
       <span className={style['delivery-option__price']}>
-        {option.price === 0 ? 'Free' : `${formatPrice(option.price)}`}
+        {isFree ? 'Free' : formatPrice(option.price)}
       </span>
     </label>
   )

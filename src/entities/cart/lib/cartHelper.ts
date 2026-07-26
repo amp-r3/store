@@ -62,7 +62,7 @@ export const calculateOrderTotals = ({
 }: OrderTotalsParams) => {
     const finalDeliveryCost = isDeliveryFree ? 0 : deliveryCost;
 
-    const feePercentageAmount = roundPrice(cartTotal * (paymentFeePercentage / 100));
+    const feePercentageAmount = roundPrice((cartTotal + finalDeliveryCost) * (paymentFeePercentage / 100));
     const totalPaymentFee = roundPrice(feePercentageAmount + paymentFeeFixed);
 
     const finalTotalPrice = roundPrice(cartTotal + finalDeliveryCost + totalPaymentFee);
