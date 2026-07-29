@@ -4,8 +4,7 @@ import { selectUser, useDeleteAccountMutation } from "@/entities/session"
 import { UserProfileForm, UserProfileView } from "@/features/profile-edit"
 import { useAppSelector } from "@/shared/model";
 import { getErrorMessage } from "@/shared/lib";
-
-import style from './user-page.module.scss'
+import { SectionHeader } from "@/shared/ui";
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
@@ -30,38 +29,32 @@ export const UserPage = () => {
 
   return (
     <>
-      <header className={style['user-page__content-header']}>
-        <h1 className={style['user-page__title']}>
-          {isEditing ? 'Edit Profile' : `Hello, ${user.username}!`}
-        </h1>
-        <p className={style['user-page__subtitle']}>
-          {isEditing
-            ? 'Update your personal information below.'
-            : 'You can edit fields or just look at your data.'}
-        </p>
-      </header>
+      <SectionHeader
+        title={isEditing ? 'Edit Profile' : `Hello, ${user.username}!`}
+        subtitle={isEditing
+          ? 'Update your personal information below.'
+          : 'You can edit fields or just look at your data.'}
+      />
 
-      <div className={style['user-page__content-body']}>
-        {!isEditing ? (
-          <UserProfileView
-            user={user}
-            providers={providers}
-            onEditClick={() => {
-              resetDeleteError()
-              setIsEditing(true)
-            }}
-            onDeleteAccount={handleDeleteAccount}
-            deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
-          />
-        ) : (
-          <UserProfileForm
-            user={user}
-            isGoogleUser={isGoogleUser}
-            onCancel={() => setIsEditing(false)}
-            onSuccess={() => setIsEditing(false)}
-          />
-        )}
-      </div>
+      {!isEditing ? (
+        <UserProfileView
+          user={user}
+          providers={providers}
+          onEditClick={() => {
+            resetDeleteError()
+            setIsEditing(true)
+          }}
+          onDeleteAccount={handleDeleteAccount}
+          deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
+        />
+      ) : (
+        <UserProfileForm
+          user={user}
+          isGoogleUser={isGoogleUser}
+          onCancel={() => setIsEditing(false)}
+          onSuccess={() => setIsEditing(false)}
+        />
+      )}
     </>
   )
 }

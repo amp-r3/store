@@ -1,9 +1,9 @@
 @use '@/app/styles/index' as *;
 
-.orders-tabs {
+.tabs {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(var(--tab-count), 1fr);
     gap: $spacing-xxs;
     padding: $spacing-xxs;
     border: 1px solid var(--border-color-light);
@@ -12,25 +12,22 @@
 }
 
 /** Sliding indicator behind the active tab. */
-.orders-tabs__pill {
+.tabs__pill {
     position: absolute;
     inset-block: $spacing-xxs;
     left: $spacing-xxs;
-    width: calc(50% - #{$spacing-xxs});
+    width: calc((100% - #{$spacing-xxs} * 2) / var(--tab-count));
     border-radius: $radius-pill;
     background: var(--primary-accent);
+    transform: translateX(calc(var(--tab-index) * 100%));
     transition: transform $transition-base $ease-out-expo;
-
-    &[data-tab='completed'] {
-        transform: translateX(100%);
-    }
 
     @media (prefers-reduced-motion: reduce) {
         transition: none;
     }
 }
 
-.orders-tabs__tab {
+.tabs__tab {
     position: relative;
     z-index: 1;
     display: inline-flex;
@@ -47,8 +44,7 @@
     font-size: $fs-sm;
     font-weight: $fw-semibold;
     color: var(--text-secondary);
-    transition:
-     color $transition-base $ease-in-out-smooth;
+    transition: color $transition-base $ease-in-out-smooth;
 
     &:focus-visible {
         outline: 2px solid var(--focus-ring-color);
@@ -68,7 +64,7 @@
     }
 }
 
-.orders-tabs__count {
+.tabs__count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -80,7 +76,7 @@
     color: var(--text-muted);
 }
 
-.orders-tabs__tab--active .orders-tabs__count {
+.tabs__tab--active .tabs__count {
     background: rgba(var(--text-on-accent-rgb), 0.12);
     color: var(--text-on-accent);
 }

@@ -3,7 +3,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LuAtSign, LuMail, LuUser } from "react-icons/lu"
 import { useUpdateProfileMutation, SessionUser } from "@/entities/session"
-import { FormField, Loader } from "@/shared/ui"
+import { Button, FormField } from "@/shared/ui"
 import { getErrorMessage } from "@/shared/lib"
 import { editProfileSchema, EditProfileSchema } from "../../model/editProfileSchema"
 
@@ -23,7 +23,6 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
     register,
     setError,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm<z.input<typeof editProfileSchema>, unknown, EditProfileSchema>({
     resolver: zodResolver(editProfileSchema),
@@ -62,11 +61,6 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
         });
       }
     }
-  }
-
-  const handleCancel = () => {
-    reset()
-    onCancel()
   }
 
   const emailDescription = !errors.email?.message && isGoogleUser
@@ -111,24 +105,13 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
         {...register('email')}
       />
 
-
-
       <div className={style['profile-form__actions']}>
-        <button
-          type="button"
-          className={style['profile-form__cancel-button']}
-          onClick={handleCancel}
-          disabled={isLoading}
-        >
+        <Button type="button" variant="ghost" onClick={onCancel} disabled={isLoading}>
           Cancel
-        </button>
-        <button
-          type="submit"
-          className={style['profile-form__submit-button']}
-          disabled={isLoading}
-        >
-          {isLoading ? <Loader size="sm" /> : 'Save Changes'}
-        </button>
+        </Button>
+        <Button type="submit" variant="primary" isLoading={isLoading}>
+          Save Changes
+        </Button>
       </div>
     </form>
   )

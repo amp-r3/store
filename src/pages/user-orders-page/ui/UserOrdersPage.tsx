@@ -9,6 +9,7 @@ import { OrderDetails } from '@/widgets/order-details';
 import { CartProduct } from '@/entities/cart';
 import { ReviewTargetPicker, openReviewModal } from '@/features/order-review';
 import { useProductsByIds } from '@/entities/product';
+import { SectionHeader } from '@/shared/ui';
 import {
     useGetOrdersPaginationQuery,
     useGetOrdersScrollQuery,
@@ -20,7 +21,6 @@ import {
 } from '@/entities/order';
 
 import { UserOrdersTabs, UserOrdersEmpty } from './components';
-import style from './user-orders-page.module.scss';
 
 const formatOrderDate = (dateStr: string) =>
     new Date(dateStr).toLocaleString('en-US', {
@@ -158,17 +158,14 @@ export const UserOrdersPage = () => {
 
     return (
         <>
-            <header className={style['user-orders-page__content-header']}>
-                <h1 className={style['user-orders-page__title']}>My Orders</h1>
-                <p className={style['user-orders-page__subtitle']}>
-                    Track active orders and look back at everything you&apos;ve completed.
-                </p>
-            </header>
+            <SectionHeader
+                title="My Orders"
+                subtitle="Track active orders and look back at everything you've completed."
+            />
 
             <UserOrdersTabs tab={tab} counts={counts} onChange={handleTabChange} />
 
             <div
-                className={style['user-orders-page__content-body']}
                 role="tabpanel"
                 id={`user-orders-panel-${tab}`}
                 aria-labelledby={`user-orders-tab-${tab}`}

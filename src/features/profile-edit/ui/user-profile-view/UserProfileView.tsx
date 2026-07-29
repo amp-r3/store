@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal } from "@/shared/ui";
+import { Button, Modal } from "@/shared/ui";
 import { CgTrash } from "react-icons/cg";
 
 import style from './user-profile-view.module.scss';
@@ -58,20 +58,12 @@ export const UserProfileView = ({ user, onEditClick, providers, onDeleteAccount,
       <LinkedProviders providers={providers} />
 
       <div className={style['profile-view__action-buttons']}>
-        <button
-          className={style['profile-view__edit-button']}
-          onClick={onEditClick}
-        >
+        <Button variant="primary" onClick={onEditClick}>
           Edit Profile
-        </button>
-        <div className={style['profile-view__danger-row']}>
-          <button
-            className={style['profile-view__delete-button']}
-            onClick={() => setIsDeleteModalOpen(true)}
-          >
-            Delete Account
-          </button>
-        </div>
+        </Button>
+        <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
+          Delete Account
+        </Button>
       </div>
 
       {deleteError && (

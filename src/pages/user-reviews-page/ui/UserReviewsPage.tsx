@@ -1,20 +1,15 @@
 import { UserReviews } from '@/widgets/user-reviews';
-
-import style from './user-reviews-page.module.scss';
+import { SectionHeader } from '@/shared/ui';
 
 export const UserReviewsPage = () => {
     return (
         <>
-            <header className={style['user-reviews-page__content-header']}>
-                <h1 className={style['user-reviews-page__title']}>My Reviews</h1>
-                <p className={style['user-reviews-page__subtitle']}>
-                    Everything you&apos;ve rated, plus what&apos;s still waiting for your verdict.
-                </p>
-            </header>
+            <SectionHeader
+                title="My Reviews"
+                subtitle="Everything you've rated, plus what's still waiting for your verdict."
+            />
 
-            <div className={style['user-reviews-page__content-body']}>
-                <UserReviews />
-            </div>
+            <UserReviews />
         </>
     );
 };

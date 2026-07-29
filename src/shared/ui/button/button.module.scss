@@ -1,0 +1,88 @@
+@use '@/app/styles/index' as *;
+
+.button {
+  padding: $spacing-sm $spacing-lg;
+  border: none;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-xs;
+  min-height: $touch-target-comfortable;
+  width: 100%;
+  box-sizing: border-box;
+  transition:
+    background-color $transition-fast $ease-in-out-smooth,
+    border-color $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth,
+    transform $transition-fast $ease-in-out-smooth,
+    box-shadow $transition-fast $ease-in-out-smooth;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover,
+    &:active {
+      transform: none;
+    }
+  }
+}
+
+.primary {
+  background-color: var(--primary-accent);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-accent-sm);
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-accent-dark);
+    box-shadow: var(--shadow-accent-hover);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale($scale-down-sm);
+  }
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+
+  &:hover:not(:disabled) {
+    background-color: var(--border-color-subtle);
+    color: var(--text-primary);
+  }
+}
+
+.danger {
+  background: rgba(var(--error-color-rgb), 0.05);
+  color: var(--error-color);
+  border: 1px solid rgba(var(--error-color-rgb), 0.15);
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--error-color-rgb), 0.12);
+    border-color: rgba(var(--error-color-rgb), 0.3);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale($scale-down-sm);
+  }
+}

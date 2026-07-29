@@ -6,6 +6,7 @@ import {
     NotificationCard,
     NotificationCardSkeleton,
 } from '@/entities/notification';
+import { EmptyState, SectionHeader } from '@/shared/ui';
 import style from './user-notifications-page.module.scss';
 
 export const UserNotificationsPage = () => {
@@ -17,22 +18,20 @@ export const UserNotificationsPage = () => {
 
     return (
         <>
-            <header className={style['user-notifications-page__content-header']}>
-                <div className={style['user-notifications-page__heading']}>
-                    <h1 className={style['user-notifications-page__title']}>Notifications</h1>
-                    <p className={style['user-notifications-page__subtitle']}>
-                        Order updates, review reminders and price drops on your wishlist.
-                    </p>
-                </div>
-                <button
-                    type="button"
-                    className={style['user-notifications-page__mark-all']}
-                    disabled={!hasUnread || isMarkingAll}
-                    onClick={() => markAllRead()}
-                >
-                    Mark all as read
-                </button>
-            </header>
+            <SectionHeader
+                title="Notifications"
+                subtitle="Order updates, review reminders and price drops on your wishlist."
+                action={
+                    <button
+                        type="button"
+                        className={style['user-notifications-page__mark-all']}
+                        disabled={!hasUnread || isMarkingAll}
+                        onClick={() => markAllRead()}
+                    >
+                        Mark all as read
+                    </button>
+                }
+            />
 
             <div className={style['user-notifications-page__content-body']}>
                 {isLoading ? (
@@ -46,15 +45,11 @@ export const UserNotificationsPage = () => {
                         />
                     ))
                 ) : (
-                    <div className={style['user-notifications-page__empty']}>
-                        <span className={style['user-notifications-page__empty-icon']} aria-hidden="true">
-                            <LuBellOff />
-                        </span>
-                        <h3 className={style['user-notifications-page__empty-title']}>No notifications yet</h3>
-                        <p className={style['user-notifications-page__empty-text']}>
-                            Order updates, review reminders and price drops will show up here.
-                        </p>
-                    </div>
+                    <EmptyState
+                        icon={<LuBellOff />}
+                        title="No notifications yet"
+                        text="Order updates, review reminders and price drops will show up here."
+                    />
                 )}
             </div>
         </>
