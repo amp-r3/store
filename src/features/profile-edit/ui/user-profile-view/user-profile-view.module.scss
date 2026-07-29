@@ -41,7 +41,7 @@
 
 .profile-view__label {
   font-family: $font-display;
-  font-size: 0.75rem;
+  font-size: $fs-xs;
   text-transform: uppercase;
   letter-spacing: $letter-spacing-wider;
   color: var(--text-muted);
@@ -64,7 +64,7 @@
 
 .profile-view__providers-label {
   font-family: $font-display;
-  font-size: 0.75rem;
+  font-size: $fs-xs;
   text-transform: uppercase;
   letter-spacing: $letter-spacing-wider;
   font-weight: $fw-semibold;
