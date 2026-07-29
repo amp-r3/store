@@ -37,4 +37,10 @@
     color: var(--text-muted);
     margin: 0;
     line-height: $lh-relaxed;
+
+    // Only consumer today is the /user/* pages (UserLayout hides breadcrumbs
+    // at the same breakpoint) — safe to drop here for vertical density.
+    @media (max-width: 768px) {
+        display: none;
+    }
 }

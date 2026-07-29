@@ -3,8 +3,9 @@ import { Outlet, useLocation } from 'react-router';
 
 import { selectUser } from '@/entities/session';
 import { useAppSelector } from '@/shared/model';
+import { useMediaQuery } from '@/shared/lib/hooks';
 import { Loader, PageLayout, HOME_CRUMB, PROFILE_CRUMB, type BreadcrumbItem } from '@/shared/ui';
-import { ProfileSidebar } from '@/widgets/profile-sidebar';
+import { ProfileNav } from '@/widgets/profile-nav';
 
 import style from './user-layout.module.scss';
 
@@ -18,6 +19,7 @@ const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
 export const UserLayout = () => {
     const user = useAppSelector(selectUser);
     const { pathname } = useLocation();
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     if (!user) return null;
 
@@ -25,11 +27,11 @@ export const UserLayout = () => {
 
     return (
         <PageLayout
-            breadcrumbs={BREADCRUMBS[key] ?? BREADCRUMBS['/user']}
+            breadcrumbs={isMobile ? undefined : (BREADCRUMBS[key] ?? BREADCRUMBS['/user'])}
             className={style['user-layout']}
         >
             <div className={style['user-layout__grid']}>
-                <ProfileSidebar user={user} />
+                <ProfileNav user={user} />
 
                 <section className={style['user-layout__content']}>
                     <Suspense

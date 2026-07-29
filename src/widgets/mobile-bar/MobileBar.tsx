@@ -34,6 +34,7 @@ export const MobileBar = () => {
     const { totalQuantity: cartTotals, cartItems } = useCartDetails();
     const { totalQuantity: wishlistTotals } = useWishlistDetails();
     const { data: unreadCount } = useGetUnreadNotificationsCountQuery(undefined, { skip: !isAuth });
+    const isInUserSection = !!useMatch({ path: '/user', end: false });
 
     const productMatch = useMatch('/product/:id');
     const productId = productMatch?.params.id;
@@ -177,7 +178,7 @@ export const MobileBar = () => {
                         </button>
                         {isAuth ? (
                             <NavLink to="/user" aria-label="Open profile" className={navLinkClass} onClick={() => soft()}>
-                                {hasUnread && (
+                                {hasUnread && !isInUserSection && (
                                     <span className={style.navbar__badge}>
                                         {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
                                     </span>

@@ -27,6 +27,19 @@
   text-align: center;
   border-bottom: 1px solid var(--border-color-subtle);
   padding-bottom: $spacing-xl;
+  border-radius: $radius-lg;
+  text-decoration: none;
+  color: inherit;
+  transition: background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
 }
 
 .profile-sidebar__avatar {
@@ -119,116 +132,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.125rem;
-  height: 1.125rem;
+  min-width: $spacing-md;
+  height: $spacing-md;
   padding: 0 $spacing-xxs;
   border-radius: $radius-pill;
   background: var(--primary-accent);
   color: var(--text-inverse);
   font-size: $fs-xs;
   font-weight: $fw-bold;
-  line-height: 1;
-}
-
-.profile-sidebar__logout-button {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $radius-md;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-weight: $fw-normal;
-  font-size: $fs-sm;
-  background: transparent;
-  border: 1px solid transparent;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
-
-  .profile-sidebar__icon {
-    color: var(--error-color);
-    opacity: 0.8;
-    transition: opacity $transition-fast $ease-in-out-smooth;
-  }
-
-  &:hover {
-    color: var(--error-color);
-    background: rgba(var(--error-color-rgb), 0.06);
-    border-color: rgba(var(--error-color-rgb), 0.15);
-    transform: translateX(4px);
-
-    .profile-sidebar__icon {
-      opacity: 1;
-    }
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--focus-ring-color);
-    outline-offset: 2px;
-  }
-}
-
-@media (max-width: 768px) {
-  .profile-sidebar {
-    padding: 0;
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    position: relative;
-    top: 0;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    gap: 0;
-  }
-
-  .profile-sidebar__user-info {
-    display: none;
-  }
-
-  .profile-sidebar__nav {
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    /** Vertical padding keeps the hover lift and focus ring from being clipped by overflow-y: hidden. */
-    padding-block: $spacing-xs;
-    gap: $spacing-sm;
-    scrollbar-width: none;
-    min-width: 0;
-    width: 100%;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    mask-image: linear-gradient(to right, transparent 0, black $spacing-md, black calc(100% - #{$spacing-md}), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black $spacing-md, black calc(100% - #{$spacing-md}), transparent 100%);
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  .profile-sidebar__nav-link, .profile-sidebar__logout-button {
-    white-space: nowrap;
-    flex-shrink: 0;
-    background: var(--glass-background-subtle);
-    border-radius: $radius-pill;
-    border: 1px solid var(--border-color-subtle);
-    
-    &:hover {
-        transform: translateY(-2px);
-    }
-  }
-
-  .profile-sidebar__logout-button {
-    width: auto;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .profile-sidebar__nav-link, .profile-sidebar__logout-button {
-    transition: none;
-    &:hover {
-      transform: none;
-    }
-  }
+  line-height: $lh-ui;
 }
