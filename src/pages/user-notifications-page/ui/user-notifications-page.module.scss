@@ -2,6 +2,7 @@
 
 .user-notifications-page__mark-all {
   flex-shrink: 0;
+  min-height: $touch-target-min;
   padding: $spacing-xs $spacing-md;
   border-radius: $radius-lg;
   border: 1px solid var(--border-color-subtle);
@@ -27,6 +28,10 @@
   &:focus-visible {
     outline: 2px solid var(--focus-ring-color);
     outline-offset: 2px;
+  }
+
+  @media (max-width: 549px) {
+    width: 100%;
   }
 }
 
