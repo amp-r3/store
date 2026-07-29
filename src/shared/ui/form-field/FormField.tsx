@@ -5,16 +5,19 @@ import style from './form-field.module.scss';
 export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string | boolean;
+  /** Persistent, non-error helper text (e.g. "linked to Google") — unlike `error`, doesn't set `aria-invalid`. */
+  description?: string;
   optional?: boolean;
   icon?: ReactNode;
   placeholder?: string;
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, id, className, optional, icon, placeholder, type = 'text', ...props }, ref) => {
+  ({ label, error, description, id, className, optional, icon, placeholder, type = 'text', ...props }, ref) => {
     const generatedId = useId();
     const inputId = id || generatedId;
     const errorId = `${inputId}-error`;
+    const descriptionId = `${inputId}-description`;
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const isPasswordType = type === 'password';
@@ -49,7 +52,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
                 className || '',
               ].filter(Boolean).join(' ')}
               aria-invalid={!!error}
-              aria-describedby={error ? errorId : undefined}
+              aria-describedby={error ? errorId : description ? descriptionId : undefined}
               type={inputType}
               {...props}
             />
@@ -90,6 +93,12 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
         {typeof error === 'string' && error && (
           <span id={errorId} className={style.error} role="alert">
             {error}
+          </span>
+        )}
+
+        {!error && description && (
+          <span id={descriptionId} className={style.description}>
+            {description}
           </span>
         )}
 

@@ -11,7 +11,7 @@ import style from './user-page.module.scss'
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
   const navigate = useNavigate()
-  const [deleteAccount, { error: deleteError }] = useDeleteAccountMutation()
+  const [deleteAccount, { error: deleteError, reset: resetDeleteError }] = useDeleteAccountMutation()
 
   const providers = user?.app_metadata?.providers || [];
   const isGoogleUser = providers.includes('google');
@@ -47,7 +47,10 @@ export const UserPage = () => {
           <UserProfileView
             user={user}
             providers={providers}
-            onEditClick={() => setIsEditing(true)}
+            onEditClick={() => {
+              resetDeleteError()
+              setIsEditing(true)
+            }}
             onDeleteAccount={handleDeleteAccount}
             deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
           />

@@ -191,11 +191,9 @@ export const authApi = baseApi.injectEndpoints({
           return { error: { status: 500, data: error.message } };
         }
 
-        const { error: signOutError } = await supabase.auth.signOut();
-
-        if (signOutError) {
-          return { error: { status: signOutError.status || 500, data: signOutError.message } };
-        }
+        /** Fire-and-forget: the account is already gone, so a failed local
+         * sign-out shouldn't be reported as a failed deletion. */
+        void supabase.auth.signOut();
 
         return { data: null };
       }

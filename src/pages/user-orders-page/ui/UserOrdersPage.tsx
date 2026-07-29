@@ -43,6 +43,12 @@ export const UserOrdersPage = () => {
     const [page, setPage] = useState(1);
     const limit = isMobile ? 8 : 10;
 
+    /** Scroll (desktop) and pagination (mobile) queries accumulate/track `page`
+     * differently — crossing the breakpoint mid-list must restart it. */
+    useEffect(() => {
+        setPage(1);
+    }, [isMobile]);
+
     const scrollResult = useGetOrdersScrollQuery({ page, limit, scope: tab }, { skip: isMobile });
     const paginationResult = useGetOrdersPaginationQuery({ page, limit, scope: tab }, { skip: !isMobile });
     const { data: counts } = useGetOrderCountsQuery();
@@ -114,15 +120,18 @@ export const UserOrdersPage = () => {
         isFetching: isItemsFetching,
     } = useEnrichedOrderItems(activeOrder?.orderItems ?? []);
 
-    const orderCartProduct: CartProduct[] = items.map((item) => (
-        { quantity: item.quantity, productId: item.product.id, sizeId: item.sizeId }
-    ));
+    const orderCartProduct: CartProduct[] = useMemo(
+        () => items.map((item) => (
+            { quantity: item.quantity, productId: item.product.id, sizeId: item.sizeId }
+        )),
+        [items]
+    );
 
-    const goodsTotal = activeOrder ? (
+    const goodsTotal = useMemo(() => activeOrder ? (
         Number(activeOrder.totalAmount) -
         Number(activeOrder.deliveryCost) -
         Number(activeOrder.paymentFee)
-    ) : 0;
+    ) : 0, [activeOrder]);
 
     const handleRateClick = () => {
         setReviewItems(items);

@@ -4,8 +4,7 @@ import { FaUser, FaBoxOpen, FaStar } from 'react-icons/fa6';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { CgLogOut } from 'react-icons/cg';
 
-import { useAppDispatch } from '@/shared/model';
-import { logout, SessionUser, useSignOutMutation } from '@/entities/session';
+import { SessionUser, useSignOutMutation } from '@/entities/session';
 import { useGetUnreadNotificationsCountQuery } from '@/entities/notification';
 import { Modal } from '@/shared/ui';
 
@@ -16,7 +15,6 @@ interface ProfileSidebarProps {
 }
 
 export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [signOut] = useSignOutMutation();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -25,9 +23,8 @@ export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
 
   const handleLogout = async () => {
     setIsLogoutModalOpen(false);
-    dispatch(logout());
-    await signOut();
     navigate('/', { replace: true });
+    await signOut();
   };
 
   const getInitial = (name: string | null, username: string | null) => {
@@ -44,8 +41,8 @@ export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
         </div>
         <div className={style['profile-sidebar__details']}>
           <div className={style['profile-sidebar__name']}>
-            {user.firstName || user.lastName 
-              ? `${user.firstName || ''} ${user.lastName || ''}`.trim() 
+            {user.firstName || user.lastName
+              ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
               : `@${user.username}`}
           </div>
           {user.email && <div className={style['profile-sidebar__email']}>{user.email}</div>}
@@ -53,15 +50,15 @@ export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
       </div>
 
       <nav className={style['profile-sidebar__nav']}>
-        <NavLink 
-          to="/user" 
+        <NavLink
+          to="/user"
           end
           className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
         >
           <FaUser className={style['profile-sidebar__icon']} />
           <span>Profile</span>
         </NavLink>
-        
+
         <NavLink
           to="/user/orders"
           className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}

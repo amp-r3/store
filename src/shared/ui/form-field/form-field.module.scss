@@ -326,6 +326,13 @@ $label-notch-padding : $spacing-xxs;
   animation: slideDown $transition-fast $ease-out-expo;
 }
 
+.description {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  margin-left: $spacing-xs;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;

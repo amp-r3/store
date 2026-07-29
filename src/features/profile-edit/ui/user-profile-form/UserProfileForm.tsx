@@ -70,11 +70,9 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
     onCancel()
   }
 
-  const emailError = errors.email?.message
-    ? errors.email.message
-    : isGoogleUser
-      ? "Your email is linked to Google. You can't change it here."
-      : undefined;
+  const emailDescription = !errors.email?.message && isGoogleUser
+    ? "Your email is linked to Google. You can't change it here."
+    : undefined;
 
   return (
     <form className={style['profile-form']} onSubmit={handleSubmit(onSubmit)}>
@@ -109,7 +107,8 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
         label='Email'
         icon={<LuMail />}
         disabled={isGoogleUser}
-        error={emailError}
+        error={errors.email?.message}
+        description={emailDescription}
         {...register('email')}
       />
 
