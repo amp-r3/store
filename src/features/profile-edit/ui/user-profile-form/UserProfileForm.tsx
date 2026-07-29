@@ -1,14 +1,13 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useUpdateProfileMutation } from "@/entities/session"
-import { editProfileSchema, EditProfileSchema } from "@/features/profile-edit"
-import { FormField, Loader } from "@/shared/ui"
-import style from './user-profile-form.module.scss';
-import { SessionUser } from "@/entities/session"
 import { LuAtSign, LuMail, LuUser } from "react-icons/lu"
+import { useUpdateProfileMutation, SessionUser } from "@/entities/session"
+import { FormField, Loader } from "@/shared/ui"
 import { getErrorMessage } from "@/shared/lib"
+import { editProfileSchema, EditProfileSchema } from "../../model/editProfileSchema"
 
+import style from './user-profile-form.module.scss';
 
 interface UserProfileFormProps {
   user: SessionUser;

@@ -1,4 +1,3 @@
-import { User } from '@supabase/supabase-js';
 export interface RegisterFormData {
   email: string
   password: string
@@ -15,9 +14,13 @@ export interface StoredUser {
 }
 
 
-export type SessionUser = Omit<StoredUser, 'password'> & {
+export type SessionUser = StoredUser & {
   accessToken: string;
-} & Partial<User>;
+  /** Only the field the app reads off Supabase's `User.app_metadata` — see PROVIDER_CONFIG. */
+  app_metadata?: {
+    providers?: string[];
+  };
+};
 
 
 export interface LoginFormData {

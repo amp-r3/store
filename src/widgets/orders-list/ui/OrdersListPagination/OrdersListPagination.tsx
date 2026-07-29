@@ -1,7 +1,7 @@
 import style from './orders-list-pagination.module.scss'
 import { FC } from 'react';
 import { OrderCard } from '@/entities/order';
-import { OrdersListProps } from '../OrderList';
+import { OrdersListProps } from '../OrdersList';
 import { Pagination } from "@/shared/ui";
 import { OrderCardSkeleton } from "@/entities/order";
 

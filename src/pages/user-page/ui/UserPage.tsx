@@ -1,8 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import { selectUser, useDeleteAccountMutation } from "@/entities/session"
-import { UserProfileForm } from "@/features/profile-edit"
-import { UserProfileView } from "@/entities/user"
+import { UserProfileForm, UserProfileView } from "@/features/profile-edit"
 import { useAppSelector } from "@/shared/model";
 import { getErrorMessage } from "@/shared/lib";
 
