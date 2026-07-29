@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
-import { selectUser, useDeleteAccountMutation } from "@/entities/session"
+import { selectUser, useDeleteAccountMutation, useSignOutMutation } from "@/entities/session"
 import { UserProfileForm, UserProfileView } from "@/features/profile-edit"
 import { useAppSelector } from "@/shared/model";
 import { getErrorMessage } from "@/shared/lib";
@@ -10,6 +10,7 @@ export const UserPage = () => {
   const user = useAppSelector(selectUser)
   const navigate = useNavigate()
   const [deleteAccount, { error: deleteError, reset: resetDeleteError }] = useDeleteAccountMutation()
+  const [signOut] = useSignOutMutation()
 
   const providers = user?.app_metadata?.providers || [];
   const isGoogleUser = providers.includes('google');
@@ -23,6 +24,11 @@ export const UserPage = () => {
     } catch {
       // Surfaced through `deleteError` below.
     }
+  }
+
+  const handleLogout = async () => {
+    navigate('/', { replace: true })
+    await signOut()
   }
 
   if (!user) return null;
@@ -44,6 +50,7 @@ export const UserPage = () => {
             resetDeleteError()
             setIsEditing(true)
           }}
+          onLogout={handleLogout}
           onDeleteAccount={handleDeleteAccount}
           deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
         />

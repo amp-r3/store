@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Modal } from "@/shared/ui";
-import { CgTrash } from "react-icons/cg";
+import { CgTrash, CgLogOut } from "react-icons/cg";
 
 import style from './user-profile-view.module.scss';
 import { SessionUser } from "@/entities/session";
@@ -10,6 +10,7 @@ interface UserProfileViewProps {
   user: SessionUser;
   providers: string[];
   onEditClick: () => void;
+  onLogout: () => void;
   onDeleteAccount: () => void;
   deleteError?: string;
 }
@@ -43,8 +44,9 @@ const LinkedProviders = ({ providers }: { providers: string[] }) => {
   );
 };
 
-export const UserProfileView = ({ user, onEditClick, providers, onDeleteAccount, deleteError }: UserProfileViewProps) => {
+export const UserProfileView = ({ user, onEditClick, providers, onLogout, onDeleteAccount, deleteError }: UserProfileViewProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   return (
     <div className={style['profile-view']}>
@@ -61,16 +63,36 @@ export const UserProfileView = ({ user, onEditClick, providers, onDeleteAccount,
         <Button variant="primary" onClick={onEditClick}>
           Edit Profile
         </Button>
-        <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
-          Delete Account
-        </Button>
       </div>
+
+      <section className={style['profile-view__danger-zone']} aria-labelledby="profile-danger-title">
+        <h2 id="profile-danger-title" className={style['profile-view__danger-title']}>Danger zone</h2>
+        <div className={style['profile-view__danger-actions']}>
+          <Button variant="ghost" onClick={() => setIsLogoutModalOpen(true)}>
+            Log out
+          </Button>
+          <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
+            Delete Account
+          </Button>
+        </div>
+      </section>
 
       {deleteError && (
         <p className={style['profile-view__delete-error']} role="alert">
           {deleteError}
         </p>
       )}
+
+      <Modal
+        isOpen={isLogoutModalOpen}
+        onOpenChange={setIsLogoutModalOpen}
+        title="Log out of your account?"
+        description="Are you sure you want to log out? You will need to enter your credentials to log back in."
+        icon={<CgLogOut size={50} />}
+        actionLabel="Log out"
+        actionVariant="danger"
+        onAction={() => { setIsLogoutModalOpen(false); onLogout(); }}
+      />
 
       <Modal
         isOpen={isDeleteModalOpen}

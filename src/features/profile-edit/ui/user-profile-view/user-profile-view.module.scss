@@ -119,6 +119,35 @@
   min-width: 0;
 }
 
+.profile-view__danger-zone {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  background: rgba(var(--error-color-rgb), 0.04);
+  border: 1px solid rgba(var(--error-color-rgb), 0.15);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.profile-view__danger-title {
+  font-family: $font-display;
+  font-size: $fs-xs;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wider;
+  font-weight: $fw-semibold;
+  color: var(--error-color);
+  margin: 0;
+}
+
+.profile-view__danger-actions {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  min-width: 0;
+}
+
 .profile-view__delete-error {
   margin: $spacing-sm 0 0;
   font-size: $fs-sm;
