@@ -1,5 +1,5 @@
 import { ProductCardSkeleton } from "@/entities/product"
-import { ErrorView, PageLayout, HOME_CRUMB } from "@/shared/ui";
+import { ErrorView, PageLayout } from "@/shared/ui";
 import { useWishlistDetails } from "@/entities/wishlist";
 import { ProductCard } from "@/entities/product";
 import { WishlistEmpty } from "@/entities/wishlist";
@@ -14,7 +14,7 @@ export const WishListPage = () => {
 
 
   return (
-    <PageLayout breadcrumbs={[HOME_CRUMB, { label: 'Favorites' }]}>
+    <PageLayout>
       <h1>Your Favorites</h1>
 
       {isEmpty && !isLoading ? (

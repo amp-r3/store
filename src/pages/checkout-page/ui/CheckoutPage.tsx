@@ -1,4 +1,4 @@
-import { PageLayout, HOME_CRUMB } from "@/shared/ui"
+import { PageLayout } from "@/shared/ui"
 import styles from './checkout-page.module.scss'
 import { useFormContext } from "react-hook-form";
 import {
@@ -27,7 +27,6 @@ const CheckoutPageContent = () => {
     <div className={styles.checkout}>
       <TopBar />
       <PageLayout
-        breadcrumbs={[HOME_CRUMB, { label: 'Checkout' }]}
         className={styles.checkout__container}
       >
         <header className={styles.checkout__header}>
