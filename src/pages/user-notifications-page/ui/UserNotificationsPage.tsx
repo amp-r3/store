@@ -37,13 +37,16 @@ export const UserNotificationsPage = () => {
                 {isLoading ? (
                     <NotificationCardSkeleton count={5} />
                 ) : notifications && notifications.length > 0 ? (
-                    notifications.map((notification) => (
-                        <NotificationCard
-                            key={notification.id}
-                            notification={notification}
-                            onRead={markRead}
-                        />
-                    ))
+                    <ul className={style['user-notifications-page__list']}>
+                        {notifications.map((notification) => (
+                            <li key={notification.id}>
+                                <NotificationCard
+                                    notification={notification}
+                                    onRead={markRead}
+                                />
+                            </li>
+                        ))}
+                    </ul>
                 ) : (
                     <EmptyState
                         icon={<LuBellOff />}

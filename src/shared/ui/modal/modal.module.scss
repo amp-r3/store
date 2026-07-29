@@ -117,6 +117,11 @@
     opacity: 0.7;
     cursor: not-allowed;
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
 }
 
 .cancelButton {
@@ -187,6 +192,11 @@
   &:hover {
     color: var(--text-primary);
     background-color: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 }
 

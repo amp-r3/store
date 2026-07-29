@@ -23,6 +23,11 @@
   &:not(:disabled):hover {
     border-color: var(--border-color-light);
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
 }
 
 .user-notifications-page__content-body {
@@ -30,4 +35,10 @@
   flex-direction: column;
   gap: $spacing-sm;
   padding-top: $spacing-lg;
+}
+
+.user-notifications-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
 }

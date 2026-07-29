@@ -28,7 +28,7 @@ export const UserLayout = () => {
             breadcrumbs={BREADCRUMBS[key] ?? BREADCRUMBS['/user']}
             className={style['user-layout']}
         >
-            <article className={style['user-layout__grid']}>
+            <div className={style['user-layout__grid']}>
                 <ProfileSidebar user={user} />
 
                 <section className={style['user-layout__content']}>
@@ -42,7 +42,7 @@ export const UserLayout = () => {
                         <Outlet />
                     </Suspense>
                 </section>
-            </article>
+            </div>
         </PageLayout>
     );
 };

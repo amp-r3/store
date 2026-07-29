@@ -77,12 +77,13 @@ export const ProfileSidebar = memo(({ user }: ProfileSidebarProps) => {
 
         <NavLink
           to="/user/notifications"
+          aria-label={hasUnread ? `Notifications, ${unreadCount} unread` : 'Notifications'}
           className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
         >
           <IoNotificationsOutline className={style['profile-sidebar__icon']} />
-          <span>Notifications</span>
+          <span aria-hidden="true">Notifications</span>
           {hasUnread && (
-            <span className={style['profile-sidebar__badge']}>
+            <span className={style['profile-sidebar__badge']} aria-hidden="true">
               {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
             </span>
           )}
