@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PASSWORD_RULES } from './passwordRules';
+import { PASSWORD_RULES } from '@/shared/lib';
 
 export const registerSchema = z.object({
   email: z.email('Incorrect email'),

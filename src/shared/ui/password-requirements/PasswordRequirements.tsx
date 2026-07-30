@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import style from './password-requirements.module.scss';
 import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
-import { PASSWORD_RULES } from '../../model/passwordRules';
+import { PASSWORD_RULES } from '../../lib/passwordRules';
 
 interface PasswordRequirementsProps {
   password?: string;

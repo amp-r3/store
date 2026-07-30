@@ -12,6 +12,7 @@ export * from './loader/Loader';
 export * from './logo/Logo';
 export * from './modal/Modal';
 export * from './no-results/NoResults';
+export * from './password-requirements/PasswordRequirements';
 export * from './top-bar-loader/TopBarLoader';
 export * from './share-copy-btn/ShareCopyBtn';
 export * from './pagination/Pagination';

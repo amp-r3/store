@@ -9,20 +9,24 @@ export interface PasswordRule {
   test(password: string): boolean;
 }
 
-// zxcvbn is expensive enough that running it twice per keystroke (once from
-// the checklist's render, once from the schema's superRefine) is noticeable.
-// Both call sites see the same password on any given keystroke, so a
-// single-entry cache is enough to collapse the two calls into one.
+// zxcvbn is expensive enough that running it once per consumer per keystroke
+// (checklist, strength meter, schema superRefine) is noticeable. All three see
+// the same password on any given keystroke, so a single-entry cache collapses
+// them into one run.
 let lastPassword: string | undefined;
 let lastScore = 0;
 
-const getPasswordScore = (password: string) => {
+export const getPasswordScore = (password: string): number => {
+  if (!password) return 0;
   if (password !== lastPassword) {
     lastPassword = password;
     lastScore = zxcvbn(password).score;
   }
   return lastScore;
 };
+
+/** zxcvbn score 0–4, indexed by `getPasswordScore`'s return value. */
+export const PASSWORD_STRENGTH_LABELS = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong'] as const;
 
 export const PASSWORD_RULES: readonly PasswordRule[] = [
   {

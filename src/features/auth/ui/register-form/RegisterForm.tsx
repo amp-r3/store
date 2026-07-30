@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
-import { Alert, FormField } from '@/shared/ui';
+import { Alert, FormField, PasswordRequirements } from '@/shared/ui';
 import { useHaptics, getErrorMessage } from '@/shared/lib';
 import { useRegisterMutation } from '@/entities/session';
 import { RegisterSchema, registerSchema } from '../../model/registerSchema';
@@ -12,7 +12,6 @@ import { useAuthUrlError } from '../../lib/useAuthUrlError';
 import { AuthProviderList } from '../auth-provider-list/AuthProviderList';
 import { AuthFormActions } from '../auth-form-actions/AuthFormActions';
 import { AuthSwitchLink } from '../auth-switch-link/AuthSwitchLink';
-import { PasswordRequirements } from '../password-requirements/PasswordRequirements';
 import style from './register-form.module.scss';
 
 export const RegisterForm = () => {
