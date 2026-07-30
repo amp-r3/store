@@ -50,10 +50,12 @@ export const useAuthUrlError = () => {
       }
 
       // 5. Clean up the URL through the router so useSearchParams doesn't
-      // keep returning the stale error on the next render.
-      navigate(location.pathname, { replace: true });
+      // keep returning the stale error on the next render. Preserve
+      // location.state (e.g. ProtectedRoute's `from`) — dropping it here
+      // would destroy the post-login destination on an OAuth error.
+      navigate(location.pathname, { replace: true, state: location.state });
     }
-  }, [searchParams, location.hash, location.pathname, navigate]);
+  }, [searchParams, location.hash, location.pathname, location.state, navigate]);
 
   return { errorMsg, blockedProviders };
 };

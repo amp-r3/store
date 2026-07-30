@@ -1,0 +1,8 @@
+@use '@/app/styles/index' as *;
+
+.auth-callback__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: $spacing-xl;
+}

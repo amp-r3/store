@@ -93,6 +93,17 @@ export const router = createBrowserRouter([
       },
 
       {
+        // No guard: must render while the auth session settles (OAuth or a
+        // password-reset link both land here), and it owns its own
+        // navigation once useSessionSync populates a live token.
+        path: 'auth/callback',
+        ErrorBoundary: ErrorView,
+        lazy: async () => {
+          const module = await import("@/pages/auth-callback-page")
+          return { Component: module.default }
+        }
+      },
+      {
         Component: PublicRoute,
         ErrorBoundary: ErrorView,
         children: [

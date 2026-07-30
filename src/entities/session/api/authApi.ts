@@ -97,7 +97,7 @@ export const authApi = baseApi.injectEndpoints({
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: `${window.location.origin}/login`
+            redirectTo: `${window.location.origin}/auth/callback`
           }
         });
 
