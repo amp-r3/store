@@ -5,3 +5,22 @@
   flex-direction: column;
   gap: $spacing-md;
 }
+
+.login-form__forgot {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  min-height: $touch-target-min;
+  margin-top: -$spacing-xs;
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+  transition: color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--primary-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

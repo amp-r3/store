@@ -1,4 +1,4 @@
-import { LoginFormData, RegisterFormData, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
+import { LoginFormData, RegisterFormData, RequestPasswordResetPayload, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
 import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
@@ -160,6 +160,25 @@ export const authApi = baseApi.injectEndpoints({
       }
     }),
 
+    requestPasswordReset: builder.mutation<null, RequestPasswordResetPayload>({
+      queryFn: async ({ email }) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          // `next` is ours — GoTrue only ever *adds* `code` to redirect_to, it
+          // never strips our query string, which keeps recovery detection
+          // independent of whether this GoTrue version echoes `type=recovery`.
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/reset-password')}`,
+        });
+
+        if (error) {
+          return { error: { status: error.status ?? 500, data: error.message } };
+        }
+
+        // Deliberately identical for known and unknown addresses — see the
+        // enumeration note in ForgotPasswordForm.
+        return { data: null };
+      }
+    }),
+
     signOut: builder.mutation<null, void>({
       queryFn: async () => {
         const { error } = await supabase.auth.signOut();
@@ -196,6 +215,7 @@ export const {
   useRegisterMutation,
   useSignInWithOAuthMutation,
   useUpdateProfileMutation,
+  useRequestPasswordResetMutation,
   useSignOutMutation,
   useDeleteAccountMutation,
 } = authApi

@@ -35,3 +35,7 @@ export interface UpdateProfilePayload {
   username?: string
   email?: string
 }
+
+export interface RequestPasswordResetPayload {
+  email: string
+}

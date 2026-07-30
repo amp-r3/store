@@ -120,6 +120,13 @@ export const router = createBrowserRouter([
               const module = await import("@/pages/register-page")
               return { Component: module.default }
             }
+          },
+          {
+            path: 'forgot-password',
+            lazy: async () => {
+              const module = await import("@/pages/forgot-password-page")
+              return { Component: module.default }
+            }
           }
         ]
       },

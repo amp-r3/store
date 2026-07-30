@@ -9,6 +9,7 @@ const LOCALLY_HANDLED_ENDPOINTS = new Set([
     'register',
     'signInWithOAuth',
     'updateProfile',
+    'requestPasswordReset',
     'deleteAccount',
     'createOrder',
     'addOrUpdateReview',
