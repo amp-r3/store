@@ -4,7 +4,7 @@ import { useNavigate, Link, useLocation } from "react-router"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { RegisterSchema, registerSchema } from "@/features/auth"
-import { useRegisterMutation, useSignInWithGoogleMutation, useSignInWithTelegramMutation } from "@/entities/session"
+import { useRegisterMutation, useSignInWithOAuthMutation } from "@/entities/session"
 import { useState, useEffect } from "react"
 import { LuMail } from "react-icons/lu";
 import { RiLockPasswordLine, RiShieldCheckLine, RiUserAddLine } from "react-icons/ri"
@@ -21,8 +21,7 @@ export const RegisterPage = () => {
   const from = safeRedirectPath((location.state as LocationState | null)?.from)
   const [isEmail, setIsEmail] = useState(false)
   const [register, { isLoading }] = useRegisterMutation()
-  const [signInWithGoogle] = useSignInWithGoogleMutation()
-  const [signInWithTelegram] = useSignInWithTelegramMutation()
+  const [signInWithOAuth] = useSignInWithOAuthMutation()
 
   const { errorMsg, blockedProviders } = useAuthUrlError()
 
@@ -82,7 +81,7 @@ export const RegisterPage = () => {
     try {
       sessionStorage.setItem('oauth_provider', 'Google')
       sessionStorage.setItem('auth_redirect_from', from)
-      await signInWithGoogle().unwrap()
+      await signInWithOAuth('google').unwrap()
     } catch (err) {
       setError('root', {
         type: 'server',
@@ -94,7 +93,7 @@ export const RegisterPage = () => {
     try {
       sessionStorage.setItem('oauth_provider', 'Telegram')
       sessionStorage.setItem('auth_redirect_from', from)
-      await signInWithTelegram().unwrap()
+      await signInWithOAuth('custom:telegram').unwrap()
     } catch (err) {
       setError('root', {
         type: 'server',

@@ -2,6 +2,7 @@ import { LoginFormData, RegisterFormData, SessionUser, UpdateProfilePayload } fr
 import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
+import type { OAuthProviderId } from "@/shared/config";
 
 
 export const authApi = baseApi.injectEndpoints({
@@ -18,7 +19,11 @@ export const authApi = baseApi.injectEndpoints({
           return { error: { status: 400, data: authError.message } };
         }
 
-        const user = authData.user!;
+        if (!authData.user) {
+          return { error: { status: 500, data: 'Registration succeeded but no user was returned' } };
+        }
+
+        const user = authData.user;
 
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -87,26 +92,10 @@ export const authApi = baseApi.injectEndpoints({
       }
     }),
 
-    signInWithGoogle: builder.mutation<OAuthResponse['data'], void>({
-      queryFn: async () => {
+    signInWithOAuth: builder.mutation<OAuthResponse['data'], OAuthProviderId>({
+      queryFn: async (provider) => {
         const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: `${window.location.origin}/login`
-          }
-        });
-
-        if (error) {
-          return { error: { status: error.status || 500, data: error.message } };
-        }
-
-        return { data };
-      }
-    }),
-    signInWithTelegram: builder.mutation<OAuthResponse['data'], void>({
-      queryFn: async () => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: 'custom:telegram',
+          provider,
           options: {
             redirectTo: `${window.location.origin}/login`
           }
@@ -205,8 +194,7 @@ export const authApi = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useRegisterMutation,
-  useSignInWithGoogleMutation,
-  useSignInWithTelegramMutation,
+  useSignInWithOAuthMutation,
   useUpdateProfileMutation,
   useSignOutMutation,
   useDeleteAccountMutation,
