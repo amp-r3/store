@@ -1,29 +1,22 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
 import { supabase } from "@/shared/api/supabase";
 import { useAppDispatch } from "@/shared/model";
 import { setSession } from "@/entities/session";
-import { safeRedirectPath } from "@/shared/lib";
 
 /** Mirrors the Supabase auth session into Redux. Dispatches `setSession` twice
  * on sign-in: once immediately with an empty name/username so `isAuth`
  * flips right away (letting PublicRoute/ProtectedRoute react without waiting
- * on a network round-trip), then again once the `profiles` row has loaded. */
+ * on a network round-trip), then again once the `profiles` row has loaded.
+ *
+ * PublicRoute is the sole owner of the post-login redirect (it reacts to
+ * `isAuth` becoming true and reads/clears the stored `from` itself) — this
+ * hook only ever writes session state, never navigates. */
 export const useSessionSync = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-
-        if (event === 'SIGNED_IN') {
-          const storedFrom = sessionStorage.getItem('auth_redirect_from');
-          if (storedFrom) {
-            sessionStorage.removeItem('auth_redirect_from');
-            navigate(safeRedirectPath(storedFrom), { replace: true });
-          }
-        }
+      async (_event, session) => {
 
         if (session?.user) {
           dispatch(setSession({
@@ -78,5 +71,5 @@ export const useSessionSync = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [dispatch, navigate]);
+  }, [dispatch]);
 };
