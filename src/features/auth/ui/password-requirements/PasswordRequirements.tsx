@@ -1,41 +1,18 @@
-import React from 'react';
+import { useMemo } from 'react';
 import style from './password-requirements.module.scss';
 import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
-import zxcvbn from 'zxcvbn';
+import { PASSWORD_RULES } from '../../model/passwordRules';
 
 interface PasswordRequirementsProps {
   password?: string;
-  hasError?: boolean;
+  showUnmetAsError?: boolean;
 }
 
-export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ password = '', hasError = false }) => {
-  const requirements = [
-    {
-      id: 'length',
-      label: 'Minimum 6 characters',
-      isMet: password.length >= 6,
-    },
-    {
-      id: 'english',
-      label: 'Only English characters, numbers, and symbols',
-      isMet: password.length > 0 && /^[\x20-\x7E]+$/.test(password),
-    },
-    {
-      id: 'number',
-      label: 'At least one number',
-      isMet: /[0-9]/.test(password),
-    },
-    {
-      id: 'uppercase',
-      label: 'At least one uppercase letter',
-      isMet: /[A-Z]/.test(password),
-    },
-    {
-      id: 'strength',
-      label: 'Password is not too weak',
-      isMet: password.length > 0 && zxcvbn(password).score >= 2,
-    },
-  ];
+export const PasswordRequirements = ({ password = '', showUnmetAsError = false }: PasswordRequirementsProps) => {
+  const requirements = useMemo(
+    () => PASSWORD_RULES.map((rule) => ({ id: rule.id, label: rule.label, isMet: rule.test(password) })),
+    [password]
+  );
 
   return (
     <div className={style['password-requirements']}>
@@ -45,7 +22,7 @@ export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ pass
           className={`${style['password-requirements__item']} ${
             req.isMet
               ? style['password-requirements__item--met']
-              : hasError
+              : showUnmetAsError
               ? style['password-requirements__item--error']
               : style['password-requirements__item--unmet']
           }`}

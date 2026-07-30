@@ -102,7 +102,7 @@ export const RegisterForm = () => {
 
           <PasswordRequirements
             password={passwordValue}
-            hasError={touchedFields.password || isSubmitted}
+            showUnmetAsError={touchedFields.password || isSubmitted}
           />
 
           <FormField
