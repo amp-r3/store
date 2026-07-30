@@ -5,6 +5,7 @@ import { UserProfileForm, UserProfileView } from "@/features/profile-edit"
 import { useAppSelector } from "@/shared/model";
 import { getErrorMessage } from "@/shared/lib";
 import { SectionHeader } from "@/shared/ui";
+import { ChangePasswordSection } from "./components/change-password-section/ChangePasswordSection";
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
@@ -14,6 +15,7 @@ export const UserPage = () => {
 
   const providers = user?.app_metadata?.providers || [];
   const isGoogleUser = providers.includes('google');
+  const hasPasswordIdentity = providers.includes('email');
 
   const [isEditing, setIsEditing] = useState(false)
 
@@ -43,17 +45,20 @@ export const UserPage = () => {
       />
 
       {!isEditing ? (
-        <UserProfileView
-          user={user}
-          providers={providers}
-          onEditClick={() => {
-            resetDeleteError()
-            setIsEditing(true)
-          }}
-          onLogout={handleLogout}
-          onDeleteAccount={handleDeleteAccount}
-          deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
-        />
+        <>
+          <UserProfileView
+            user={user}
+            providers={providers}
+            onEditClick={() => {
+              resetDeleteError()
+              setIsEditing(true)
+            }}
+            onLogout={handleLogout}
+            onDeleteAccount={handleDeleteAccount}
+            deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
+          />
+          <ChangePasswordSection hasPasswordIdentity={hasPasswordIdentity} />
+        </>
       ) : (
         <UserProfileForm
           user={user}

@@ -43,3 +43,8 @@ export interface RequestPasswordResetPayload {
 export interface UpdatePasswordPayload {
   password: string
 }
+
+export interface ChangePasswordPayload {
+  currentPassword: string
+  newPassword: string
+}

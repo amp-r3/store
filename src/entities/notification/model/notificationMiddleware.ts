@@ -11,6 +11,7 @@ const LOCALLY_HANDLED_ENDPOINTS = new Set([
     'updateProfile',
     'requestPasswordReset',
     'updatePassword',
+    'changePassword',
     'deleteAccount',
     'createOrder',
     'addOrUpdateReview',
@@ -32,6 +33,7 @@ const SUCCESS_MESSAGES: Record<string, SuccessNotification> = {
     register: { type: 'success', text: 'Account created', key: 'auth' },
     updateProfile: { type: 'success', text: 'Profile updated', key: 'profile' },
     updatePassword: { type: 'success', text: 'Password updated', key: 'auth' },
+    changePassword: { type: 'success', text: 'Password changed', key: 'auth' },
     deleteAccount: { type: 'info', text: 'Account deleted', key: 'auth' },
     addOrUpdateReview: {
         type: 'success',

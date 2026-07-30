@@ -1,4 +1,4 @@
-import { LoginFormData, RegisterFormData, RequestPasswordResetPayload, SessionUser, UpdatePasswordPayload, UpdateProfilePayload } from "@/entities/session/model/types";
+import { ChangePasswordPayload, LoginFormData, RegisterFormData, RequestPasswordResetPayload, SessionUser, UpdatePasswordPayload, UpdateProfilePayload } from "@/entities/session/model/types";
 import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
@@ -200,6 +200,43 @@ export const authApi = baseApi.injectEndpoints({
       }
     }),
 
+    changePassword: builder.mutation<null, ChangePasswordPayload>({
+      queryFn: async ({ currentPassword, newPassword }) => {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user?.email) {
+          return { error: { status: 401, data: 'The user is not authorized' } };
+        }
+
+        // Supabase has no "verify password" API. Re-signing in with the same
+        // credentials is the only client-side proof of the current password;
+        // on success it simply mints a fresh session for the same user, and
+        // on failure the existing session is left untouched (supabase-js
+        // only writes a session on success).
+        const { error: reauthError } = await supabase.auth.signInWithPassword({
+          email: user.email,
+          password: currentPassword,
+        });
+
+        if (reauthError) {
+          if (reauthError.status === 429) {
+            return { error: { status: 429, data: 'Too many attempts. Please wait a minute and try again.' } };
+          }
+          return { error: { status: 401, data: 'Current password is incorrect' } };
+        }
+
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+        if (error) {
+          return { error: { status: error.status ?? 400, data: error.message } };
+        }
+
+        void supabase.auth.signOut({ scope: 'others' });
+
+        return { data: null };
+      }
+    }),
+
     signOut: builder.mutation<null, void>({
       queryFn: async () => {
         const { error } = await supabase.auth.signOut();
@@ -238,6 +275,7 @@ export const {
   useUpdateProfileMutation,
   useRequestPasswordResetMutation,
   useUpdatePasswordMutation,
+  useChangePasswordMutation,
   useSignOutMutation,
   useDeleteAccountMutation,
 } = authApi
