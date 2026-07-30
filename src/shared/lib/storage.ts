@@ -11,7 +11,7 @@ const createNoopStorage = () => ({
   },
 });
 
-const storage =
+export const persistStorage =
   typeof window === 'undefined'
     ? createNoopStorage()
     : {
@@ -19,5 +19,3 @@ const storage =
         setItem: (key: string, value: string) => Promise.resolve(window.localStorage.setItem(key, value)),
         removeItem: (key: string) => Promise.resolve(window.localStorage.removeItem(key)),
       };
-
-export default storage;

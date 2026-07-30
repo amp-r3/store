@@ -9,8 +9,8 @@ import {
   persistReducer
 } from 'redux-persist';
 import { persistStore } from 'redux-persist';
-import storage from '@/app/providers/store/storage';
 import { baseApi } from '@/shared/api';
+import { persistStorage } from '@/shared/lib';
 import { authReducer } from '@/entities/session';
 import { cartReducer } from '@/entities/cart';
 import { wishlistReducer } from '@/entities/wishlist';
@@ -26,7 +26,7 @@ import '@/entities/order';
 
 const checkoutPersistConfig = {
   key: 'checkout',
-  storage,
+  storage: persistStorage,
   whitelist: ['items', 'draft']
 };
 

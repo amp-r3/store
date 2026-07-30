@@ -1,6 +1,6 @@
 import { authApi } from "@/entities/session";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import storage from "@/app/providers/store/storage";
+import { persistStorage } from "@/shared/lib";
 import { createTransform, persistReducer } from "redux-persist";
 import { SessionUser } from "@/entities/session/model/types";
 import { purgeStoredState } from "redux-persist";
@@ -33,7 +33,7 @@ const stripAccessToken = createTransform<AuthState, AuthState>(
 
 const authPersistConfig = {
   key: 'auth',
-  storage,
+  storage: persistStorage,
   whitelist: ['user'],
   transforms: [stripAccessToken]
 }

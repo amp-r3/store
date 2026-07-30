@@ -6,3 +6,4 @@ export * from './hapticPresets';
 export * from './safeRedirectPath';
 export * from './domEvents';
 export * from './hooks';
+export * from './storage';

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { persistReducer } from "redux-persist";
-import storage from "@/app/providers/store/storage";
+import { persistStorage } from "@/shared/lib";
 import { CartData } from "@/entities/cart";
 
 export interface CartState {
@@ -15,7 +15,7 @@ const initialState: CartState = {
 
 const cartPersistConfig = {
     key: 'cart',
-    storage,
+    storage: persistStorage,
     whitelist: ['items']
 }
 

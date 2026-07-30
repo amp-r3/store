@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import storage from "@/app/providers/store/storage";
+import { persistStorage } from "@/shared/lib";
 import { persistReducer } from "redux-persist";
 
 export interface WishlistState {
@@ -12,7 +12,7 @@ const initialState: WishlistState = {
 
 const wishlistPersistConfig = {
   key: 'wishlist',
-  storage,
+  storage: persistStorage,
   whitelist: ['favoriteItems']
 }
 
