@@ -39,3 +39,7 @@ export interface UpdateProfilePayload {
 export interface RequestPasswordResetPayload {
   email: string
 }
+
+export interface UpdatePasswordPayload {
+  password: string
+}

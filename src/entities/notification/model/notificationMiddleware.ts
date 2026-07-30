@@ -10,6 +10,7 @@ const LOCALLY_HANDLED_ENDPOINTS = new Set([
     'signInWithOAuth',
     'updateProfile',
     'requestPasswordReset',
+    'updatePassword',
     'deleteAccount',
     'createOrder',
     'addOrUpdateReview',
@@ -30,6 +31,7 @@ const SUCCESS_MESSAGES: Record<string, SuccessNotification> = {
     login: { type: 'success', text: 'Signed in', key: 'auth' },
     register: { type: 'success', text: 'Account created', key: 'auth' },
     updateProfile: { type: 'success', text: 'Profile updated', key: 'profile' },
+    updatePassword: { type: 'success', text: 'Password updated', key: 'auth' },
     deleteAccount: { type: 'info', text: 'Account deleted', key: 'auth' },
     addOrUpdateReview: {
         type: 'success',

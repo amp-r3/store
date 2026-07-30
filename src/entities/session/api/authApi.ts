@@ -1,4 +1,4 @@
-import { LoginFormData, RegisterFormData, RequestPasswordResetPayload, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
+import { LoginFormData, RegisterFormData, RequestPasswordResetPayload, SessionUser, UpdatePasswordPayload, UpdateProfilePayload } from "@/entities/session/model/types";
 import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
@@ -179,6 +179,27 @@ export const authApi = baseApi.injectEndpoints({
       }
     }),
 
+    updatePassword: builder.mutation<null, UpdatePasswordPayload>({
+      queryFn: async ({ password }) => {
+        const { error } = await supabase.auth.updateUser({ password });
+
+        if (error) {
+          // "Auth session missing!" — the recovery link expired or was
+          // already used to set a password once.
+          if (/session missing/i.test(error.message)) {
+            return { error: { status: 401, data: 'Your reset link has expired. Request a new one.' } };
+          }
+          return { error: { status: error.status ?? 400, data: error.message } };
+        }
+
+        // Fire-and-forget: invalidate this account's other sessions after a
+        // password reset. A failure here must not fail the reset itself.
+        void supabase.auth.signOut({ scope: 'others' });
+
+        return { data: null };
+      }
+    }),
+
     signOut: builder.mutation<null, void>({
       queryFn: async () => {
         const { error } = await supabase.auth.signOut();
@@ -216,6 +237,7 @@ export const {
   useSignInWithOAuthMutation,
   useUpdateProfileMutation,
   useRequestPasswordResetMutation,
+  useUpdatePasswordMutation,
   useSignOutMutation,
   useDeleteAccountMutation,
 } = authApi
