@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { supabase } from "@/shared/api/supabase";
 import { useAppDispatch } from "@/shared/model";
 import { setSession } from "@/entities/session";
+import { AUTH_STORAGE_KEYS } from "@/shared/config";
 
 /** Mirrors the Supabase auth session into Redux. Dispatches `setSession` twice
  * on sign-in: once immediately with an empty name/username so `isAuth`
@@ -16,7 +17,13 @@ export const useSessionSync = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
+
+        if (event === 'SIGNED_IN') {
+          // A successful sign-in means any provider previously blocked by a
+          // failed OAuth attempt (see useAuthUrlError) is no longer blocked.
+          sessionStorage.removeItem(AUTH_STORAGE_KEYS.blockedProviders);
+        }
 
         if (session?.user) {
           dispatch(setSession({
