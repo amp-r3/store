@@ -1,32 +1,17 @@
-import { supabase } from "@/shared/api/supabase";
-import { baseApi } from "@/shared/api";
 import { useEffect } from "react";
-import { useAppDispatch } from "@/shared/model";
-import { setSession } from "./authSlice";
-import { useSyncCartMutation, clearCart } from "@/entities/cart";
-import { useSyncWishlistMutation, clearFavorite } from "@/entities/wishlist";
-import { store } from "@/app/store";
 import { useNavigate } from "react-router";
-import { logout } from "@/entities/session";
+import { supabase } from "@/shared/api/supabase";
+import { useAppDispatch } from "@/shared/model";
+import { setSession } from "@/entities/session";
 import { safeRedirectPath } from "@/shared/lib";
 
-export const useAuthSync = () => {
-  const [syncCart] = useSyncCartMutation();
-  const [syncWishlist] = useSyncWishlistMutation();
+/** Mirrors the Supabase auth session into Redux. Dispatches `setSession` twice
+ * on sign-in: once immediately with an empty name/username so `isAuth`
+ * flips right away (letting PublicRoute/ProtectedRoute react without waiting
+ * on a network round-trip), then again once the `profiles` row has loaded. */
+export const useSessionSync = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const errorFromSearch = searchParams.get('error');
-
-    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    const errorFromHash = hashParams.get('error');
-
-    if ((errorFromSearch || errorFromHash) && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-      navigate('/login' + window.location.search + window.location.hash, { replace: true });
-    }
-  }, [navigate]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -88,41 +73,10 @@ export const useAuthSync = () => {
 
           fetchProfile();
         }
-
-        if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-          const currentState = store.getState();
-          const localWishlistItems = currentState.wishlist.favoriteItems;
-          const localCartItems = currentState.cart.items;
-
-          if (localCartItems && Object.keys(localCartItems).length > 0) {
-            try {
-              await syncCart(localCartItems).unwrap();
-              dispatch(clearCart());
-            } catch (error) {
-              console.error('Error synchronizing cart:', error);
-            }
-          }
-
-          if (localWishlistItems && Object.keys(localWishlistItems).length > 0) {
-            try {
-              await syncWishlist(localWishlistItems).unwrap();
-              dispatch(clearFavorite());
-            } catch (error) {
-              console.error('Error synchronizing wishlist:', error);
-            }
-          }
-        }
-
-        else if (event === 'SIGNED_OUT') {
-          dispatch(baseApi.util.resetApiState());
-          dispatch(clearFavorite());
-          dispatch(clearCart());
-          dispatch(logout());
-        }
       });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [dispatch, syncCart, syncWishlist, navigate]);
-}
+  }, [dispatch, navigate]);
+};
