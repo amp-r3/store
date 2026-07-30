@@ -1,21 +1,40 @@
 import { ReactNode } from 'react'
+import { Link } from 'react-router'
 import style from './auth-card.module.scss'
 import { Logo } from '../logo/Logo'
 import { FaRegUser } from 'react-icons/fa'
+import { LuArrowLeft } from 'react-icons/lu'
 
 interface AuthCardProps {
   title: string
   subtitle?: string
   children: ReactNode
   icon?: ReactNode
+  /** Header back-link target. Pass `null` to hide it (e.g. the auth callback,
+   *  which shouldn't offer a way to navigate away mid-redirect). */
+  backTo?: string | null
+  backLabel?: string
 }
 
-export const AuthCard = ({ title, subtitle, children, icon = <FaRegUser /> }: AuthCardProps) => (
+export const AuthCard = ({
+  title,
+  subtitle,
+  children,
+  icon = <FaRegUser />,
+  backTo = '/',
+  backLabel = 'Back to store',
+}: AuthCardProps) => (
   <main className={style.root}>
     <div className={style.card}>
       <div className={style.card__inner}>
         <div className={style.card__header}>
           <Logo />
+          {backTo && (
+            <Link to={backTo} className={style.card__back} aria-label={backLabel}>
+              <LuArrowLeft aria-hidden="true" />
+              <span className={style.card__backLabel}>{backLabel}</span>
+            </Link>
+          )}
         </div>
 
         <div className={style.card__body}>

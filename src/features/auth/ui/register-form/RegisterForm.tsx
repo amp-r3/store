@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
-import { Alert, FormField, PasswordRequirements } from '@/shared/ui';
+import { Alert, FormField, PasswordRequirements, PasswordStrength } from '@/shared/ui';
 import { useHaptics, getErrorMessage } from '@/shared/lib';
 import { useRegisterMutation } from '@/entities/session';
 import { RegisterSchema, registerSchema } from '../../model/registerSchema';
@@ -18,6 +18,7 @@ export const RegisterForm = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [registerUser, { isLoading }] = useRegisterMutation();
   const { success } = useHaptics();
+  const errorRef = useRef<HTMLDivElement>(null);
 
   const {
     register,
@@ -42,6 +43,10 @@ export const RegisterForm = () => {
       });
     }
   }, [errorMsg, setError]);
+
+  useEffect(() => {
+    if (errors.root) errorRef.current?.focus();
+  }, [errors.root]);
 
   const signInWithOAuth = useOAuthSignIn((message) => setError('root', { type: 'server', message }));
 
@@ -77,51 +82,63 @@ export const RegisterForm = () => {
   return (
     <form className={style['register-form']} onSubmit={handleSubmit(onSubmit)} noValidate>
 
-      {errors.root && <Alert variant="error">{errors.root.message}</Alert>}
-
-      {isEmail ? (
-        <>
-          <FormField
-            label='Email'
-            type="email"
-            icon={<LuMail />}
-            placeholder="you@example.com"
-            error={errors.email?.message}
-            {...register('email')}
-          />
-
-          <FormField
-            label='Password'
-            type='password'
-            icon={<RiLockPasswordLine />}
-            placeholder="At least 6 characters"
-            error={!!errors.password}
-            {...register('password')}
-          />
-
-          <PasswordRequirements
-            password={passwordValue}
-            showUnmetAsError={touchedFields.password || isSubmitted}
-          />
-
-          <FormField
-            label='Repeat password'
-            type='password'
-            icon={<RiShieldCheckLine />}
-            placeholder="Confirm your password"
-            error={errors.confirm?.message}
-            {...register('confirm')}
-          />
-
-          <AuthFormActions onCancel={() => setIsEmail(false)} submitLabel="Register" isLoading={isLoading} />
-        </>
-      ) : (
-        <AuthProviderList
-          onEmailClick={() => setIsEmail(true)}
-          onProviderClick={signInWithOAuth}
-          blockedProviders={blockedProviders}
-        />
+      {errors.root && (
+        <div className={style['register-form__error']}>
+          <Alert ref={errorRef} tabIndex={-1} variant="error">{errors.root.message}</Alert>
+        </div>
       )}
+
+      <div
+        key={isEmail ? 'email' : 'providers'}
+        data-direction={isEmail ? 'forward' : 'back'}
+        className={style['register-form__step']}
+      >
+        {isEmail ? (
+          <>
+            <FormField
+              label='Email'
+              type="email"
+              icon={<LuMail />}
+              placeholder="you@example.com"
+              error={errors.email?.message}
+              {...register('email')}
+            />
+
+            <FormField
+              label='Password'
+              type='password'
+              icon={<RiLockPasswordLine />}
+              placeholder="At least 6 characters"
+              error={!!errors.password}
+              {...register('password')}
+            />
+
+            <PasswordStrength password={passwordValue} />
+
+            <PasswordRequirements
+              password={passwordValue}
+              showUnmetAsError={touchedFields.password || isSubmitted}
+            />
+
+            <FormField
+              label='Repeat password'
+              type='password'
+              icon={<RiShieldCheckLine />}
+              placeholder="Confirm your password"
+              error={errors.confirm?.message}
+              {...register('confirm')}
+            />
+
+            <AuthFormActions onCancel={() => setIsEmail(false)} submitLabel="Register" isLoading={isLoading} />
+          </>
+        ) : (
+          <AuthProviderList
+            onEmailClick={() => setIsEmail(true)}
+            onProviderClick={signInWithOAuth}
+            blockedProviders={blockedProviders}
+          />
+        )}
+      </div>
 
       <AuthSwitchLink prompt="Already have an account?" to="/login" label="Log in" />
     </form>

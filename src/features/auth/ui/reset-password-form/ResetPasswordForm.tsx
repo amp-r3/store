@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
-import { Alert, Button, FormField, PasswordRequirements } from '@/shared/ui';
+import { Alert, Button, FormField, PasswordRequirements, PasswordStrength } from '@/shared/ui';
 import { useHaptics, getErrorMessage } from '@/shared/lib';
 import { selectUser, setRecoverySession, useUpdatePasswordMutation } from '@/entities/session';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
@@ -58,6 +58,8 @@ export const ResetPasswordForm = () => {
         error={!!errors.password}
         {...register('password')}
       />
+
+      <PasswordStrength password={passwordValue} />
 
       <PasswordRequirements
         password={passwordValue}

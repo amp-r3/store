@@ -63,6 +63,30 @@ $auth-footer-max-width: 500px;
   gap: $spacing-md;
 }
 
+.card__back {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  min-height: $touch-target-min;
+  padding-inline: $spacing-xs;
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+  transition: color $transition-fast $ease-in-out-smooth;
+
+  svg {
+    flex-shrink: 0;
+    transition: transform $transition-fast $ease-out-expo;
+  }
+
+  &:hover {
+    color: var(--primary-accent);
+  }
+
+  &:hover svg {
+    transform: translateX(-3px);
+  }
+}
+
 .card__body {
   display: flex;
   flex-direction: column;
@@ -141,5 +165,25 @@ $auth-footer-max-width: 500px;
 
   .footer {
     margin-top: $spacing-lg;
+  }
+
+  // Icon-only on narrow screens — visually hidden rather than `@extend
+  // .sr-only`, since that global class lives outside this module's scope.
+  .card__backLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__back,
+  .card__back svg {
+    transition: none;
   }
 }

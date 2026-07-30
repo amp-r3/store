@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { RiLockPasswordLine, RiShieldCheckLine, RiShieldKeyholeLine } from 'react-icons/ri';
-import { Alert, FormField, PasswordRequirements } from '@/shared/ui';
+import { Alert, FormField, PasswordRequirements, PasswordStrength } from '@/shared/ui';
 import { getErrorMessage, useHaptics } from '@/shared/lib';
 import { useChangePasswordMutation } from '@/entities/session';
 import { ChangePasswordSchema, changePasswordSchema } from '../../model/changePasswordSchema';
@@ -68,6 +68,8 @@ export const ChangePasswordForm = ({ onSuccess, onCancel }: ChangePasswordFormPr
         error={!!errors.password}
         {...register('password')}
       />
+
+      <PasswordStrength password={passwordValue} />
 
       <PasswordRequirements
         password={passwordValue}

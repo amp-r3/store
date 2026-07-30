@@ -1,7 +1,65 @@
 @use '@/app/styles/index' as *;
 
+$step-shift: 12px;
+
 .register-form {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
+}
+
+.register-form__error {
+  animation: error-shake $transition-base $ease-spring both;
+}
+
+.register-form__step {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  animation: step-in $transition-base $ease-out-expo both;
+
+  &[data-direction='back'] {
+    animation-name: step-in-back;
+  }
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateX($step-shift);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes step-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-$step-shift);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes error-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-form__error,
+  .register-form__step {
+    animation: none;
+  }
 }

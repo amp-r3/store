@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
@@ -19,6 +19,7 @@ export const LoginForm = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
   const { success } = useHaptics();
+  const errorRef = useRef<HTMLDivElement>(null);
 
   const {
     register,
@@ -41,6 +42,10 @@ export const LoginForm = () => {
     }
   }, [errorMsg, setError]);
 
+  useEffect(() => {
+    if (errors.root) errorRef.current?.focus();
+  }, [errors.root]);
+
   const signInWithOAuth = useOAuthSignIn((message) => setError('root', { type: 'server', message }));
 
   const onSubmit = async (data: LoginSchema) => {
@@ -58,41 +63,51 @@ export const LoginForm = () => {
   return (
     <form className={style['login-form']} onSubmit={handleSubmit(onSubmit)} noValidate>
 
-      {errors.root && <Alert variant="error">{errors.root.message}</Alert>}
-
-      {isEmail ? (
-        <>
-          <FormField
-            label='Email'
-            type="email"
-            error={errors.email?.message}
-            icon={<LuMail />}
-            placeholder="you@example.com"
-            {...register('email')}
-          />
-
-          <FormField
-            label='Password'
-            type="password"
-            icon={<RiLockPasswordLine />}
-            placeholder="Enter your password"
-            error={errors.password?.message}
-            {...register('password')}
-          />
-
-          <Link to="/forgot-password" className={style['login-form__forgot']}>
-            Forgot password?
-          </Link>
-
-          <AuthFormActions onCancel={() => setIsEmail(false)} submitLabel="Log in" isLoading={isLoading} />
-        </>
-      ) : (
-        <AuthProviderList
-          onEmailClick={() => setIsEmail(true)}
-          onProviderClick={signInWithOAuth}
-          blockedProviders={blockedProviders}
-        />
+      {errors.root && (
+        <div className={style['login-form__error']}>
+          <Alert ref={errorRef} tabIndex={-1} variant="error">{errors.root.message}</Alert>
+        </div>
       )}
+
+      <div
+        key={isEmail ? 'email' : 'providers'}
+        data-direction={isEmail ? 'forward' : 'back'}
+        className={style['login-form__step']}
+      >
+        {isEmail ? (
+          <>
+            <FormField
+              label='Email'
+              type="email"
+              error={errors.email?.message}
+              icon={<LuMail />}
+              placeholder="you@example.com"
+              {...register('email')}
+            />
+
+            <FormField
+              label='Password'
+              type="password"
+              icon={<RiLockPasswordLine />}
+              placeholder="Enter your password"
+              error={errors.password?.message}
+              {...register('password')}
+            />
+
+            <Link to="/forgot-password" className={style['login-form__forgot']}>
+              Forgot password?
+            </Link>
+
+            <AuthFormActions onCancel={() => setIsEmail(false)} submitLabel="Log in" isLoading={isLoading} />
+          </>
+        ) : (
+          <AuthProviderList
+            onEmailClick={() => setIsEmail(true)}
+            onProviderClick={signInWithOAuth}
+            blockedProviders={blockedProviders}
+          />
+        )}
+      </div>
 
       <AuthSwitchLink prompt="Don't have an account?" to="/register" label="Sign up" />
     </form>

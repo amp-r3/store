@@ -58,7 +58,7 @@ export const AuthCallbackPage = () => {
   }, [hasTimedOut, token, navigate]);
 
   return (
-    <AuthCard title="Finishing sign-in…" subtitle="Hang tight, this only takes a second.">
+    <AuthCard title="Finishing sign-in…" subtitle="Hang tight, this only takes a second." backTo={null}>
       <div className={style['auth-callback__body']}>
         <Loader />
       </div>
