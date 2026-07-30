@@ -75,6 +75,10 @@ export const ForgotPasswordForm = () => {
       <FormField
         label="Email"
         type="email"
+        inputMode="email"
+        autoCapitalize="none"
+        spellCheck={false}
+        autoComplete="email"
         icon={<LuMail />}
         placeholder="you@example.com"
         error={errors.email?.message}

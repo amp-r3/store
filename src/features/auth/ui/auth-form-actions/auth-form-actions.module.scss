@@ -5,6 +5,6 @@
   gap: $spacing-xs;
 
   @media (max-width: 525px) {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
 }

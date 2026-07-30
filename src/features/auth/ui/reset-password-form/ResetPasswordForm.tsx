@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
 import { Alert, Button, FormField, PasswordRequirements, PasswordStrength } from '@/shared/ui';
-import { useHaptics, getErrorMessage } from '@/shared/lib';
+import { useCapsLock, useHaptics, getErrorMessage } from '@/shared/lib';
 import { selectUser, setRecoverySession, useUpdatePasswordMutation } from '@/entities/session';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
 import { NewPasswordSchema, newPasswordSchema } from '../../model/newPasswordSchema';
+
+const PASSWORD_REQUIREMENTS_ID = 'reset-password-requirements';
 
 export const ResetPasswordForm = () => {
   const user = useAppSelector(selectUser);
@@ -14,6 +16,7 @@ export const ResetPasswordForm = () => {
   const navigate = useNavigate();
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
   const { success } = useHaptics();
+  const { isCapsLockOn, capsLockProps } = useCapsLock();
 
   const {
     register,
@@ -55,13 +58,18 @@ export const ResetPasswordForm = () => {
         type="password"
         icon={<RiLockPasswordLine />}
         placeholder="At least 6 characters"
+        autoComplete="new-password"
+        aria-describedby={PASSWORD_REQUIREMENTS_ID}
         error={!!errors.password}
+        warning={isCapsLockOn ? 'Caps Lock is on' : undefined}
         {...register('password')}
+        {...capsLockProps}
       />
 
       <PasswordStrength password={passwordValue} />
 
       <PasswordRequirements
+        id={PASSWORD_REQUIREMENTS_ID}
         password={passwordValue}
         showUnmetAsError={touchedFields.password || isSubmitted}
       />
@@ -71,6 +79,7 @@ export const ResetPasswordForm = () => {
         type="password"
         icon={<RiShieldCheckLine />}
         placeholder="Confirm your password"
+        autoComplete="new-password"
         error={errors.confirm?.message}
         {...register('confirm')}
       />

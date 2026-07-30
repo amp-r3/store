@@ -333,6 +333,16 @@ $label-notch-padding : $spacing-xxs;
   margin-left: $spacing-xs;
 }
 
+.warning {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--status-warning-text);
+  margin-left: $spacing-xs;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
 import { Alert, FormField, PasswordRequirements, PasswordStrength } from '@/shared/ui';
-import { useHaptics, getErrorMessage } from '@/shared/lib';
+import { useCapsLock, useHaptics, getErrorMessage } from '@/shared/lib';
 import { useRegisterMutation } from '@/entities/session';
 import { RegisterSchema, registerSchema } from '../../model/registerSchema';
 import { useOAuthSignIn } from '../../lib/useOAuthSignIn';
@@ -14,16 +14,20 @@ import { AuthFormActions } from '../auth-form-actions/AuthFormActions';
 import { AuthSwitchLink } from '../auth-switch-link/AuthSwitchLink';
 import style from './register-form.module.scss';
 
+const PASSWORD_REQUIREMENTS_ID = 'register-password-requirements';
+
 export const RegisterForm = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [registerUser, { isLoading }] = useRegisterMutation();
   const { success } = useHaptics();
   const errorRef = useRef<HTMLDivElement>(null);
+  const { isCapsLockOn, capsLockProps } = useCapsLock();
 
   const {
     register,
     handleSubmit,
     setError,
+    setFocus,
     watch,
     formState: { errors, touchedFields, isSubmitted }
   } = useForm<RegisterSchema>({
@@ -47,6 +51,10 @@ export const RegisterForm = () => {
   useEffect(() => {
     if (errors.root) errorRef.current?.focus();
   }, [errors.root]);
+
+  useEffect(() => {
+    if (isEmail) setFocus('email');
+  }, [isEmail, setFocus]);
 
   const signInWithOAuth = useOAuthSignIn((message) => setError('root', { type: 'server', message }));
 
@@ -98,6 +106,10 @@ export const RegisterForm = () => {
             <FormField
               label='Email'
               type="email"
+              inputMode="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              autoComplete="email"
               icon={<LuMail />}
               placeholder="you@example.com"
               error={errors.email?.message}
@@ -109,13 +121,18 @@ export const RegisterForm = () => {
               type='password'
               icon={<RiLockPasswordLine />}
               placeholder="At least 6 characters"
+              autoComplete="new-password"
+              aria-describedby={PASSWORD_REQUIREMENTS_ID}
               error={!!errors.password}
+              warning={isCapsLockOn ? 'Caps Lock is on' : undefined}
               {...register('password')}
+              {...capsLockProps}
             />
 
             <PasswordStrength password={passwordValue} />
 
             <PasswordRequirements
+              id={PASSWORD_REQUIREMENTS_ID}
               password={passwordValue}
               showUnmetAsError={touchedFields.password || isSubmitted}
             />
@@ -125,11 +142,12 @@ export const RegisterForm = () => {
               type='password'
               icon={<RiShieldCheckLine />}
               placeholder="Confirm your password"
+              autoComplete="new-password"
               error={errors.confirm?.message}
               {...register('confirm')}
             />
 
-            <AuthFormActions onCancel={() => setIsEmail(false)} submitLabel="Register" isLoading={isLoading} />
+            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Register" isLoading={isLoading} />
           </>
         ) : (
           <AuthProviderList

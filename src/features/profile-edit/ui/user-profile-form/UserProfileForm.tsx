@@ -3,7 +3,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LuAtSign, LuMail, LuUser } from "react-icons/lu"
 import { useUpdateProfileMutation, SessionUser } from "@/entities/session"
-import { Button, FormField } from "@/shared/ui"
+import { Alert, Button, FormField } from "@/shared/ui"
 import { getErrorMessage } from "@/shared/lib"
 import { editProfileSchema, EditProfileSchema } from "../../model/editProfileSchema"
 
@@ -68,17 +68,14 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
     : undefined;
 
   return (
-    <form className={style['profile-form']} onSubmit={handleSubmit(onSubmit)}>
+    <form className={style['profile-form']} onSubmit={handleSubmit(onSubmit)} noValidate>
 
-      {errors.root && (
-        <div className={style['profile-form__error']} role="alert">
-          {errors.root.message}
-        </div>
-      )}
+      {errors.root && <Alert variant="error">{errors.root.message}</Alert>}
 
       <FormField
         label='First name'
         icon={<LuUser />}
+        autoComplete="given-name"
         error={errors.firstName?.message}
         {...register('firstName')}
       />
@@ -86,6 +83,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
       <FormField
         label='Last name'
         icon={<LuUser />}
+        autoComplete="family-name"
         error={errors.lastName?.message}
         {...register('lastName')}
       />
@@ -93,6 +91,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
       <FormField
         label='Username'
         icon={<LuAtSign />}
+        autoComplete="username"
         error={errors.username?.message}
         {...register('username')}
       />
@@ -100,6 +99,7 @@ export const UserProfileForm = ({ user, onCancel, onSuccess, isGoogleUser }: Use
         label='Email'
         icon={<LuMail />}
         disabled={isGoogleUser}
+        autoComplete="email"
         error={errors.email?.message}
         description={emailDescription}
         {...register('email')}

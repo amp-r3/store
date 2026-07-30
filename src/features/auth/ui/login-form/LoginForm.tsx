@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { Alert, FormField } from '@/shared/ui';
-import { useHaptics } from '@/shared/lib';
+import { useCapsLock, useHaptics } from '@/shared/lib';
 import { useLoginMutation } from '@/entities/session';
 import { LoginSchema, loginSchema } from '../../model/loginSchema';
 import { useOAuthSignIn } from '../../lib/useOAuthSignIn';
@@ -20,11 +20,13 @@ export const LoginForm = () => {
   const [login, { isLoading }] = useLoginMutation();
   const { success } = useHaptics();
   const errorRef = useRef<HTMLDivElement>(null);
+  const { isCapsLockOn, capsLockProps } = useCapsLock();
 
   const {
     register,
     handleSubmit,
     setError,
+    setFocus,
     formState: { errors }
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -46,6 +48,10 @@ export const LoginForm = () => {
     if (errors.root) errorRef.current?.focus();
   }, [errors.root]);
 
+  useEffect(() => {
+    if (isEmail) setFocus('email');
+  }, [isEmail, setFocus]);
+
   const signInWithOAuth = useOAuthSignIn((message) => setError('root', { type: 'server', message }));
 
   const onSubmit = async (data: LoginSchema) => {
@@ -54,8 +60,7 @@ export const LoginForm = () => {
       success();
     } catch (err) {
       if (typeof err === 'object' && err !== null && 'status' in err && err.status === 401) {
-        setError('email', { message: 'Invalid email or password' });
-        setError('password', { message: 'Invalid email or password' });
+        setError('root', { message: 'Invalid email or password' });
       }
     }
   };
@@ -79,7 +84,11 @@ export const LoginForm = () => {
             <FormField
               label='Email'
               type="email"
-              error={errors.email?.message}
+              inputMode="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              autoComplete="email"
+              error={errors.email?.message || !!errors.root}
               icon={<LuMail />}
               placeholder="you@example.com"
               {...register('email')}
@@ -90,15 +99,18 @@ export const LoginForm = () => {
               type="password"
               icon={<RiLockPasswordLine />}
               placeholder="Enter your password"
-              error={errors.password?.message}
+              autoComplete="current-password"
+              error={errors.password?.message || !!errors.root}
+              warning={isCapsLockOn ? 'Caps Lock is on' : undefined}
               {...register('password')}
+              {...capsLockProps}
             />
 
             <Link to="/forgot-password" className={style['login-form__forgot']}>
               Forgot password?
             </Link>
 
-            <AuthFormActions onCancel={() => setIsEmail(false)} submitLabel="Log in" isLoading={isLoading} />
+            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Log in" isLoading={isLoading} />
           </>
         ) : (
           <AuthProviderList

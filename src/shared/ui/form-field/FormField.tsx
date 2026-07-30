@@ -7,21 +7,33 @@ export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string | boolean;
   /** Persistent, non-error helper text (e.g. "linked to Google") — unlike `error`, doesn't set `aria-invalid`. */
   description?: string;
+  /** Non-blocking advisory (e.g. "Caps Lock is on") — shown alongside error/description, never sets `aria-invalid`. */
+  warning?: string;
   optional?: boolean;
   icon?: ReactNode;
   placeholder?: string;
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, description, id, className, optional, icon, placeholder, type = 'text', ...props }, ref) => {
+  ({ label, error, description, warning, id, className, optional, icon, placeholder, type = 'text', ...props }, ref) => {
     const generatedId = useId();
     const inputId = id || generatedId;
     const errorId = `${inputId}-error`;
     const descriptionId = `${inputId}-description`;
+    const warningId = `${inputId}-warning`;
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const isPasswordType = type === 'password';
     const inputType = isPasswordType ? (isPasswordVisible ? 'text' : 'password') : type;
+
+    // `{...props}` is spread onto the input below, so a caller-supplied
+    // aria-describedby must be merged here rather than overwritten by it.
+    const describedBy = [
+      error ? errorId : null,
+      !error && description ? descriptionId : null,
+      warning ? warningId : null,
+      props['aria-describedby'] ?? null,
+    ].filter(Boolean).join(' ') || undefined;
 
     return (
       <div className={style.wrapper}>
@@ -52,9 +64,9 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
                 className || '',
               ].filter(Boolean).join(' ')}
               aria-invalid={!!error}
-              aria-describedby={error ? errorId : description ? descriptionId : undefined}
               type={inputType}
               {...props}
+              aria-describedby={describedBy}
             />
 
             <label
@@ -99,6 +111,12 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
         {!error && description && (
           <span id={descriptionId} className={style.description}>
             {description}
+          </span>
+        )}
+
+        {warning && (
+          <span id={warningId} className={style.warning} role="status">
+            {warning}
           </span>
         )}
 

@@ -2,11 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { RiLockPasswordLine, RiShieldCheckLine, RiShieldKeyholeLine } from 'react-icons/ri';
 import { Alert, FormField, PasswordRequirements, PasswordStrength } from '@/shared/ui';
-import { getErrorMessage, useHaptics } from '@/shared/lib';
+import { getErrorMessage, useCapsLock, useHaptics } from '@/shared/lib';
 import { useChangePasswordMutation } from '@/entities/session';
 import { ChangePasswordSchema, changePasswordSchema } from '../../model/changePasswordSchema';
 import { AuthFormActions } from '../auth-form-actions/AuthFormActions';
 import style from './change-password-form.module.scss';
+
+const PASSWORD_REQUIREMENTS_ID = 'change-password-requirements';
 
 interface ChangePasswordFormProps {
   onSuccess: () => void;
@@ -16,6 +18,7 @@ interface ChangePasswordFormProps {
 export const ChangePasswordForm = ({ onSuccess, onCancel }: ChangePasswordFormProps) => {
   const [changePassword, { isLoading }] = useChangePasswordMutation();
   const { success } = useHaptics();
+  const { isCapsLockOn, capsLockProps } = useCapsLock();
 
   const {
     register,
@@ -56,6 +59,7 @@ export const ChangePasswordForm = ({ onSuccess, onCancel }: ChangePasswordFormPr
         label="Current password"
         type="password"
         icon={<RiLockPasswordLine />}
+        autoComplete="current-password"
         error={errors.currentPassword?.message}
         {...register('currentPassword')}
       />
@@ -65,13 +69,18 @@ export const ChangePasswordForm = ({ onSuccess, onCancel }: ChangePasswordFormPr
         type="password"
         icon={<RiShieldKeyholeLine />}
         placeholder="At least 6 characters"
+        autoComplete="new-password"
+        aria-describedby={PASSWORD_REQUIREMENTS_ID}
         error={!!errors.password}
+        warning={isCapsLockOn ? 'Caps Lock is on' : undefined}
         {...register('password')}
+        {...capsLockProps}
       />
 
       <PasswordStrength password={passwordValue} />
 
       <PasswordRequirements
+        id={PASSWORD_REQUIREMENTS_ID}
         password={passwordValue}
         showUnmetAsError={touchedFields.password || isSubmitted}
       />
@@ -81,11 +90,12 @@ export const ChangePasswordForm = ({ onSuccess, onCancel }: ChangePasswordFormPr
         type="password"
         icon={<RiShieldCheckLine />}
         placeholder="Confirm your new password"
+        autoComplete="new-password"
         error={errors.confirm?.message}
         {...register('confirm')}
       />
 
-      <AuthFormActions onCancel={onCancel} submitLabel="Update password" isLoading={isLoading} />
+      <AuthFormActions onBack={onCancel} submitLabel="Update password" isLoading={isLoading} />
     </form>
   );
 };

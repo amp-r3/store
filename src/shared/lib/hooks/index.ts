@@ -1,3 +1,4 @@
+export * from './useCapsLock';
 export * from './useHaptics';
 export * from './useHideOnScroll';
 export * from './useImageView';
