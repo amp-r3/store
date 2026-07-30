@@ -5,16 +5,16 @@ import style from './auth-provider-list.module.scss';
 interface AuthProviderListProps {
   onEmailClick: () => void;
   onProviderClick: (provider: OAuthProviderId) => void;
-  blockedProviders: AuthProviderId[];
+  failedProviders: AuthProviderId[];
 }
 
-export const AuthProviderList = ({ onEmailClick, onProviderClick, blockedProviders }: AuthProviderListProps) => (
+export const AuthProviderList = ({ onEmailClick, onProviderClick, failedProviders }: AuthProviderListProps) => (
   <div className={style['auth-provider-list']}>
     {SIGN_IN_PROVIDER_ORDER.map((provider) => (
       <SignInButton
         key={provider}
         provider={provider}
-        disabled={blockedProviders.includes(provider)}
+        hasFailed={failedProviders.includes(provider)}
         onClick={() => (provider === 'email' ? onEmailClick() : onProviderClick(provider))}
       />
     ))}

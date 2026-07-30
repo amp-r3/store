@@ -5,21 +5,26 @@ interface SignInButtonProps {
   provider: AuthProviderId;
   onClick(): void;
   className?: string;
-  disabled?: boolean;
+  /** A previous attempt with this provider failed this session — style it as
+   *  a retry rather than disabling it outright, since a transient failure
+   *  (cancelled consent, network blip) shouldn't lock the provider out for
+   *  the rest of the session with no way back in. */
+  hasFailed?: boolean;
 }
 
 export const SignInButton = ({
   provider,
   className,
   onClick,
-  disabled,
+  hasFailed,
 }: SignInButtonProps) => {
   const { label, icon, slug } = PROVIDER_CONFIG[provider];
-  const buttonLabel = `Continue with ${label}`;
+  const buttonLabel = hasFailed ? `Try ${label} again` : `Continue with ${label}`;
 
   const buttonClasses = [
     style['sign-in'],
     style[`sign-in--${slug}`],
+    hasFailed ? style['sign-in--failed'] : '',
     className,
   ]
     .filter(Boolean)
@@ -31,7 +36,6 @@ export const SignInButton = ({
       type="button"
       aria-label={buttonLabel}
       onClick={onClick}
-      disabled={disabled}
     >
       <span className={style['sign-in__icon']}>
         {icon}

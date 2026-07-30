@@ -37,7 +37,7 @@ export const RegisterForm = () => {
 
   const passwordValue = watch('password') || '';
 
-  const { errorMsg, blockedProviders } = useAuthUrlError();
+  const { errorMsg, failedProviders } = useAuthUrlError();
 
   useEffect(() => {
     if (errorMsg) {
@@ -153,7 +153,7 @@ export const RegisterForm = () => {
           <AuthProviderList
             onEmailClick={() => setIsEmail(true)}
             onProviderClick={signInWithOAuth}
-            blockedProviders={blockedProviders}
+            failedProviders={failedProviders}
           />
         )}
       </div>

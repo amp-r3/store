@@ -7,14 +7,14 @@ export const useAuthUrlError = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [blockedProviders, setBlockedProviders] = useState<AuthProviderId[]>([]);
+  const [failedProviders, setFailedProviders] = useState<AuthProviderId[]>([]);
   const handledRef = useRef(false);
 
   useEffect(() => {
-    // 1. Get blocked providers from sessionStorage
-    const storedBlocked = sessionStorage.getItem(AUTH_STORAGE_KEYS.blockedProviders);
-    const blockedList: AuthProviderId[] = storedBlocked ? JSON.parse(storedBlocked) : [];
-    setBlockedProviders(blockedList);
+    // 1. Get providers that have failed before from sessionStorage
+    const storedFailed = sessionStorage.getItem(AUTH_STORAGE_KEYS.blockedProviders);
+    const failedList: AuthProviderId[] = storedFailed ? JSON.parse(storedFailed) : [];
+    setFailedProviders(failedList);
 
     // 2. Parse search params
     const errorFromSearch = searchParams.get('error');
@@ -40,10 +40,10 @@ export const useAuthUrlError = () => {
       // 4. Determine which provider failed
       const attemptedProvider = sessionStorage.getItem(AUTH_STORAGE_KEYS.oauthProvider) as AuthProviderId | null;
       if (attemptedProvider) {
-        if (!blockedList.includes(attemptedProvider)) {
-          const nextBlocked = [...blockedList, attemptedProvider];
-          sessionStorage.setItem(AUTH_STORAGE_KEYS.blockedProviders, JSON.stringify(nextBlocked));
-          setBlockedProviders(nextBlocked);
+        if (!failedList.includes(attemptedProvider)) {
+          const nextFailed = [...failedList, attemptedProvider];
+          sessionStorage.setItem(AUTH_STORAGE_KEYS.blockedProviders, JSON.stringify(nextFailed));
+          setFailedProviders(nextFailed);
         }
         // Clear the attempted provider as it has been handled
         sessionStorage.removeItem(AUTH_STORAGE_KEYS.oauthProvider);
@@ -57,5 +57,5 @@ export const useAuthUrlError = () => {
     }
   }, [searchParams, location.hash, location.pathname, location.state, navigate]);
 
-  return { errorMsg, blockedProviders };
+  return { errorMsg, failedProviders };
 };

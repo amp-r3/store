@@ -33,7 +33,7 @@ export const LoginForm = () => {
     mode: 'onTouched'
   });
 
-  const { errorMsg, blockedProviders } = useAuthUrlError();
+  const { errorMsg, failedProviders } = useAuthUrlError();
 
   useEffect(() => {
     if (errorMsg) {
@@ -116,7 +116,7 @@ export const LoginForm = () => {
           <AuthProviderList
             onEmailClick={() => setIsEmail(true)}
             onProviderClick={signInWithOAuth}
-            blockedProviders={blockedProviders}
+            failedProviders={failedProviders}
           />
         )}
       </div>
