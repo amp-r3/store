@@ -7,8 +7,7 @@ import { clearNotifications, notify, NotificationType } from './notificationSlic
 const LOCALLY_HANDLED_ENDPOINTS = new Set([
     'login',
     'register',
-    'signInWithGoogle',
-    'signInWithTelegram',
+    'signInWithOAuth',
     'updateProfile',
     'deleteAccount',
     'createOrder',
