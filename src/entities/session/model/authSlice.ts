@@ -48,7 +48,24 @@ export const authSlice = createSlice({
       purgeStoredState(authPersistConfig);
     },
     setSession(state, action: PayloadAction<{ user: SessionUser, token: string }>) {
-      state.user = action.payload.user;
+      const incoming = action.payload.user;
+      const isSameUser = state.user?.id === incoming.id;
+
+      // useSessionSync dispatches twice per event: once immediately with empty
+      // name fields so `isAuth` flips without a round-trip, then again once the
+      // `profiles` row lands. This also fires on TOKEN_REFRESHED and re-auth
+      // (e.g. the change-password flow), so without this merge the username
+      // blanks out for one round-trip on every one of those events.
+      state.user = isSameUser
+        ? {
+            ...state.user,
+            ...incoming,
+            firstName: incoming.firstName || state.user!.firstName,
+            lastName: incoming.lastName || state.user!.lastName,
+            username: incoming.username || state.user!.username,
+          }
+        : incoming;
+
       state.token = action.payload.token;
     }
   },
