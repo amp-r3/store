@@ -1,12 +1,8 @@
-import { FcGoogle } from 'react-icons/fc';
-import { FaRegEnvelope, FaTelegram } from 'react-icons/fa';
 import style from './sign-in-button.module.scss';
-import { ReactNode } from 'react';
-
-type Provider = 'Google' | 'Email' | 'Telegram';
+import { PROVIDER_CONFIG, type AuthProviderId } from '@/shared/config';
 
 interface SignInButtonProps {
-  provider: Provider;
+  provider: AuthProviderId;
   onClick(): void;
   className?: string;
   disabled?: boolean;
@@ -18,25 +14,22 @@ export const SignInButton = ({
   onClick,
   disabled,
 }: SignInButtonProps) => {
-  const label = `Continue with ${provider}`;
+  const { label, icon, slug } = PROVIDER_CONFIG[provider];
+  const buttonLabel = `Continue with ${label}`;
 
   const buttonClasses = [
     style['sign-in'],
-    style[`sign-in--${provider.toLowerCase()}`],
+    style[`sign-in--${slug}`],
     className,
   ]
     .filter(Boolean)
     .join(' ');
 
-  const icon: ReactNode = provider === 'Google' ? <FcGoogle /> :
-      provider === 'Email' ? <FaRegEnvelope /> :
-        <FaTelegram color="#2AABEE" />;
-
   return (
     <button
       className={buttonClasses}
       type="button"
-      aria-label={label}
+      aria-label={buttonLabel}
       onClick={onClick}
       disabled={disabled}
     >
@@ -45,7 +38,7 @@ export const SignInButton = ({
       </span>
 
       <span className={style['sign-in__label']}>
-        {label}
+        {buttonLabel}
       </span>
     </button>
   );

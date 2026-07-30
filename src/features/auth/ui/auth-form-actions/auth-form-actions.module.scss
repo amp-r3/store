@@ -1,0 +1,10 @@
+@use '@/app/styles/index' as *;
+
+.auth-form-actions {
+  display: flex;
+  gap: $spacing-xs;
+
+  @media (max-width: 525px) {
+    flex-direction: column;
+  }
+}

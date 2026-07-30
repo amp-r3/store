@@ -1,0 +1,21 @@
+@use '@/app/styles/index' as *;
+
+.auth-switch-link {
+  text-align: center;
+  margin-top: $spacing-md;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+}
+
+.auth-switch-link__link {
+  color: var(--primary-accent);
+  font-weight: $fw-semibold;
+  text-decoration: none;
+  transition: color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--primary-accent-light);
+    text-decoration: underline;
+  }
+}

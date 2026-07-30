@@ -1,0 +1,130 @@
+import { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { LuMail } from 'react-icons/lu';
+import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
+import { Alert, FormField } from '@/shared/ui';
+import { useHaptics, getErrorMessage } from '@/shared/lib';
+import { useRegisterMutation } from '@/entities/session';
+import { RegisterSchema, registerSchema } from '../../model/registerSchema';
+import { useOAuthSignIn } from '../../lib/useOAuthSignIn';
+import { useAuthUrlError } from '../../lib/useAuthUrlError';
+import { AuthProviderList } from '../auth-provider-list/AuthProviderList';
+import { AuthFormActions } from '../auth-form-actions/AuthFormActions';
+import { AuthSwitchLink } from '../auth-switch-link/AuthSwitchLink';
+import { PasswordRequirements } from '../password-requirements/PasswordRequirements';
+import style from './register-form.module.scss';
+
+export const RegisterForm = () => {
+  const [isEmail, setIsEmail] = useState(false);
+  const [registerUser, { isLoading }] = useRegisterMutation();
+  const { success } = useHaptics();
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    watch,
+    formState: { errors, touchedFields, isSubmitted }
+  } = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema),
+    mode: 'onTouched'
+  });
+
+  const passwordValue = watch('password') || '';
+
+  const { errorMsg, blockedProviders } = useAuthUrlError();
+
+  useEffect(() => {
+    if (errorMsg) {
+      setError('root', {
+        type: 'server',
+        message: errorMsg
+      });
+    }
+  }, [errorMsg, setError]);
+
+  const signInWithOAuth = useOAuthSignIn((message) => setError('root', { type: 'server', message }));
+
+  const onSubmit = async (formData: RegisterSchema) => {
+    try {
+      await registerUser(formData).unwrap();
+      success();
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
+      const errText = errorMessage.toLowerCase();
+
+      if (errText.includes('already registered') || errText.includes('already exists')) {
+        setError('email', {
+          type: 'server',
+          message: 'This email is already registered'
+        });
+      }
+      else if (errText.includes('password')) {
+        setError('password', {
+          type: 'server',
+          message: 'The password is too weak'
+        });
+      }
+      else {
+        setError('root', {
+          type: 'server',
+          message: errorMessage
+        });
+      }
+    }
+  };
+
+  return (
+    <form className={style['register-form']} onSubmit={handleSubmit(onSubmit)} noValidate>
+
+      {errors.root && <Alert variant="error">{errors.root.message}</Alert>}
+
+      {isEmail ? (
+        <>
+          <FormField
+            label='Email'
+            type="email"
+            icon={<LuMail />}
+            placeholder="you@example.com"
+            error={errors.email?.message}
+            {...register('email')}
+          />
+
+          <FormField
+            label='Password'
+            type='password'
+            icon={<RiLockPasswordLine />}
+            placeholder="At least 6 characters"
+            error={!!errors.password}
+            {...register('password')}
+          />
+
+          <PasswordRequirements
+            password={passwordValue}
+            hasError={touchedFields.password || isSubmitted}
+          />
+
+          <FormField
+            label='Repeat password'
+            type='password'
+            icon={<RiShieldCheckLine />}
+            placeholder="Confirm your password"
+            error={errors.confirm?.message}
+            {...register('confirm')}
+          />
+
+          <AuthFormActions onCancel={() => setIsEmail(false)} submitLabel="Register" isLoading={isLoading} />
+        </>
+      ) : (
+        <AuthProviderList
+          onEmailClick={() => setIsEmail(true)}
+          onProviderClick={signInWithOAuth}
+          blockedProviders={blockedProviders}
+        />
+      )}
+
+      <AuthSwitchLink prompt="Already have an account?" to="/login" label="Log in" />
+    </form>
+  );
+};

@@ -1,3 +1,2 @@
-export * from "./ui/sign-in-button/SignInButton";
-export * from './model/registerSchema';
-export * from './model/loginSchema';
+export * from './ui/login-form/LoginForm';
+export * from './ui/register-form/RegisterForm';

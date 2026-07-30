@@ -1,16 +1,19 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams, useLocation } from 'react-router';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams, useLocation, useNavigate } from 'react-router';
+import { AUTH_STORAGE_KEYS, type AuthProviderId } from '@/shared/config';
 
 export const useAuthUrlError = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [blockedProviders, setBlockedProviders] = useState<string[]>([]);
+  const [blockedProviders, setBlockedProviders] = useState<AuthProviderId[]>([]);
+  const handledRef = useRef(false);
 
   useEffect(() => {
     // 1. Get blocked providers from sessionStorage
-    const storedBlocked = sessionStorage.getItem('blocked_providers');
-    let blockedList: string[] = storedBlocked ? JSON.parse(storedBlocked) : [];
+    const storedBlocked = sessionStorage.getItem(AUTH_STORAGE_KEYS.blockedProviders);
+    const blockedList: AuthProviderId[] = storedBlocked ? JSON.parse(storedBlocked) : [];
     setBlockedProviders(blockedList);
 
     // 2. Parse search params
@@ -25,7 +28,9 @@ export const useAuthUrlError = () => {
     const hasError = errorFromSearch || errorFromHash;
     const errorDescription = errorDescFromSearch || errorDescFromHash;
 
-    if (hasError) {
+    if (hasError && !handledRef.current) {
+      handledRef.current = true;
+
       const decodedMsg = errorDescription
         ? decodeURIComponent(errorDescription.replace(/\+/g, ' '))
         : 'An error occurred during authentication';
@@ -33,22 +38,22 @@ export const useAuthUrlError = () => {
       setErrorMsg(decodedMsg);
 
       // 4. Determine which provider failed
-      const attemptedProvider = sessionStorage.getItem('oauth_provider');
+      const attemptedProvider = sessionStorage.getItem(AUTH_STORAGE_KEYS.oauthProvider) as AuthProviderId | null;
       if (attemptedProvider) {
         if (!blockedList.includes(attemptedProvider)) {
-          blockedList = [...blockedList, attemptedProvider];
-          sessionStorage.setItem('blocked_providers', JSON.stringify(blockedList));
-          setBlockedProviders(blockedList);
+          const nextBlocked = [...blockedList, attemptedProvider];
+          sessionStorage.setItem(AUTH_STORAGE_KEYS.blockedProviders, JSON.stringify(nextBlocked));
+          setBlockedProviders(nextBlocked);
         }
         // Clear the attempted provider as it has been handled
-        sessionStorage.removeItem('oauth_provider');
+        sessionStorage.removeItem(AUTH_STORAGE_KEYS.oauthProvider);
       }
 
-      // 5. Clean up URL parameters so refresh doesn't show/re-process the error
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
+      // 5. Clean up the URL through the router so useSearchParams doesn't
+      // keep returning the stale error on the next render.
+      navigate(location.pathname, { replace: true });
     }
-  }, [searchParams, location.hash]);
+  }, [searchParams, location.hash, location.pathname, navigate]);
 
   return { errorMsg, blockedProviders };
 };

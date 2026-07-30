@@ -1,0 +1,7 @@
+@use '@/app/styles/index' as *;
+
+.auth-provider-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
