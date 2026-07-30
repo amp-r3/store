@@ -4,7 +4,7 @@ import { CgTrash, CgLogOut } from "react-icons/cg";
 
 import style from './user-profile-view.module.scss';
 import { SessionUser } from "@/entities/session";
-import { PROVIDER_CONFIG } from "@/shared/config";
+import { getProviderConfig } from "@/shared/config";
 
 interface UserProfileViewProps {
   user: SessionUser;
@@ -30,7 +30,7 @@ const LinkedProviders = ({ providers }: { providers: string[] }) => {
       <span className={style['profile-view__providers-label']}>Linked accounts</span>
       <div className={style['profile-view__providers-list']}>
         {providers.map((key) => {
-          const config = PROVIDER_CONFIG[key.toLowerCase()];
+          const config = getProviderConfig(key);
           if (!config) return null;
           return (
             <div key={key} className={style['profile-view__provider-badge']}>

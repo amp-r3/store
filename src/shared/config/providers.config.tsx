@@ -1,20 +1,41 @@
+import { ReactNode } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaRegEnvelope, FaTelegram } from 'react-icons/fa';
+import { AuthProviderId } from './auth';
 
-export const PROVIDER_CONFIG: Record<string, {
+export interface ProviderConfig {
   label: string;
-  icon: React.ReactNode;
-}> = {
-  'google': {
+  icon: ReactNode;
+  /** CSS-safe slug for BEM modifier classnames — `custom:telegram` isn't a valid class-name segment. */
+  slug: string;
+}
+
+export const PROVIDER_CONFIG: Record<AuthProviderId, ProviderConfig> = {
+  google: {
     label: 'Google',
-    icon: <FcGoogle size={18} />,
+    icon: <FcGoogle />,
+    slug: 'google',
   },
-  'email': {
+  email: {
     label: 'Email',
-    icon: <FaRegEnvelope size={16} />,
+    icon: <FaRegEnvelope />,
+    slug: 'email',
   },
   'custom:telegram': {
     label: 'Telegram',
-    icon: <FaTelegram size={18} color="#2AABEE" />,
+    icon: <FaTelegram />,
+    slug: 'telegram',
   },
 };
+
+export const SIGN_IN_PROVIDER_ORDER: readonly AuthProviderId[] = ['email', 'google', 'custom:telegram'];
+
+const PROVIDER_CONFIG_BY_KEY = new Map(
+  Object.entries(PROVIDER_CONFIG).map(([id, config]) => [id.toLowerCase(), config])
+);
+
+/** Looks up a provider config by an arbitrary string (e.g. from Supabase's
+ * `app_metadata.providers`), unlike `PROVIDER_CONFIG` which is keyed by the
+ * known `AuthProviderId` union. */
+export const getProviderConfig = (id: string): ProviderConfig | undefined =>
+  PROVIDER_CONFIG_BY_KEY.get(id.toLowerCase());
