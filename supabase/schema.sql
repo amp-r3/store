@@ -399,6 +399,96 @@ $$;
 ALTER FUNCTION "public"."admin_delete_review"("p_review_id" bigint) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."admin_low_stock"("p_threshold" integer DEFAULT 5, "p_limit" integer DEFAULT 20) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_result jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select coalesce(jsonb_agg(t), '[]'::jsonb) into v_result
+    from (
+        select
+            ps.id as size_id,
+            ps.value,
+            ps.stock,
+            p.id as product_id,
+            p.title,
+            p.thumbnail
+        from public.product_sizes ps
+        join public.products p on p.id = ps.product_id
+        where ps.stock <= p_threshold and not p.is_archived
+        order by ps.stock asc
+        limit greatest(p_limit, 1)
+    ) t;
+
+    return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_low_stock"("p_threshold" integer, "p_limit" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_orders_by_status"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_result jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select coalesce(jsonb_object_agg(s.status, coalesce(c.count, 0)), '{}'::jsonb) into v_result
+    from unnest(enum_range(null::public.order_status)) as s(status)
+    left join (
+        select status, count(*) as count from public.orders group by status
+    ) c on c.status = s.status;
+
+    return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_orders_by_status"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_revenue_series"("p_days" integer DEFAULT 30) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_result jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select coalesce(jsonb_agg(t order by t.day), '[]'::jsonb) into v_result
+    from (
+        select
+            gs.day::date as day,
+            coalesce(sum(o.total_amount) filter (where o.payment_status = 'paid'), 0) as revenue,
+            count(o.id) as orders_count
+        from generate_series(current_date - (greatest(p_days, 1) - 1), current_date, interval '1 day') as gs(day)
+        left join public.orders o on o.created_at::date = gs.day
+        group by gs.day
+    ) t;
+
+    return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_revenue_series"("p_days" integer) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."admin_set_stock"("p_size_id" bigint, "p_stock" integer) RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
@@ -468,6 +558,75 @@ $$;
 
 
 ALTER FUNCTION "public"."admin_set_user_role"("p_user_id" "uuid", "p_role" "public"."user_role") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_top_products"("p_limit" integer DEFAULT 10) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_result jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select coalesce(jsonb_agg(t), '[]'::jsonb) into v_result
+    from (
+        select
+            p.id as product_id,
+            p.title,
+            p.thumbnail,
+            sum(oi.quantity) as units_sold,
+            sum(oi.quantity * oi.price_at_purchase) as revenue
+        from public.order_items oi
+        join public.orders o on o.id = oi.order_id
+        join public.products p on p.id = oi.product_id
+        where o.status not in ('cancelled', 'returned', 'refunded')
+        group by p.id, p.title, p.thumbnail
+        order by units_sold desc
+        limit greatest(p_limit, 1)
+    ) t;
+
+    return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_top_products"("p_limit" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_update_delivery_method"("p_id" "uuid", "p_payload" "jsonb") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_before jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select to_jsonb(m) into v_before from public.delivery_methods m where m.id = p_id;
+    if v_before is null then
+        raise exception 'Delivery method not found';
+    end if;
+
+    update public.delivery_methods set
+        name = coalesce(p_payload->>'name', name),
+        price = coalesce((p_payload->>'price')::numeric, price),
+        estimated_time = coalesce(p_payload->>'estimated_time', estimated_time),
+        is_active = coalesce((p_payload->>'is_active')::boolean, is_active),
+        free_from_price = case when p_payload ? 'free_from_price'
+            then nullif(p_payload->>'free_from_price', '')::numeric else free_from_price end
+    where id = p_id;
+
+    perform public.log_admin_action('delivery_method.update', 'delivery_method', p_id::text, v_before, p_payload);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_update_delivery_method"("p_id" "uuid", "p_payload" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status" DEFAULT NULL::"public"."payment_status", "p_delivery_status" "public"."delivery_status" DEFAULT NULL::"public"."delivery_status") RETURNS "void"
@@ -555,6 +714,37 @@ $$;
 
 
 ALTER FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_update_payment_method"("p_id" "uuid", "p_payload" "jsonb") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_before jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select to_jsonb(m) into v_before from public.payment_methods m where m.id = p_id;
+    if v_before is null then
+        raise exception 'Payment method not found';
+    end if;
+
+    update public.payment_methods set
+        name = coalesce(p_payload->>'name', name),
+        fee_percentage = coalesce((p_payload->>'fee_percentage')::numeric, fee_percentage),
+        fee_fixed = coalesce((p_payload->>'fee_fixed')::numeric, fee_fixed),
+        is_active = coalesce((p_payload->>'is_active')::boolean, is_active)
+    where id = p_id;
+
+    perform public.log_admin_action('payment_method.update', 'payment_method', p_id::text, v_before, p_payload);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_update_payment_method"("p_id" "uuid", "p_payload" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."admin_update_product"("p_id" bigint, "p_payload" "jsonb") RETURNS "void"
@@ -2256,6 +2446,24 @@ GRANT ALL ON FUNCTION "public"."admin_delete_review"("p_review_id" bigint) TO "s
 
 
 
+REVOKE ALL ON FUNCTION "public"."admin_low_stock"("p_threshold" integer, "p_limit" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_low_stock"("p_threshold" integer, "p_limit" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_low_stock"("p_threshold" integer, "p_limit" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_orders_by_status"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_orders_by_status"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_orders_by_status"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_revenue_series"("p_days" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_revenue_series"("p_days" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_revenue_series"("p_days" integer) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."admin_set_stock"("p_size_id" bigint, "p_stock" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."admin_set_stock"("p_size_id" bigint, "p_stock" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_set_stock"("p_size_id" bigint, "p_stock" integer) TO "service_role";
@@ -2268,9 +2476,27 @@ GRANT ALL ON FUNCTION "public"."admin_set_user_role"("p_user_id" "uuid", "p_role
 
 
 
+REVOKE ALL ON FUNCTION "public"."admin_top_products"("p_limit" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_top_products"("p_limit" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_top_products"("p_limit" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_update_delivery_method"("p_id" "uuid", "p_payload" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_update_delivery_method"("p_id" "uuid", "p_payload" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_update_delivery_method"("p_id" "uuid", "p_payload" "jsonb") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_update_payment_method"("p_id" "uuid", "p_payload" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_update_payment_method"("p_id" "uuid", "p_payload" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_update_payment_method"("p_id" "uuid", "p_payload" "jsonb") TO "service_role";
 
 
 

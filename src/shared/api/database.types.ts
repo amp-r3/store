@@ -774,6 +774,12 @@ export type Database = {
         Returns: undefined
       }
       admin_delete_review: { Args: { p_review_id: number }; Returns: undefined }
+      admin_low_stock: {
+        Args: { p_limit?: number; p_threshold?: number }
+        Returns: Json
+      }
+      admin_orders_by_status: { Args: never; Returns: Json }
+      admin_revenue_series: { Args: { p_days?: number }; Returns: Json }
       admin_set_stock: {
         Args: { p_size_id: number; p_stock: number }
         Returns: undefined
@@ -785,12 +791,21 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_top_products: { Args: { p_limit?: number }; Returns: Json }
+      admin_update_delivery_method: {
+        Args: { p_id: string; p_payload: Json }
+        Returns: undefined
+      }
       admin_update_order_status: {
         Args: {
           p_delivery_status?: Database["public"]["Enums"]["delivery_status"]
           p_order_id: string
           p_payment_status?: Database["public"]["Enums"]["payment_status"]
         }
+        Returns: undefined
+      }
+      admin_update_payment_method: {
+        Args: { p_id: string; p_payload: Json }
         Returns: undefined
       }
       admin_update_product: {
