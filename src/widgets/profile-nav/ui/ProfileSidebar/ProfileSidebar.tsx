@@ -2,7 +2,7 @@ import { NavLink } from 'react-router';
 
 import { SessionUser } from '@/entities/session';
 
-import { PROFILE_NAV_ITEMS } from '../../config/navItems';
+import type { ProfileNavItem } from '../../config/navItems';
 import { getInitial, getDisplayName } from '../../lib/userDisplay';
 
 import style from './profile-sidebar.module.scss';
@@ -10,9 +10,10 @@ import style from './profile-sidebar.module.scss';
 interface ProfileSidebarProps {
     user: SessionUser;
     unreadCount: number;
+    items: ProfileNavItem[];
 }
 
-export const ProfileSidebar = ({ user, unreadCount }: ProfileSidebarProps) => {
+export const ProfileSidebar = ({ user, unreadCount, items }: ProfileSidebarProps) => {
     const hasUnread = unreadCount >= 1;
 
     return (
@@ -34,7 +35,7 @@ export const ProfileSidebar = ({ user, unreadCount }: ProfileSidebarProps) => {
             </NavLink>
 
             <nav className={style['profile-sidebar__nav']}>
-                {PROFILE_NAV_ITEMS.map(({ id, to, end, icon: Icon, label }) => {
+                {items.map(({ id, to, end, icon: Icon, label }) => {
                     const isNotifications = id === 'notifications';
 
                     return (

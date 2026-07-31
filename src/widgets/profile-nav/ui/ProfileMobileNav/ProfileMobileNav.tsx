@@ -3,7 +3,7 @@ import { NavLink } from 'react-router';
 import { SessionUser } from '@/entities/session';
 import { useHaptics } from '@/shared/lib/hooks';
 
-import { PROFILE_NAV_ITEMS } from '../../config/navItems';
+import type { ProfileNavItem } from '../../config/navItems';
 import { getInitial, getDisplayName } from '../../lib/userDisplay';
 
 import style from './profile-mobile-nav.module.scss';
@@ -11,9 +11,10 @@ import style from './profile-mobile-nav.module.scss';
 interface ProfileMobileNavProps {
     user: SessionUser;
     unreadCount: number;
+    items: ProfileNavItem[];
 }
 
-export const ProfileMobileNav = ({ user, unreadCount }: ProfileMobileNavProps) => {
+export const ProfileMobileNav = ({ user, unreadCount, items }: ProfileMobileNavProps) => {
     const { soft } = useHaptics();
     const hasUnread = unreadCount >= 1;
 
@@ -37,7 +38,7 @@ export const ProfileMobileNav = ({ user, unreadCount }: ProfileMobileNavProps) =
             </NavLink>
 
             <nav className={style['profile-mobile-nav__tabs']} aria-label="Profile sections">
-                {PROFILE_NAV_ITEMS.map(({ id, to, end, icon: Icon, shortLabel }) => {
+                {items.map(({ id, to, end, icon: Icon, shortLabel }) => {
                     const isNotifications = id === 'notifications';
                     const badgeCount = unreadCount > 9 ? '9+' : unreadCount;
 

@@ -3,8 +3,10 @@ import { CheckoutGuard } from "@/app/providers/CheckoutGuard/CheckoutGuard";
 import { MainLayout } from "@/app/layouts/MainLayout/MainLayout";
 import RootLayout from "@/app/layouts/RootLayout/RootLayout";
 import { UserLayout } from "@/app/layouts/UserLayout/UserLayout";
+import { AdminLayout } from "@/app/layouts/AdminLayout/AdminLayout";
 import { ProtectedRoute } from "@/app/providers/ProtectedRoute/ProtectedRoute";
 import { PublicRoute } from "@/app/providers/PublicRoute/PublicRoute";
+import { AdminRoute } from "@/app/providers/AdminRoute/AdminRoute";
 import CatalogPage from "@/pages/catalog-page";
 import { createBrowserRouter } from "react-router";
 
@@ -142,6 +144,47 @@ export const router = createBrowserRouter([
             }
           },
         ],
+      },
+
+      {
+        path: '/admin',
+        Component: AdminRoute,
+        ErrorBoundary: ErrorView,
+        children: [
+          {
+            Component: AdminLayout,
+            children: [
+              {
+                index: true,
+                lazy: async () => {
+                  const module = await import("@/pages/admin-dashboard-page")
+                  return { Component: module.default }
+                }
+              },
+              {
+                path: 'orders',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-orders-page")
+                  return { Component: module.default }
+                }
+              },
+              {
+                path: 'products',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-products-page")
+                  return { Component: module.default }
+                }
+              },
+              {
+                path: '*',
+                lazy: async () => {
+                  const module = await import("@/pages/not-found-page")
+                  return { Component: module.default }
+                }
+              },
+            ]
+          }
+        ]
       },
 
     ]

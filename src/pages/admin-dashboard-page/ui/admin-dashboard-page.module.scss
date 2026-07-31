@@ -1,0 +1,11 @@
+@use '@/app/styles/index' as *;
+
+.admin-dashboard-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: $spacing-lg;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}

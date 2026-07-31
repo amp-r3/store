@@ -1,0 +1,70 @@
+@use '@/app/styles/index' as *;
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY($spacing-md);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-layout {
+  animation: fade-up $transition-layout $ease-out-expo both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.admin-layout__grid {
+  min-height: calc(100vh - $header-height - 120px);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: $spacing-xxl;
+  align-items: start;
+
+  @media (max-width: 1024px) {
+    gap: $spacing-xl;
+    grid-template-columns: 240px 1fr;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
+
+.admin-layout__content {
+  min-width: 0;
+  background: var(--glass-background-strong);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-xl;
+  padding: $spacing-xxl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  backdrop-filter: blur(24px) saturate(120%);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-sm);
+
+  @media (max-width: 768px) {
+    padding: $spacing-xl;
+    border-radius: $radius-lg;
+  }
+
+  @media (max-width: 480px) {
+    padding: $spacing-lg;
+  }
+}
+
+.admin-layout__fallback {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding-block: $spacing-xxl;
+}
