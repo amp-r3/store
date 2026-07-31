@@ -44,6 +44,7 @@ const SUCCESS_MESSAGES: Record<string, SuccessNotification> = {
     deleteReview: { type: 'info', text: 'Review deleted', key: 'review' },
     syncCart: { type: 'success', text: 'Cart synced to your account', key: 'sync-cart' },
     syncWishlist: { type: 'success', text: 'Wishlist synced to your account', key: 'sync-wishlist' },
+    updateOrderStatus: { type: 'success', text: 'Order status updated', key: 'admin-order' },
 };
 
 interface RtkQueryActionMeta {

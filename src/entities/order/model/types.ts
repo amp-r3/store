@@ -92,6 +92,8 @@ export interface Order {
 
 export type OrdersScope = 'active' | 'completed';
 
+export type AdminOrderStatusFilter = OrderStatus | 'all';
+
 export interface OrderCounts {
   active: number;
   completed: number;

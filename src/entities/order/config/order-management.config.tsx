@@ -138,3 +138,7 @@ export const DELIVERY_STATUS_MAP: Record<DeliveryStatus | string, StatusMeta> = 
   returned: { label: 'Returned' },
   cancelled: { label: 'Cancelled' },
 }
+
+export const ORDER_STATUS_OPTIONS = ['pending', 'processing', 'shipped', 'completed', 'cancelled'] as const satisfies readonly OrderStatus[];
+export const PAYMENT_STATUS_OPTIONS = ['awaiting_payment', 'paid', 'failed', 'refunded'] as const satisfies readonly PaymentStatus[];
+export const DELIVERY_STATUS_OPTIONS = ['awaiting_dispatch', 'dispatched', 'in_transit', 'delivered', 'returned', 'cancelled'] as const satisfies readonly DeliveryStatus[];

@@ -1,0 +1,56 @@
+@use '@/app/styles/index' as *;
+@use '@/app/styles/statuses' as status;
+
+.admin-order-status-select {
+  display: block;
+  min-width: 0;
+}
+
+.admin-order-status-select__control {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  appearance: none;
+  cursor: pointer;
+  font-family: $font-primary;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  text-transform: capitalize;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  // A pill radius plus a wide chevron gutter left almost no room for text at
+  // this column's width ("Awaiting Dispatch" needs more space than a badge
+  // ever does) — a tighter rectangle and a smaller reserved gutter give the
+  // label back a few extra characters before it has to ellipsize.
+  padding: $spacing-xs $spacing-sm;
+  padding-right: $spacing-lg;
+  border-radius: $radius-sm;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-xs);
+  background-repeat: no-repeat;
+  background-position: right $spacing-xs center;
+  background-size: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238f8f9c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+
+  @include status.generate-modifiers;
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: $fs-sm;
+    padding: $spacing-sm $spacing-md;
+    padding-right: calc($spacing-md + $spacing-lg);
+    border-radius: $radius-pill;
+    background-position: right $spacing-sm center;
+    background-size: 12px;
+  }
+}

@@ -1,0 +1,23 @@
+@use '@/app/styles/index' as *;
+
+.admin-orders-table {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.admin-orders-table__header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 0.35fr) minmax(0, 0.6fr) minmax(0, 0.75fr) minmax(0, 1.6fr) minmax(0, 1.6fr);
+  gap: $spacing-md;
+  padding-inline: $spacing-md;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+}

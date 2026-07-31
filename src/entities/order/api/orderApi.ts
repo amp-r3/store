@@ -1,7 +1,7 @@
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
-import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod } from '@/entities/order/model/types';
+import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, AdminOrderStatusFilter, PaymentStatus, DeliveryStatus } from '@/entities/order/model/types';
 
 // embedded relations from the select below (postgrest-js doesn't infer these)
 type OrderRow = Database['public']['Tables']['orders']['Row'] & {
@@ -24,6 +24,20 @@ interface OrdersQueryArgs {
   page: number;
   limit: number;
   scope: OrdersScope;
+}
+
+export interface AdminOrdersQueryArgs {
+  page: number;
+  limit: number;
+  status: AdminOrderStatusFilter;
+  /** Trimmed order_number fragment; empty/undefined = no filter. */
+  search?: string;
+}
+
+export interface UpdateOrderStatusPayload {
+  orderId: string;
+  paymentStatus?: PaymentStatus;
+  deliveryStatus?: DeliveryStatus;
 }
 
 const ORDERS_SELECT = `
@@ -178,6 +192,81 @@ export const orderApi = baseApi.injectEndpoints({
       providesTags: ['Order']
     }),
 
+    // Admin scope: all customers' orders, not just the caller's. Differs from
+    // fetchOrders in three ways: no supabase.auth.getUser() guard (AdminRoute
+    // already guarantees an authenticated admin, and the id isn't needed
+    // here — skip the round-trip), no .eq('user_id') (the "Admins can view
+    // all orders" RLS policy is what widens the read, see the migration), and
+    // a status/search filter instead of the active/completed scope split.
+    //
+    // Without .eq('user_id'), a non-admin calling this doesn't get an error —
+    // the permissive-OR RLS policy silently narrows the result to their own
+    // orders. That's the correct failure mode (fail-closed on data); the real
+    // gates are AdminRoute on the client and is_admin() inside every admin RPC.
+    getAllOrders: builder.query<PaginatedOrders, AdminOrdersQueryArgs>({
+      queryFn: async ({ page, limit, status, search }) => {
+        const from = (page - 1) * limit;
+        const to = page * limit - 1;
+
+        let query = supabase
+          .from('orders')
+          .select(ORDERS_SELECT, { count: 'exact' });
+
+        if (status !== 'all') {
+          query = query.eq('status', status);
+        }
+
+        const trimmedSearch = search?.trim();
+        if (trimmedSearch) {
+          query = query.ilike('order_number', `%${trimmedSearch}%`);
+        }
+
+        const { data, error, count } = await query
+          .order('created_at', { ascending: false })
+          .range(from, to);
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return {
+          data: {
+            items: (data as unknown as OrderRow[]).map(mapOrderResponseToOrder),
+            totalCount: count || 0,
+          }
+        };
+      },
+      providesTags: ['Order']
+    }),
+
+    // The only other admin write path alongside create_order, both SECURITY
+    // DEFINER RPCs — orders/order_items keep zero UPDATE policies by design
+    // (see 20260723071805_harden_order_write_paths.sql), since a column-blind
+    // UPDATE policy would both expose every other order column to an admin
+    // and bypass sync_order_main_status() (a `before update of payment_status,
+    // delivery_status` trigger), letting `status` desync from the two values
+    // it's derived from.
+    //
+    // No optimistic update: `status` is computed server-side by that trigger,
+    // and reimplementing its branching in TypeScript would drift the moment
+    // the SQL changes. Plain invalidation is the correct trade-off here.
+    updateOrderStatus: builder.mutation<null, UpdateOrderStatusPayload>({
+      queryFn: async ({ orderId, paymentStatus, deliveryStatus }) => {
+        const { error } = await supabase.rpc('admin_update_order_status', {
+          p_order_id: orderId,
+          ...(paymentStatus !== undefined && { p_payment_status: paymentStatus }),
+          ...(deliveryStatus !== undefined && { p_delivery_status: deliveryStatus }),
+        });
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: null };
+      },
+      invalidatesTags: ['Order']
+    }),
+
     getOrderCounts: builder.query<OrderCounts, void>({
       queryFn: async () => {
         const { data: { user } } = await supabase.auth.getUser();
@@ -316,5 +405,7 @@ export const {
   useCreateOrderMutation,
   useGetDeliveryMethodsQuery,
   useGetPaymentMethodsQuery,
-  useGetLastShippingAddressQuery
+  useGetLastShippingAddressQuery,
+  useGetAllOrdersQuery,
+  useUpdateOrderStatusMutation,
 } = orderApi;
