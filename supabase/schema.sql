@@ -1,3 +1,5 @@
+Initialising login role...
+Dumping schemas from remote database...
 
 
 
@@ -102,6 +104,15 @@ CREATE TYPE "public"."payment_status" AS ENUM (
 
 ALTER TYPE "public"."payment_status" OWNER TO "postgres";
 
+
+CREATE TYPE "public"."user_role" AS ENUM (
+    'user',
+    'admin'
+);
+
+
+ALTER TYPE "public"."user_role" OWNER TO "postgres";
+
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
@@ -187,6 +198,72 @@ $$;
 
 
 ALTER FUNCTION "public"."add_or_update_review"("p_product_id" bigint, "p_rating" integer, "p_comment" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_dashboard_stats"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_stats jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select jsonb_build_object(
+        'orders_total', (select count(*) from public.orders),
+        'orders_active', (select count(*) from public.orders
+            where status not in ('completed', 'cancelled')),
+        'orders_awaiting_payment', (select count(*) from public.orders
+            where payment_status = 'awaiting_payment' and status <> 'cancelled'),
+        'orders_awaiting_dispatch', (select count(*) from public.orders
+            where delivery_status = 'awaiting_dispatch' and status <> 'cancelled'),
+        'revenue_total', (select coalesce(sum(total_amount), 0) from public.orders
+            where payment_status = 'paid'),
+        'customers_total', (select count(*) from public.profiles),
+        'products_total', (select count(*) from public.products)
+    ) into v_stats;
+
+    return v_stats;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_dashboard_stats"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status" DEFAULT NULL::"public"."payment_status", "p_delivery_status" "public"."delivery_status" DEFAULT NULL::"public"."delivery_status") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+begin
+    if auth.uid() is null then
+        raise exception 'Not authenticated';
+    end if;
+
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    if p_payment_status is null and p_delivery_status is null then
+        raise exception 'Nothing to update';
+    end if;
+
+    update public.orders
+    set
+        payment_status = coalesce(p_payment_status, orders.payment_status),
+        delivery_status = coalesce(p_delivery_status, orders.delivery_status)
+    where orders.id = p_order_id;
+
+    if not found then
+        raise exception 'Order not found';
+    end if;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."create_order"("p_items" "jsonb", "p_delivery_method_id" "uuid", "p_payment_method_id" "uuid", "p_shipping_address" "jsonb") RETURNS "jsonb"
@@ -642,6 +719,22 @@ $$;
 ALTER FUNCTION "public"."handle_wishlist_price_drop"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."is_admin"() RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+    select exists (
+        select 1
+        from public.profiles p
+        where p.id = (select auth.uid())
+          and p.role = 'admin'::public.user_role
+    );
+$$;
+
+
+ALTER FUNCTION "public"."is_admin"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."rls_auto_enable"() RETURNS "event_trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'pg_catalog'
@@ -1047,7 +1140,8 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "first_name" "text",
     "last_name" "text",
     "avatar_url" "text",
-    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"())
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
+    "role" "public"."user_role" DEFAULT 'user'::"public"."user_role" NOT NULL
 );
 
 
@@ -1372,6 +1466,18 @@ ALTER TABLE ONLY "public"."wishlist_items"
 
 
 
+CREATE POLICY "Admins can view all order items" ON "public"."order_items" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
+
+
+
+CREATE POLICY "Admins can view all orders" ON "public"."orders" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
+
+
+
+CREATE POLICY "Admins can view all profiles" ON "public"."profiles" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
+
+
+
 CREATE POLICY "Allow everyone to read payment methods" ON "public"."payment_methods" FOR SELECT USING (true);
 
 
@@ -1529,6 +1635,18 @@ GRANT ALL ON FUNCTION "public"."add_or_update_review"("p_product_id" bigint, "p_
 
 
 
+REVOKE ALL ON FUNCTION "public"."admin_dashboard_stats"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_dashboard_stats"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_dashboard_stats"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."create_order"("p_items" "jsonb", "p_delivery_method_id" "uuid", "p_payment_method_id" "uuid", "p_shipping_address" "jsonb") TO "anon";
 GRANT ALL ON FUNCTION "public"."create_order"("p_items" "jsonb", "p_delivery_method_id" "uuid", "p_payment_method_id" "uuid", "p_shipping_address" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."create_order"("p_items" "jsonb", "p_delivery_method_id" "uuid", "p_payment_method_id" "uuid", "p_shipping_address" "jsonb") TO "service_role";
@@ -1574,6 +1692,12 @@ GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."handle_wishlist_price_drop"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_wishlist_price_drop"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_wishlist_price_drop"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."is_admin"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."is_admin"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."is_admin"() TO "service_role";
 
 
 
@@ -1697,9 +1821,34 @@ GRANT ALL ON TABLE "public"."products_view" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."profiles" TO "anon";
-GRANT ALL ON TABLE "public"."profiles" TO "authenticated";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "authenticated";
 GRANT ALL ON TABLE "public"."profiles" TO "service_role";
+
+
+
+GRANT UPDATE("username") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("username") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("first_name") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("first_name") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("last_name") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("last_name") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("avatar_url") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("avatar_url") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("updated_at") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("updated_at") ON TABLE "public"."profiles" TO "authenticated";
 
 
 

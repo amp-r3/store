@@ -506,6 +506,7 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          role: Database["public"]["Enums"]["user_role"]
           updated_at: string | null
           username: string
         }
@@ -514,6 +515,7 @@ export type Database = {
           first_name?: string | null
           id: string
           last_name?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
           username: string
         }
@@ -522,6 +524,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
           username?: string
         }
@@ -664,6 +667,15 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_dashboard_stats: { Args: never; Returns: Json }
+      admin_update_order_status: {
+        Args: {
+          p_delivery_status?: Database["public"]["Enums"]["delivery_status"]
+          p_order_id: string
+          p_payment_status?: Database["public"]["Enums"]["payment_status"]
+        }
+        Returns: undefined
+      }
       create_order: {
         Args: {
           p_delivery_method_id: string
@@ -692,6 +704,7 @@ export type Database = {
           purchase_count: number
         }[]
       }
+      is_admin: { Args: never; Returns: boolean }
       toggle_review_like: { Args: { p_review_id: number }; Returns: boolean }
     }
     Enums: {
@@ -722,6 +735,7 @@ export type Database = {
         | "sepa"
         | "klarna"
       payment_status: "awaiting_payment" | "paid" | "failed" | "refunded"
+      user_role: "user" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -883,6 +897,7 @@ export const Constants = {
         "klarna",
       ],
       payment_status: ["awaiting_payment", "paid", "failed", "refunded"],
+      user_role: ["user", "admin"],
     },
   },
 } as const
