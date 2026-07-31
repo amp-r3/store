@@ -773,6 +773,7 @@ export type Database = {
         Args: { p_size_id: number }
         Returns: undefined
       }
+      admin_delete_review: { Args: { p_review_id: number }; Returns: undefined }
       admin_set_stock: {
         Args: { p_size_id: number; p_stock: number }
         Returns: undefined

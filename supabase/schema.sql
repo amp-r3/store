@@ -371,6 +371,34 @@ $$;
 ALTER FUNCTION "public"."admin_delete_product_size"("p_size_id" bigint) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."admin_delete_review"("p_review_id" bigint) RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_before jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    select to_jsonb(r) into v_before from public.product_reviews r where r.id = p_review_id;
+    if v_before is null then
+        raise exception 'Review not found';
+    end if;
+
+    -- on_review_change (AFTER DELETE) recomputes products.rating/reviews_count
+    -- itself -- nothing else to do here.
+    delete from public.product_reviews where id = p_review_id;
+
+    perform public.log_admin_action('review.delete', 'product_review', p_review_id::text, v_before, null);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_delete_review"("p_review_id" bigint) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."admin_set_stock"("p_size_id" bigint, "p_stock" integer) RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
@@ -2219,6 +2247,12 @@ GRANT ALL ON FUNCTION "public"."admin_delete_category"("p_id" bigint) TO "servic
 REVOKE ALL ON FUNCTION "public"."admin_delete_product_size"("p_size_id" bigint) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."admin_delete_product_size"("p_size_id" bigint) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_delete_product_size"("p_size_id" bigint) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_delete_review"("p_review_id" bigint) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_delete_review"("p_review_id" bigint) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_delete_review"("p_review_id" bigint) TO "service_role";
 
 
 
