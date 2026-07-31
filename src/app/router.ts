@@ -5,7 +5,6 @@ import RootLayout from "@/app/layouts/RootLayout/RootLayout";
 import { UserLayout } from "@/app/layouts/UserLayout/UserLayout";
 import { ProtectedRoute } from "@/app/providers/ProtectedRoute/ProtectedRoute";
 import { PublicRoute } from "@/app/providers/PublicRoute/PublicRoute";
-import { RecoveryRoute } from "@/app/providers/RecoveryRoute/RecoveryRoute";
 import CatalogPage from "@/pages/catalog-page";
 import { createBrowserRouter } from "react-router";
 
@@ -94,31 +93,15 @@ export const router = createBrowserRouter([
       },
 
       {
-        // No guard: must render while the auth session settles (OAuth or a
-        // password-reset link both land here), and it owns its own
-        // navigation once useSessionSync populates a live token.
+        // No guard: must render while the auth session settles after an
+        // OAuth round-trip, and it owns its own navigation once
+        // useSessionSync populates a live token.
         path: 'auth/callback',
         ErrorBoundary: ErrorView,
         lazy: async () => {
           const module = await import("@/pages/auth-callback-page")
           return { Component: module.default }
         }
-      },
-      {
-        // A recovery link creates a REAL session, so `isAuth` is true here
-        // and PublicRoute would redirect the user away before they can set a
-        // password. RecoveryRoute gates on a live in-memory token instead.
-        Component: RecoveryRoute,
-        ErrorBoundary: ErrorView,
-        children: [
-          {
-            path: 'reset-password',
-            lazy: async () => {
-              const module = await import("@/pages/reset-password-page")
-              return { Component: module.default }
-            }
-          }
-        ]
       },
       {
         Component: PublicRoute,
@@ -135,13 +118,6 @@ export const router = createBrowserRouter([
             path: 'register',
             lazy: async () => {
               const module = await import("@/pages/register-page")
-              return { Component: module.default }
-            }
-          },
-          {
-            path: 'forgot-password',
-            lazy: async () => {
-              const module = await import("@/pages/forgot-password-page")
               return { Component: module.default }
             }
           }

@@ -5,9 +5,7 @@ import style from './change-password-section.module.scss';
 
 interface ChangePasswordSectionProps {
   /** Hidden entirely for OAuth-only accounts — they have no password to
-   *  change. (Such a user could still set one via /forgot-password, since
-   *  resetPasswordForEmail works regardless of provider, but surfacing that
-   *  path from the profile is out of scope here.) */
+   *  change, and there is no password-recovery flow to set one instead. */
   hasPasswordIdentity: boolean;
 }
 

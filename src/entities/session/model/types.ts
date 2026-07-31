@@ -36,14 +36,6 @@ export interface UpdateProfilePayload {
   email?: string
 }
 
-export interface RequestPasswordResetPayload {
-  email: string
-}
-
-export interface UpdatePasswordPayload {
-  password: string
-}
-
 export interface ChangePasswordPayload {
   currentPassword: string
   newPassword: string

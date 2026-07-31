@@ -10,17 +10,11 @@ import { purgeStoredState } from "redux-persist";
 export interface AuthState {
   user: SessionUser | null
   token: string | null
-  /** True only between a PASSWORD_RECOVERY event and the password being set.
-   *  Transient by construction — the persist whitelist is ['user'], so this
-   *  is never restored on reload and a stale recovery flag can't strand a
-   *  later session. */
-  isRecoverySession: boolean
 }
 
 const initialState: AuthState = {
   user: null,
-  token: null,
-  isRecoverySession: false
+  token: null
 }
 
 // Strips the JWT before it reaches localStorage: the access token already
@@ -51,11 +45,7 @@ export const authSlice = createSlice({
     logout(state) {
       state.user = null
       state.token = null
-      state.isRecoverySession = false
       purgeStoredState(authPersistConfig);
-    },
-    setRecoverySession(state, action: PayloadAction<boolean>) {
-      state.isRecoverySession = action.payload;
     },
     setSession(state, action: PayloadAction<{ user: SessionUser, token: string }>) {
       const incoming = action.payload.user;
@@ -101,7 +91,7 @@ export const authSlice = createSlice({
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice.reducer);
 
-export const {logout, setSession, setRecoverySession} = authSlice.actions
+export const {logout, setSession} = authSlice.actions
 
 export { persistedAuthReducer as authReducer };
 export default persistedAuthReducer;

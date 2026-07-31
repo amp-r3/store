@@ -6,8 +6,6 @@ export const selectToken = (state: { auth: AuthState }) => state.auth.token
 
 export const selectIsAuth = (state: { auth: AuthState }) => !!state.auth.user
 
-export const selectIsRecoverySession = (state: { auth: AuthState }) => state.auth.isRecoverySession
-
 export const selectUserName = (state: { auth: AuthState }) => {
   const user = state.auth.user
   if (!user) return null

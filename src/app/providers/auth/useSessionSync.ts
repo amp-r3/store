@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { supabase } from "@/shared/api/supabase";
 import { useAppDispatch } from "@/shared/model";
-import { setSession, setRecoverySession } from "@/entities/session";
+import { setSession } from "@/entities/session";
 import { AUTH_STORAGE_KEYS } from "@/shared/config";
 
 /** Mirrors the Supabase auth session into Redux. Dispatches `setSession` twice
@@ -23,10 +23,6 @@ export const useSessionSync = () => {
           // A successful sign-in means any provider previously blocked by a
           // failed OAuth attempt (see useAuthUrlError) is no longer blocked.
           sessionStorage.removeItem(AUTH_STORAGE_KEYS.blockedProviders);
-        }
-
-        if (event === 'PASSWORD_RECOVERY') {
-          dispatch(setRecoverySession(true));
         }
 
         if (session?.user) {

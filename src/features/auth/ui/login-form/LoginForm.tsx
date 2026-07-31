@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { Alert, FormField } from '@/shared/ui';
@@ -105,10 +104,6 @@ export const LoginForm = () => {
               {...register('password')}
               {...capsLockProps}
             />
-
-            <Link to="/forgot-password" className={style['login-form__forgot']}>
-              Forgot password?
-            </Link>
 
             <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Log in" isLoading={isLoading} />
           </>

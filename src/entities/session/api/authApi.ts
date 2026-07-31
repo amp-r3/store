@@ -1,4 +1,4 @@
-import { ChangePasswordPayload, LoginFormData, RegisterFormData, RequestPasswordResetPayload, SessionUser, UpdatePasswordPayload, UpdateProfilePayload } from "@/entities/session/model/types";
+import { ChangePasswordPayload, LoginFormData, RegisterFormData, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
 import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
@@ -19,11 +19,15 @@ export const authApi = baseApi.injectEndpoints({
           return { error: { status: 400, data: authError.message } };
         }
 
-        if (!authData.user) {
-          return { error: { status: 500, data: 'Registration succeeded but no user was returned' } };
+        // Email confirmation is disabled for this project, so signUp always
+        // returns a live session. A null session means it was re-enabled
+        // server-side — fail loudly rather than storing a user with an empty
+        // token, which reads as signed in while every query runs as `anon`.
+        if (!authData.session) {
+          return { error: { status: 500, data: 'Registration succeeded but no session was returned' } };
         }
 
-        const user = authData.user;
+        const user = authData.session.user;
 
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -39,7 +43,7 @@ export const authApi = baseApi.injectEndpoints({
               firstName: '',
               lastName: '',
               username: '',
-              accessToken: authData.session?.access_token || '',
+              accessToken: authData.session.access_token,
             },
           };
         }
@@ -51,7 +55,7 @@ export const authApi = baseApi.injectEndpoints({
             firstName: profile.first_name,
             lastName: profile.last_name,
             username: profile.username,
-            accessToken: authData.session?.access_token || '',
+            accessToken: authData.session.access_token,
           },
         };
       },
@@ -64,6 +68,9 @@ export const authApi = baseApi.injectEndpoints({
         });
 
         if (authError) {
+          // Deliberately collapsed into one message for every failure reason
+          // (anti-enumeration). `email_not_confirmed` can't occur here — email
+          // confirmation is disabled project-wide — so don't add a branch for it.
           return { error: { status: 401, data: 'Incorrect email or password' } }
         }
 
@@ -139,12 +146,19 @@ export const authApi = baseApi.injectEndpoints({
 
         let updatedEmail = user.email;
         if (userData.email && userData.email !== user.email) {
-          const { error: authError } = await supabase.auth.updateUser({ email: userData.email });
+          const { data: updatedAuthUser, error: authError } = await supabase.auth.updateUser({
+            email: userData.email,
+          });
 
           if (authError) {
             return { error: { status: 400, data: authError.message } };
           }
-          updatedEmail = userData.email;
+
+          // With confirmation off GoTrue applies the change immediately, so
+          // the returned user is the source of truth — never echo back the
+          // requested address, which would show an email the server hasn't
+          // accepted.
+          updatedEmail = updatedAuthUser.user.email;
         }
 
         return {
@@ -157,46 +171,6 @@ export const authApi = baseApi.injectEndpoints({
             email: updatedEmail
           }
         };
-      }
-    }),
-
-    requestPasswordReset: builder.mutation<null, RequestPasswordResetPayload>({
-      queryFn: async ({ email }) => {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          // `next` is ours — GoTrue only ever *adds* `code` to redirect_to, it
-          // never strips our query string, which keeps recovery detection
-          // independent of whether this GoTrue version echoes `type=recovery`.
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/reset-password')}`,
-        });
-
-        if (error) {
-          return { error: { status: error.status ?? 500, data: error.message } };
-        }
-
-        // Deliberately identical for known and unknown addresses — see the
-        // enumeration note in ForgotPasswordForm.
-        return { data: null };
-      }
-    }),
-
-    updatePassword: builder.mutation<null, UpdatePasswordPayload>({
-      queryFn: async ({ password }) => {
-        const { error } = await supabase.auth.updateUser({ password });
-
-        if (error) {
-          // "Auth session missing!" — the recovery link expired or was
-          // already used to set a password once.
-          if (/session missing/i.test(error.message)) {
-            return { error: { status: 401, data: 'Your reset link has expired. Request a new one.' } };
-          }
-          return { error: { status: error.status ?? 400, data: error.message } };
-        }
-
-        // Fire-and-forget: invalidate this account's other sessions after a
-        // password reset. A failure here must not fail the reset itself.
-        void supabase.auth.signOut({ scope: 'others' });
-
-        return { data: null };
       }
     }),
 
@@ -273,8 +247,6 @@ export const {
   useRegisterMutation,
   useSignInWithOAuthMutation,
   useUpdateProfileMutation,
-  useRequestPasswordResetMutation,
-  useUpdatePasswordMutation,
   useChangePasswordMutation,
   useSignOutMutation,
   useDeleteAccountMutation,

@@ -216,6 +216,21 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
 - `SIGNED_IN`: merge local cart/wishlist (localStorage) → server, then clear local.
   `SIGNED_OUT`: reset RTK Query cache and cart/wishlist/auth slices.
 - Supabase access outside `api/` segments is forbidden.
+- **No email confirmation, no email-based password recovery** (portfolio
+  project — a reviewer shouldn't need a real inbox to try any auth flow).
+  "Confirm email" (`mailer_autoconfirm`) and "Secure email change" are both
+  **off** in the Supabase dashboard — `signUp` returns a live session and an
+  email change applies immediately. There is deliberately no confirm/verify
+  page and no `emailRedirectTo` on `signUp`. The forgot/reset-password flow
+  (`resetPasswordForEmail`) was removed entirely rather than kept as a real
+  emailed link, since letting anyone reset a password without proving inbox
+  ownership would be a hole, not a shortcut — a signed-in user changes their
+  password from the profile page instead (`ChangePasswordForm`, re-auth with
+  the current password). `auth/callback` now only ever handles an OAuth
+  redirect. These are dashboard-only settings — `supabase/config.toml` has no
+  `[auth]` section, so **never run `supabase config push`**; it would
+  overwrite the remote `site_url`, `uri_allow_list` and Google provider config
+  with CLI defaults.
 
 ## Database Schema & Migrations
 
