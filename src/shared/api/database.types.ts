@@ -495,6 +495,7 @@ export type Database = {
           discount_percentage: number | null
           id: number
           images: string[] | null
+          is_archived: boolean
           meta: Json | null
           minimum_order_quantity: number | null
           price: number | null
@@ -520,6 +521,7 @@ export type Database = {
           discount_percentage?: number | null
           id?: number
           images?: string[] | null
+          is_archived?: boolean
           meta?: Json | null
           minimum_order_quantity?: number | null
           price?: number | null
@@ -545,6 +547,7 @@ export type Database = {
           discount_percentage?: number | null
           id?: number
           images?: string[] | null
+          is_archived?: boolean
           meta?: Json | null
           minimum_order_quantity?: number | null
           price?: number | null
@@ -736,7 +739,21 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_archive_product: {
+        Args: { p_archived: boolean; p_id: number }
+        Returns: undefined
+      }
+      admin_create_product: { Args: { p_payload: Json }; Returns: number }
       admin_dashboard_stats: { Args: never; Returns: Json }
+      admin_delete_category: { Args: { p_id: number }; Returns: undefined }
+      admin_delete_product_size: {
+        Args: { p_size_id: number }
+        Returns: undefined
+      }
+      admin_set_stock: {
+        Args: { p_size_id: number; p_stock: number }
+        Returns: undefined
+      }
       admin_update_order_status: {
         Args: {
           p_delivery_status?: Database["public"]["Enums"]["delivery_status"]
@@ -744,6 +761,18 @@ export type Database = {
           p_payment_status?: Database["public"]["Enums"]["payment_status"]
         }
         Returns: undefined
+      }
+      admin_update_product: {
+        Args: { p_id: number; p_payload: Json }
+        Returns: undefined
+      }
+      admin_upsert_category: {
+        Args: { p_id: number; p_name: string; p_slug: string }
+        Returns: number
+      }
+      admin_upsert_product_size: {
+        Args: { p_product_id: number; p_stock: number; p_value: string }
+        Returns: number
       }
       create_order: {
         Args: {

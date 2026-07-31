@@ -5,4 +5,5 @@
 // of every customer's initial bundle.
 export * from './api/adminApi';
 export * from './api/adminOrdersApi';
+export * from './api/adminProductsApi';
 export * from './model/types';
