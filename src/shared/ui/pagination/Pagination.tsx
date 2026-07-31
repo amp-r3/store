@@ -1,7 +1,9 @@
+import { useRef } from 'react';
+
 import style from './pagination.module.scss';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { usePagination, DOTS } from "@/shared/lib/hooks";
-import { useHaptics, useMediaQuery } from "@/shared/lib/hooks";
+import { useHaptics, useElementWidth } from "@/shared/lib/hooks";
 
 interface PaginationProps {
     totalItems: number;
@@ -9,6 +11,12 @@ interface PaginationProps {
     itemsPerPage: number;
     onPageChange: (page: number) => void;
 }
+
+// Thresholds derived from the pill's own tokens (see pagination.module.scss):
+// how many 44px touch targets + gaps + padding fit at a given container width.
+// Keep these in sync with the gap/padding values there.
+const SIBLINGS_MIN_WIDTH = 496;
+const NUMBERED_MIN_WIDTH = 360;
 
 export const Pagination = ({
     totalItems,
@@ -18,8 +26,10 @@ export const Pagination = ({
 }: PaginationProps) => {
 
     const { soft } = useHaptics();
-    const isMobile = useMediaQuery('(max-width: 768px)');
-    const siblingCount = isMobile ? 0 : 1;
+    const containerRef = useRef<HTMLDivElement>(null);
+    const width = useElementWidth(containerRef);
+    const siblingCount = width >= SIBLINGS_MIN_WIDTH ? 1 : 0;
+    const isCompact = width > 0 && width < NUMBERED_MIN_WIDTH;
 
     const { paginationRange, totalPages } = usePagination({
         totalItems,
@@ -43,55 +53,66 @@ export const Pagination = ({
     const isLast = currentPage === totalPages;
 
     return (
-        <nav className={style.pagination} aria-label="Pagination">
+        <div ref={containerRef} className={style.pagination}>
+            <nav className={style.pagination__bar} aria-label="Pagination">
 
-            <button
-                className={`${style.pagination__item} ${isFirst ? style['pagination__item--disabled'] : ''}`}
-                onClick={onPrevious}
-                disabled={isFirst}
-                aria-label="Previous page"
-            >
-                <FaChevronLeft aria-hidden="true" />
-            </button>
+                <button
+                    className={`${style.pagination__item} ${isFirst ? style['pagination__item--disabled'] : ''}`}
+                    onClick={onPrevious}
+                    disabled={isFirst}
+                    aria-label="Previous page"
+                >
+                    <FaChevronLeft aria-hidden="true" />
+                </button>
 
-            {paginationRange.map((pageNumber, index) => {
-                if (pageNumber === DOTS) {
-                    return (
-                        <span
-                            key={`dots-${index}`}
-                            className={style.pagination__dots}
-                            aria-hidden="true"
-                        >
-                            &#8230;
-                        </span>
-                    );
-                }
+                {isCompact ? (
+                    <span className={style.pagination__status} role="status" aria-live="polite">
+                        <span className="sr-only">Page {currentPage} of {totalPages}</span>
+                        <span aria-hidden="true">{currentPage} / {totalPages}</span>
+                    </span>
+                ) : (
+                    <div className={style.pagination__pages}>
+                        {paginationRange.map((pageNumber, index) => {
+                            if (pageNumber === DOTS) {
+                                return (
+                                    <span
+                                        key={`dots-${index}`}
+                                        className={style.pagination__dots}
+                                        aria-hidden="true"
+                                    >
+                                        &#8230;
+                                    </span>
+                                );
+                            }
 
-                const isActive = pageNumber === currentPage;
+                            const isActive = pageNumber === currentPage;
 
-                return (
-                    <button
-                        key={pageNumber}
-                        className={`${style.pagination__item} ${isActive ? style['pagination__item--active'] : ''}`}
-                        onClick={() => handlePageChange(pageNumber)}
-                        aria-label={`Page ${pageNumber}`}
-                        aria-current={isActive ? 'page' : undefined}
-                        disabled={isActive}
-                    >
-                        {pageNumber}
-                    </button>
-                );
-            })}
+                            return (
+                                <button
+                                    key={pageNumber}
+                                    className={`${style.pagination__item} ${isActive ? style['pagination__item--active'] : ''}`}
+                                    onClick={() => handlePageChange(pageNumber)}
+                                    aria-label={`Page ${pageNumber}`}
+                                    aria-current={isActive ? 'page' : undefined}
+                                    disabled={isActive}
+                                >
+                                    {pageNumber}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
 
-            <button
-                className={`${style.pagination__item} ${isLast ? style['pagination__item--disabled'] : ''}`}
-                onClick={onNext}
-                disabled={isLast}
-                aria-label="Next page"
-            >
-                <FaChevronRight aria-hidden="true" />
-            </button>
+                <button
+                    className={`${style.pagination__item} ${isLast ? style['pagination__item--disabled'] : ''}`}
+                    onClick={onNext}
+                    disabled={isLast}
+                    aria-label="Next page"
+                >
+                    <FaChevronRight aria-hidden="true" />
+                </button>
 
-        </nav>
+            </nav>
+        </div>
     );
 };

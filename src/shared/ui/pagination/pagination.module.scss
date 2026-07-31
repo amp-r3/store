@@ -8,15 +8,28 @@ $_item-transition:
     transform        $transition-fast $ease-out-expo,
     box-shadow       $transition-fast $ease-in-out-smooth;
 
+// Outer wrapper: always 100% of whatever slot it's placed in (a flex column
+// in the page, a sidebar-narrowed content panel, ...) and establishes the
+// inline-size container the pill and its children query against. The pill
+// itself can't be the container it queries — an element can't size itself
+// off its own container context.
 .pagination {
     display: flex;
-    align-items: center;
-    max-width: max-content;
-    gap: $spacing-xs;
-    padding: $spacing-sm $spacing-md;
+    justify-content: center;
+    width: 100%;
+    container-type: inline-size;
     margin-top: $spacing-xl;
     margin-bottom: $spacing-md;
-    margin-inline: auto;
+}
+
+.pagination__bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    width: max-content;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
     border-radius: $radius-pill;
     background: var(--glass-background);
     border: 1.5px solid var(--glass-border);
@@ -30,85 +43,112 @@ $_item-transition:
         background: var(--glass-background-fallback);
     }
 
-    @media (width < 768px) {
+    // Mirrors Pagination.tsx's NUMBERED_MIN_WIDTH (360px): below that, the
+    // component itself switches to the compact "‹ N / M ›" status instead of
+    // rendering page-number buttons, so this only ever tightens spacing for
+    // the 5-number mode.
+    @container (width < 420px) {
         padding: $spacing-xs $spacing-sm;
         gap: $spacing-xxs;
     }
+}
 
-    &__item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: $touch-target-min;  
-        height: $touch-target-min;
-        border-radius: $radius-circle;
-        border: 1px solid var(--border-color);
-        background: transparent;
-        color: var(--text-muted);
-        font-size: $fs-base;
-        font-weight: $fw-semibold;
-        transition: $_item-transition;
+.pagination__pages {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: $spacing-xs;
 
-        &:focus-visible {
-            outline: $focus-ring-width solid var(--focus-ring-color);
-            outline-offset: $focus-ring-offset;
-            box-shadow: var(--shadow-focus-button);
-        }
-
-        @media (hover: hover) {
-            &:hover {
-                background-color: var(--primary-accent);
-                color: var(--text-on-accent, var(--text-inverse));
-                border-color: transparent;
-                transform: scale($scale-up-md);
-                box-shadow: var(--shadow-accent-sm);
-            }
-        }
-
-        &--active {
-            background-color: var(--primary-accent);
-            color: var(--text-on-accent, var(--text-inverse));
-            border-color: transparent;
-            text-shadow: var(--shadow-text-accent);
-            box-shadow: var(--shadow-accent-sm);
-            cursor: default;
-
-            @media (hover: hover) {
-                &:hover {
-                    transform: none;
-                    box-shadow: var(--shadow-accent-sm);
-                }
-            }
-        }
-
-        &--disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-    }
-
-    &__dots {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: $touch-target-min;
-        height: $touch-target-min;
-        color: var(--text-muted);
-        font-size: $fs-base;
-        user-select: none;
+    @container (width < 420px) {
+        gap: $spacing-xxs;
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .pagination {
-        &__item {
-            transition: none;
+.pagination__status {
+    display: flex;
+    align-items: center;
+    min-height: $touch-target-min;
+    padding-inline: $spacing-sm;
+    color: var(--text-primary);
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
 
-            @media (hover: hover) {
-                &:hover {
-                    transform: none;
-                }
+.pagination__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: $touch-target-min;
+    height: $touch-target-min;
+    border-radius: $radius-circle;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: $fs-base;
+    font-weight: $fw-semibold;
+    transition: $_item-transition;
+
+    &:focus-visible {
+        outline: $focus-ring-width solid var(--focus-ring-color);
+        outline-offset: $focus-ring-offset;
+        box-shadow: var(--shadow-focus-button);
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            background-color: var(--primary-accent);
+            color: var(--text-on-accent, var(--text-inverse));
+            border-color: transparent;
+            transform: scale($scale-up-md);
+            box-shadow: var(--shadow-accent-sm);
+        }
+    }
+
+    &--active {
+        background-color: var(--primary-accent);
+        color: var(--text-on-accent, var(--text-inverse));
+        border-color: transparent;
+        text-shadow: var(--shadow-text-accent);
+        box-shadow: var(--shadow-accent-sm);
+        cursor: default;
+
+        @media (hover: hover) {
+            &:hover {
+                transform: none;
+                box-shadow: var(--shadow-accent-sm);
+            }
+        }
+    }
+
+    &--disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+}
+
+.pagination__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: $touch-target-min;
+    height: $touch-target-min;
+    color: var(--text-muted);
+    font-size: $fs-base;
+    user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pagination__item {
+        transition: none;
+
+        @media (hover: hover) {
+            &:hover {
+                transform: none;
             }
         }
     }
