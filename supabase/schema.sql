@@ -404,6 +404,44 @@ $$;
 ALTER FUNCTION "public"."admin_set_stock"("p_size_id" bigint, "p_stock" integer) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."admin_set_user_role"("p_user_id" "uuid", "p_role" "public"."user_role") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_before public.user_role;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    if p_user_id = auth.uid() then
+        raise exception 'Cannot change your own role';
+    end if;
+
+    select role into v_before from public.profiles where id = p_user_id;
+    if not found then
+        raise exception 'User not found';
+    end if;
+
+    if v_before = 'admin'::public.user_role and p_role <> 'admin'::public.user_role
+       and (select count(*) from public.profiles where role = 'admin'::public.user_role) <= 1 then
+        raise exception 'Cannot demote the last admin';
+    end if;
+
+    update public.profiles set role = p_role where id = p_user_id;
+
+    perform public.log_admin_action(
+        'user.set_role', 'profile', p_user_id::text,
+        jsonb_build_object('role', v_before), jsonb_build_object('role', p_role)
+    );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_set_user_role"("p_user_id" "uuid", "p_role" "public"."user_role") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status" DEFAULT NULL::"public"."payment_status", "p_delivery_status" "public"."delivery_status" DEFAULT NULL::"public"."delivery_status") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
@@ -1329,6 +1367,67 @@ CREATE TABLE IF NOT EXISTS "public"."admin_audit_log" (
 ALTER TABLE "public"."admin_audit_log" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."orders" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "status" "public"."order_status" DEFAULT 'pending'::"public"."order_status" NOT NULL,
+    "total_amount" numeric(10,2) NOT NULL,
+    "shipping_address" "jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "payment_status" "public"."payment_status" DEFAULT 'awaiting_payment'::"public"."payment_status" NOT NULL,
+    "delivery_method_id" "uuid" NOT NULL,
+    "delivery_cost" numeric(10,2) DEFAULT 0 NOT NULL,
+    "payment_fee" numeric(10,2) DEFAULT 0 NOT NULL,
+    "payment_method_id" "uuid" NOT NULL,
+    "order_number" character varying(15),
+    "delivery_status" "public"."delivery_status" DEFAULT 'awaiting_dispatch'::"public"."delivery_status" NOT NULL,
+    "stock_restored" boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE "public"."orders" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."profiles" (
+    "id" "uuid" NOT NULL,
+    "username" "text" NOT NULL,
+    "first_name" "text",
+    "last_name" "text",
+    "avatar_url" "text",
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
+    "role" "public"."user_role" DEFAULT 'user'::"public"."user_role" NOT NULL
+);
+
+
+ALTER TABLE "public"."profiles" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."admin_customers_view" WITH ("security_invoker"='off') AS
+ SELECT "p"."id",
+    "p"."username",
+    "p"."first_name",
+    "p"."last_name",
+    "p"."avatar_url",
+    "p"."role",
+    "u"."email",
+    "u"."created_at" AS "registered_at",
+    COALESCE("o"."orders_count", (0)::bigint) AS "orders_count",
+    COALESCE("o"."total_spent", (0)::numeric) AS "total_spent",
+    "o"."last_order_at"
+   FROM (("public"."profiles" "p"
+     JOIN "auth"."users" "u" ON (("u"."id" = "p"."id")))
+     LEFT JOIN LATERAL ( SELECT "count"(*) AS "orders_count",
+            "sum"("orders"."total_amount") FILTER (WHERE ("orders"."payment_status" = 'paid'::"public"."payment_status")) AS "total_spent",
+            "max"("orders"."created_at") AS "last_order_at"
+           FROM "public"."orders"
+          WHERE ("orders"."user_id" = "p"."id")) "o" ON (true))
+  WHERE ( SELECT "public"."is_admin"() AS "is_admin");
+
+
+ALTER VIEW "public"."admin_customers_view" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."cart_items" (
     "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -1428,28 +1527,6 @@ CREATE SEQUENCE IF NOT EXISTS "public"."order_number_seq"
 
 
 ALTER SEQUENCE "public"."order_number_seq" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."orders" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "status" "public"."order_status" DEFAULT 'pending'::"public"."order_status" NOT NULL,
-    "total_amount" numeric(10,2) NOT NULL,
-    "shipping_address" "jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "payment_status" "public"."payment_status" DEFAULT 'awaiting_payment'::"public"."payment_status" NOT NULL,
-    "delivery_method_id" "uuid" NOT NULL,
-    "delivery_cost" numeric(10,2) DEFAULT 0 NOT NULL,
-    "payment_fee" numeric(10,2) DEFAULT 0 NOT NULL,
-    "payment_method_id" "uuid" NOT NULL,
-    "order_number" character varying(15),
-    "delivery_status" "public"."delivery_status" DEFAULT 'awaiting_dispatch'::"public"."delivery_status" NOT NULL,
-    "stock_restored" boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE "public"."orders" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."payment_methods" (
@@ -1581,20 +1658,6 @@ CREATE OR REPLACE VIEW "public"."products_view" WITH ("security_invoker"='on') A
 
 
 ALTER VIEW "public"."products_view" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."profiles" (
-    "id" "uuid" NOT NULL,
-    "username" "text" NOT NULL,
-    "first_name" "text",
-    "last_name" "text",
-    "avatar_url" "text",
-    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
-    "role" "public"."user_role" DEFAULT 'user'::"public"."user_role" NOT NULL
-);
-
-
-ALTER TABLE "public"."profiles" OWNER TO "postgres";
 
 
 CREATE OR REPLACE VIEW "public"."public_profiles" WITH ("security_invoker"='off') AS
@@ -2165,6 +2228,12 @@ GRANT ALL ON FUNCTION "public"."admin_set_stock"("p_size_id" bigint, "p_stock" i
 
 
 
+REVOKE ALL ON FUNCTION "public"."admin_set_user_role"("p_user_id" "uuid", "p_role" "public"."user_role") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_set_user_role"("p_user_id" "uuid", "p_role" "public"."user_role") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_set_user_role"("p_user_id" "uuid", "p_role" "public"."user_role") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_update_order_status"("p_order_id" "uuid", "p_payment_status" "public"."payment_status", "p_delivery_status" "public"."delivery_status") TO "service_role";
@@ -2291,6 +2360,48 @@ GRANT SELECT ON TABLE "public"."admin_audit_log" TO "authenticated";
 
 
 
+GRANT ALL ON TABLE "public"."orders" TO "anon";
+GRANT ALL ON TABLE "public"."orders" TO "authenticated";
+GRANT ALL ON TABLE "public"."orders" TO "service_role";
+
+
+
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "authenticated";
+GRANT ALL ON TABLE "public"."profiles" TO "service_role";
+
+
+
+GRANT UPDATE("username") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("username") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("first_name") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("first_name") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("last_name") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("last_name") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("avatar_url") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("avatar_url") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT UPDATE("updated_at") ON TABLE "public"."profiles" TO "anon";
+GRANT UPDATE("updated_at") ON TABLE "public"."profiles" TO "authenticated";
+
+
+
+GRANT ALL ON TABLE "public"."admin_customers_view" TO "service_role";
+GRANT SELECT ON TABLE "public"."admin_customers_view" TO "authenticated";
+
+
+
 GRANT ALL ON TABLE "public"."cart_items" TO "anon";
 GRANT ALL ON TABLE "public"."cart_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."cart_items" TO "service_role";
@@ -2338,12 +2449,6 @@ GRANT ALL ON SEQUENCE "public"."order_number_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."orders" TO "anon";
-GRANT ALL ON TABLE "public"."orders" TO "authenticated";
-GRANT ALL ON TABLE "public"."orders" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."payment_methods" TO "anon";
 GRANT ALL ON TABLE "public"."payment_methods" TO "authenticated";
 GRANT ALL ON TABLE "public"."payment_methods" TO "service_role";
@@ -2388,37 +2493,6 @@ GRANT ALL ON SEQUENCE "public"."products_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."products_view" TO "service_role";
 GRANT SELECT ON TABLE "public"."products_view" TO "anon";
 GRANT SELECT ON TABLE "public"."products_view" TO "authenticated";
-
-
-
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "authenticated";
-GRANT ALL ON TABLE "public"."profiles" TO "service_role";
-
-
-
-GRANT UPDATE("username") ON TABLE "public"."profiles" TO "anon";
-GRANT UPDATE("username") ON TABLE "public"."profiles" TO "authenticated";
-
-
-
-GRANT UPDATE("first_name") ON TABLE "public"."profiles" TO "anon";
-GRANT UPDATE("first_name") ON TABLE "public"."profiles" TO "authenticated";
-
-
-
-GRANT UPDATE("last_name") ON TABLE "public"."profiles" TO "anon";
-GRANT UPDATE("last_name") ON TABLE "public"."profiles" TO "authenticated";
-
-
-
-GRANT UPDATE("avatar_url") ON TABLE "public"."profiles" TO "anon";
-GRANT UPDATE("avatar_url") ON TABLE "public"."profiles" TO "authenticated";
-
-
-
-GRANT UPDATE("updated_at") ON TABLE "public"."profiles" TO "anon";
-GRANT UPDATE("updated_at") ON TABLE "public"."profiles" TO "authenticated";
 
 
 

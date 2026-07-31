@@ -6,4 +6,5 @@
 export * from './api/adminApi';
 export * from './api/adminOrdersApi';
 export * from './api/adminProductsApi';
+export * from './api/adminCustomersApi';
 export * from './model/types';

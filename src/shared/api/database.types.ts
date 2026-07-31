@@ -435,6 +435,13 @@ export type Database = {
             foreignKeyName: "product_reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_customers_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -672,6 +679,22 @@ export type Database = {
       }
     }
     Views: {
+      admin_customers_view: {
+        Row: {
+          avatar_url: string | null
+          email: string | null
+          first_name: string | null
+          id: string | null
+          last_name: string | null
+          last_order_at: string | null
+          orders_count: number | null
+          registered_at: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          total_spent: number | null
+          username: string | null
+        }
+        Relationships: []
+      }
       products_view: {
         Row: {
           availabilityStatus: string | null
@@ -752,6 +775,13 @@ export type Database = {
       }
       admin_set_stock: {
         Args: { p_size_id: number; p_stock: number }
+        Returns: undefined
+      }
+      admin_set_user_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["user_role"]
+          p_user_id: string
+        }
         Returns: undefined
       }
       admin_update_order_status: {
