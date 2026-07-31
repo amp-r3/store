@@ -1,0 +1,116 @@
+@use '@/app/styles/index' as *;
+
+// minmax(0, Nfr) rather than a fixed px minimum: a fixed-width track never
+// shrinks below its px value, so once the sidebar ate enough of the content
+// column the row would force itself (and its card border) wider than the
+// content panel. fr tracks with a 0 floor always sum to exactly 100% of the
+// available width instead.
+.admin-product-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 0.7fr);
+  gap: $spacing-md;
+  align-items: center;
+  padding: $spacing-md;
+  background: var(--background-component);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+}
+
+.admin-product-row__cell {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  min-width: 0;
+
+  &:first-child {
+    flex-direction: row;
+    align-items: center;
+    gap: $spacing-md;
+  }
+}
+
+.admin-product-row__cell-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  @media (max-width: 1024px) {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    clip: auto;
+    overflow: visible;
+    font-size: $fs-xs;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+}
+
+.admin-product-row__thumbnail {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-color-subtle);
+  object-fit: cover;
+}
+
+.admin-product-row__title {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-product-row__price {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.admin-product-row__discount {
+  font-size: $fs-xs;
+  color: var(--success-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-product-row__rating {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  min-width: 0;
+  font-size: $fs-sm;
+  color: var(--text-primary);
+
+  svg {
+    flex-shrink: 0;
+    color: var(--rating-color);
+    font-size: $fs-icon-sm;
+  }
+}
+
+.admin-product-row__reviews-count {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: $fs-xs;
+}
