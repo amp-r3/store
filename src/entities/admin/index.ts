@@ -4,4 +4,5 @@
 // below. Keeping this out of the store's eager imports keeps admin code out
 // of every customer's initial bundle.
 export * from './api/adminApi';
+export * from './api/adminOrdersApi';
 export * from './model/types';

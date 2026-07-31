@@ -2,6 +2,9 @@ import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
 import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, AdminOrderStatusFilter, PaymentStatus, DeliveryStatus } from '@/entities/order/model/types';
+import { TERMINAL_ORDER_STATUSES } from '@/entities/order/config/order-management.config';
+
+const TERMINAL_STATUSES_LIST = `(${TERMINAL_ORDER_STATUSES.join(',')})`;
 
 // embedded relations from the select below (postgrest-js doesn't infer these)
 type OrderRow = Database['public']['Tables']['orders']['Row'] & {
@@ -116,8 +119,8 @@ const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
     .eq('user_id', user.id);
 
   query = scope === 'completed'
-    ? query.in('status', ['completed', 'cancelled'])
-    : query.not('status', 'in', '(completed,cancelled)');
+    ? query.in('status', TERMINAL_ORDER_STATUSES)
+    : query.not('status', 'in', TERMINAL_STATUSES_LIST);
 
   const { data, error, count } = await query
     .order('created_at', { ascending: false })
@@ -280,12 +283,12 @@ export const orderApi = baseApi.injectEndpoints({
             .from('orders')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', user.id)
-            .not('status', 'in', '(completed,cancelled)'),
+            .not('status', 'in', TERMINAL_STATUSES_LIST),
           supabase
             .from('orders')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', user.id)
-            .in('status', ['completed', 'cancelled']),
+            .in('status', TERMINAL_ORDER_STATUSES),
         ]);
 
         if (active.error || completed.error) {

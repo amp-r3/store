@@ -46,7 +46,7 @@ export interface CreateOrderPayload {
   p_items: CheckoutCartItem[];
 }
 
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled';
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled' | 'returned' | 'refunded';
 export type PaymentStatus = 'awaiting_payment' | 'paid' | 'failed' | 'refunded';
 export type DeliveryStatus = 'awaiting_dispatch' | 'dispatched' | 'in_transit' | 'delivered' | 'returned' | 'cancelled'
 export type OrderItemProduct = Pick<Product, 'id' | 'title' | 'thumbnail' | 'category'>;

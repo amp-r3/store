@@ -39,6 +39,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_username: string | null
+          after: Json | null
+          before: Json | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_username?: string | null
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_username?: string | null
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string | null
@@ -116,6 +152,21 @@ export type Database = {
           is_active?: boolean
           name?: string
           price?: number
+        }
+        Relationships: []
+      }
+      delivery_status_transitions: {
+        Row: {
+          from_status: Database["public"]["Enums"]["delivery_status"]
+          to_status: Database["public"]["Enums"]["delivery_status"]
+        }
+        Insert: {
+          from_status: Database["public"]["Enums"]["delivery_status"]
+          to_status: Database["public"]["Enums"]["delivery_status"]
+        }
+        Update: {
+          from_status?: Database["public"]["Enums"]["delivery_status"]
+          to_status?: Database["public"]["Enums"]["delivery_status"]
         }
         Relationships: []
       }
@@ -230,6 +281,7 @@ export type Database = {
           payment_status: Database["public"]["Enums"]["payment_status"]
           shipping_address: Json
           status: Database["public"]["Enums"]["order_status"]
+          stock_restored: boolean
           total_amount: number
           updated_at: string
           user_id: string
@@ -246,6 +298,7 @@ export type Database = {
           payment_status?: Database["public"]["Enums"]["payment_status"]
           shipping_address: Json
           status?: Database["public"]["Enums"]["order_status"]
+          stock_restored?: boolean
           total_amount: number
           updated_at?: string
           user_id: string
@@ -262,6 +315,7 @@ export type Database = {
           payment_status?: Database["public"]["Enums"]["payment_status"]
           shipping_address?: Json
           status?: Database["public"]["Enums"]["order_status"]
+          stock_restored?: boolean
           total_amount?: number
           updated_at?: string
           user_id?: string
@@ -310,6 +364,21 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+        }
+        Relationships: []
+      }
+      payment_status_transitions: {
+        Row: {
+          from_status: Database["public"]["Enums"]["payment_status"]
+          to_status: Database["public"]["Enums"]["payment_status"]
+        }
+        Insert: {
+          from_status: Database["public"]["Enums"]["payment_status"]
+          to_status: Database["public"]["Enums"]["payment_status"]
+        }
+        Update: {
+          from_status?: Database["public"]["Enums"]["payment_status"]
+          to_status?: Database["public"]["Enums"]["payment_status"]
         }
         Relationships: []
       }
@@ -705,6 +774,20 @@ export type Database = {
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
+      is_terminal_order_status: {
+        Args: { p_status: Database["public"]["Enums"]["order_status"] }
+        Returns: boolean
+      }
+      log_admin_action: {
+        Args: {
+          p_action: string
+          p_after?: Json
+          p_before?: Json
+          p_entity_id?: string
+          p_entity_type: string
+        }
+        Returns: undefined
+      }
       toggle_review_like: { Args: { p_review_id: number }; Returns: boolean }
     }
     Enums: {
@@ -728,6 +811,8 @@ export type Database = {
         | "shipped"
         | "completed"
         | "cancelled"
+        | "returned"
+        | "refunded"
       payment_method_type:
         | "cash_on_delivery"
         | "online_card"
@@ -888,6 +973,8 @@ export const Constants = {
         "shipped",
         "completed",
         "cancelled",
+        "returned",
+        "refunded",
       ],
       payment_method_type: [
         "cash_on_delivery",

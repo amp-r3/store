@@ -14,6 +14,10 @@ export const API_TAGS = [
     'DeliveryMethod',
     'PaymentMethod',
     'Notification',
+    'AdminStats',
+    'Customer',
+    'AuditLog',
+    'StatusTransition',
 ] as const;
 
 export type ApiTag = (typeof API_TAGS)[number];

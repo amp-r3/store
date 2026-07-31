@@ -75,7 +75,9 @@ CREATE TYPE "public"."order_status" AS ENUM (
     'processing',
     'shipped',
     'completed',
-    'cancelled'
+    'cancelled',
+    'returned',
+    'refunded'
 );
 
 
@@ -214,11 +216,11 @@ begin
     select jsonb_build_object(
         'orders_total', (select count(*) from public.orders),
         'orders_active', (select count(*) from public.orders
-            where status not in ('completed', 'cancelled')),
+            where not public.is_terminal_order_status(status)),
         'orders_awaiting_payment', (select count(*) from public.orders
-            where payment_status = 'awaiting_payment' and status <> 'cancelled'),
+            where payment_status = 'awaiting_payment' and not public.is_terminal_order_status(status)),
         'orders_awaiting_dispatch', (select count(*) from public.orders
-            where delivery_status = 'awaiting_dispatch' and status <> 'cancelled'),
+            where delivery_status = 'awaiting_dispatch' and not public.is_terminal_order_status(status)),
         'revenue_total', (select coalesce(sum(total_amount), 0) from public.orders
             where payment_status = 'paid'),
         'customers_total', (select count(*) from public.profiles),
@@ -237,6 +239,9 @@ CREATE OR REPLACE FUNCTION "public"."admin_update_order_status"("p_order_id" "uu
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
     AS $$
+declare
+    v_order public.orders;
+    v_payment_method_code public.payment_method_type;
 begin
     if auth.uid() is null then
         raise exception 'Not authenticated';
@@ -250,15 +255,66 @@ begin
         raise exception 'Nothing to update';
     end if;
 
+    select * into v_order from public.orders where id = p_order_id for update;
+
+    if not found then
+        raise exception 'Order not found';
+    end if;
+
+    -- Setting a status to its current value is a no-op, not an illegal
+    -- transition -- e.g. a double-submit on the select shouldn't error.
+    if p_payment_status is not null and p_payment_status = v_order.payment_status then
+        p_payment_status := null;
+    end if;
+
+    if p_delivery_status is not null and p_delivery_status = v_order.delivery_status then
+        p_delivery_status := null;
+    end if;
+
+    if p_payment_status is not null and not exists (
+        select 1 from public.payment_status_transitions
+        where from_status = v_order.payment_status and to_status = p_payment_status
+    ) then
+        raise exception 'Illegal payment transition: % -> %', v_order.payment_status, p_payment_status;
+    end if;
+
+    if p_delivery_status is not null and not exists (
+        select 1 from public.delivery_status_transitions
+        where from_status = v_order.delivery_status and to_status = p_delivery_status
+    ) then
+        raise exception 'Illegal delivery transition: % -> %', v_order.delivery_status, p_delivery_status;
+    end if;
+
+    -- cash_on_delivery: marking the order delivered *is* the payment event --
+    -- there's no separate online charge to reconcile. Only kicks in from the
+    -- ordinary awaiting_payment starting point; a payment already marked
+    -- failed/paid/refunded is left for the admin to resolve explicitly.
+    if p_delivery_status = 'delivered'::public.delivery_status
+       and v_order.payment_status = 'awaiting_payment'::public.payment_status then
+        select code into v_payment_method_code
+        from public.payment_methods where id = v_order.payment_method_id;
+
+        if v_payment_method_code = 'cash_on_delivery'::public.payment_method_type then
+            p_payment_status := 'paid'::public.payment_status;
+        end if;
+    end if;
+
     update public.orders
     set
         payment_status = coalesce(p_payment_status, orders.payment_status),
         delivery_status = coalesce(p_delivery_status, orders.delivery_status)
     where orders.id = p_order_id;
 
-    if not found then
-        raise exception 'Order not found';
-    end if;
+    perform public.log_admin_action(
+        'order.status_update',
+        'order',
+        p_order_id::text,
+        jsonb_build_object('payment_status', v_order.payment_status, 'delivery_status', v_order.delivery_status),
+        jsonb_build_object(
+            'payment_status', coalesce(p_payment_status, v_order.payment_status),
+            'delivery_status', coalesce(p_delivery_status, v_order.delivery_status)
+        )
+    );
 end;
 $$;
 
@@ -642,9 +698,11 @@ begin
       when 'shipped' then 'Shipped'
       when 'completed' then 'Completed'
       when 'cancelled' then 'Cancelled'
+      when 'returned' then 'Returned'
+      when 'refunded' then 'Refunded'
     end;
     _level := case
-      when NEW.status = 'cancelled' then 'error'
+      when NEW.status in ('cancelled', 'returned', 'refunded') then 'error'
       when NEW.status = 'completed' then 'success'
       else 'info'
     end;
@@ -735,6 +793,36 @@ $$;
 ALTER FUNCTION "public"."is_admin"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."is_terminal_order_status"("p_status" "public"."order_status") RETURNS boolean
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+    select p_status in ('completed', 'cancelled', 'returned', 'refunded');
+$$;
+
+
+ALTER FUNCTION "public"."is_terminal_order_status"("p_status" "public"."order_status") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."log_admin_action"("p_action" "text", "p_entity_type" "text", "p_entity_id" "text" DEFAULT NULL::"text", "p_before" "jsonb" DEFAULT NULL::"jsonb", "p_after" "jsonb" DEFAULT NULL::"jsonb") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_actor_id uuid := auth.uid();
+    v_actor_username text;
+begin
+    select username into v_actor_username from public.profiles where id = v_actor_id;
+
+    insert into public.admin_audit_log (actor_id, actor_username, action, entity_type, entity_id, before, after)
+    values (v_actor_id, v_actor_username, p_action, p_entity_type, p_entity_id, p_before, p_after);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."log_admin_action"("p_action" "text", "p_entity_type" "text", "p_entity_id" "text", "p_before" "jsonb", "p_after" "jsonb") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."rls_auto_enable"() RETURNS "event_trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'pg_catalog'
@@ -771,31 +859,61 @@ CREATE OR REPLACE FUNCTION "public"."sync_order_main_status"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public', 'pg_temp'
     AS $$
-BEGIN
-  -- 1. Если отмена или ошибка оплаты -> Cancelled
-  IF NEW.delivery_status = 'cancelled'::public.delivery_status OR NEW.payment_status = 'failed'::public.payment_status THEN
+begin
+  -- 1. Refunded always wins: money has gone back regardless of delivery state.
+  if NEW.payment_status = 'refunded'::public.payment_status then
+    NEW.status := 'refunded'::public.order_status;
+
+  -- 2. Sent back by the customer.
+  elsif NEW.delivery_status = 'returned'::public.delivery_status then
+    NEW.status := 'returned'::public.order_status;
+
+  -- 3. Cancelled, or payment outright failed.
+  elsif NEW.delivery_status = 'cancelled'::public.delivery_status
+     or NEW.payment_status = 'failed'::public.payment_status then
     NEW.status := 'cancelled'::public.order_status;
 
-  -- 2. Если успешно доставлено -> Completed
-  ELSIF NEW.delivery_status = 'delivered'::public.delivery_status THEN
+  -- 4. Delivered and paid -- the only combination that counts as complete
+  --    (this is also the review-eligibility gate in add_or_update_review()).
+  elsif NEW.delivery_status = 'delivered'::public.delivery_status
+    and NEW.payment_status = 'paid'::public.payment_status then
     NEW.status := 'completed'::public.order_status;
 
-  -- 3. Если отправлен или в пути -> Shipped
-  -- Исправлено: строго один раз public.delivery_status для обоих элементов
-  ELSIF NEW.delivery_status IN ('dispatched'::public.delivery_status, 'in_transit'::public.delivery_status) THEN
+  -- 5. Delivered but not yet marked paid (cash_on_delivery before the admin
+  --    confirms payment) -- still reads as in-flight, not completed.
+  elsif NEW.delivery_status = 'delivered'::public.delivery_status then
     NEW.status := 'shipped'::public.order_status;
 
-  -- 4. Если оплачен и ждет сборки -> Processing
-  ELSIF NEW.payment_status = 'paid'::public.payment_status AND NEW.delivery_status = 'awaiting_dispatch'::public.delivery_status THEN
+  -- 6. On its way.
+  elsif NEW.delivery_status in ('dispatched'::public.delivery_status, 'in_transit'::public.delivery_status) then
+    NEW.status := 'shipped'::public.order_status;
+
+  -- 7. Paid, still waiting to ship.
+  elsif NEW.payment_status = 'paid'::public.payment_status then
     NEW.status := 'processing'::public.order_status;
 
-  -- 5. Во всех остальных случаях (например, awaiting_payment) -> Pending
-  ELSE
+  -- 8. Everything else (e.g. awaiting_payment + awaiting_dispatch).
+  else
     NEW.status := 'pending'::public.order_status;
-  END IF;
+  end if;
 
-  RETURN NEW;
-END;
+  -- Restock exactly once, the moment an order first lands on a terminal
+  -- status that means the goods came back (not 'refunded' -- a refund on
+  -- its own says nothing about the goods being returned, and 'completed' is
+  -- a successful sale, not a return).
+  if NEW.status in ('cancelled'::public.order_status, 'returned'::public.order_status)
+     and not OLD.stock_restored then
+    update public.product_sizes ps
+    set stock = ps.stock + oi.quantity
+    from public.order_items oi
+    where oi.order_id = NEW.id
+      and ps.id = oi.size_id;
+
+    NEW.stock_restored := true;
+  end if;
+
+  return NEW;
+end;
 $$;
 
 
@@ -901,6 +1019,22 @@ $$;
 ALTER FUNCTION "public"."update_review_likes_count"() OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."admin_audit_log" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "actor_id" "uuid",
+    "actor_username" "text",
+    "action" "text" NOT NULL,
+    "entity_type" "text" NOT NULL,
+    "entity_id" "text",
+    "before" "jsonb",
+    "after" "jsonb",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."admin_audit_log" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."cart_items" (
     "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -947,6 +1081,15 @@ CREATE TABLE IF NOT EXISTS "public"."delivery_methods" (
 
 
 ALTER TABLE "public"."delivery_methods" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."delivery_status_transitions" (
+    "from_status" "public"."delivery_status" NOT NULL,
+    "to_status" "public"."delivery_status" NOT NULL
+);
+
+
+ALTER TABLE "public"."delivery_status_transitions" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."notifications" (
@@ -1007,7 +1150,8 @@ CREATE TABLE IF NOT EXISTS "public"."orders" (
     "payment_fee" numeric(10,2) DEFAULT 0 NOT NULL,
     "payment_method_id" "uuid" NOT NULL,
     "order_number" character varying(15),
-    "delivery_status" "public"."delivery_status" DEFAULT 'awaiting_dispatch'::"public"."delivery_status" NOT NULL
+    "delivery_status" "public"."delivery_status" DEFAULT 'awaiting_dispatch'::"public"."delivery_status" NOT NULL,
+    "stock_restored" boolean DEFAULT false NOT NULL
 );
 
 
@@ -1026,6 +1170,15 @@ CREATE TABLE IF NOT EXISTS "public"."payment_methods" (
 
 
 ALTER TABLE "public"."payment_methods" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."payment_status_transitions" (
+    "from_status" "public"."payment_status" NOT NULL,
+    "to_status" "public"."payment_status" NOT NULL
+);
+
+
+ALTER TABLE "public"."payment_status_transitions" OWNER TO "postgres";
 
 
 ALTER TABLE "public"."product_reviews" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
@@ -1192,6 +1345,11 @@ CREATE TABLE IF NOT EXISTS "public"."wishlist_items" (
 ALTER TABLE "public"."wishlist_items" OWNER TO "postgres";
 
 
+ALTER TABLE ONLY "public"."admin_audit_log"
+    ADD CONSTRAINT "admin_audit_log_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."cart_items"
     ADD CONSTRAINT "cart_items_pkey" PRIMARY KEY ("id");
 
@@ -1227,6 +1385,11 @@ ALTER TABLE ONLY "public"."delivery_methods"
 
 
 
+ALTER TABLE ONLY "public"."delivery_status_transitions"
+    ADD CONSTRAINT "delivery_status_transitions_pkey" PRIMARY KEY ("from_status", "to_status");
+
+
+
 ALTER TABLE ONLY "public"."notifications"
     ADD CONSTRAINT "notifications_pkey" PRIMARY KEY ("id");
 
@@ -1249,6 +1412,11 @@ ALTER TABLE ONLY "public"."payment_methods"
 
 ALTER TABLE ONLY "public"."payment_methods"
     ADD CONSTRAINT "payment_methods_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."payment_status_transitions"
+    ADD CONSTRAINT "payment_status_transitions_pkey" PRIMARY KEY ("from_status", "to_status");
 
 
 
@@ -1309,6 +1477,10 @@ ALTER TABLE ONLY "public"."wishlist_items"
 
 ALTER TABLE ONLY "public"."wishlist_items"
     ADD CONSTRAINT "wishlist_items_user_id_product_id_key" UNIQUE ("user_id", "product_id");
+
+
+
+CREATE INDEX "idx_admin_audit_log_created" ON "public"."admin_audit_log" USING "btree" ("created_at" DESC);
 
 
 
@@ -1373,6 +1545,11 @@ CREATE OR REPLACE TRIGGER "set_orders_updated_at" BEFORE UPDATE ON "public"."ord
 
 
 CREATE OR REPLACE TRIGGER "update_order_main_status_trigger" BEFORE UPDATE OF "payment_status", "delivery_status" ON "public"."orders" FOR EACH ROW EXECUTE FUNCTION "public"."sync_order_main_status"();
+
+
+
+ALTER TABLE ONLY "public"."admin_audit_log"
+    ADD CONSTRAINT "admin_audit_log_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
 
 
 
@@ -1478,6 +1655,18 @@ CREATE POLICY "Admins can view all profiles" ON "public"."profiles" FOR SELECT T
 
 
 
+CREATE POLICY "Admins can view delivery status transitions" ON "public"."delivery_status_transitions" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
+
+
+
+CREATE POLICY "Admins can view payment status transitions" ON "public"."payment_status_transitions" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
+
+
+
+CREATE POLICY "Admins can view the audit log" ON "public"."admin_audit_log" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
+
+
+
 CREATE POLICY "Allow everyone to read payment methods" ON "public"."payment_methods" FOR SELECT USING (true);
 
 
@@ -1572,6 +1761,9 @@ CREATE POLICY "Users can view their own wishlist" ON "public"."wishlist_items" F
 
 
 
+ALTER TABLE "public"."admin_audit_log" ENABLE ROW LEVEL SECURITY;
+
+
 CREATE POLICY "allow read for all" ON "public"."products" FOR SELECT USING (true);
 
 
@@ -1585,6 +1777,9 @@ ALTER TABLE "public"."categories" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."delivery_methods" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."delivery_status_transitions" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."notifications" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1595,6 +1790,9 @@ ALTER TABLE "public"."orders" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."payment_methods" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."payment_status_transitions" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."product_reviews" ENABLE ROW LEVEL SECURITY;
@@ -1701,6 +1899,19 @@ GRANT ALL ON FUNCTION "public"."is_admin"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."is_terminal_order_status"("p_status" "public"."order_status") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."is_terminal_order_status"("p_status" "public"."order_status") TO "anon";
+GRANT ALL ON FUNCTION "public"."is_terminal_order_status"("p_status" "public"."order_status") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."is_terminal_order_status"("p_status" "public"."order_status") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."log_admin_action"("p_action" "text", "p_entity_type" "text", "p_entity_id" "text", "p_before" "jsonb", "p_after" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."log_admin_action"("p_action" "text", "p_entity_type" "text", "p_entity_id" "text", "p_before" "jsonb", "p_after" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."log_admin_action"("p_action" "text", "p_entity_type" "text", "p_entity_id" "text", "p_before" "jsonb", "p_after" "jsonb") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."rls_auto_enable"() TO "anon";
 GRANT ALL ON FUNCTION "public"."rls_auto_enable"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."rls_auto_enable"() TO "service_role";
@@ -1731,6 +1942,11 @@ GRANT ALL ON FUNCTION "public"."update_review_likes_count"() TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."admin_audit_log" TO "service_role";
+GRANT SELECT ON TABLE "public"."admin_audit_log" TO "authenticated";
+
+
+
 GRANT ALL ON TABLE "public"."cart_items" TO "anon";
 GRANT ALL ON TABLE "public"."cart_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."cart_items" TO "service_role";
@@ -1752,6 +1968,11 @@ GRANT ALL ON SEQUENCE "public"."categories_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."delivery_methods" TO "anon";
 GRANT ALL ON TABLE "public"."delivery_methods" TO "authenticated";
 GRANT ALL ON TABLE "public"."delivery_methods" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."delivery_status_transitions" TO "service_role";
+GRANT SELECT ON TABLE "public"."delivery_status_transitions" TO "authenticated";
 
 
 
@@ -1782,6 +2003,11 @@ GRANT ALL ON TABLE "public"."orders" TO "service_role";
 GRANT ALL ON TABLE "public"."payment_methods" TO "anon";
 GRANT ALL ON TABLE "public"."payment_methods" TO "authenticated";
 GRANT ALL ON TABLE "public"."payment_methods" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."payment_status_transitions" TO "service_role";
+GRANT SELECT ON TABLE "public"."payment_status_transitions" TO "authenticated";
 
 
 

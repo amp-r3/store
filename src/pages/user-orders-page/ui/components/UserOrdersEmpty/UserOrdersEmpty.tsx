@@ -16,7 +16,7 @@ export const UserOrdersEmpty = ({ variant, hasOtherTabOrders }: UserOrdersEmptyP
             <EmptyState
                 icon={<FaRegCircleCheck />}
                 title="No completed orders yet"
-                text="Orders appear here once they're delivered or cancelled."
+                text="Orders appear here once they're closed — delivered, cancelled, returned or refunded."
                 cta={{
                     to: hasOtherTabOrders ? '/user/orders' : '/catalog',
                     label: hasOtherTabOrders ? 'See active orders' : 'Browse catalog',
@@ -30,7 +30,7 @@ export const UserOrdersEmpty = ({ variant, hasOtherTabOrders }: UserOrdersEmptyP
             icon={<LuPackage />}
             title="No active orders"
             text={hasOtherTabOrders
-                ? "Everything you've ordered so far has been completed."
+                ? "Everything you've ordered so far has been closed out."
                 : 'Once you place an order, you can track it here.'}
             cta={{
                 to: hasOtherTabOrders ? '/user/orders?tab=completed' : '/catalog',

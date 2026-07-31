@@ -121,6 +121,8 @@ export const ORDER_STATUS_MAP: Record<OrderStatus | string, StatusMeta> = {
   shipped: { label: 'Shipped' },
   completed: { label: 'Completed' },
   cancelled: { label: 'Cancelled' },
+  returned: { label: 'Returned' },
+  refunded: { label: 'Refunded' },
 }
 
 export const PAYMENT_STATUS_MAP: Record<PaymentStatus | string, StatusMeta> = {
@@ -139,6 +141,11 @@ export const DELIVERY_STATUS_MAP: Record<DeliveryStatus | string, StatusMeta> = 
   cancelled: { label: 'Cancelled' },
 }
 
-export const ORDER_STATUS_OPTIONS = ['pending', 'processing', 'shipped', 'completed', 'cancelled'] as const satisfies readonly OrderStatus[];
+export const ORDER_STATUS_OPTIONS = ['pending', 'processing', 'shipped', 'completed', 'cancelled', 'returned', 'refunded'] as const satisfies readonly OrderStatus[];
 export const PAYMENT_STATUS_OPTIONS = ['awaiting_payment', 'paid', 'failed', 'refunded'] as const satisfies readonly PaymentStatus[];
 export const DELIVERY_STATUS_OPTIONS = ['awaiting_dispatch', 'dispatched', 'in_transit', 'delivered', 'returned', 'cancelled'] as const satisfies readonly DeliveryStatus[];
+
+// Mirrors is_terminal_order_status() in Postgres (single source of truth is
+// the DB function; this is read-only UI/query-filter usage, not a second
+// implementation of the derivation rules themselves).
+export const TERMINAL_ORDER_STATUSES = ['completed', 'cancelled', 'returned', 'refunded'] as const satisfies readonly OrderStatus[];
