@@ -44,6 +44,9 @@ export const authApi = baseApi.injectEndpoints({
               lastName: '',
               username: '',
               accessToken: authData.session.access_token,
+              // A brand-new account is always 'user' by the column default —
+              // the profiles row just hasn't loaded yet.
+              role: 'user',
             },
           };
         }
@@ -56,6 +59,7 @@ export const authApi = baseApi.injectEndpoints({
             lastName: profile.last_name,
             username: profile.username,
             accessToken: authData.session.access_token,
+            role: profile.role,
           },
         };
       },
@@ -94,6 +98,7 @@ export const authApi = baseApi.injectEndpoints({
             firstName: profile.first_name,
             lastName: profile.last_name,
             username: profile.username,
+            role: profile.role,
           }
         }
       }

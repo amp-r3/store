@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { supabase } from "@/shared/api/supabase";
 import { useAppDispatch } from "@/shared/model";
-import { setSession } from "@/entities/session";
+import { setSession, setRole } from "@/entities/session";
 import { AUTH_STORAGE_KEYS } from "@/shared/config";
 
 /** Mirrors the Supabase auth session into Redux. Dispatches `setSession` twice
@@ -35,6 +35,7 @@ export const useSessionSync = () => {
               firstName: '',
               lastName: '',
               username: '',
+              role: null,
             },
             token: session.access_token,
           }));
@@ -49,6 +50,9 @@ export const useSessionSync = () => {
 
               if (profileError) {
                 console.error('Error fetching user profile:', profileError);
+                // Resolves the null->admin/user tri-state even on failure, so
+                // AdminRoute's loading branch can't hang forever.
+                dispatch(setRole('user'));
                 return;
               }
 
@@ -62,12 +66,14 @@ export const useSessionSync = () => {
                     firstName: profile.first_name || '',
                     lastName: profile.last_name || '',
                     username: profile.username || '',
+                    role: profile.role,
                   },
                   token: session.access_token,
                 }));
               }
             } catch (error) {
               console.error('Failed to load profile inside auth listener:', error);
+              dispatch(setRole('user'));
             }
           };
 

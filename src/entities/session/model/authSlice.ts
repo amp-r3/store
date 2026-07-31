@@ -2,7 +2,7 @@ import { authApi } from "@/entities/session";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { persistStorage } from "@/shared/lib";
 import { createTransform, persistReducer } from "redux-persist";
-import { SessionUser } from "@/entities/session/model/types";
+import { SessionUser, UserRole } from "@/entities/session/model/types";
 import { purgeStoredState } from "redux-persist";
 
 
@@ -63,11 +63,21 @@ export const authSlice = createSlice({
             firstName: incoming.firstName || state.user!.firstName,
             lastName: incoming.lastName || state.user!.lastName,
             username: incoming.username || state.user!.username,
+            // `null` is the not-yet-resolved sentinel (not a falsy value like
+            // '' above), so `??` rather than `||` — a genuine admin -> user
+            // demotion still lands because the second dispatch always carries
+            // a non-null role.
+            role: incoming.role ?? state.user!.role,
           }
         : incoming;
 
       state.token = action.payload.token;
-    }
+    },
+    /** Resolves the role when the profiles fetch fails, so AdminRoute's
+     * `role === null` loading branch cannot hang indefinitely. */
+    setRole(state, action: PayloadAction<UserRole>) {
+      if (state.user) state.user.role = action.payload;
+    },
   },
   extraReducers: (builder) => {
     const handleFulfilled = (state: AuthState, { payload }: PayloadAction<SessionUser>) => {
@@ -91,7 +101,7 @@ export const authSlice = createSlice({
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice.reducer);
 
-export const {logout, setSession} = authSlice.actions
+export const {logout, setSession, setRole} = authSlice.actions
 
 export { persistedAuthReducer as authReducer };
 export default persistedAuthReducer;

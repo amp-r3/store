@@ -1,8 +1,14 @@
+import type { Database } from "@/shared/api";
+
 export interface RegisterFormData {
   email: string
   password: string
   confirm: string
 }
+
+/** Derived from the generated enum rather than hand-mirrored — the DB is the
+ * source of truth and a new role value becomes a type error here. */
+export type UserRole = Database['public']['Enums']['user_role'];
 
 
 export interface StoredUser {
@@ -11,6 +17,10 @@ export interface StoredUser {
   lastName: string | null;
   username: string;
   email: string | null;
+  /** `null` = not resolved yet. useSessionSync dispatches setSession once
+   * immediately with blank fields before the `profiles` row lands, so a
+   * non-null role is the signal that the profile has actually loaded. */
+  role: UserRole | null;
 }
 
 
