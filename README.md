@@ -95,6 +95,35 @@ so a checkout can't leave partial state on failure.
 
 ---
 
+## 🛠️ Admin Panel
+
+A store-owner admin panel lives at `/admin`, gated by an `is_admin()` RLS
+helper and a `role` column on `profiles` (default `'user'`) rather than a
+Supabase Auth Hook. It currently covers a dashboard (order/revenue/customer
+counters), full order management (list, filter by status, search by order
+number, change payment/delivery status), and a read-only product list.
+Order status changes go through a `SECURITY DEFINER` RPC
+(`admin_update_order_status`), never a direct table write, so the same
+server-side triggers that keep a customer's order state consistent still run.
+
+There is no signup flow for admins — grant the role once, manually, against
+your own account:
+
+```sql
+-- run once via the Supabase SQL editor or psql "$DATABASE_URL"
+update public.profiles p
+set role = 'admin'
+from auth.users u
+where u.id = p.id
+  and lower(u.email) = lower('you@example.com');
+```
+
+`profiles` has no email column (it lives on `auth.users`), which is why this
+can't be done from the client — sign out and back in afterwards so the new
+session picks up the role.
+
+---
+
 ## 🔭 Planned Improvements
 
 - **Next.js migration** for SSR/SSG and better Core Web Vitals

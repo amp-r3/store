@@ -231,6 +231,23 @@ grep -rEn "from '@/(entities|features|widgets|pages)/[a-zA-Z0-9_-]+/(model|ui|ap
   `[auth]` section, so **never run `supabase config push`**; it would
   overwrite the remote `site_url`, `uri_allow_list` and Google provider config
   with CLI defaults.
+- **Admin role**: `profiles.role` (`user_role` enum, default `'user'`) —
+  not a JWT custom claim, since that needs a dashboard Auth Hook and this
+  project never runs `supabase config push`. RLS reads it through
+  `public.is_admin()` (`SECURITY DEFINER`, so a policy on `profiles` calling it
+  doesn't recurse through the policy it's evaluating). Admin-only writes
+  (`admin_update_order_status`, and any future admin mutation) are
+  `SECURITY DEFINER` RPCs that check `is_admin()` themselves, never a
+  role-gated `UPDATE`/`INSERT` policy — RLS has no column granularity, and
+  `orders`/`order_items` keep zero write policies by design (see
+  `20260723071805_harden_order_write_paths.sql`). `profiles` also only grants
+  `UPDATE` on specific columns (`username`, `first_name`, `last_name`,
+  `avatar_url`, `updated_at`) to `anon`/`authenticated` — `role` is
+  deliberately excluded, since a blanket `grant all` would let any user
+  self-promote. The admin UI itself is a `/admin` branch (`AdminRoute` guard,
+  `AdminLayout`) sibling to `MainLayout`, entered via a `ProfileNav` item shown
+  only when `selectIsAdmin` is true. There's no signup path for admins — grant
+  the role manually per the README.
 
 ## Database Schema & Migrations
 
