@@ -6,7 +6,8 @@ import { useMediaQuery } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, EmptyState, Alert } from '@/shared/ui';
-import { useGetAllOrdersQuery, AdminOrderStatusFilter } from '@/entities/order';
+import { AdminOrderStatusFilter } from '@/entities/order';
+import { useGetAllOrdersQuery } from '@/entities/admin';
 
 import { AdminOrdersToolbar, AdminOrdersTable } from './components';
 

@@ -9,8 +9,8 @@ import {
     PAYMENT_STATUS_MAP,
     DELIVERY_STATUS_MAP,
     ORDER_STATUS_MAP,
-    useUpdateOrderStatusMutation,
 } from '@/entities/order';
+import { useUpdateOrderStatusMutation } from '@/entities/admin';
 import { formatPrice } from '@/shared/lib';
 
 import { AdminOrderStatusSelect } from '../AdminOrderStatusSelect/AdminOrderStatusSelect';

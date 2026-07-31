@@ -1,13 +1,110 @@
 import { supabase, baseApi } from '@/shared/api';
-import type { PaymentStatus, DeliveryStatus } from '@/entities/order';
+import type { PaymentStatus, DeliveryStatus, AdminOrderStatusFilter, PaginatedOrders } from '@/entities/order';
+// Read-only, one-directional entity↔entity import: reuses entities/order's
+// own select string, row type and mapper instead of re-deriving them here.
+// Flagged per AGENTS.md's entity cross-import rule — order never imports
+// back from admin, so the dependency stays one-way.
+import { ORDERS_SELECT, OrderRow, mapOrderResponseToOrder } from '@/entities/order';
 
 export interface OrderStatusTransitions {
   payment: Record<PaymentStatus, PaymentStatus[]>;
   delivery: Record<DeliveryStatus, DeliveryStatus[]>;
 }
 
+export interface AdminOrdersQueryArgs {
+  page: number;
+  limit: number;
+  status: AdminOrderStatusFilter;
+  /** Trimmed order_number fragment; empty/undefined = no filter. */
+  search?: string;
+}
+
+export interface UpdateOrderStatusPayload {
+  orderId: string;
+  paymentStatus?: PaymentStatus;
+  deliveryStatus?: DeliveryStatus;
+}
+
 export const adminOrdersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Admin scope: all customers' orders, not just the caller's. Differs from
+    // the customer-scoped queries in entities/order in three ways: no
+    // supabase.auth.getUser() guard (AdminRoute already guarantees an
+    // authenticated admin, and the id isn't needed here — skip the round
+    // trip), no .eq('user_id') (the "Admins can view all orders" RLS policy
+    // is what widens the read, see 20260731071206), and a status/search
+    // filter instead of the active/completed scope split.
+    //
+    // Without .eq('user_id'), a non-admin calling this doesn't get an error —
+    // the permissive-OR RLS policy silently narrows the result to their own
+    // orders. That's the correct failure mode (fail-closed on data); the real
+    // gates are AdminRoute on the client and is_admin() inside every admin RPC.
+    getAllOrders: builder.query<PaginatedOrders, AdminOrdersQueryArgs>({
+      queryFn: async ({ page, limit, status, search }) => {
+        const from = (page - 1) * limit;
+        const to = page * limit - 1;
+
+        let query = supabase
+          .from('orders')
+          .select(ORDERS_SELECT, { count: 'exact' });
+
+        if (status !== 'all') {
+          query = query.eq('status', status);
+        }
+
+        const trimmedSearch = search?.trim();
+        if (trimmedSearch) {
+          query = query.ilike('order_number', `%${trimmedSearch}%`);
+        }
+
+        const { data, error, count } = await query
+          .order('created_at', { ascending: false })
+          .range(from, to);
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return {
+          data: {
+            items: (data as unknown as OrderRow[]).map(mapOrderResponseToOrder),
+            totalCount: count || 0,
+          }
+        };
+      },
+      providesTags: ['Order']
+    }),
+
+    // The only other admin write path alongside create_order, both SECURITY
+    // DEFINER RPCs — orders/order_items keep zero UPDATE policies by design
+    // (see 20260723071805_harden_order_write_paths.sql), since a column-blind
+    // UPDATE policy would both expose every other order column to an admin
+    // and bypass sync_order_main_status() (a `before update of payment_status,
+    // delivery_status` trigger), letting `status` desync from the two values
+    // it's derived from.
+    //
+    // No optimistic update: `status` is computed server-side by that trigger,
+    // and reimplementing its branching in TypeScript would drift the moment
+    // the SQL changes. Plain invalidation is the correct trade-off here.
+    updateOrderStatus: builder.mutation<null, UpdateOrderStatusPayload>({
+      queryFn: async ({ orderId, paymentStatus, deliveryStatus }) => {
+        const { error } = await supabase.rpc('admin_update_order_status', {
+          p_order_id: orderId,
+          ...(paymentStatus !== undefined && { p_payment_status: paymentStatus }),
+          ...(deliveryStatus !== undefined && { p_delivery_status: deliveryStatus }),
+        });
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: null };
+      },
+      // Also invalidates StatusTransition-adjacent 'Order' consumers (admin
+      // dashboard stats, order-by-status breakdown) that tag on 'Order'.
+      invalidatesTags: ['Order']
+    }),
+
     // Single source of truth for legal status moves lives in the DB
     // (payment_status_transitions / delivery_status_transitions), read by
     // admin_update_order_status itself. The UI reads the same tables so the
@@ -44,4 +141,8 @@ export const adminOrdersApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetOrderStatusTransitionsQuery } = adminOrdersApi;
+export const {
+  useGetAllOrdersQuery,
+  useUpdateOrderStatusMutation,
+  useGetOrderStatusTransitionsQuery,
+} = adminOrdersApi;
