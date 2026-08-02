@@ -204,6 +204,13 @@ export const router = createBrowserRouter([
                 }
               },
               {
+                path: 'customers',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-customers-page")
+                  return { Component: module.default }
+                }
+              },
+              {
                 path: '*',
                 lazy: async () => {
                   const module = await import("@/pages/not-found-page")

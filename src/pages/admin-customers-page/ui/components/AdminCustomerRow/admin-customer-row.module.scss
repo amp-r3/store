@@ -1,0 +1,153 @@
+@use '@/app/styles/index' as *;
+
+.admin-customer-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 0.6fr) minmax(0, 0.8fr) minmax(0, 0.9fr);
+  gap: $spacing-md;
+  align-items: center;
+  padding: $spacing-md;
+  background: var(--background-component);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-xs $spacing-sm;
+
+    > :first-child,
+    > :last-child {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.admin-customer-row__cell {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  min-width: 0;
+}
+
+.admin-customer-row__cell-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  @media (max-width: 1024px) {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    clip: auto;
+    overflow: visible;
+    font-size: $fs-xs;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+}
+
+.admin-customer-row__identity {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.admin-customer-row__avatar,
+.admin-customer-row__avatar-fallback {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-circle;
+  border: 1px solid var(--border-color-subtle);
+}
+
+.admin-customer-row__avatar {
+  object-fit: cover;
+}
+
+.admin-customer-row__avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--primary-accent-rgb), 0.08);
+  color: var(--primary-accent-light);
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+}
+
+.admin-customer-row__name {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-row__email {
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-row__spent {
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.admin-customer-row__role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  width: fit-content;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  color: var(--text-secondary);
+  background: var(--border-color-subtle);
+  border-radius: $radius-pill;
+  padding: $spacing-xxs $spacing-sm;
+}
+
+.admin-customer-row__role-badge--admin {
+  color: var(--primary-accent);
+  background: rgba(var(--primary-accent-rgb), 0.1);
+}
+
+.admin-customer-row__role-action {
+  align-self: flex-start;
+  margin-top: $spacing-xxs;
+  padding: $spacing-xxs $spacing-sm;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+
+  &:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

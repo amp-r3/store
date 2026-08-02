@@ -19,6 +19,7 @@ const LOCALLY_HANDLED_ENDPOINTS = new Set([
     'toggleReviewLike',
     'upsertAdminCategory',
     'deleteAdminCategory',
+    'setAdminUserRole',
 ]);
 
 interface SuccessNotification {
@@ -49,6 +50,7 @@ const SUCCESS_MESSAGES: Record<string, SuccessNotification> = {
     updateOrderStatus: { type: 'success', text: 'Order status updated', key: 'admin-order' },
     upsertAdminCategory: { type: 'success', text: 'Category saved', key: 'admin-category' },
     deleteAdminCategory: { type: 'info', text: 'Category deleted', key: 'admin-category' },
+    setAdminUserRole: { type: 'success', text: 'Role updated', key: 'admin-customer' },
 };
 
 interface RtkQueryActionMeta {

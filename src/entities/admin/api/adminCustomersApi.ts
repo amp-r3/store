@@ -1,7 +1,7 @@
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
 
-type UserRole = Database['public']['Enums']['user_role'];
+export type UserRole = Database['public']['Enums']['user_role'];
 
 // admin_customers_view is a Postgres view: PG cannot express NOT NULL for
 // view columns, so every generated column comes back `| null` even though
@@ -24,16 +24,43 @@ export interface AdminCustomer {
   lastOrderAt: string | null;
 }
 
+export type AdminCustomersSort = 'newest' | 'top_spenders' | 'most_orders';
+
 export interface AdminCustomersQueryArgs {
   page: number;
   limit: number;
   search?: string;
+  role?: UserRole;
+  sort?: AdminCustomersSort;
 }
 
 export interface PaginatedAdminCustomers {
   items: AdminCustomer[];
   totalCount: number;
 }
+
+// id/username/role/email/registeredAt back onto NOT NULL columns
+// (profiles.id/username/role, auth.users.email/created_at) — the
+// view-column nullability is a Postgres artifact, not a real gap.
+const mapAdminCustomer = (row: AdminCustomerRow): AdminCustomer => ({
+  id: row.id as string,
+  username: row.username as string,
+  firstName: row.first_name,
+  lastName: row.last_name,
+  avatarUrl: row.avatar_url,
+  role: row.role as UserRole,
+  email: row.email as string,
+  registeredAt: row.registered_at as string,
+  ordersCount: Number(row.orders_count),
+  totalSpent: Number(row.total_spent),
+  lastOrderAt: row.last_order_at,
+});
+
+const SORT_COLUMN: Record<AdminCustomersSort, string> = {
+  newest: 'registered_at',
+  top_spenders: 'total_spent',
+  most_orders: 'orders_count',
+};
 
 export const adminCustomersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -42,7 +69,7 @@ export const adminCustomersApi = baseApi.injectEndpoints({
     // so a non-admin calling this gets zero rows rather than an error; the
     // real gate is AdminRoute plus the view definition.
     getAdminCustomers: builder.query<PaginatedAdminCustomers, AdminCustomersQueryArgs>({
-      queryFn: async ({ page, limit, search }) => {
+      queryFn: async ({ page, limit, search, role, sort = 'newest' }) => {
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
@@ -50,35 +77,29 @@ export const adminCustomersApi = baseApi.injectEndpoints({
           .from('admin_customers_view')
           .select('*', { count: 'exact' });
 
-        const trimmedSearch = search?.trim();
+        // PostgREST parses .or()'s filter list as a comma-separated string,
+        // so a raw comma/parenthesis in the search term would break the
+        // filter syntax rather than just fail to match — strip them first.
+        const trimmedSearch = search?.trim().replace(/[,()]/g, '');
         if (trimmedSearch) {
-          query = query.ilike('username', `%${trimmedSearch}%`);
+          query = query.or(
+            `username.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%,first_name.ilike.%${trimmedSearch}%,last_name.ilike.%${trimmedSearch}%`
+          );
+        }
+
+        if (role) {
+          query = query.eq('role', role);
         }
 
         const { data, error, count } = await query
-          .order('registered_at', { ascending: false })
+          .order(SORT_COLUMN[sort], { ascending: false, nullsFirst: false })
           .range(from, to);
 
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
 
-        const items: AdminCustomer[] = ((data ?? []) as unknown as AdminCustomerRow[]).map((row) => ({
-          // id/username/role/email/registeredAt back onto NOT NULL columns
-          // (profiles.id/username/role, auth.users.email/created_at) — the
-          // view-column nullability is a Postgres artifact, not a real gap.
-          id: row.id as string,
-          username: row.username as string,
-          firstName: row.first_name,
-          lastName: row.last_name,
-          avatarUrl: row.avatar_url,
-          role: row.role as UserRole,
-          email: row.email as string,
-          registeredAt: row.registered_at as string,
-          ordersCount: Number(row.orders_count),
-          totalSpent: Number(row.total_spent),
-          lastOrderAt: row.last_order_at,
-        }));
+        const items = ((data ?? []) as unknown as AdminCustomerRow[]).map(mapAdminCustomer);
 
         return { data: { items, totalCount: count ?? 0 } };
       },
