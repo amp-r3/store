@@ -23,15 +23,20 @@ const getInitial = (customer: AdminCustomer) => {
 interface AdminCustomerRowProps {
     customer: AdminCustomer;
     isCurrentUser: boolean;
+    onOpenDetails: (customerId: string) => void;
     onChangeRole: (customer: AdminCustomer) => void;
 }
 
-export const AdminCustomerRow = memo(({ customer, isCurrentUser, onChangeRole }: AdminCustomerRowProps) => {
+export const AdminCustomerRow = memo(({ customer, isCurrentUser, onOpenDetails, onChangeRole }: AdminCustomerRowProps) => {
     return (
         <article role="listitem" className={style['admin-customer-row']}>
             <div className={style['admin-customer-row__cell']}>
                 <span className={style['admin-customer-row__cell-label']}>Customer</span>
-                <div className={style['admin-customer-row__identity']}>
+                <button
+                    type="button"
+                    className={style['admin-customer-row__identity']}
+                    onClick={() => onOpenDetails(customer.id)}
+                >
                     {customer.avatarUrl ? (
                         <img src={customer.avatarUrl} alt="" className={style['admin-customer-row__avatar']} />
                     ) : (
@@ -40,7 +45,7 @@ export const AdminCustomerRow = memo(({ customer, isCurrentUser, onChangeRole }:
                         </span>
                     )}
                     <span className={style['admin-customer-row__name']}>{getDisplayName(customer)}</span>
-                </div>
+                </button>
             </div>
 
             <div className={style['admin-customer-row__cell']}>

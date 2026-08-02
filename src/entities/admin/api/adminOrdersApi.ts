@@ -20,6 +20,8 @@ export interface AdminOrdersQueryArgs {
   /** Inclusive date-only bounds (YYYY-MM-DD); undefined = no bound. */
   dateFrom?: string;
   dateTo?: string;
+  /** Scopes to a single customer's orders — used by the customer details drawer. */
+  userId?: string;
 }
 
 export interface UpdateOrderStatusPayload {
@@ -43,7 +45,7 @@ export const adminOrdersApi = baseApi.injectEndpoints({
     // orders. That's the correct failure mode (fail-closed on data); the real
     // gates are AdminRoute on the client and is_admin() inside every admin RPC.
     getAllOrders: builder.query<PaginatedOrders, AdminOrdersQueryArgs>({
-      queryFn: async ({ page, limit, status, search, dateFrom, dateTo }) => {
+      queryFn: async ({ page, limit, status, search, dateFrom, dateTo, userId }) => {
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
@@ -53,6 +55,12 @@ export const adminOrdersApi = baseApi.injectEndpoints({
 
         if (status !== 'all') {
           query = query.eq('status', status);
+        }
+
+        // Also covered by "Admins can view all orders", same as the rest of
+        // this query — scoping to one customer for the details drawer.
+        if (userId) {
+          query = query.eq('user_id', userId);
         }
 
         const trimmedSearch = search?.trim();

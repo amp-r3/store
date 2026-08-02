@@ -109,6 +109,26 @@ export const adminCustomersApi = baseApi.injectEndpoints({
           : [{ type: 'Customer', id: 'LIST' }],
     }),
 
+    // Same view as getAdminCustomers, filtered to one row — used by the
+    // details drawer's deep-link (?customer=<uuid>) when that customer isn't
+    // on the currently loaded list page.
+    getAdminCustomerById: builder.query<AdminCustomer, string>({
+      queryFn: async (id) => {
+        const { data, error } = await supabase
+          .from('admin_customers_view')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: mapAdminCustomer(data as unknown as AdminCustomerRow) };
+      },
+      providesTags: (_result, _error, id) => [{ type: 'Customer', id }],
+    }),
+
     setAdminUserRole: builder.mutation<null, { userId: string; role: UserRole }>({
       queryFn: async ({ userId, role }) => {
         const { error } = await supabase.rpc('admin_set_user_role', { p_user_id: userId, p_role: role });
@@ -124,4 +144,4 @@ export const adminCustomersApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAdminCustomersQuery, useSetAdminUserRoleMutation } = adminCustomersApi;
+export const { useGetAdminCustomersQuery, useGetAdminCustomerByIdQuery, useSetAdminUserRoleMutation } = adminCustomersApi;

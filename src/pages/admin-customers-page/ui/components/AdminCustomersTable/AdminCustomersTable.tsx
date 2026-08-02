@@ -9,10 +9,11 @@ interface AdminCustomersTableProps {
     isLoading: boolean;
     limit: number;
     currentUserId: string | null;
+    onOpenDetails: (customerId: string) => void;
     onChangeRole: (customer: AdminCustomer) => void;
 }
 
-export const AdminCustomersTable = ({ customers, isLoading, limit, currentUserId, onChangeRole }: AdminCustomersTableProps) => (
+export const AdminCustomersTable = ({ customers, isLoading, limit, currentUserId, onOpenDetails, onChangeRole }: AdminCustomersTableProps) => (
     <div className={style['admin-customers-table']} role="list">
         <div className={style['admin-customers-table__header']} role="presentation" aria-hidden="true">
             <span>Customer</span>
@@ -31,6 +32,7 @@ export const AdminCustomersTable = ({ customers, isLoading, limit, currentUserId
                     key={customer.id}
                     customer={customer}
                     isCurrentUser={customer.id === currentUserId}
+                    onOpenDetails={onOpenDetails}
                     onChangeRole={onChangeRole}
                 />
             ))

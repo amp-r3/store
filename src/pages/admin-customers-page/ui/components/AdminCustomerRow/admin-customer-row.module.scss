@@ -58,6 +58,16 @@
   align-items: center;
   gap: $spacing-sm;
   min-width: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
 }
 
 .admin-customer-row__avatar,

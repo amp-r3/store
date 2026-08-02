@@ -2,24 +2,27 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { LuUsers } from 'react-icons/lu';
 
-import { useMediaQuery } from '@/shared/lib/hooks';
+import { useMediaQuery, useHaptics } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, EmptyState, Alert } from '@/shared/ui';
 import { selectUser } from '@/entities/session';
 import { useAppSelector } from '@/shared/model';
-import { AdminCustomer, AdminCustomersSort, UserRole, useGetAdminCustomersQuery } from '@/entities/admin';
+import { AdminCustomer, AdminCustomersSort, UserRole, useGetAdminCustomersQuery, useGetAdminCustomerByIdQuery } from '@/entities/admin';
+import { AdminCustomerDetails } from '@/widgets/admin-customer-details';
 
 import { AdminCustomersToolbar, AdminCustomersTable, AdminCustomerRoleModal } from './components';
 
 export const AdminCustomersPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const { soft } = useHaptics();
     const currentUser = useAppSelector(selectUser);
     const [searchParams, setSearchParams] = useSearchParams();
 
     const search = searchParams.get('q') ?? '';
     const role = (searchParams.get('role') as UserRole | null) ?? '';
     const sort = (searchParams.get('sort') as AdminCustomersSort | null) ?? 'newest';
+    const customerId = searchParams.get('customer');
 
     const [page, setPage] = useState(1);
     const limit = isMobile ? 8 : 15;
@@ -72,6 +75,37 @@ export const AdminCustomersPage = () => {
         scrollToTop();
     }, []);
 
+    const openCustomerDetails = useCallback((id: string) => {
+        soft();
+        setSearchParams((params) => {
+            params.set('customer', id);
+            return params;
+        });
+    }, [setSearchParams, soft]);
+
+    /** Drops `?customer` without a haptic — also used to recover from a dead deep link. */
+    const clearCustomerParam = useCallback(() => {
+        setSearchParams((params) => {
+            params.delete('customer');
+            return params;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    const closeCustomerDetails = useCallback(() => {
+        soft();
+        clearCustomerParam();
+    }, [clearCustomerParam, soft]);
+
+    const customerFromList = customers.find((customer) => customer.id === customerId);
+    const customerByIdResult = useGetAdminCustomerByIdQuery(customerId ?? '', { skip: !customerId || !!customerFromList });
+    const activeCustomer = customerFromList ?? customerByIdResult.data;
+
+    useEffect(() => {
+        if (customerId && !customerFromList && customerByIdResult.isError) {
+            clearCustomerParam();
+        }
+    }, [customerId, customerFromList, customerByIdResult.isError, clearCustomerParam]);
+
     const hasActiveFilter = !!search || !!role;
 
     return (
@@ -106,6 +140,7 @@ export const AdminCustomersPage = () => {
                     isLoading={isLoading}
                     limit={limit}
                     currentUserId={currentUser?.id ?? null}
+                    onOpenDetails={openCustomerDetails}
                     onChangeRole={setChangingRoleCustomer}
                 />
             )}
@@ -122,6 +157,15 @@ export const AdminCustomersPage = () => {
                 onOpenChange={(open) => { if (!open) setChangingRoleCustomer(null); }}
                 customer={changingRoleCustomer}
             />
+
+            {activeCustomer && (
+                <AdminCustomerDetails
+                    open={!!customerId}
+                    onOpenChange={closeCustomerDetails}
+                    customer={activeCustomer}
+                    isFetching={customerByIdResult.isFetching}
+                />
+            )}
         </>
     );
 };
