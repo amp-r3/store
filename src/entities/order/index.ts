@@ -3,6 +3,8 @@ export * from './ui/order-card/OrderCard';
 export * from './ui/order-card/OrderCardSkeleton';
 export { OrderItem } from './ui/order-item/OrderItem';
 export * from './ui/order-item/OrderItemSkeleton';
+export * from './ui/order-info-card/OrderInfoCard';
+export * from './ui/order-status-select/OrderStatusSelect';
 
 export * from './model/useEnrichedOrderItems';
 export * from './model/types';

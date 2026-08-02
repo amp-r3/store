@@ -1,5 +1,5 @@
 import { supabase, baseApi } from '@/shared/api';
-import type { PaymentStatus, DeliveryStatus, AdminOrderStatusFilter, PaginatedOrders } from '@/entities/order';
+import type { PaymentStatus, DeliveryStatus, AdminOrderStatusFilter, PaginatedOrders, Order } from '@/entities/order';
 // Read-only, one-directional entity↔entity import: reuses entities/order's
 // own select string, row type and mapper instead of re-deriving them here.
 // Flagged per AGENTS.md's entity cross-import rule — order never imports
@@ -17,6 +17,9 @@ export interface AdminOrdersQueryArgs {
   status: AdminOrderStatusFilter;
   /** Trimmed order_number fragment; empty/undefined = no filter. */
   search?: string;
+  /** Inclusive date-only bounds (YYYY-MM-DD); undefined = no bound. */
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 export interface UpdateOrderStatusPayload {
@@ -40,7 +43,7 @@ export const adminOrdersApi = baseApi.injectEndpoints({
     // orders. That's the correct failure mode (fail-closed on data); the real
     // gates are AdminRoute on the client and is_admin() inside every admin RPC.
     getAllOrders: builder.query<PaginatedOrders, AdminOrdersQueryArgs>({
-      queryFn: async ({ page, limit, status, search }) => {
+      queryFn: async ({ page, limit, status, search, dateFrom, dateTo }) => {
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
@@ -55,6 +58,16 @@ export const adminOrdersApi = baseApi.injectEndpoints({
         const trimmedSearch = search?.trim();
         if (trimmedSearch) {
           query = query.ilike('order_number', `%${trimmedSearch}%`);
+        }
+
+        if (dateFrom) {
+          query = query.gte('created_at', new Date(`${dateFrom}T00:00:00.000`).toISOString());
+        }
+
+        // End-of-day bound: a same-day from/to must still include that day's
+        // orders, not just those created before midnight.
+        if (dateTo) {
+          query = query.lte('created_at', new Date(`${dateTo}T23:59:59.999`).toISOString());
         }
 
         const { data, error, count } = await query
@@ -105,6 +118,27 @@ export const adminOrdersApi = baseApi.injectEndpoints({
       invalidatesTags: ['Order']
     }),
 
+    // entities/order's getOrderById hard-filters .eq('user_id', user.id), so
+    // it can't serve an admin looking up any customer's order. Same RLS
+    // widening as getAllOrders above — no user_id filter, admin-only access
+    // is enforced by AdminRoute + is_admin() inside the write-path RPCs.
+    getAdminOrderById: builder.query<Order, string>({
+      queryFn: async (orderId) => {
+        const { data, error } = await supabase
+          .from('orders')
+          .select(ORDERS_SELECT)
+          .eq('id', orderId)
+          .single();
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: mapOrderResponseToOrder(data as unknown as OrderRow) };
+      },
+      providesTags: (_result, _error, orderId) => [{ type: 'Order', id: orderId }],
+    }),
+
     // Single source of truth for legal status moves lives in the DB
     // (payment_status_transitions / delivery_status_transitions), read by
     // admin_update_order_status itself. The UI reads the same tables so the
@@ -143,6 +177,7 @@ export const adminOrdersApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllOrdersQuery,
+  useGetAdminOrderByIdQuery,
   useUpdateOrderStatusMutation,
   useGetOrderStatusTransitionsQuery,
 } = adminOrdersApi;

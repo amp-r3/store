@@ -1,4 +1,5 @@
 import { Order } from '@/entities/order';
+import { OrderStatusTransitions } from '@/entities/admin';
 
 import { AdminOrderRow } from '../AdminOrderRow/AdminOrderRow';
 import { AdminOrderRowSkeleton } from '../AdminOrderRow/AdminOrderRowSkeleton';
@@ -9,9 +10,11 @@ interface AdminOrdersTableProps {
     isLoading: boolean;
     limit: number;
     formatOrderDate: (date: string) => string;
+    transitions?: OrderStatusTransitions;
+    onOpenDetails: (orderId: string) => void;
 }
 
-export const AdminOrdersTable = ({ orders, isLoading, limit, formatOrderDate }: AdminOrdersTableProps) => (
+export const AdminOrdersTable = ({ orders, isLoading, limit, formatOrderDate, transitions, onOpenDetails }: AdminOrdersTableProps) => (
     <div className={style['admin-orders-table']} role="list">
         <div className={style['admin-orders-table__header']} role="presentation" aria-hidden="true">
             <span>Order</span>
@@ -27,7 +30,13 @@ export const AdminOrdersTable = ({ orders, isLoading, limit, formatOrderDate }: 
             <AdminOrderRowSkeleton count={limit} />
         ) : (
             orders.map((order) => (
-                <AdminOrderRow key={order.id} order={order} formatOrderDate={formatOrderDate} />
+                <AdminOrderRow
+                    key={order.id}
+                    order={order}
+                    formatOrderDate={formatOrderDate}
+                    transitions={transitions}
+                    onOpenDetails={onOpenDetails}
+                />
             ))
         )}
     </div>

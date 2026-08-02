@@ -9,28 +9,43 @@ import {
     PAYMENT_STATUS_MAP,
     DELIVERY_STATUS_MAP,
     ORDER_STATUS_MAP,
+    OrderStatusSelect,
 } from '@/entities/order';
-import { useUpdateOrderStatusMutation } from '@/entities/admin';
+import { useUpdateOrderStatusMutation, OrderStatusTransitions } from '@/entities/admin';
 import { formatPrice } from '@/shared/lib';
 
-import { AdminOrderStatusSelect } from '../AdminOrderStatusSelect/AdminOrderStatusSelect';
 import style from './admin-order-row.module.scss';
 
 interface AdminOrderRowProps {
     order: Order;
     formatOrderDate: (date: string) => string;
+    /** `undefined` while the transition matrix is still loading/errored. */
+    transitions?: OrderStatusTransitions;
+    onOpenDetails: (orderId: string) => void;
 }
 
-export const AdminOrderRow = memo(({ order, formatOrderDate }: AdminOrderRowProps) => {
+export const AdminOrderRow = memo(({ order, formatOrderDate, transitions, onOpenDetails }: AdminOrderRowProps) => {
     const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
     const { firstName, lastName, email } = order.shippingAddress;
     const itemCount = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
+
+    // toMap() in adminOrdersApi only creates keys for statuses with outgoing
+    // rows, so a terminal status comes back `undefined` — normalise to `[]`
+    // here so "terminal" reads as locked, not as "matrix still loading".
+    const allowedPaymentValues = transitions ? (transitions.payment[order.paymentStatus] ?? []) : undefined;
+    const allowedDeliveryValues = transitions ? (transitions.delivery[order.deliveryStatus] ?? []) : undefined;
 
     return (
         <article role="listitem" className={style['admin-order-row']}>
             <div className={style['admin-order-row__cell']}>
                 <span className={style['admin-order-row__cell-label']}>Order</span>
-                <span className={style['admin-order-row__order-number']}>#{order.orderId}</span>
+                <button
+                    type="button"
+                    className={style['admin-order-row__order-number']}
+                    onClick={() => onOpenDetails(order.id)}
+                >
+                    #{order.orderId}
+                </button>
                 <span className={style['admin-order-row__date']}>{formatOrderDate(order.createdAt)}</span>
             </div>
 
@@ -61,23 +76,25 @@ export const AdminOrderRow = memo(({ order, formatOrderDate }: AdminOrderRowProp
             </div>
 
             <div className={style['admin-order-row__cell']}>
-                <AdminOrderStatusSelect<PaymentStatus>
+                <OrderStatusSelect<PaymentStatus>
                     label="Payment status"
                     value={order.paymentStatus}
                     options={PAYMENT_STATUS_OPTIONS}
                     statusMap={PAYMENT_STATUS_MAP}
                     disabled={isLoading}
+                    allowedValues={allowedPaymentValues}
                     onChange={(paymentStatus) => updateOrderStatus({ orderId: order.id, paymentStatus })}
                 />
             </div>
 
             <div className={style['admin-order-row__cell']}>
-                <AdminOrderStatusSelect<DeliveryStatus>
+                <OrderStatusSelect<DeliveryStatus>
                     label="Delivery status"
                     value={order.deliveryStatus}
                     options={DELIVERY_STATUS_OPTIONS}
                     statusMap={DELIVERY_STATUS_MAP}
                     disabled={isLoading}
+                    allowedValues={allowedDeliveryValues}
                     onChange={(deliveryStatus) => updateOrderStatus({ orderId: order.id, deliveryStatus })}
                 />
             </div>

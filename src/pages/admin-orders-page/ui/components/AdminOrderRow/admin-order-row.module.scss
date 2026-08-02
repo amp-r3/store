@@ -74,6 +74,7 @@
 }
 
 .admin-order-row__order-number {
+  font-family: inherit;
   font-size: $fs-sm;
   font-weight: $fw-semibold;
   letter-spacing: $letter-spacing-wide;
@@ -81,6 +82,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background: none;
+  border: none;
+  padding: 0;
+  max-width: 100%;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
 }
 
 .admin-order-row__date {

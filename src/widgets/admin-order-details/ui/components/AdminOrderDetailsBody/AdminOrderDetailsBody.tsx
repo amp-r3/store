@@ -1,44 +1,52 @@
 import { FC } from 'react';
-import { EnrichedOrderItem, Order, OrderInfoCard } from '@/entities/order';
-import style from './order-details-body.module.scss';
-import { LuStar } from 'react-icons/lu';
+import { EnrichedOrderItem, Order, OrderInfoCard, OrderItem, OrderItemSkeleton } from '@/entities/order';
+import style from './admin-order-details-body.module.scss';
 import { formatPrice } from "@/shared/lib";
-import { OrderItem } from "@/entities/order";
-import { OrderItemSkeleton } from "@/entities/order";
 
-interface OrderDetailsBodyProps {
+interface AdminOrderDetailsBodyProps {
     order: Order;
     orderItems: EnrichedOrderItem[];
     isLoading: boolean;
     isFetching: boolean;
     ITEMS_PREVIEW_COUNT: number;
     goodsTotal: number;
-    onClose?(): void;
-    onRateClick(): void;
 }
 
-export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
+const ADDRESS_FIELDS: (keyof Order['shippingAddress'])[] = ['street', 'housenumber', 'city', 'postcode', 'country'];
+
+export const AdminOrderDetailsBody: FC<AdminOrderDetailsBodyProps> = ({
     order,
     orderItems,
     isLoading,
     isFetching,
     ITEMS_PREVIEW_COUNT,
     goodsTotal,
-    onClose,
-    onRateClick,
 }) => {
+    const { firstName, lastName, email, phone } = order.shippingAddress;
+    const isPickup = order.deliveryMethods.code === 'pickup';
+    const addressLine = ADDRESS_FIELDS
+        .map((field) => order.shippingAddress[field])
+        .filter(Boolean)
+        .join(', ');
+
     return (
         <div className={style['body']}>
+            <div className={style['body__customer']}>
+                <h3 className={style['body__section-title']}>Customer</h3>
+                <p className={style['body__customer-name']}>{firstName} {lastName}</p>
+                <p className={style['body__customer-line']}>{email}</p>
+                {phone && <p className={style['body__customer-line']}>{phone}</p>}
+                <p className={style['body__customer-line']}>
+                    {isPickup ? 'Pick-up point' : (addressLine || 'No address on file')}
+                </p>
+            </div>
+
             <div className={style['body__info-grid']}>
                 <OrderInfoCard
                     variant='delivery'
                     method={order.deliveryMethods.code}
                     status={order.deliveryStatus}
-                    subtitle={
-                        order.deliveryMethods.code === 'pickup'
-                            ? 'The nearest pick-up point to you'
-                            : `${order.shippingAddress.country}, ${order.shippingAddress.city}`
-                    }
+                    subtitle={isPickup ? 'The nearest pick-up point to the customer' : addressLine}
                 />
                 <OrderInfoCard
                     method={order.paymentMethod}
@@ -52,18 +60,9 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
                     <h3 className={style['body__section-title']}>
                         Goods
                     </h3>
-                    <div className={style['body__header-actions']}>
-                        <span className={style['body__items-count']}>
-                            {orderItems.length} {orderItems.length === 1 ? 'item' : 'items'}
-                        </span>
-                        {
-                            order.status === 'completed' &&
-                            <button onClick={onRateClick} type="button" className={style['body__rate-btn']}>
-                                <LuStar />
-                                Rate this order
-                            </button>
-                        }
-                    </div>
+                    <span className={style['body__items-count']}>
+                        {orderItems.length} {orderItems.length === 1 ? 'item' : 'items'}
+                    </span>
                 </div>
 
                 <div className={style['body__scroll-area']}>
@@ -71,8 +70,8 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
                         {isLoading || isFetching ? (
                             <OrderItemSkeleton count={ITEMS_PREVIEW_COUNT} />
                         ) : (
-                            orderItems.map((product) => (
-                                <OrderItem key={product.id} item={product} onClose={onClose} />
+                            orderItems.map((item) => (
+                                <OrderItem key={item.id} item={item} linkToProduct={false} />
                             ))
                         )}
                     </div>
@@ -96,6 +95,11 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
                         <span className={style['body__receipt-value']}>{formatPrice(order.paymentFee)}</span>
                     </div>
                 )}
+
+                <div className={`${style['body__receipt-row']} ${style['body__receipt-row--total']}`}>
+                    <span className={style['body__receipt-label']}>Total</span>
+                    <span className={style['body__receipt-value']}>{formatPrice(order.totalAmount)}</span>
+                </div>
             </div>
         </div>
     );

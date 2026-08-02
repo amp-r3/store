@@ -7,16 +7,16 @@ import {
 } from '@/entities/order';
 import { DeliveryStatus, PaymentStatus } from '@/entities/order';
 import { DeliveryOptions, PaymentOptions } from '@/entities/order';
-import style from './order-details-info-card.module.scss';
+import style from './order-info-card.module.scss';
 
-interface OrderDetailsInfoCardProps {
+interface OrderInfoCardProps {
     variant: 'delivery' | 'payment';
     method: DeliveryOptions | PaymentOptions | string;
     status: DeliveryStatus | PaymentStatus | string;
     subtitle?: string;
 }
 
-export const OrderDetailsInfoCard: FC<OrderDetailsInfoCardProps> = ({
+export const OrderInfoCard: FC<OrderInfoCardProps> = ({
     variant,
     method,
     status,
@@ -68,7 +68,7 @@ export const OrderDetailsInfoCard: FC<OrderDetailsInfoCardProps> = ({
 
                 {subtitle && (
                     <p className={style['info-card__subtitle']}>
-                        <span className={style['sr-only']}>Address or details: </span>
+                        <span className="sr-only">Address or details: </span>
                         {subtitle}
                     </p>
                 )}

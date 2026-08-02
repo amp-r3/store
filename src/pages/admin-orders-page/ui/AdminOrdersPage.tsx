@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { LuClipboardList } from 'react-icons/lu';
 
-import { useMediaQuery } from '@/shared/lib/hooks';
+import { useMediaQuery, useHaptics } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, EmptyState, Alert } from '@/shared/ui';
-import { AdminOrderStatusFilter } from '@/entities/order';
-import { useGetAllOrdersQuery } from '@/entities/admin';
+import { AdminOrderStatusFilter, useEnrichedOrderItems } from '@/entities/order';
+import { useGetAllOrdersQuery, useGetOrderStatusTransitionsQuery, useGetAdminOrderByIdQuery } from '@/entities/admin';
+import { AdminOrderDetails } from '@/widgets/admin-order-details';
 
 import { AdminOrdersToolbar, AdminOrdersTable } from './components';
 
@@ -22,10 +23,14 @@ const formatOrderDate = (dateStr: string) =>
 
 export const AdminOrdersPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const { soft } = useHaptics();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const status = (searchParams.get('status') as AdminOrderStatusFilter | null) ?? 'all';
     const search = searchParams.get('q') ?? '';
+    const dateFrom = searchParams.get('from') ?? '';
+    const dateTo = searchParams.get('to') ?? '';
+    const orderId = searchParams.get('order');
 
     const [page, setPage] = useState(1);
     const limit = isMobile ? 8 : 15;
@@ -40,7 +45,11 @@ export const AdminOrdersPage = () => {
         limit,
         status,
         search: search || undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
     });
+
+    const { data: transitions } = useGetOrderStatusTransitionsQuery();
 
     const orders = useMemo(() => data?.items ?? [], [data]);
     const totalCount = data?.totalCount ?? 0;
@@ -63,12 +72,76 @@ export const AdminOrdersPage = () => {
         }, { replace: true });
     }, [setSearchParams]);
 
+    const handleDateFromChange = useCallback((next: string) => {
+        setPage(1);
+        setSearchParams((params) => {
+            if (next) params.set('from', next); else params.delete('from');
+            return params;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    const handleDateToChange = useCallback((next: string) => {
+        setPage(1);
+        setSearchParams((params) => {
+            if (next) params.set('to', next); else params.delete('to');
+            return params;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    const handleResetFilters = useCallback(() => {
+        setPage(1);
+        setSearchParams((params) => {
+            params.delete('status');
+            params.delete('q');
+            params.delete('from');
+            params.delete('to');
+            return params;
+        }, { replace: true });
+    }, [setSearchParams]);
+
     const handlePageChange = useCallback((newPage: number) => {
         setPage(newPage);
         scrollToTop();
     }, []);
 
-    const hasActiveFilter = status !== 'all' || !!search;
+    const openOrderDetails = useCallback((id: string) => {
+        soft();
+        setSearchParams((params) => {
+            params.set('order', id);
+            return params;
+        });
+    }, [setSearchParams, soft]);
+
+    /** Drops `?order` without a haptic — also used to recover from a dead deep link. */
+    const clearOrderParam = useCallback(() => {
+        setSearchParams((params) => {
+            params.delete('order');
+            return params;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    const closeOrderDetails = useCallback(() => {
+        soft();
+        clearOrderParam();
+    }, [clearOrderParam, soft]);
+
+    const orderFromList = orders.find((order) => order.id === orderId);
+    const orderByIdResult = useGetAdminOrderByIdQuery(orderId ?? '', { skip: !orderId || !!orderFromList });
+    const activeOrder = orderFromList ?? orderByIdResult.data;
+
+    useEffect(() => {
+        if (orderId && !orderFromList && orderByIdResult.isError) {
+            clearOrderParam();
+        }
+    }, [orderId, orderFromList, orderByIdResult.isError, clearOrderParam]);
+
+    const {
+        items,
+        isLoading: isItemsLoading,
+        isFetching: isItemsFetching,
+    } = useEnrichedOrderItems(activeOrder?.orderItems ?? []);
+
+    const hasActiveFilter = status !== 'all' || !!search || !!dateFrom || !!dateTo;
 
     return (
         <>
@@ -80,8 +153,14 @@ export const AdminOrdersPage = () => {
             <AdminOrdersToolbar
                 status={status}
                 search={search}
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                hasActiveFilter={hasActiveFilter}
                 onStatusChange={handleStatusChange}
                 onSearchChange={handleSearchChange}
+                onDateFromChange={handleDateFromChange}
+                onDateToChange={handleDateToChange}
+                onResetFilters={handleResetFilters}
             />
 
             {error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
@@ -100,6 +179,8 @@ export const AdminOrdersPage = () => {
                     isLoading={isLoading}
                     limit={limit}
                     formatOrderDate={formatOrderDate}
+                    transitions={transitions}
+                    onOpenDetails={openOrderDetails}
                 />
             )}
 
@@ -109,6 +190,19 @@ export const AdminOrdersPage = () => {
                 itemsPerPage={limit}
                 onPageChange={handlePageChange}
             />
+
+            {activeOrder && (
+                <AdminOrderDetails
+                    open={!!orderId}
+                    onOpenChange={closeOrderDetails}
+                    order={activeOrder}
+                    isFetching={orderByIdResult.isFetching}
+                    items={items}
+                    isItemsFetching={isItemsFetching}
+                    isItemsLoading={isItemsLoading}
+                    formatOrderDate={formatOrderDate}
+                />
+            )}
         </>
     );
 };

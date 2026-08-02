@@ -19,7 +19,8 @@
   font-size: $fs-xs;
   color: var(--text-secondary);
 
-  select {
+  select,
+  input[type='date'] {
     min-width: 180px;
     padding: $spacing-sm $spacing-md;
     border-radius: $radius-md;
@@ -32,6 +33,22 @@
     &:focus-visible {
       outline: $focus-ring-width solid var(--focus-ring-color);
       outline-offset: $focus-ring-offset;
+    }
+  }
+
+  input[type='date'] {
+    min-width: 150px;
+    color-scheme: light dark;
+
+    @media (max-width: 600px) {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 600px) {
+    select {
+      width: 100%;
     }
   }
 }
@@ -75,6 +92,32 @@
   color: var(--text-muted);
   font-size: $fs-icon-md;
   pointer-events: none;
+}
+
+.admin-orders-toolbar__reset {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-color-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: $fs-sm;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 }
 
 .admin-orders-toolbar__clear {

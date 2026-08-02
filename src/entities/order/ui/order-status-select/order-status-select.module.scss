@@ -1,12 +1,12 @@
 @use '@/app/styles/index' as *;
 @use '@/app/styles/statuses' as status;
 
-.admin-order-status-select {
+.order-status-select {
   display: block;
   min-width: 0;
 }
 
-.admin-order-status-select__control {
+.order-status-select__control {
   width: 100%;
   max-width: 100%;
   min-width: 0;
