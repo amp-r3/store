@@ -1,0 +1,39 @@
+@use '@/app/styles/index' as *;
+
+.admin-products-page__new-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-lg;
+  min-height: $touch-target-comfortable;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: var(--primary-accent);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-accent-sm);
+  transition: background-color $transition-fast $ease-in-out-smooth, box-shadow $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    background-color: var(--primary-accent-dark);
+    box-shadow: var(--shadow-accent-hover);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

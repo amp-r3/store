@@ -1,0 +1,77 @@
+@use '@/app/styles/index' as *;
+
+.admin-products-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  align-items: center;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.admin-products-toolbar__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  max-width: 360px;
+
+  @media (max-width: 600px) {
+    max-width: none;
+  }
+
+  input {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    padding-left: calc($spacing-md + $spacing-lg);
+    padding-right: calc($spacing-md + $spacing-lg);
+    border-radius: $radius-input;
+    border: 1px solid var(--border-color-subtle);
+    background: var(--background-component);
+    color: var(--text-primary);
+    font-size: $fs-sm;
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
+    }
+  }
+}
+
+.admin-products-toolbar__search-icon {
+  position: absolute;
+  left: $spacing-md;
+  color: var(--text-muted);
+  font-size: $fs-icon-md;
+  pointer-events: none;
+}
+
+.admin-products-toolbar__clear {
+  position: absolute;
+  right: $spacing-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  color: var(--text-muted);
+  border-radius: $radius-circle;
+  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}

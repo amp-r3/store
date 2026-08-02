@@ -7,7 +7,7 @@
 // available width instead.
 .admin-product-row {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 0.7fr);
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 0.6fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 0.6fr) minmax(0, 0.6fr);
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;
@@ -16,9 +16,18 @@
   border-radius: $radius-md;
 
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    gap: $spacing-sm;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-xs $spacing-sm;
+
+    > :first-child,
+    > :last-child {
+      grid-column: 1 / -1;
+    }
   }
+}
+
+.admin-product-row--archived {
+  opacity: 0.6;
 }
 
 .admin-product-row__cell {
@@ -77,6 +86,16 @@
   white-space: nowrap;
 }
 
+.admin-product-row__archived-badge {
+  flex-shrink: 0;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  color: var(--text-muted);
+  background: var(--border-color-subtle);
+  border-radius: $radius-pill;
+  padding: $spacing-xxs $spacing-xs;
+}
+
 .admin-product-row__price {
   font-size: $fs-sm;
   font-weight: $fw-semibold;
@@ -106,11 +125,38 @@
   }
 }
 
-.admin-product-row__reviews-count {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--text-muted);
-  font-size: $fs-xs;
+.admin-product-row__actions {
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+}
+
+.admin-product-row__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.admin-product-row__action--danger:hover {
+  color: var(--error-color);
+  background: rgba(var(--error-color-rgb), 0.08);
 }

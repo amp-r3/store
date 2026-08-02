@@ -1,55 +1,118 @@
-import { useCallback, useState } from 'react';
-import { LuInfo } from 'react-icons/lu';
+import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams, Link } from 'react-router';
+import { LuPackage, LuPlus } from 'react-icons/lu';
 
 import { useMediaQuery } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
-import { scrollToTop } from '@/shared/lib';
-import { SectionHeader, Pagination, InfoBanner } from '@/shared/ui';
-import { useGetProductsQuery, getItemsToRender } from '@/entities/product';
+import { scrollToTop, getErrorMessage } from '@/shared/lib';
+import { SectionHeader, Pagination, Alert, EmptyState } from '@/shared/ui';
+import { AdminProductListItem, useGetAdminProductsQuery, useArchiveAdminProductMutation } from '@/entities/admin';
 
-import { AdminProductsTable } from './components';
+import { AdminProductsTable, AdminProductsToolbar, AdminProductArchiveModal } from './components';
+import style from './admin-products-page.module.scss';
 
 export const AdminProductsPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const search = searchParams.get('q') ?? '';
+    const includeArchived = searchParams.get('archived') === '1';
+
     const [page, setPage] = useState(1);
     const limit = isMobile ? 8 : 12;
 
-    const { data, isLoading, error } = useGetProductsQuery({ page, limit });
-    const products = getItemsToRender(data, isLoading, limit);
-    const totalCount = data?.total ?? 0;
+    useEffect(() => {
+        setPage(1);
+    }, [isMobile]);
+
+    const { data, isLoading, error } = useGetAdminProductsQuery({
+        page,
+        limit,
+        search: search || undefined,
+        includeArchived,
+    });
+
+    const products = data?.items ?? [];
+    const totalCount = data?.totalCount ?? 0;
 
     usePaginationBounds(page, totalCount, limit, setPage, error);
+
+    const [restoreProduct] = useArchiveAdminProductMutation();
+    const [archivingProduct, setArchivingProduct] = useState<AdminProductListItem | null>(null);
+
+    const handleSearchChange = useCallback((next: string) => {
+        setPage(1);
+        setSearchParams((params) => {
+            if (next) params.set('q', next); else params.delete('q');
+            return params;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    const handleIncludeArchivedChange = useCallback((next: boolean) => {
+        setPage(1);
+        setSearchParams((params) => {
+            if (next) params.set('archived', '1'); else params.delete('archived');
+            return params;
+        }, { replace: true });
+    }, [setSearchParams]);
 
     const handlePageChange = useCallback((newPage: number) => {
         setPage(newPage);
         scrollToTop();
     }, []);
 
+    const handleRestore = useCallback((product: AdminProductListItem) => {
+        restoreProduct({ id: product.id, archived: false });
+    }, [restoreProduct]);
+
+    const hasActiveFilter = !!search || includeArchived;
+
     return (
         <>
             <SectionHeader
                 title="Products"
                 subtitle="Every product currently in the catalog."
+                action={<Link to="/admin/products/new" className={style['admin-products-page__new-link']}><LuPlus /> New product</Link>}
             />
 
-            <InfoBanner
-                icon={<LuInfo />}
-                title="Read-only in this release"
-                description="Product editing, images and stock management are coming in a later update."
-                details={[]}
+            <AdminProductsToolbar
+                search={search}
+                includeArchived={includeArchived}
+                onSearchChange={handleSearchChange}
+                onIncludeArchivedChange={handleIncludeArchivedChange}
             />
 
-            <AdminProductsTable
-                products={products}
-                isLoading={isLoading}
-                limit={limit}
-            />
+            {error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
+
+            {!isLoading && products.length === 0 ? (
+                <EmptyState
+                    icon={<LuPackage />}
+                    title={hasActiveFilter ? 'No matching products' : 'No products yet'}
+                    text={hasActiveFilter
+                        ? 'Try a different search term or toggle archived products.'
+                        : 'Products added to the catalog will show up here.'}
+                />
+            ) : (
+                <AdminProductsTable
+                    products={products}
+                    isLoading={isLoading}
+                    limit={limit}
+                    onArchive={setArchivingProduct}
+                    onRestore={handleRestore}
+                />
+            )}
 
             <Pagination
                 totalItems={totalCount}
                 currentPage={page}
                 itemsPerPage={limit}
                 onPageChange={handlePageChange}
+            />
+
+            <AdminProductArchiveModal
+                isOpen={!!archivingProduct}
+                onOpenChange={(open) => { if (!open) setArchivingProduct(null); }}
+                product={archivingProduct}
             />
         </>
     );

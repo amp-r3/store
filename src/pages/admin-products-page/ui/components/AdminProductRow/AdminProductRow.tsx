@@ -1,27 +1,35 @@
 import { memo } from 'react';
+import { Link } from 'react-router';
 import { FaStar } from 'react-icons/fa6';
+import { LuPencil, LuArchiveRestore, LuArchive } from 'react-icons/lu';
 
-import { Product } from '@/entities/product';
+import { AdminProductListItem } from '@/entities/admin';
 import { formatPrice } from '@/shared/lib';
 
 import style from './admin-product-row.module.scss';
 
 interface AdminProductRowProps {
-    product: Product;
+    product: AdminProductListItem;
+    onArchive: (product: AdminProductListItem) => void;
+    onRestore: (product: AdminProductListItem) => void;
 }
 
-export const AdminProductRow = memo(({ product }: AdminProductRowProps) => (
-    <article role="listitem" className={style['admin-product-row']}>
+export const AdminProductRow = memo(({ product, onArchive, onRestore }: AdminProductRowProps) => (
+    <article
+        role="listitem"
+        className={`${style['admin-product-row']} ${product.isArchived ? style['admin-product-row--archived'] : ''}`}
+    >
         <div className={style['admin-product-row__cell']}>
             <img
                 className={style['admin-product-row__thumbnail']}
-                src={product.thumbnail}
+                src={product.thumbnail ?? undefined}
                 alt=""
                 aria-hidden="true"
                 loading="lazy"
                 decoding="async"
             />
             <span className={style['admin-product-row__title']}>{product.title}</span>
+            {product.isArchived && <span className={style['admin-product-row__archived-badge']}>Archived</span>}
         </div>
 
         <div className={style['admin-product-row__cell']}>
@@ -49,8 +57,36 @@ export const AdminProductRow = memo(({ product }: AdminProductRowProps) => (
             <span className={style['admin-product-row__rating']}>
                 <FaStar aria-hidden="true" />
                 {product.rating.toFixed(1)}
-                <span className={style['admin-product-row__reviews-count']}>({product.reviewsCount})</span>
             </span>
+        </div>
+
+        <div className={`${style['admin-product-row__cell']} ${style['admin-product-row__actions']}`}>
+            <Link
+                to={`/admin/products/${product.id}/edit`}
+                className={style['admin-product-row__action']}
+                aria-label={`Edit ${product.title}`}
+            >
+                <LuPencil />
+            </Link>
+            {product.isArchived ? (
+                <button
+                    type="button"
+                    className={style['admin-product-row__action']}
+                    onClick={() => onRestore(product)}
+                    aria-label={`Restore ${product.title}`}
+                >
+                    <LuArchiveRestore />
+                </button>
+            ) : (
+                <button
+                    type="button"
+                    className={`${style['admin-product-row__action']} ${style['admin-product-row__action--danger']}`}
+                    onClick={() => onArchive(product)}
+                    aria-label={`Archive ${product.title}`}
+                >
+                    <LuArchive />
+                </button>
+            )}
         </div>
     </article>
 ));

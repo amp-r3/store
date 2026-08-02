@@ -25,11 +25,39 @@ export interface AdminProductsQueryArgs {
   page: number;
   limit: number;
   search?: string;
+  /** false/undefined = only active products (also totalCount/pagination scope). */
+  includeArchived?: boolean;
 }
 
 export interface PaginatedAdminProducts {
   items: AdminProductListItem[];
   totalCount: number;
+}
+
+// Raw-table detail for the edit form — products_view has neither category_id
+// nor is_archived (the view exists for the customer catalog and deliberately
+// excludes both), and archived products must still be editable here.
+export interface AdminProductDetail {
+  id: number;
+  title: string;
+  description: string | null;
+  categoryId: number | null;
+  basePrice: number;
+  discountPercentage: number;
+  thumbnail: string | null;
+  images: string[];
+  tags: string[];
+  brand: string | null;
+  sku: string | null;
+  weight: number | null;
+  dimensions: { width: number; height: number; depth: number };
+  warrantyInformation: string | null;
+  shippingInformation: string | null;
+  availabilityStatus: string | null;
+  returnPolicy: string | null;
+  minimumOrderQuantity: number | null;
+  meta: { barcode: string; qrCode: string };
+  isArchived: boolean;
 }
 
 // Mirrors entities/product's Product shape but in camelCase-in/snake_case-out
@@ -89,13 +117,17 @@ export const adminProductsApi = baseApi.injectEndpoints({
     // rows on purpose (customer catalog), but the admin list needs to show
     // and un-archive them.
     getAdminProducts: builder.query<PaginatedAdminProducts, AdminProductsQueryArgs>({
-      queryFn: async ({ page, limit, search }) => {
+      queryFn: async ({ page, limit, search, includeArchived }) => {
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
         let query = supabase
           .from('products')
           .select('id, title, thumbnail, sku, base_price, price, discount_percentage, rating, is_archived, categories(name)', { count: 'exact' });
+
+        if (!includeArchived) {
+          query = query.eq('is_archived', false);
+        }
 
         const trimmedSearch = search?.trim();
         if (trimmedSearch) {
@@ -129,6 +161,56 @@ export const adminProductsApi = baseApi.injectEndpoints({
         result
           ? [...result.items.map((item) => ({ type: 'Product' as const, id: item.id })), { type: 'Product', id: 'ADMIN_LIST' }]
           : [{ type: 'Product', id: 'ADMIN_LIST' }],
+    }),
+
+    getAdminProductById: builder.query<AdminProductDetail, number>({
+      queryFn: async (id) => {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        const row = data as Database['public']['Tables']['products']['Row'];
+        // dimensions/meta are jsonb with no shape guarantee from the DB —
+        // documented cast at the query boundary, same as elsewhere in the app.
+        const dimensions = (row.dimensions as { width?: number; height?: number; depth?: number } | null) ?? {};
+        const meta = (row.meta as { barcode?: string; qrCode?: string } | null) ?? {};
+
+        return {
+          data: {
+            id: row.id,
+            title: row.title,
+            description: row.description,
+            categoryId: row.category_id,
+            basePrice: Number(row.base_price),
+            discountPercentage: Number(row.discount_percentage ?? 0),
+            thumbnail: row.thumbnail,
+            images: row.images ?? [],
+            tags: row.tags ?? [],
+            brand: row.brand,
+            sku: row.sku,
+            weight: row.weight !== null ? Number(row.weight) : null,
+            dimensions: {
+              width: dimensions.width ?? 0,
+              height: dimensions.height ?? 0,
+              depth: dimensions.depth ?? 0,
+            },
+            warrantyInformation: row.warranty_information,
+            shippingInformation: row.shipping_information,
+            availabilityStatus: row.availability_status,
+            returnPolicy: row.return_policy,
+            minimumOrderQuantity: row.minimum_order_quantity,
+            meta: { barcode: meta.barcode ?? '', qrCode: meta.qrCode ?? '' },
+            isArchived: row.is_archived,
+          },
+        };
+      },
+      providesTags: (_result, _error, id) => [{ type: 'Product', id }],
     }),
 
     createAdminProduct: builder.mutation<number, CreateAdminProductPayload>({
@@ -299,6 +381,7 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
 export const {
   useGetAdminProductsQuery,
+  useGetAdminProductByIdQuery,
   useCreateAdminProductMutation,
   useUpdateAdminProductMutation,
   useArchiveAdminProductMutation,
