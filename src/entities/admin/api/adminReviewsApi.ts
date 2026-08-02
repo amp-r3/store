@@ -29,17 +29,28 @@ export interface AdminReview {
   isVerified: boolean;
 }
 
+export type AdminReviewSort = 'newest' | 'oldest' | 'lowest_rating' | 'most_helpful';
+
 export interface AdminReviewsQueryArgs {
   page: number;
   limit: number;
   /** Trimmed product-title fragment; empty/undefined = no filter. */
   search?: string;
+  rating?: number;
+  sort?: AdminReviewSort;
 }
 
 export interface PaginatedAdminReviews {
   items: AdminReview[];
   totalCount: number;
 }
+
+const SORT_CLAUSE: Record<AdminReviewSort, { column: string; ascending: boolean }[]> = {
+  newest: [{ column: 'date', ascending: false }],
+  oldest: [{ column: 'date', ascending: true }],
+  lowest_rating: [{ column: 'rating', ascending: true }, { column: 'date', ascending: false }],
+  most_helpful: [{ column: 'helpful_count', ascending: false }],
+};
 
 const mapAdminReview = (row: AdminReviewRow): AdminReview => ({
   id: row.id,
@@ -60,7 +71,7 @@ const mapAdminReview = (row: AdminReviewRow): AdminReview => ({
 export const adminReviewsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAdminReviews: builder.query<PaginatedAdminReviews, AdminReviewsQueryArgs>({
-      queryFn: async ({ page, limit, search }) => {
+      queryFn: async ({ page, limit, search, rating, sort = 'newest' }) => {
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
@@ -73,9 +84,15 @@ export const adminReviewsApi = baseApi.injectEndpoints({
           query = query.ilike('products.title', `%${trimmedSearch}%`);
         }
 
-        const { data, error, count } = await query
-          .order('date', { ascending: false })
-          .range(from, to);
+        if (rating) {
+          query = query.eq('rating', rating);
+        }
+
+        for (const { column, ascending } of SORT_CLAUSE[sort]) {
+          query = query.order(column, { ascending });
+        }
+
+        const { data, error, count } = await query.range(from, to);
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -105,9 +122,14 @@ export const adminReviewsApi = baseApi.injectEndpoints({
         return { data: null };
       },
       // 'Product' too: on_review_change recalculates products.rating/reviews_count.
+      // { type: 'Review', id: productId } also, so a customer's getReviews
+      // cache for this product (tagged the same way) refreshes — reviewId and
+      // productId share the 'Review' tag's id space, but are different
+      // numbers, so this is a distinct entry from { type: 'Review', id: reviewId }.
       invalidatesTags: (_result, _error, { reviewId, productId }) => [
         { type: 'Review', id: reviewId },
         { type: 'Review', id: 'ADMIN_LIST' },
+        { type: 'Review', id: productId },
         { type: 'Product', id: productId },
       ],
     }),
