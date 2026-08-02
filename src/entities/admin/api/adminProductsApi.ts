@@ -8,6 +8,12 @@ export interface AdminCategory {
   productsCount: number;
 }
 
+export interface AdminProductSize {
+  id: number;
+  value: string;
+  stock: number;
+}
+
 export interface AdminProductListItem {
   id: number;
   title: string;
@@ -332,6 +338,27 @@ export const adminProductsApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: 'Category', id: 'ADMIN_LIST' }, { type: 'Category', id: 'LIST' }, { type: 'Product', id: 'ADMIN_LIST' }],
     }),
 
+    // Raw table, not entities/product's getSizes: that one has no admin-owned
+    // cache entry to patch optimistically, and this needs to work for
+    // archived products too. Own cache entry (keyed by productId) is what
+    // makes the optimistic update below possible.
+    getAdminProductSizes: builder.query<AdminProductSize[], number>({
+      queryFn: async (productId) => {
+        const { data, error } = await supabase
+          .from('product_sizes')
+          .select('id, value, stock')
+          .eq('product_id', productId)
+          .order('value', { ascending: true });
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: data ?? [] };
+      },
+      providesTags: (_result, _error, productId) => [{ type: 'Size', id: productId }],
+    }),
+
     upsertAdminProductSize: builder.mutation<number, { productId: number; value: string; stock: number }>({
       queryFn: async ({ productId, value, stock }) => {
         const { data, error } = await supabase.rpc('admin_upsert_product_size', {
@@ -346,7 +373,11 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         return { data: data as unknown as number };
       },
-      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }],
+      // Bare 'Size' alongside the id-scoped tag: admin_low_stock's query
+      // provides only the bare tag (it isn't scoped to one product), which an
+      // id-scoped invalidation doesn't reach — RTK Query only matches a bare
+      // tag back from a more specific one, never the other way around.
+      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
     }),
 
     deleteAdminProductSize: builder.mutation<null, { sizeId: number; productId: number }>({
@@ -359,14 +390,13 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         return { data: null };
       },
-      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }],
+      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
     }),
 
-    // No optimistic update: unlike cart/wishlist (this app's only precedent
-    // for onQueryStarted + updateQueryData), there's no admin-owned cache to
-    // patch here without a cross-entity import into entities/product's
-    // getSizes cache — plain tag invalidation keeps this self-contained, at
-    // the cost of one round-trip before the UI reflects the new stock.
+    // Own getAdminProductSizes cache entry (keyed by productId) makes this
+    // optimistic, unlike the plain invalidation cart/wishlist used to be the
+    // only precedent for — same onQueryStarted + updateQueryData +
+    // patchResult.undo() shape as cartApi's quantity updates.
     setAdminStock: builder.mutation<null, { sizeId: number; productId: number; stock: number }>({
       queryFn: async ({ sizeId, stock }) => {
         const { error } = await supabase.rpc('admin_set_stock', { p_size_id: sizeId, p_stock: stock });
@@ -377,7 +407,21 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         return { data: null };
       },
-      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }],
+      async onQueryStarted({ sizeId, productId, stock }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          adminProductsApi.util.updateQueryData('getAdminProductSizes', productId, (draft) => {
+            const size = draft.find((item) => item.id === sizeId);
+            if (size) size.stock = stock;
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
     }),
   }),
 });
@@ -391,6 +435,7 @@ export const {
   useGetAdminCategoriesQuery,
   useUpsertAdminCategoryMutation,
   useDeleteAdminCategoryMutation,
+  useGetAdminProductSizesQuery,
   useUpsertAdminProductSizeMutation,
   useDeleteAdminProductSizeMutation,
   useSetAdminStockMutation,

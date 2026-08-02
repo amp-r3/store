@@ -30,6 +30,17 @@
   color: var(--text-primary);
 }
 
+.sizesEditor {
+  grid-column: 1 / -1;
+}
+
+.sizesPlaceholder {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

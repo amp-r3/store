@@ -18,7 +18,7 @@ import { productSchema, ProductFormValues } from '../model/productSchema';
 import { DEFAULT_PRODUCT_FORM_VALUES, productDetailToFormValues, formValuesToPayload, formValuesToCreatePayload } from '../model/productFormMapping';
 import { calculatePrice } from '../model/calculatePrice';
 import { AVAILABILITY_STATUS_OPTIONS } from '../config/availabilityStatusOptions';
-import { AdminProductFormSection, AdminProductArrayField } from './components';
+import { AdminProductFormSection, AdminProductArrayField, AdminProductSizesEditor } from './components';
 
 import style from './admin-product-form.module.scss';
 
@@ -232,6 +232,16 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     placeholder="e.g. summer"
                     addLabel="Add tag"
                 />
+            </AdminProductFormSection>
+
+            <AdminProductFormSection title="Sizes">
+                {isEditMode ? (
+                    <div className={style.sizesEditor}>
+                        <AdminProductSizesEditor productId={product.id} />
+                    </div>
+                ) : (
+                    <p className={style.sizesPlaceholder}>Save the product to add sizes.</p>
+                )}
             </AdminProductFormSection>
 
             <div className={style.actions}>

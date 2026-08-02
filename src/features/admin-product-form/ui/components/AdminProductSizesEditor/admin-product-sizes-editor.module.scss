@@ -1,0 +1,111 @@
+@use '@/app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  width: 100%;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  background: var(--glass-background-subtle);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stockInput {
+  width: 80px;
+  flex-shrink: 0;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  border: 1px solid var(--border-color);
+  background: var(--background-component);
+  color: var(--text-primary);
+  font-size: $fs-sm;
+  text-align: right;
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.stockInputLow {
+  border-color: var(--status-warning-text);
+  color: var(--status-warning-text);
+}
+
+.stockInputEmpty {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.remove {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: color $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--error-color);
+    background: rgba(var(--error-color-rgb), 0.08);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.empty {
+  margin: 0;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+}
+
+.addForm {
+  display: flex;
+  align-items: flex-end;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+
+  > :first-child {
+    flex: 2 1 160px;
+  }
+
+  > :nth-child(2) {
+    flex: 1 1 100px;
+  }
+}
