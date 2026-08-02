@@ -1,0 +1,61 @@
+@use '@/app/styles/index' as *;
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+}
+
+.label {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.track {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 24px;
+  padding: 2px;
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-pill;
+  background: var(--border-color-subtle);
+  cursor: pointer;
+  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.trackChecked {
+  background: var(--primary-accent);
+  border-color: var(--primary-accent);
+
+  .thumb {
+    transform: translateX(16px);
+  }
+}
+
+.thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: $radius-circle;
+  background: var(--text-inverse);
+  box-shadow: var(--shadow-xs);
+  transition: transform $transition-fast $ease-in-out-smooth;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

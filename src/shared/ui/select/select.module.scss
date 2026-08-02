@@ -1,0 +1,100 @@
+@use '@/app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  width: 100%;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-secondary);
+}
+
+.optionalBadge {
+  font-size: $fs-xs;
+  font-weight: $fw-normal;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.controlWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  background: var(--background-glass-base);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-input;
+  box-shadow: var(--shadow-xs);
+  transition: border-color $transition-fast $ease-in-out-smooth, box-shadow $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
+
+  &:hover:not(.controlWrapperError) {
+    border-color: var(--border-color-strong);
+  }
+
+  &:focus-within:not(.controlWrapperError) {
+    background: var(--background-component);
+    border-color: var(--primary-accent);
+    box-shadow: var(--shadow-focus-input);
+  }
+}
+
+.controlWrapperError {
+  border-color: rgba(var(--status-danger-rgb), 0.5);
+
+  &:focus-within {
+    border-color: rgba(var(--status-danger-rgb), 0.65);
+    box-shadow: 0 0 0 3px rgba(var(--status-danger-rgb), 0.08);
+  }
+}
+
+.control {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: $font-primary;
+  font-size: $fs-base;
+  font-weight: $fw-normal;
+  color: var(--text-primary);
+  padding: $spacing-sm $spacing-xl $spacing-sm $spacing-md;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.chevron {
+  position: absolute;
+  right: $spacing-md;
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: $fs-icon-sm;
+}
+
+.error {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--error-color);
+  margin-left: $spacing-xs;
+}
+
+.description {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  margin-left: $spacing-xs;
+}
