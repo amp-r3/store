@@ -27,6 +27,7 @@ const resolveBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
 
     if (BREADCRUMBS[key]) return BREADCRUMBS[key];
     if (key === '/admin/products/new') return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'New product' }];
+    if (key === '/admin/products/low-stock') return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'Low stock' }];
     if (/^\/admin\/products\/[^/]+\/edit$/.test(key)) return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'Edit product' }];
 
     return BREADCRUMBS['/admin'];

@@ -1,0 +1,83 @@
+@use '@/app/styles/index' as *;
+
+.admin-low-stock-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.7fr);
+  gap: $spacing-md;
+  align-items: center;
+  padding: $spacing-md;
+  background: var(--background-component);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-xs $spacing-sm;
+
+    > :first-child {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.admin-low-stock-row__cell {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  min-width: 0;
+
+  &:first-child {
+    flex-direction: row;
+    align-items: center;
+    gap: $spacing-md;
+  }
+}
+
+.admin-low-stock-row__cell-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  @media (max-width: 768px) {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    clip: auto;
+    overflow: visible;
+    font-size: $fs-xs;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+}
+
+.admin-low-stock-row__thumbnail {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-color-subtle);
+  object-fit: cover;
+}
+
+.admin-low-stock-row__title {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--primary-accent);
+    text-decoration: underline;
+  }
+}

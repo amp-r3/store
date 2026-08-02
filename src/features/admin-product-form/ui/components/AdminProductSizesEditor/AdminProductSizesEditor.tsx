@@ -8,12 +8,10 @@ import {
     useGetAdminProductSizesQuery,
     useUpsertAdminProductSizeMutation,
     useDeleteAdminProductSizeMutation,
-    useSetAdminStockMutation,
 } from '@/entities/admin';
 
+import { AdminStockInput } from '../AdminStockInput/AdminStockInput';
 import style from './admin-product-sizes-editor.module.scss';
-
-const LOW_STOCK_THRESHOLD = 5;
 
 interface AdminProductSizesEditorProps {
     productId: number;
@@ -22,7 +20,6 @@ interface AdminProductSizesEditorProps {
 export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorProps) => {
     const { data: sizes, isLoading } = useGetAdminProductSizesQuery(productId);
     const [upsertSize, { isLoading: isAdding }] = useUpsertAdminProductSizeMutation();
-    const [setStock] = useSetAdminStockMutation();
     const [deleteSize, { isLoading: isDeleting }] = useDeleteAdminProductSizeMutation();
 
     const [newValue, setNewValue] = useState('');
@@ -44,11 +41,6 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
         } catch (err) {
             setAddError(getErrorMessage(err));
         }
-    };
-
-    const handleStockCommit = (sizeId: number, value: string) => {
-        const stock = Math.max(0, Math.trunc(Number(value) || 0));
-        setStock({ sizeId, productId, stock });
     };
 
     const handleDeleteConfirm = async () => {
@@ -75,18 +67,11 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
                     {sizes.map((size) => (
                         <li key={size.id} className={style.item}>
                             <span className={style.value}>{size.value}</span>
-                            <input
-                                type="number"
-                                min={0}
-                                step="1"
-                                className={`${style.stockInput} ${size.stock === 0 ? style.stockInputEmpty : size.stock <= LOW_STOCK_THRESHOLD ? style.stockInputLow : ''}`}
-                                defaultValue={size.stock}
-                                key={size.stock}
-                                aria-label={`Stock for size ${size.value}`}
-                                onBlur={(event) => handleStockCommit(size.id, event.target.value)}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') event.currentTarget.blur();
-                                }}
+                            <AdminStockInput
+                                sizeId={size.id}
+                                productId={productId}
+                                stock={size.stock}
+                                ariaLabel={`Stock for size ${size.value}`}
                             />
                             <button
                                 type="button"

@@ -1,0 +1,25 @@
+@use '@/app/styles/index' as *;
+
+.admin-low-stock-page__threshold {
+  display: inline-flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  margin-bottom: $spacing-md;
+  font-size: $fs-xs;
+  color: var(--text-secondary);
+
+  input {
+    width: 100px;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    border: 1px solid var(--border-color-subtle);
+    background: var(--background-component);
+    color: var(--text-primary);
+    font-size: $fs-sm;
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@use '@/app/styles/index' as *;
+
+.input {
+  width: 80px;
+  flex-shrink: 0;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  border: 1px solid var(--border-color);
+  background: var(--background-component);
+  color: var(--text-primary);
+  font-size: $fs-sm;
+  text-align: right;
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.inputLow {
+  border-color: var(--status-warning-text);
+  color: var(--status-warning-text);
+}
+
+.inputEmpty {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}

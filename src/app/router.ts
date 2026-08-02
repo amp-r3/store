@@ -190,6 +190,13 @@ export const router = createBrowserRouter([
                 }
               },
               {
+                path: 'products/low-stock',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-low-stock-page")
+                  return { Component: module.default }
+                }
+              },
+              {
                 path: 'categories',
                 lazy: async () => {
                   const module = await import("@/pages/admin-categories-page")

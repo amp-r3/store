@@ -53,6 +53,31 @@
   pointer-events: none;
 }
 
+.admin-products-toolbar__low-stock-link {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  border: 1px solid var(--status-warning-border);
+  color: var(--status-warning-text);
+  background: var(--status-warning-bg);
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    filter: brightness($hover-brightness);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
 .admin-products-toolbar__clear {
   position: absolute;
   right: $spacing-sm;

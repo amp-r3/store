@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { Link } from 'react-router';
 import { IoClose, IoSearchOutline } from 'react-icons/io5';
+import { LuTriangleAlert } from 'react-icons/lu';
 
 import { useDebounce } from '@/shared/lib/hooks';
 import { Switch } from '@/shared/ui';
@@ -66,6 +68,10 @@ export const AdminProductsToolbar = ({ search, includeArchived, onSearchChange, 
                 checked={includeArchived}
                 onChange={onIncludeArchivedChange}
             />
+
+            <Link to="/admin/products/low-stock" className={style['admin-products-toolbar__low-stock-link']}>
+                <LuTriangleAlert /> Low stock
+            </Link>
         </div>
     );
 };
