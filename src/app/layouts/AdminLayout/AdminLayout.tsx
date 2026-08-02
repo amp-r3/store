@@ -17,6 +17,21 @@ const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
     '/admin/categories': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Categories' }],
 };
 
+const PRODUCTS_CRUMB: BreadcrumbItem = { label: 'Products', path: '/admin/products' };
+
+// Most admin routes are static, so an exact-pathname lookup covers them —
+// but /admin/products/:id/edit has a dynamic segment, which a plain Record
+// can't key on. Those get a couple of prefix rules on top of the same table.
+const resolveBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
+    const key = pathname.replace(/\/+$/, '') || '/admin';
+
+    if (BREADCRUMBS[key]) return BREADCRUMBS[key];
+    if (key === '/admin/products/new') return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'New product' }];
+    if (/^\/admin\/products\/[^/]+\/edit$/.test(key)) return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'Edit product' }];
+
+    return BREADCRUMBS['/admin'];
+};
+
 export const AdminLayout = () => {
     const user = useAppSelector(selectUser);
     const { pathname } = useLocation();
@@ -24,13 +39,11 @@ export const AdminLayout = () => {
 
     if (!user) return null;
 
-    const key = pathname.replace(/\/+$/, '') || '/admin';
-
     return (
         <>
             <TopBar />
             <PageLayout
-                breadcrumbs={isMobile ? undefined : (BREADCRUMBS[key] ?? BREADCRUMBS['/admin'])}
+                breadcrumbs={isMobile ? undefined : resolveBreadcrumbs(pathname)}
                 className={style['admin-layout']}
             >
                 <div className={style['admin-layout__grid']}>

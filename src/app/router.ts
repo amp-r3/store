@@ -176,6 +176,20 @@ export const router = createBrowserRouter([
                 }
               },
               {
+                path: 'products/new',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-product-form-page")
+                  return { Component: module.default }
+                }
+              },
+              {
+                path: 'products/:id/edit',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-product-form-page")
+                  return { Component: module.default }
+                }
+              },
+              {
                 path: 'categories',
                 lazy: async () => {
                   const module = await import("@/pages/admin-categories-page")

@@ -44,6 +44,8 @@ export interface AdminProductDetail {
   categoryId: number | null;
   basePrice: number;
   discountPercentage: number;
+  /** Server-computed generated column — read-only, shown for the price-drop check. */
+  price: number;
   thumbnail: string | null;
   images: string[];
   tags: string[];
@@ -189,6 +191,7 @@ export const adminProductsApi = baseApi.injectEndpoints({
             categoryId: row.category_id,
             basePrice: Number(row.base_price),
             discountPercentage: Number(row.discount_percentage ?? 0),
+            price: Number(row.price ?? 0),
             thumbnail: row.thumbnail,
             images: row.images ?? [],
             tags: row.tags ?? [],

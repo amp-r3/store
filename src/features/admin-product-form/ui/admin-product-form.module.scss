@@ -1,0 +1,45 @@
+@use '@/app/styles/index' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.pricePreview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: $spacing-xxs;
+  padding: $spacing-sm $spacing-md;
+  background: var(--glass-background-subtle);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+}
+
+.pricePreviewLabel {
+  font-size: $fs-xs;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+  color: var(--text-muted);
+}
+
+.pricePreviewValue {
+  font-size: $fs-lg;
+  font-weight: $fw-bold;
+  color: var(--text-primary);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-sm;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
+  }
+}

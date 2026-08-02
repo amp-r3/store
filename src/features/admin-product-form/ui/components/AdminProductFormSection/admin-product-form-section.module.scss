@@ -1,0 +1,20 @@
+@use '@/app/styles/index' as *;
+@use '@/app/styles/surfaces' as *;
+
+.section {
+  @include panel;
+}
+
+.title {
+  margin: 0 0 $spacing-lg;
+  font-family: $font-display;
+  font-size: $fs-md;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $spacing-md;
+}
