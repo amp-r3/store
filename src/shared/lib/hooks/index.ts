@@ -1,4 +1,5 @@
 export * from './useCapsLock';
+export * from './useDebounce';
 export * from './useElementWidth';
 export * from './useHaptics';
 export * from './useHideOnScroll';

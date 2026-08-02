@@ -9,9 +9,11 @@ interface ModalProps {
   title: string;
   description?: string;
   icon?: ReactNode;
+  children?: ReactNode;
   actionLabel: string;
   onAction: () => void;
   actionVariant?: 'default' | 'success' | 'danger';
+  cancelLabel?: string;
   isLoading?: boolean;
 }
 
@@ -21,9 +23,11 @@ export const Modal: FC<ModalProps> = ({
   title,
   description,
   icon,
+  children,
   actionLabel,
   onAction,
   actionVariant = 'default',
+  cancelLabel = 'Cancel',
   isLoading = false,
 }) => {
   return (
@@ -43,11 +47,13 @@ export const Modal: FC<ModalProps> = ({
             </Dialog.Description>
           )}
 
+          {children && <div className={style.body}>{children}</div>}
+
           <div className={style.actions}>
             {actionVariant !== 'success' && (
               <Dialog.Close asChild>
                 <button className={style.cancelButton} disabled={isLoading}>
-                  Cancel
+                  {cancelLabel}
                 </button>
               </Dialog.Close>
             )}
