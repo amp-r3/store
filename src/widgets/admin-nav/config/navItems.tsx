@@ -2,7 +2,7 @@ import type { IconType } from 'react-icons';
 import { LuLayoutDashboard, LuClipboardList, LuPackage } from 'react-icons/lu';
 
 export interface AdminNavItem {
-    id: 'dashboard' | 'orders' | 'products';
+    id: 'dashboard' | 'orders' | 'products' | 'categories' | 'customers' | 'reviews' | 'settings' | 'audit';
     to: string;
     end?: boolean;
     icon: IconType;
