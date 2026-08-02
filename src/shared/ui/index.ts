@@ -22,6 +22,7 @@ export * from './share-copy-btn/ShareCopyBtn';
 export * from './pagination/Pagination';
 export * from './horizontal-scroll/HorizontalScroll';
 export * from './radio-card/RadioCard';
+export * from './rating-stars/RatingStars';
 export * from './segmented-tabs/SegmentedTabs';
 export * from './empty-state/EmptyState';
 export * from './section-header/SectionHeader';

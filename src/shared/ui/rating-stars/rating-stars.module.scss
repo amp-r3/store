@@ -1,0 +1,38 @@
+@use '@/app/styles/index' as *;
+
+.rating-stars {
+  display: inline-flex;
+  align-items: center;
+}
+
+.rating-stars--sm {
+  gap: $spacing-xxs;
+  font-size: $fs-sm;
+}
+
+.rating-stars--md {
+  gap: 0.125rem;
+  font-size: $fs-icon-sm;
+}
+
+.rating-stars--lg {
+  gap: $spacing-xxs;
+  font-size: $fs-icon-md;
+}
+
+.rating-stars--default .rating-stars__star--filled {
+  color: var(--rating-color);
+}
+
+.rating-stars--default .rating-stars__star--empty {
+  color: var(--border-color-subtle);
+}
+
+.rating-stars--accent .rating-stars__star--filled {
+  color: var(--primary-accent);
+}
+
+.rating-stars--accent .rating-stars__star--empty {
+  color: var(--text-muted);
+  opacity: 0.5;
+}

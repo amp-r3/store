@@ -173,20 +173,8 @@
 }
 
 .review-card__rating {
-    display: flex;
-    align-items: center;
-    gap: 0.125rem;
-    font-size: $fs-icon-sm;
     flex-shrink: 0;
     white-space: nowrap;
-}
-
-.review-card__star--filled {
-    color: var(--rating-color);
-}
-
-.review-card__star--empty {
-    color: var(--border-color-subtle);
 }
 
 .review-card__meta {

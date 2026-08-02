@@ -79,21 +79,6 @@
     gap: $spacing-sm;
 }
 
-.user-review-card__rating {
-    display: flex;
-    gap: $spacing-xxs;
-    font-size: $fs-sm;
-}
-
-.user-review-card__star--filled {
-    color: var(--primary-accent);
-}
-
-.user-review-card__star--empty {
-    color: var(--text-muted);
-    opacity: 0.5;
-}
-
 .user-review-card__meta {
     display: flex;
     align-items: center;

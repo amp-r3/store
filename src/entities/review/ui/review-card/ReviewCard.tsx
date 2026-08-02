@@ -1,11 +1,11 @@
 import { ReviewMenu } from "./components";
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { FaStar, FaRegStar, FaCalendarDay, FaUserCheck, FaThumbsUp } from 'react-icons/fa';
+import { FaCalendarDay, FaUserCheck, FaThumbsUp } from 'react-icons/fa';
 import { useDeleteReviewMutation, useToggleReviewLikeMutation } from '@/entities/review';
 import style from './review-card.module.scss';
 import { useHaptics } from "@/shared/lib/hooks";
-import { ExpandableContent } from '@/shared/ui';
+import { ExpandableContent, RatingStars } from '@/shared/ui';
 import { ProductReview } from "@/entities/review";
 import { useAppSelector } from "@/shared/model";
 import { selectUser } from "@/entities/session";
@@ -61,16 +61,6 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
         } catch (error) {
             setDeleteError(getErrorMessage(error));
         }
-    };
-
-    const renderStars = (rating: number) => {
-        return Array.from({ length: 5 }, (_, i) =>
-            i < Math.round(rating) ? (
-                <FaStar key={i} className={style['review-card__star--filled']} aria-hidden="true" />
-            ) : (
-                <FaRegStar key={i} className={style['review-card__star--empty']} aria-hidden="true" />
-            )
-        );
     };
 
     const handleHelpfulClick = async () => {
@@ -129,13 +119,11 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
                 </div>
 
                 <div className={style['review-card__actions']}>
-                    <div
+                    <RatingStars
+                        value={review.rating}
+                        label={`Rated ${review.rating} out of 5 stars`}
                         className={style['review-card__rating']}
-                        role="img"
-                        aria-label={`Rated ${review.rating} out of 5 stars`}
-                    >
-                        {renderStars(review.rating)}
-                    </div>
+                    />
                 </div>
             </div>
 

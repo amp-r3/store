@@ -1,8 +1,8 @@
 import { memo, useState } from 'react';
 import { Link } from 'react-router';
-import { FaStar, FaRegStar, FaCalendarDay, FaThumbsUp, FaPen, FaTrash } from 'react-icons/fa';
+import { FaCalendarDay, FaThumbsUp, FaPen, FaTrash } from 'react-icons/fa';
 
-import { Modal } from '@/shared/ui';
+import { Modal, RatingStars } from '@/shared/ui';
 import { useHaptics } from '@/shared/lib/hooks';
 import { getErrorMessage } from '@/shared/lib';
 import { useDeleteReviewMutation } from '@/entities/review';
@@ -63,18 +63,12 @@ export const UserReviewCard = memo(({ review, product, onEdit }: UserReviewCardP
 
             <div className={style['user-review-card__body']}>
                 <div className={style['user-review-card__summary']}>
-                    <div
-                        className={style['user-review-card__rating']}
-                        aria-label={`You rated this ${review.rating} out of 5 stars`}
-                    >
-                        {Array.from({ length: 5 }, (_, i) =>
-                            i < review.rating ? (
-                                <FaStar key={i} className={style['user-review-card__star--filled']} />
-                            ) : (
-                                <FaRegStar key={i} className={style['user-review-card__star--empty']} />
-                            )
-                        )}
-                    </div>
+                    <RatingStars
+                        value={review.rating}
+                        label={`You rated this ${review.rating} out of 5 stars`}
+                        size="sm"
+                        tone="accent"
+                    />
 
                     <div className={style['user-review-card__meta']}>
                         <FaCalendarDay className={style['user-review-card__meta-icon']} />

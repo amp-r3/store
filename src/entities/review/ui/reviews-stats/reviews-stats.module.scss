@@ -45,15 +45,7 @@
 }
 
 .reviews-stats__average-stars {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xxs;
-    font-size: $fs-icon-md;
     margin-block: $spacing-xxs;
-}
-
-.reviews-stats__average-star {
-    color: var(--rating-color);
 }
 
 .reviews-stats__average-text {

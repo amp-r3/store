@@ -1,7 +1,7 @@
-import { FaRegStar, FaStar } from 'react-icons/fa';
 import style from './reviews-stats.module.scss';
 import { FC } from 'react';
 import { useHaptics } from "@/shared/lib/hooks";
+import { RatingStars } from '@/shared/ui';
 import { ReviewRatingStats } from "@/entities/review";
 
 interface ReviewStatsProps {
@@ -28,29 +28,18 @@ export const ReviewsStats: FC<ReviewStatsProps> = ({ stats, activeRating, onRati
         onRatingChange(activeRating === stars ? null : stars);
     };
 
-    const renderStars = (rating: number) => {
-        return Array.from({ length: 5 }, (_, i) =>
-            i < Math.round(rating) ? (
-                <FaStar key={i} className={style['reviews-stats__average-star']} aria-hidden="true" />
-            ) : (
-                <FaRegStar key={i} className={style['reviews-stats__average-star']} aria-hidden="true" />
-            )
-        );
-    };
-
     return (
         <div className={style['reviews-stats']}>
             <div className={style['reviews-stats__average-card']}>
                 <div className={style['reviews-stats__average-score']}>
                     {Math.round(averageRating * 10) / 10}
                 </div>
-                <div
+                <RatingStars
+                    value={averageRating}
+                    label={`${Math.round(averageRating * 10) / 10} out of 5 stars`}
+                    size="lg"
                     className={style['reviews-stats__average-stars']}
-                    role="img"
-                    aria-label={`${Math.round(averageRating * 10) / 10} out of 5 stars`}
-                >
-                    {renderStars(averageRating)}
-                </div>
+                />
                 <div className={style['reviews-stats__average-text']}>
                     Based on {totalReviews} global ratings
                 </div>
