@@ -176,6 +176,13 @@ export const router = createBrowserRouter([
                 }
               },
               {
+                path: 'categories',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-categories-page")
+                  return { Component: module.default }
+                }
+              },
+              {
                 path: '*',
                 lazy: async () => {
                   const module = await import("@/pages/not-found-page")

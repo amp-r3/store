@@ -1,0 +1,105 @@
+@use '@/app/styles/index' as *;
+
+.admin-category-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.5fr) minmax(0, 0.6fr);
+  gap: $spacing-md;
+  align-items: center;
+  padding: $spacing-md;
+  background: var(--background-component);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-xs $spacing-sm;
+
+    > :nth-child(4) {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.admin-category-row__cell {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  min-width: 0;
+}
+
+.admin-category-row__cell-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
+  @media (max-width: 1024px) {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    clip: auto;
+    overflow: visible;
+    font-size: $fs-xs;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+}
+
+.admin-category-row__name {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-category-row__slug {
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-category-row__actions {
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+}
+
+.admin-category-row__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.admin-category-row__action--danger:hover {
+  color: var(--error-color);
+  background: rgba(var(--error-color-rgb), 0.08);
+}

@@ -5,6 +5,7 @@ export * from './scrollToTop';
 export * from './scrollToElement';
 export * from './hapticPresets';
 export * from './safeRedirectPath';
+export * from './slugify';
 export * from './domEvents';
 export * from './hooks';
 export * from './storage';

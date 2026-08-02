@@ -14,6 +14,7 @@ const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
     '/admin': [HOME_CRUMB, { label: 'Admin' }],
     '/admin/orders': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Orders' }],
     '/admin/products': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Products' }],
+    '/admin/categories': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Categories' }],
 };
 
 export const AdminLayout = () => {

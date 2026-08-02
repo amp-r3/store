@@ -1,0 +1,7 @@
+@use '@/app/styles/index' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}

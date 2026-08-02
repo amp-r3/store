@@ -17,6 +17,8 @@ const LOCALLY_HANDLED_ENDPOINTS = new Set([
     'addOrUpdateReview',
     'deleteReview',
     'toggleReviewLike',
+    'upsertAdminCategory',
+    'deleteAdminCategory',
 ]);
 
 interface SuccessNotification {
@@ -45,6 +47,8 @@ const SUCCESS_MESSAGES: Record<string, SuccessNotification> = {
     syncCart: { type: 'success', text: 'Cart synced to your account', key: 'sync-cart' },
     syncWishlist: { type: 'success', text: 'Wishlist synced to your account', key: 'sync-wishlist' },
     updateOrderStatus: { type: 'success', text: 'Order status updated', key: 'admin-order' },
+    upsertAdminCategory: { type: 'success', text: 'Category saved', key: 'admin-category' },
+    deleteAdminCategory: { type: 'info', text: 'Category deleted', key: 'admin-category' },
 };
 
 interface RtkQueryActionMeta {

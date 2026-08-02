@@ -5,6 +5,7 @@ export interface AdminCategory {
   id: number;
   name: string;
   slug: string;
+  productsCount: number;
 }
 
 export interface AdminProductListItem {
@@ -188,13 +189,28 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
     getAdminCategories: builder.query<AdminCategory[], void>({
       queryFn: async () => {
-        const { data, error } = await supabase.from('categories').select('id, name, slug').order('name', { ascending: true });
+        const { data, error } = await supabase
+          .from('categories')
+          .select('id, name, slug, products(count)')
+          .order('name', { ascending: true });
 
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
 
-        return { data: data ?? [] };
+        // `products(count)` embeds as a single-element aggregate row, not a
+        // typed relationship the generated Row type knows about — cast at
+        // the boundary same as the other aggregate/Json reads in this file.
+        const rows = data as unknown as { id: number; name: string; slug: string; products: { count: number }[] }[];
+
+        return {
+          data: rows.map((row) => ({
+            id: row.id,
+            name: row.name,
+            slug: row.slug,
+            productsCount: row.products?.[0]?.count ?? 0,
+          })),
+        };
       },
       providesTags: [{ type: 'Category', id: 'ADMIN_LIST' }],
     }),
