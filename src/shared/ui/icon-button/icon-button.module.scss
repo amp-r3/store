@@ -1,0 +1,50 @@
+@use '@/app/styles/index' as *;
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth,
+    border-color $transition-fast $ease-in-out-smooth;
+
+  &:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.icon-button--danger:hover:not(:disabled) {
+  color: var(--error-color);
+  background: rgba(var(--error-color-rgb), 0.08);
+}
+
+.icon-button--active {
+  color: var(--primary-accent);
+  background: rgba(var(--primary-accent-rgb), 0.1);
+  border-color: var(--primary-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-button {
+    transition: none;
+  }
+}

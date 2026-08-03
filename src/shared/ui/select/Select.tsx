@@ -13,14 +13,16 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: string | boolean;
   description?: string;
   optional?: boolean;
+  variant?: 'form' | 'toolbar';
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, options, error, description, id, className, optional, ...props }, ref) => {
+  ({ label, options, error, description, id, className, optional, variant = 'form', ...props }, ref) => {
     const generatedId = useId();
     const selectId = id || generatedId;
     const errorId = `${selectId}-error`;
     const descriptionId = `${selectId}-description`;
+    const isToolbar = variant === 'toolbar';
 
     const describedBy = [
       error ? errorId : null,
@@ -29,17 +31,25 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     ].filter(Boolean).join(' ') || undefined;
 
     return (
-      <div className={style.wrapper}>
+      <div className={[style.wrapper, isToolbar ? style.wrapperToolbar : ''].filter(Boolean).join(' ')}>
         <label htmlFor={selectId} className={style.label}>
           {label}
           {optional && <span className={style.optionalBadge}>Optional</span>}
         </label>
 
-        <div className={[style.controlWrapper, error ? style.controlWrapperError : ''].filter(Boolean).join(' ')}>
+        <div
+          className={[
+            style.controlWrapper,
+            isToolbar ? style.controlWrapperToolbar : '',
+            error ? style.controlWrapperError : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
           <select
             id={selectId}
             ref={ref}
-            className={[style.control, className || ''].filter(Boolean).join(' ')}
+            className={[style.control, isToolbar ? style.controlToolbar : '', className || ''].filter(Boolean).join(' ')}
             aria-invalid={!!error}
             {...props}
             aria-describedby={describedBy}

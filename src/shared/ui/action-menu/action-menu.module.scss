@@ -1,0 +1,96 @@
+@use '@/app/styles/index' as *;
+
+.action-menu__content {
+  background: var(--glass-background-strong);
+  backdrop-filter: $backdrop-blur;
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-default);
+  min-width: 180px;
+  z-index: $z-index-dropdown;
+  overflow: hidden;
+  padding: $spacing-xs;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: action-menu-in $transition-base $ease-spring;
+
+  @supports (backdrop-filter: blur(1px)) {
+    background: var(--glass-background-strong);
+  }
+}
+
+.action-menu__item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+  padding: $spacing-sm;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  color: var(--text-primary);
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  line-height: $lh-ui;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  outline: none;
+  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--glass-background-subtle);
+    border-color: var(--border-color-subtle);
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &--danger {
+    color: var(--status-danger-text);
+
+    .action-menu__icon {
+      color: var(--status-danger-text);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--status-danger-bg);
+      border-color: var(--status-danger-border);
+    }
+  }
+}
+
+.action-menu__icon {
+  display: flex;
+  flex-shrink: 0;
+  font-size: $fs-icon-sm;
+  color: var(--text-muted);
+}
+
+@keyframes action-menu-in {
+  from {
+    opacity: 0;
+    transform: scale($scale-down-md) translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-menu__content,
+  .action-menu__item {
+    transition: none !important;
+    animation: none !important;
+  }
+}
