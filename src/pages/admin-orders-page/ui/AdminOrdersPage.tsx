@@ -12,15 +12,6 @@ import { AdminOrderDetails } from '@/widgets/admin-order-details';
 
 import { AdminOrdersToolbar, AdminOrdersTable } from './components';
 
-const formatOrderDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-
 export const AdminOrdersPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { soft } = useHaptics();
@@ -178,7 +169,6 @@ export const AdminOrdersPage = () => {
                     orders={orders}
                     isLoading={isLoading}
                     limit={limit}
-                    formatOrderDate={formatOrderDate}
                     transitions={transitions}
                     onOpenDetails={openOrderDetails}
                 />
@@ -200,7 +190,6 @@ export const AdminOrdersPage = () => {
                     items={items}
                     isItemsFetching={isItemsFetching}
                     isItemsLoading={isItemsLoading}
-                    formatOrderDate={formatOrderDate}
                 />
             )}
         </>

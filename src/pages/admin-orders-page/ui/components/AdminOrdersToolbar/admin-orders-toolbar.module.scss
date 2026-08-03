@@ -19,9 +19,12 @@
   font-size: $fs-xs;
   color: var(--text-secondary);
 
-  select,
+  // Metrics mirror the shared Select's `variant="toolbar"` (min-height
+  // $touch-target-min, $radius-md, $fs-sm, background-component) so the date
+  // inputs read as the same control family as the Status select next to them.
   input[type='date'] {
-    min-width: 180px;
+    min-width: 150px;
+    min-height: $touch-target-min;
     padding: $spacing-sm $spacing-md;
     border-radius: $radius-md;
     border: 1px solid var(--border-color-subtle);
@@ -29,25 +32,19 @@
     color: var(--text-primary);
     font-size: $fs-sm;
     cursor: pointer;
+    color-scheme: light dark;
+
+    &:hover {
+      border-color: var(--border-color);
+    }
 
     &:focus-visible {
       outline: $focus-ring-width solid var(--focus-ring-color);
       outline-offset: $focus-ring-offset;
     }
-  }
-
-  input[type='date'] {
-    min-width: 150px;
-    color-scheme: light dark;
 
     @media (max-width: 600px) {
       min-width: 0;
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 600px) {
-    select {
       width: 100%;
     }
   }

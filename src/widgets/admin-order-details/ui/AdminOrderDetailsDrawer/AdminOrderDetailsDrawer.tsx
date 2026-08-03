@@ -3,6 +3,7 @@ import { Drawer } from 'vaul';
 import { VisuallyHidden } from 'radix-ui';
 import { IoClose } from 'react-icons/io5';
 import { AdminOrderDetailsHeader, AdminOrderDetailsBody, AdminOrderDetailsFooter } from "../components";
+import { formatDate } from '@/shared/lib';
 import style from './admin-order-details-drawer.module.scss';
 import { AdminOrderDetailsProps } from '../AdminOrderDetails';
 
@@ -23,7 +24,6 @@ export const AdminOrderDetailsDrawer: FC<AdminOrderDetailsDrawerProps> = ({
     isItemsLoading,
     goodsTotal,
     onOpenChange,
-    formatOrderDate,
     direction,
 }) => {
 
@@ -63,8 +63,8 @@ export const AdminOrderDetailsDrawer: FC<AdminOrderDetailsDrawerProps> = ({
                             orderId={order.orderId}
                             orderStatus={order.status}
                             isFetching={isFetching || isItemsFetching}
-                            orderDate={formatOrderDate(order.createdAt)}
-                            updatedDate={formatOrderDate(order.updatedAt)}
+                            orderDate={formatDate(order.createdAt, 'full')}
+                            updatedDate={formatDate(order.updatedAt, 'full')}
                         />
 
                         {/* ── SCROLLABLE BODY ── */}

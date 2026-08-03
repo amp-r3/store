@@ -1,17 +1,12 @@
 @use '@/app/styles/index' as *;
 @use '@/app/styles/statuses' as status;
 
-// minmax(0, Nfr) rather than a fixed px minimum: a fixed-width track never
-// shrinks below its px value, so once the sidebar ate enough of the content
-// column the row would force itself (and its card border) wider than the
-// content panel. fr tracks with a 0 floor always sum to exactly 100% of the
-// available width instead.
+// Tracks come from --admin-table-grid, set once on the .admin-orders-table
+// wrapper this row always renders inside of, so the header row and every
+// data row (including the loading skeleton) share the exact same columns.
 .admin-order-row {
   display: grid;
-  // Payment/delivery selects carry the longest text ("Awaiting Dispatch",
-  // "Paid Successfully") of any column, so they get the largest share here —
-  // order/customer/total can afford to lean on their own ellipsis instead.
-  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 0.35fr) minmax(0, 0.6fr) minmax(0, 0.75fr) minmax(0, 1.6fr) minmax(0, 1.6fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;
@@ -23,14 +18,13 @@
     grid-template-columns: repeat(3, 1fr);
     gap: $spacing-xs $spacing-sm;
 
-    // Order, customer, and both status selects read best full-width; items,
-    // total, and the order-status badge are short enough to share one row
-    // instead of each getting a full-width row of their own (which read as
-    // an oddly large gap between short, lonely values).
+    // Order, customer, and both status selects read best full-width; total
+    // and the order-status badge are short enough to share one row instead
+    // of each getting a full-width row of their own.
     > :nth-child(1),
     > :nth-child(2),
-    > :nth-child(6),
-    > :nth-child(7) {
+    > :nth-child(5),
+    > :nth-child(6) {
       grid-column: 1 / -1;
     }
   }
@@ -113,6 +107,11 @@
   white-space: nowrap;
 }
 
+.admin-order-row__items {
+  font-size: $fs-xs;
+  color: var(--text-muted);
+}
+
 .admin-order-row__customer-name {
   font-size: $fs-sm;
   font-weight: $fw-semibold;
@@ -131,7 +130,7 @@
 }
 
 .admin-order-row__status-badge {
-  @include status.badge-base;
+  @include status.badge-base($compact: true);
   @include status.generate-modifiers;
   max-width: 100%;
   overflow: hidden;

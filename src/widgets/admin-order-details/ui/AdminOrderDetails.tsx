@@ -10,7 +10,6 @@ export interface AdminOrderDetailsProps {
     items: EnrichedOrderItem[];
     isItemsLoading: boolean;
     isItemsFetching: boolean;
-    formatOrderDate(date: string): string;
     onOpenChange(): void;
 }
 

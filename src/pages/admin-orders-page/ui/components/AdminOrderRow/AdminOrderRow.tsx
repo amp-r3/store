@@ -12,19 +12,18 @@ import {
     OrderStatusSelect,
 } from '@/entities/order';
 import { useUpdateOrderStatusMutation, OrderStatusTransitions } from '@/entities/admin';
-import { formatPrice } from '@/shared/lib';
+import { formatPrice, formatDate } from '@/shared/lib';
 
 import style from './admin-order-row.module.scss';
 
 interface AdminOrderRowProps {
     order: Order;
-    formatOrderDate: (date: string) => string;
     /** `undefined` while the transition matrix is still loading/errored. */
     transitions?: OrderStatusTransitions;
     onOpenDetails: (orderId: string) => void;
 }
 
-export const AdminOrderRow = memo(({ order, formatOrderDate, transitions, onOpenDetails }: AdminOrderRowProps) => {
+export const AdminOrderRow = memo(({ order, transitions, onOpenDetails }: AdminOrderRowProps) => {
     const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
     const { firstName, lastName, email } = order.shippingAddress;
     const itemCount = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -46,7 +45,7 @@ export const AdminOrderRow = memo(({ order, formatOrderDate, transitions, onOpen
                 >
                     #{order.orderId}
                 </button>
-                <span className={style['admin-order-row__date']}>{formatOrderDate(order.createdAt)}</span>
+                <span className={style['admin-order-row__date']}>{formatDate(order.createdAt, 'medium')}</span>
             </div>
 
             <div className={style['admin-order-row__cell']}>
@@ -56,13 +55,9 @@ export const AdminOrderRow = memo(({ order, formatOrderDate, transitions, onOpen
             </div>
 
             <div className={style['admin-order-row__cell']}>
-                <span className={style['admin-order-row__cell-label']}>Items</span>
-                {itemCount}
-            </div>
-
-            <div className={style['admin-order-row__cell']}>
                 <span className={style['admin-order-row__cell-label']}>Total</span>
                 <span className={style['admin-order-row__total']}>{formatPrice(order.totalAmount)}</span>
+                <span className={style['admin-order-row__items']}>{itemCount} item{itemCount === 1 ? '' : 's'}</span>
             </div>
 
             <div className={style['admin-order-row__cell']}>

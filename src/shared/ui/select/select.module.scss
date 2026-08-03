@@ -9,10 +9,15 @@
 
 // Compact variant for filter toolbars (status/role/sort dropdowns) — sized to
 // its content rather than filling the row, so it can sit inline with other
-// toolbar controls in a wrapping flex row.
+// toolbar controls in a wrapping flex row. Every admin toolbar stacks its
+// filters into a single column below 600px, so this variant follows suit.
 .wrapperToolbar {
   width: auto;
   gap: $spacing-xxs;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 }
 
 .label {

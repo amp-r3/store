@@ -1,3 +1,5 @@
+import { IoChevronDown } from 'react-icons/io5';
+
 import type { StatusMeta } from '@/entities/order';
 
 import style from './order-status-select.module.scss';
@@ -55,6 +57,7 @@ export function OrderStatusSelect<T extends string>({
                     );
                 })}
             </select>
+            <IoChevronDown className={style['order-status-select__chevron']} aria-hidden="true" />
             {isTerminal && (
                 <span className="sr-only">{currentLabel} is a final status and cannot be changed.</span>
             )}

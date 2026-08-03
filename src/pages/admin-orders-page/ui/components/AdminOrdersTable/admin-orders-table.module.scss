@@ -1,14 +1,22 @@
 @use '@/app/styles/index' as *;
 
+// Single source of truth for the column tracks, shared with
+// AdminOrderRow via a CSS custom property so the header and every row
+// (including the loading skeleton) always line up.
 .admin-orders-table {
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
+
+  // Payment/delivery selects carry the longest text ("Awaiting Dispatch",
+  // "Paid Successfully") of any column, so they get the largest share here —
+  // order/customer/total can afford to lean on their own ellipsis instead.
+  --admin-table-grid: minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 0.7fr) minmax(0, 0.8fr) minmax(0, 1.2fr) minmax(0, 1.2fr);
 }
 
 .admin-orders-table__header {
   display: grid;
-  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 0.35fr) minmax(0, 0.6fr) minmax(0, 0.75fr) minmax(0, 1.6fr) minmax(0, 1.6fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   padding-inline: $spacing-md;
   font-size: $fs-xs;

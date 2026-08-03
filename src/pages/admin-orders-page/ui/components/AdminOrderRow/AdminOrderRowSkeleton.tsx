@@ -23,13 +23,11 @@ export const AdminOrderRowSkeleton = ({ count = 1 }: AdminOrderRowSkeletonProps)
                         <Skeleton width={130} height={12} />
                     </div>
                     <div className={style['admin-order-row__cell']}>
-                        <Skeleton width={20} height={16} />
-                    </div>
-                    <div className={style['admin-order-row__cell']}>
                         <Skeleton width={60} height={16} />
+                        <Skeleton width={50} height={12} />
                     </div>
                     <div className={style['admin-order-row__cell']}>
-                        <Skeleton width={80} height={20} borderRadius={12} />
+                        <Skeleton width={80} height={18} borderRadius={12} />
                     </div>
                     <div className={style['admin-order-row__cell']}>
                         <Skeleton width={120} height={28} borderRadius={16} />

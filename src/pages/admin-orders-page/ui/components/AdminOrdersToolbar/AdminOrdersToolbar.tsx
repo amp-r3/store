@@ -3,8 +3,14 @@ import { IoClose, IoSearchOutline } from 'react-icons/io5';
 
 import { useDebounce } from '@/shared/lib/hooks';
 import { AdminOrderStatusFilter, ORDER_STATUS_OPTIONS, ORDER_STATUS_MAP } from '@/entities/order';
+import { Select } from '@/shared/ui';
 
 import style from './admin-orders-toolbar.module.scss';
+
+const STATUS_SELECT_OPTIONS = [
+    { value: 'all', label: 'All' },
+    ...ORDER_STATUS_OPTIONS.map((option) => ({ value: option, label: ORDER_STATUS_MAP[option]?.label ?? option })),
+];
 
 interface AdminOrdersToolbarProps {
     status: AdminOrderStatusFilter;
@@ -61,20 +67,13 @@ export const AdminOrdersToolbar = ({
 
     return (
         <div className={style['admin-orders-toolbar']}>
-            <label className={style['admin-orders-toolbar__filter']}>
-                <span>Status</span>
-                <select
-                    value={status}
-                    onChange={(event) => onStatusChange(event.target.value as AdminOrderStatusFilter)}
-                >
-                    <option value="all">All</option>
-                    {ORDER_STATUS_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                            {ORDER_STATUS_MAP[option]?.label ?? option}
-                        </option>
-                    ))}
-                </select>
-            </label>
+            <Select
+                variant="toolbar"
+                label="Status"
+                value={status}
+                options={STATUS_SELECT_OPTIONS}
+                onChange={(event) => onStatusChange(event.target.value as AdminOrderStatusFilter)}
+            />
 
             <label className={style['admin-orders-toolbar__filter']}>
                 <span>From</span>
