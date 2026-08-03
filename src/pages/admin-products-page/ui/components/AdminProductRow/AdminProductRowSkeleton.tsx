@@ -30,8 +30,8 @@ export const AdminProductRowSkeleton = ({ count = 1 }: AdminProductRowSkeletonPr
                     <div className={style['admin-product-row__cell']}>
                         <Skeleton width={50} height={16} />
                     </div>
-                    <div className={style['admin-product-row__cell']}>
-                        <Skeleton width={60} height={28} />
+                    <div className={style['admin-product-row__actions']}>
+                        <Skeleton width={44} height={44} borderRadius={12} />
                     </div>
                 </article>
             ))}

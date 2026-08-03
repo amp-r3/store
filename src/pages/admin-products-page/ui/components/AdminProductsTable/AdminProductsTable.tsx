@@ -20,7 +20,7 @@ export const AdminProductsTable = ({ products, isLoading, limit, onArchive, onRe
             <span>Category</span>
             <span>Price</span>
             <span>Rating</span>
-            <span>Actions</span>
+            <span />
         </div>
 
         {isLoading ? (

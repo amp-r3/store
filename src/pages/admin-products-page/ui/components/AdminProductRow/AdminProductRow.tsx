@@ -1,11 +1,11 @@
 import { memo, useState } from 'react';
-import { Link } from 'react-router';
 import { FaStar } from 'react-icons/fa6';
 import { LuPencil, LuArchiveRestore, LuArchive, LuBoxes } from 'react-icons/lu';
 
 import { AdminProductListItem } from '@/entities/admin';
 import { AdminProductSizesEditor } from '@/features/admin-product-form';
 import { formatPrice } from '@/shared/lib';
+import { ActionMenu, ActionMenuItem } from '@/shared/ui';
 
 import style from './admin-product-row.module.scss';
 
@@ -17,6 +17,24 @@ interface AdminProductRowProps {
 
 export const AdminProductRow = memo(({ product, onArchive, onRestore }: AdminProductRowProps) => {
     const [isStockOpen, setIsStockOpen] = useState(false);
+
+    const actionItems: ActionMenuItem[] = [
+        {
+            key: 'stock',
+            label: isStockOpen ? 'Hide stock' : 'Manage stock',
+            icon: <LuBoxes />,
+            onSelect: () => setIsStockOpen((open) => !open),
+        },
+        {
+            key: 'edit',
+            label: 'Edit',
+            icon: <LuPencil />,
+            to: `/admin/products/${product.id}/edit`,
+        },
+        product.isArchived
+            ? { key: 'restore', label: 'Restore', icon: <LuArchiveRestore />, onSelect: () => onRestore(product) }
+            : { key: 'archive', label: 'Archive', icon: <LuArchive />, danger: true, onSelect: () => onArchive(product) },
+    ];
 
     return (
         <article
@@ -64,42 +82,8 @@ export const AdminProductRow = memo(({ product, onArchive, onRestore }: AdminPro
                 </span>
             </div>
 
-            <div className={`${style['admin-product-row__cell']} ${style['admin-product-row__actions']}`}>
-                <button
-                    type="button"
-                    className={`${style['admin-product-row__action']} ${isStockOpen ? style['admin-product-row__action--active'] : ''}`}
-                    onClick={() => setIsStockOpen((open) => !open)}
-                    aria-expanded={isStockOpen}
-                    aria-label={`${isStockOpen ? 'Hide' : 'Manage'} stock for ${product.title}`}
-                >
-                    <LuBoxes />
-                </button>
-                <Link
-                    to={`/admin/products/${product.id}/edit`}
-                    className={style['admin-product-row__action']}
-                    aria-label={`Edit ${product.title}`}
-                >
-                    <LuPencil />
-                </Link>
-                {product.isArchived ? (
-                    <button
-                        type="button"
-                        className={style['admin-product-row__action']}
-                        onClick={() => onRestore(product)}
-                        aria-label={`Restore ${product.title}`}
-                    >
-                        <LuArchiveRestore />
-                    </button>
-                ) : (
-                    <button
-                        type="button"
-                        className={`${style['admin-product-row__action']} ${style['admin-product-row__action--danger']}`}
-                        onClick={() => onArchive(product)}
-                        aria-label={`Archive ${product.title}`}
-                    >
-                        <LuArchive />
-                    </button>
-                )}
+            <div className={style['admin-product-row__actions']}>
+                <ActionMenu label={`Actions for ${product.title}`} items={actionItems} />
             </div>
 
             {isStockOpen && (

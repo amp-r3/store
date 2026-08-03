@@ -1,13 +1,11 @@
 @use '@/app/styles/index' as *;
 
-// minmax(0, Nfr) rather than a fixed px minimum: a fixed-width track never
-// shrinks below its px value, so once the sidebar ate enough of the content
-// column the row would force itself (and its card border) wider than the
-// content panel. fr tracks with a 0 floor always sum to exactly 100% of the
-// available width instead.
+// Tracks come from --admin-table-grid, set once on the .admin-products-table
+// wrapper this row always renders inside of, so the header row and every
+// data row (including the loading skeleton) share the exact same columns.
 .admin-product-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(0, 0.6fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 0.6fr) minmax(0, 0.6fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;
@@ -19,8 +17,11 @@
     grid-template-columns: 1fr 1fr;
     gap: $spacing-xs $spacing-sm;
 
+    // Target by class rather than :first-child/:last-child — the stock
+    // panel renders conditionally as an extra child after actions, which
+    // would otherwise steal the :last-child promotion once open.
     > :first-child,
-    > :last-child {
+    > .admin-product-row__actions {
       grid-column: 1 / -1;
     }
   }
@@ -126,45 +127,8 @@
 }
 
 .admin-product-row__actions {
-  flex-direction: row;
-  justify-content: flex-end;
-  gap: $spacing-xs;
-}
-
-.admin-product-row__action {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: $touch-target-min;
-  height: $touch-target-min;
-  color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
-
-  &:hover {
-    color: var(--text-primary);
-    background: var(--glass-background-subtle);
-  }
-
-  &:focus-visible {
-    outline: $focus-ring-width solid var(--focus-ring-color);
-    outline-offset: $focus-ring-offset;
-  }
-}
-
-.admin-product-row__action--danger:hover {
-  color: var(--error-color);
-  background: rgba(var(--error-color-rgb), 0.08);
-}
-
-.admin-product-row__action--active {
-  color: var(--primary-accent);
-  background: rgba(var(--primary-accent-rgb), 0.1);
-  border-color: var(--primary-accent);
+  justify-content: flex-end;
 }
 
 .admin-product-row__stock-panel {

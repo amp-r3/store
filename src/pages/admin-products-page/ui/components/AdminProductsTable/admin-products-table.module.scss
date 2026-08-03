@@ -1,14 +1,20 @@
 @use '@/app/styles/index' as *;
 
+// Single source of truth for the column tracks, shared with AdminProductRow
+// via a CSS custom property so the header and every row (including the
+// loading skeleton) always line up. The actions track is a fixed
+// $touch-target-min — it holds a single ActionMenu trigger, not text.
 .admin-products-table {
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
+
+  --admin-table-grid: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 0.7fr) #{$touch-target-min};
 }
 
 .admin-products-table__header {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(0, 0.6fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 0.6fr) minmax(0, 0.6fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   padding-inline: $spacing-md;
   font-size: $fs-xs;
