@@ -45,7 +45,7 @@
       font-size: clamp(0.7rem, 2.16vw, $fs-sm);
     }
 
-    @media (width < 549) {
+    @media (max-width: 549px) {
       font-size: $fs-base;
     }
 
