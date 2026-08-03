@@ -21,6 +21,8 @@ const LOCALLY_HANDLED_ENDPOINTS = new Set([
     'deleteAdminCategory',
     'setAdminUserRole',
     'deleteAdminReview',
+    'updateAdminDeliveryMethod',
+    'updateAdminPaymentMethod',
 ]);
 
 interface SuccessNotification {
@@ -53,6 +55,8 @@ const SUCCESS_MESSAGES: Record<string, SuccessNotification> = {
     deleteAdminCategory: { type: 'info', text: 'Category deleted', key: 'admin-category' },
     setAdminUserRole: { type: 'success', text: 'Role updated', key: 'admin-customer' },
     deleteAdminReview: { type: 'info', text: 'Review deleted', key: 'admin-review' },
+    updateAdminDeliveryMethod: { type: 'success', text: 'Settings saved', key: 'admin-settings' },
+    updateAdminPaymentMethod: { type: 'success', text: 'Settings saved', key: 'admin-settings' },
 };
 
 interface RtkQueryActionMeta {

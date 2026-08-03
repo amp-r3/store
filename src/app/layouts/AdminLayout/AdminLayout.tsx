@@ -17,6 +17,7 @@ const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
     '/admin/categories': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Categories' }],
     '/admin/customers': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Customers' }],
     '/admin/reviews': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Reviews' }],
+    '/admin/settings': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Settings' }],
 };
 
 const PRODUCTS_CRUMB: BreadcrumbItem = { label: 'Products', path: '/admin/products' };

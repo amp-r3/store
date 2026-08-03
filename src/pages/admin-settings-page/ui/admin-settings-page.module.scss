@@ -1,0 +1,33 @@
+@use '@/app/styles/index' as *;
+
+.admin-settings-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.admin-settings-page__section-header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+}
+
+.admin-settings-page__section-title {
+  margin: 0;
+  font-family: $font-display;
+  font-size: $fs-lg;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.admin-settings-page__section-note {
+  margin: 0;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+}
+
+.admin-settings-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: $spacing-lg;
+}

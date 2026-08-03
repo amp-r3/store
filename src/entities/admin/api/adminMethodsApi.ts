@@ -1,4 +1,24 @@
 import { supabase, baseApi } from '@/shared/api';
+import type { Database } from '@/shared/api';
+
+export interface AdminDeliveryMethod {
+  id: string;
+  code: Database['public']['Enums']['delivery_method_type'];
+  name: string;
+  price: number;
+  estimatedTime: string | null;
+  isActive: boolean;
+  freeFromPrice: number | null;
+}
+
+export interface AdminPaymentMethod {
+  id: string;
+  code: Database['public']['Enums']['payment_method_type'];
+  name: string;
+  feePercentage: number;
+  feeFixed: number;
+  isActive: boolean;
+}
 
 export interface UpdateDeliveryMethodPayload {
   name?: string;
@@ -21,6 +41,63 @@ export const adminMethodsApi = baseApi.injectEndpoints({
     // enums and orders.delivery_method_id/payment_method_id are `on delete
     // restrict` — the set of methods is meant to stay fixed, only their
     // price/fee/copy/is_active changes.
+
+    // Deliberately NOT the customer-facing getDeliveryMethods query
+    // (entities/order): that one filters .eq('is_active', true), so a
+    // disabled method could never be found again to re-enable it. The RLS
+    // "Anyone can view delivery methods" policy has no role restriction, so
+    // an unfiltered select works here too.
+    getAdminDeliveryMethods: builder.query<AdminDeliveryMethod[], void>({
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from('delivery_methods')
+          .select('*')
+          .order('price');
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        const methods: AdminDeliveryMethod[] = (data ?? []).map((method) => ({
+          id: method.id,
+          code: method.code,
+          name: method.name,
+          price: method.price,
+          estimatedTime: method.estimated_time,
+          isActive: method.is_active,
+          freeFromPrice: method.free_from_price,
+        }));
+
+        return { data: methods };
+      },
+      providesTags: ['DeliveryMethod'],
+    }),
+
+    getAdminPaymentMethods: builder.query<AdminPaymentMethod[], void>({
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from('payment_methods')
+          .select('*')
+          .order('name');
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        const methods: AdminPaymentMethod[] = (data ?? []).map((method) => ({
+          id: method.id,
+          code: method.code,
+          name: method.name,
+          feePercentage: method.fee_percentage,
+          feeFixed: method.fee_fixed,
+          isActive: method.is_active,
+        }));
+
+        return { data: methods };
+      },
+      providesTags: ['PaymentMethod'],
+    }),
+
     updateAdminDeliveryMethod: builder.mutation<null, { id: string; payload: UpdateDeliveryMethodPayload }>({
       queryFn: async ({ id, payload }) => {
         const { error } = await supabase.rpc('admin_update_delivery_method', {
@@ -66,4 +143,9 @@ export const adminMethodsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useUpdateAdminDeliveryMethodMutation, useUpdateAdminPaymentMethodMutation } = adminMethodsApi;
+export const {
+  useGetAdminDeliveryMethodsQuery,
+  useGetAdminPaymentMethodsQuery,
+  useUpdateAdminDeliveryMethodMutation,
+  useUpdateAdminPaymentMethodMutation,
+} = adminMethodsApi;

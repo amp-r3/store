@@ -218,6 +218,13 @@ export const router = createBrowserRouter([
                 }
               },
               {
+                path: 'settings',
+                lazy: async () => {
+                  const module = await import("@/pages/admin-settings-page")
+                  return { Component: module.default }
+                }
+              },
+              {
                 path: '*',
                 lazy: async () => {
                   const module = await import("@/pages/not-found-page")

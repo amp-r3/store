@@ -1,0 +1,67 @@
+@use '@/app/styles/index' as *;
+@use '@/app/styles/surfaces' as *;
+
+.admin-payment-method-card {
+  @include panel;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.admin-payment-method-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.admin-payment-method-card__title-group {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  min-width: 0;
+
+  svg {
+    flex-shrink: 0;
+    color: var(--primary-accent);
+    font-size: $fs-icon-md;
+  }
+}
+
+.admin-payment-method-card__title {
+  margin: 0;
+  font-family: $font-display;
+  font-size: $fs-md;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.admin-payment-method-card__code {
+  flex-shrink: 0;
+  font-size: $fs-xs;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+  background: var(--border-color-subtle);
+  border-radius: $radius-pill;
+  padding: $spacing-xxs $spacing-sm;
+}
+
+.admin-payment-method-card__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-md;
+  align-items: start;
+}
+
+.admin-payment-method-card__example {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+
+  strong {
+    color: var(--text-primary);
+  }
+}
