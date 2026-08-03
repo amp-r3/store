@@ -1,14 +1,20 @@
 @use '@/app/styles/index' as *;
 
+// Single source of truth for the column tracks, shared with AdminCustomerRow
+// via a CSS custom property so the header and every row (including the
+// loading skeleton) always line up. The actions track is a fixed
+// $touch-target-min — it holds a single icon-only role-change button.
 .admin-customers-table {
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
+
+  --admin-table-grid: minmax(0, 1.6fr) minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 0.5fr) minmax(0, 0.8fr) minmax(0, 0.9fr) #{$touch-target-min};
 }
 
 .admin-customers-table__header {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 0.6fr) minmax(0, 0.8fr) minmax(0, 0.9fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   padding-inline: $spacing-md;
   font-size: $fs-xs;

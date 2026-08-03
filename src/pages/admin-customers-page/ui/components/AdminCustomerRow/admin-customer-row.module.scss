@@ -1,8 +1,11 @@
 @use '@/app/styles/index' as *;
 
+// Tracks come from --admin-table-grid, set once on the .admin-customers-table
+// wrapper this row always renders inside of, so the header row and every
+// data row (including the loading skeleton) share the exact same columns.
 .admin-customer-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 0.6fr) minmax(0, 0.8fr) minmax(0, 0.9fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;
@@ -15,7 +18,7 @@
     gap: $spacing-xs $spacing-sm;
 
     > :first-child,
-    > :last-child {
+    > .admin-customer-row__actions {
       grid-column: 1 / -1;
     }
   }
@@ -133,31 +136,15 @@
   background: rgba(var(--primary-accent-rgb), 0.1);
 }
 
-.admin-customer-row__role-action {
-  align-self: flex-start;
-  margin-top: $spacing-xxs;
-  padding: $spacing-xxs $spacing-sm;
-  font-size: $fs-xs;
-  font-weight: $fw-semibold;
-  color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
-  cursor: pointer;
-  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+.admin-customer-row__date {
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  &:hover:not(:disabled) {
-    color: var(--text-primary);
-    background: var(--glass-background-subtle);
-  }
-
-  &:focus-visible {
-    outline: $focus-ring-width solid var(--focus-ring-color);
-    outline-offset: $focus-ring-offset;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.admin-customer-row__actions {
+  display: flex;
+  justify-content: flex-end;
 }

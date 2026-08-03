@@ -33,6 +33,9 @@ export const AdminCustomerRowSkeleton = ({ count = 1 }: AdminCustomerRowSkeleton
                     <div className={style['admin-customer-row__cell']}>
                         <Skeleton width={90} height={16} />
                     </div>
+                    <div className={style['admin-customer-row__actions']}>
+                        <Skeleton width={44} height={44} borderRadius={12} />
+                    </div>
                 </article>
             ))}
         </>

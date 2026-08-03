@@ -1,13 +1,11 @@
 import { memo } from 'react';
-import { LuShieldCheck } from 'react-icons/lu';
+import { LuShieldCheck, LuUserCog } from 'react-icons/lu';
 
 import { AdminCustomer } from '@/entities/admin';
-import { formatPrice } from '@/shared/lib';
+import { formatPrice, formatDate } from '@/shared/lib';
+import { IconButton } from '@/shared/ui';
 
 import style from './admin-customer-row.module.scss';
-
-const formatDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
 const getDisplayName = (customer: AdminCustomer) => {
     const fullName = `${customer.firstName ?? ''} ${customer.lastName ?? ''}`.trim();
@@ -73,17 +71,18 @@ export const AdminCustomerRow = memo(({ customer, isCurrentUser, onOpenDetails, 
 
             <div className={style['admin-customer-row__cell']}>
                 <span className={style['admin-customer-row__cell-label']}>Registered</span>
-                <span>{formatDate(customer.registeredAt)}</span>
-                <button
-                    type="button"
-                    className={style['admin-customer-row__role-action']}
+                <span className={style['admin-customer-row__date']}>{formatDate(customer.registeredAt, 'medium')}</span>
+            </div>
+
+            <div className={style['admin-customer-row__actions']}>
+                <IconButton
                     onClick={() => onChangeRole(customer)}
                     disabled={isCurrentUser}
                     title={isCurrentUser ? "You can't change your own role" : undefined}
                     aria-label={isCurrentUser ? "You can't change your own role" : `Change role for ${getDisplayName(customer)}`}
                 >
-                    Change role
-                </button>
+                    <LuUserCog />
+                </IconButton>
             </div>
         </article>
     );

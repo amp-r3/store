@@ -3,6 +3,7 @@ import { IoClose, IoSearchOutline } from 'react-icons/io5';
 
 import { useDebounce } from '@/shared/lib/hooks';
 import { AdminCustomersSort, UserRole } from '@/entities/admin';
+import { Select } from '@/shared/ui';
 
 import style from './admin-customers-toolbar.module.scss';
 
@@ -10,6 +11,12 @@ const SORT_OPTIONS: { value: AdminCustomersSort; label: string }[] = [
     { value: 'newest', label: 'Newest' },
     { value: 'top_spenders', label: 'Top spenders' },
     { value: 'most_orders', label: 'Most orders' },
+];
+
+const ROLE_OPTIONS = [
+    { value: '', label: 'All roles' },
+    { value: 'admin', label: 'Admin' },
+    { value: 'user', label: 'Customer' },
 ];
 
 interface AdminCustomersToolbarProps {
@@ -80,23 +87,21 @@ export const AdminCustomersToolbar = ({
                 )}
             </form>
 
-            <label className={style['admin-customers-toolbar__filter']}>
-                <span>Role</span>
-                <select value={role} onChange={(event) => onRoleChange(event.target.value as UserRole | '')}>
-                    <option value="">All roles</option>
-                    <option value="admin">Admin</option>
-                    <option value="user">Customer</option>
-                </select>
-            </label>
+            <Select
+                variant="toolbar"
+                label="Role"
+                value={role}
+                options={ROLE_OPTIONS}
+                onChange={(event) => onRoleChange(event.target.value as UserRole | '')}
+            />
 
-            <label className={style['admin-customers-toolbar__filter']}>
-                <span>Sort by</span>
-                <select value={sort} onChange={(event) => onSortChange(event.target.value as AdminCustomersSort)}>
-                    {SORT_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                </select>
-            </label>
+            <Select
+                variant="toolbar"
+                label="Sort by"
+                value={sort}
+                options={SORT_OPTIONS}
+                onChange={(event) => onSortChange(event.target.value as AdminCustomersSort)}
+            />
         </div>
     );
 };

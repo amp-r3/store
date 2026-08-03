@@ -22,6 +22,7 @@ export const AdminCustomersTable = ({ customers, isLoading, limit, currentUserId
             <span>Orders</span>
             <span>Spent</span>
             <span>Registered</span>
+            <span />
         </div>
 
         {isLoading ? (
