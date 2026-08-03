@@ -79,11 +79,13 @@ $status-map: (
 );
 
 // ── Base badge layout ──────────────────────────────────────────────────────
-@mixin badge-base {
+// $compact: true shrinks the padding/gap for dense contexts (dashboard rows)
+// while keeping the same dot + font-size identity as the default badge.
+@mixin badge-base($compact: false) {
     display: inline-flex;
     align-items: center;
-    gap: $spacing-xs;
-    padding: $spacing-xs $spacing-sm;
+    gap: if($compact, $spacing-xxs, $spacing-xs);
+    padding: if($compact, $spacing-xxs $spacing-xs, $spacing-xs $spacing-sm);
     border-radius: $radius-pill;
     font-size: $fs-xs;
     font-weight: $fw-semibold;
