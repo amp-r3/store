@@ -23,8 +23,9 @@ export const AdminCategoryRowSkeleton = ({ count = 1 }: AdminCategoryRowSkeleton
                     <div className={style['admin-category-row__cell']}>
                         <Skeleton width={30} height={14} />
                     </div>
-                    <div className={style['admin-category-row__cell']}>
-                        <Skeleton width={60} height={28} />
+                    <div className={style['admin-category-row__actions']}>
+                        <Skeleton width={44} height={44} borderRadius={12} />
+                        <Skeleton width={44} height={44} borderRadius={12} />
                     </div>
                 </article>
             ))}

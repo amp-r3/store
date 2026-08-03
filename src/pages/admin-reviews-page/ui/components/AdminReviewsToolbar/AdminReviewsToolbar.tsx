@@ -3,6 +3,7 @@ import { IoClose, IoSearchOutline } from 'react-icons/io5';
 
 import { useDebounce } from '@/shared/lib/hooks';
 import { AdminReviewSort } from '@/entities/admin';
+import { Select } from '@/shared/ui';
 
 import style from './admin-reviews-toolbar.module.scss';
 
@@ -11,6 +12,11 @@ const SORT_OPTIONS: { value: AdminReviewSort; label: string }[] = [
     { value: 'oldest', label: 'Oldest' },
     { value: 'lowest_rating', label: 'Lowest rating' },
     { value: 'most_helpful', label: 'Most helpful' },
+];
+
+const RATING_OPTIONS = [
+    { value: '', label: 'All ratings' },
+    ...[5, 4, 3, 2, 1].map((stars) => ({ value: String(stars), label: `${stars} star${stars === 1 ? '' : 's'}` })),
 ];
 
 interface AdminReviewsToolbarProps {
@@ -81,27 +87,21 @@ export const AdminReviewsToolbar = ({
                 )}
             </form>
 
-            <label className={style['admin-reviews-toolbar__filter']}>
-                <span>Rating</span>
-                <select
-                    value={rating ?? ''}
-                    onChange={(event) => onRatingChange(event.target.value ? Number(event.target.value) : undefined)}
-                >
-                    <option value="">All ratings</option>
-                    {[5, 4, 3, 2, 1].map((stars) => (
-                        <option key={stars} value={stars}>{stars} star{stars === 1 ? '' : 's'}</option>
-                    ))}
-                </select>
-            </label>
+            <Select
+                variant="toolbar"
+                label="Rating"
+                value={rating !== undefined ? String(rating) : ''}
+                options={RATING_OPTIONS}
+                onChange={(event) => onRatingChange(event.target.value ? Number(event.target.value) : undefined)}
+            />
 
-            <label className={style['admin-reviews-toolbar__filter']}>
-                <span>Sort by</span>
-                <select value={sort} onChange={(event) => onSortChange(event.target.value as AdminReviewSort)}>
-                    {SORT_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                </select>
-            </label>
+            <Select
+                variant="toolbar"
+                label="Sort by"
+                value={sort}
+                options={SORT_OPTIONS}
+                onChange={(event) => onSortChange(event.target.value as AdminReviewSort)}
+            />
         </div>
     );
 };

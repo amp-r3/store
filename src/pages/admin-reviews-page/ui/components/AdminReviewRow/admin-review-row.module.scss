@@ -1,8 +1,11 @@
 @use '@/app/styles/index' as *;
 
+// Tracks come from --admin-table-grid, set once on the .admin-reviews-table
+// wrapper this row always renders inside of, so the header row and every
+// data row (including the loading skeleton) share the exact same columns.
 .admin-review-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.7fr) minmax(0, 2fr) minmax(0, 1fr) minmax(0, 0.6fr) minmax(0, 0.6fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;
@@ -16,7 +19,7 @@
 
     > :first-child,
     > :nth-child(3),
-    > :last-child {
+    > .admin-review-row__actions {
       grid-column: 1 / -1;
     }
   }
@@ -117,35 +120,6 @@
 }
 
 .admin-review-row__actions {
-  flex-direction: row;
-  justify-content: flex-end;
-}
-
-.admin-review-row__action {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: $touch-target-min;
-  height: $touch-target-min;
-  color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
-  cursor: pointer;
-  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
-
-  &:hover {
-    color: var(--text-primary);
-    background: var(--glass-background-subtle);
-  }
-
-  &:focus-visible {
-    outline: $focus-ring-width solid var(--focus-ring-color);
-    outline-offset: $focus-ring-offset;
-  }
-}
-
-.admin-review-row__action--danger:hover {
-  color: var(--error-color);
-  background: rgba(var(--error-color-rgb), 0.08);
+  justify-content: flex-end;
 }

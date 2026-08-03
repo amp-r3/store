@@ -12,36 +12,6 @@
   }
 }
 
-.admin-audit-toolbar__filter {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xxs;
-  font-size: $fs-xs;
-  color: var(--text-secondary);
-
-  select {
-    min-width: 180px;
-    padding: $spacing-sm $spacing-md;
-    border-radius: $radius-md;
-    border: 1px solid var(--border-color-subtle);
-    background: var(--background-component);
-    color: var(--text-primary);
-    font-size: $fs-sm;
-    cursor: pointer;
-
-    &:focus-visible {
-      outline: $focus-ring-width solid var(--focus-ring-color);
-      outline-offset: $focus-ring-offset;
-    }
-  }
-
-  @media (max-width: 600px) {
-    select {
-      width: 100%;
-    }
-  }
-}
-
 .admin-audit-toolbar__reset {
   padding: $spacing-sm $spacing-md;
   border-radius: $radius-md;

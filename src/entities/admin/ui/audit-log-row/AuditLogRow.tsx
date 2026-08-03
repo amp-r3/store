@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
 import { ExpandableContent } from '@/shared/ui';
+import { formatDate } from '@/shared/lib';
 
 import { AUDIT_ACTION_LABELS, AUDIT_ENTITY_LABELS } from '../../config/auditVocabulary';
 import { AdminAuditEntry } from '../../api/adminAuditApi';
@@ -10,15 +11,6 @@ import style from './audit-log-row.module.scss';
 interface AuditLogRowProps {
     entry: AdminAuditEntry;
 }
-
-const formatDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
 
 export const AuditLogRow = memo(({ entry }: AuditLogRowProps) => {
     const actionLabel = AUDIT_ACTION_LABELS[entry.action] ?? entry.action;
@@ -31,7 +23,7 @@ export const AuditLogRow = memo(({ entry }: AuditLogRowProps) => {
                 <span className={style['audit-log-row__action']}>{actionLabel}</span>
                 <span className={style['audit-log-row__entity-chip']}>{entityLabel}</span>
                 <time className={style['audit-log-row__date']} dateTime={entry.createdAt}>
-                    {formatDate(entry.createdAt)}
+                    {formatDate(entry.createdAt, 'full')}
                 </time>
             </div>
 

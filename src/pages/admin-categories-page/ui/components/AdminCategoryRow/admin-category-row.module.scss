@@ -1,8 +1,11 @@
 @use '@/app/styles/index' as *;
 
+// Tracks come from --admin-table-grid, set once on the .admin-categories-table
+// wrapper this row always renders inside of, so the header row and every
+// data row (including the loading skeleton) share the exact same columns.
 .admin-category-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.5fr) minmax(0, 0.6fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;
@@ -14,7 +17,7 @@
     grid-template-columns: 1fr 1fr;
     gap: $spacing-xs $spacing-sm;
 
-    > :nth-child(4) {
+    > .admin-category-row__actions {
       grid-column: 1 / -1;
     }
   }
@@ -70,36 +73,7 @@
 }
 
 .admin-category-row__actions {
-  flex-direction: row;
+  display: flex;
   justify-content: flex-end;
   gap: $spacing-xs;
-}
-
-.admin-category-row__action {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: $touch-target-min;
-  height: $touch-target-min;
-  color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
-  cursor: pointer;
-  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
-
-  &:hover {
-    color: var(--text-primary);
-    background: var(--glass-background-subtle);
-  }
-
-  &:focus-visible {
-    outline: $focus-ring-width solid var(--focus-ring-color);
-    outline-offset: $focus-ring-offset;
-  }
-}
-
-.admin-category-row__action--danger:hover {
-  color: var(--error-color);
-  background: rgba(var(--error-color-rgb), 0.08);
 }

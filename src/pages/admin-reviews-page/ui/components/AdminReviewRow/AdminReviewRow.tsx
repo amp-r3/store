@@ -3,12 +3,10 @@ import { Link } from 'react-router';
 import { LuTrash2 } from 'react-icons/lu';
 
 import { AdminReview } from '@/entities/admin';
-import { RatingStars } from '@/shared/ui';
+import { RatingStars, IconButton } from '@/shared/ui';
+import { formatDate } from '@/shared/lib';
 
 import style from './admin-review-row.module.scss';
-
-const formatDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
 interface AdminReviewRowProps {
     review: AdminReview;
@@ -47,7 +45,7 @@ export const AdminReviewRow = memo(({ review, onDelete }: AdminReviewRowProps) =
                 {review.isVerified && (
                     <span className={style['admin-review-row__verified-badge']}>Verified</span>
                 )}
-                <span className={style['admin-review-row__date']}>{formatDate(review.date)}</span>
+                <span className={style['admin-review-row__date']}>{formatDate(review.date, 'medium')}</span>
             </div>
 
             <div className={style['admin-review-row__cell']}>
@@ -55,16 +53,10 @@ export const AdminReviewRow = memo(({ review, onDelete }: AdminReviewRowProps) =
                 {review.helpfulCount}
             </div>
 
-            <div className={`${style['admin-review-row__cell']} ${style['admin-review-row__actions']}`}>
-                <span className={style['admin-review-row__cell-label']}>Actions</span>
-                <button
-                    type="button"
-                    className={`${style['admin-review-row__action']} ${style['admin-review-row__action--danger']}`}
-                    onClick={() => onDelete(review)}
-                    aria-label={`Delete review for ${review.productTitle}`}
-                >
+            <div className={style['admin-review-row__actions']}>
+                <IconButton variant="danger" onClick={() => onDelete(review)} aria-label={`Delete review for ${review.productTitle}`}>
                     <LuTrash2 />
-                </button>
+                </IconButton>
             </div>
         </article>
     );

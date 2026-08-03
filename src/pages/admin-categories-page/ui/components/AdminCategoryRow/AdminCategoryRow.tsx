@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { LuPencil, LuTrash2 } from 'react-icons/lu';
 
 import { AdminCategory } from '@/entities/admin';
+import { IconButton } from '@/shared/ui';
 
 import style from './admin-category-row.module.scss';
 
@@ -28,23 +29,13 @@ export const AdminCategoryRow = memo(({ category, onEdit, onDelete }: AdminCateg
             {category.productsCount}
         </div>
 
-        <div className={`${style['admin-category-row__cell']} ${style['admin-category-row__actions']}`}>
-            <button
-                type="button"
-                className={style['admin-category-row__action']}
-                onClick={() => onEdit(category)}
-                aria-label={`Edit ${category.name}`}
-            >
+        <div className={style['admin-category-row__actions']}>
+            <IconButton onClick={() => onEdit(category)} aria-label={`Edit ${category.name}`}>
                 <LuPencil />
-            </button>
-            <button
-                type="button"
-                className={`${style['admin-category-row__action']} ${style['admin-category-row__action--danger']}`}
-                onClick={() => onDelete(category)}
-                aria-label={`Delete ${category.name}`}
-            >
+            </IconButton>
+            <IconButton variant="danger" onClick={() => onDelete(category)} aria-label={`Delete ${category.name}`}>
                 <LuTrash2 />
-            </button>
+            </IconButton>
         </div>
     </article>
 ));

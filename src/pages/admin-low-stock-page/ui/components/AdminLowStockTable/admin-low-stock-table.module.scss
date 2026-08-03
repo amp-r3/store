@@ -1,14 +1,21 @@
 @use '@/app/styles/index' as *;
 
+// Single source of truth for the column tracks, shared with AdminLowStockRow
+// via a CSS custom property so the header and every row always line up.
+// This table intentionally collapses at 768px rather than 1024px like the
+// other admin tables — 3 narrow columns genuinely still fit down to 768px,
+// so forcing an earlier card layout would just be a density downgrade.
 .admin-low-stock-table {
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
+
+  --admin-table-grid: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.7fr);
 }
 
 .admin-low-stock-table__header {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.7fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   padding-inline: $spacing-md;
   font-size: $fs-xs;

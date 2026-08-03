@@ -2,7 +2,7 @@
 
 .admin-low-stock-row {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.7fr);
+  grid-template-columns: var(--admin-table-grid);
   gap: $spacing-md;
   align-items: center;
   padding: $spacing-md;

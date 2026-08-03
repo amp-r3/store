@@ -19,7 +19,7 @@ export const AdminReviewsTable = ({ reviews, isLoading, limit, onDelete }: Admin
             <span>Review</span>
             <span>Author</span>
             <span>Helpful</span>
-            <span>Actions</span>
+            <span />
         </div>
 
         {isLoading ? (

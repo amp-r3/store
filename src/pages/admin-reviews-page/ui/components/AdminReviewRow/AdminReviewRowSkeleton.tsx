@@ -29,8 +29,8 @@ export const AdminReviewRowSkeleton = ({ count = 1 }: AdminReviewRowSkeletonProp
                     <div className={style['admin-review-row__cell']}>
                         <Skeleton width={30} height={16} />
                     </div>
-                    <div className={style['admin-review-row__cell']}>
-                        <Skeleton width={36} height={36} borderRadius={8} />
+                    <div className={style['admin-review-row__actions']}>
+                        <Skeleton width={44} height={44} borderRadius={12} />
                     </div>
                 </article>
             ))}
