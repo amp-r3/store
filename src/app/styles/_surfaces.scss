@@ -20,3 +20,20 @@
         padding: $spacing-md;
     }
 }
+
+// ── Neutral pill chip ─────────────────────────────────────────────────────
+// The small rounded label recipe repeated across role/archived/verified
+// badges and the audit entity chip — differs only in color and how tight
+// the inline padding is.
+@mixin chip($bg, $color, $padding-inline: $spacing-sm) {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xxs;
+    width: fit-content;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    color: $color;
+    background: $bg;
+    border-radius: $radius-pill;
+    padding: $spacing-xxs $padding-inline;
+}

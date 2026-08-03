@@ -1,4 +1,5 @@
 @use '@/app/styles/index' as *;
+@use '@/app/styles/surfaces' as *;
 
 .audit-log-row {
   display: flex;
@@ -29,12 +30,7 @@
 }
 
 .audit-log-row__entity-chip {
-  font-size: $fs-xs;
-  font-weight: $fw-semibold;
-  color: var(--text-muted);
-  background: var(--border-color-subtle);
-  border-radius: $radius-pill;
-  padding: $spacing-xxs $spacing-sm;
+  @include chip(var(--border-color-subtle), var(--text-muted));
 }
 
 .audit-log-row__date {

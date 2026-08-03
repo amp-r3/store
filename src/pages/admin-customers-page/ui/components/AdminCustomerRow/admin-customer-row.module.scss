@@ -1,4 +1,5 @@
 @use '@/app/styles/index' as *;
+@use '@/app/styles/surfaces' as *;
 
 // Tracks come from --admin-table-grid, set once on the .admin-customers-table
 // wrapper this row always renders inside of, so the header row and every
@@ -119,16 +120,7 @@
 }
 
 .admin-customer-row__role-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-xxs;
-  width: fit-content;
-  font-size: $fs-xs;
-  font-weight: $fw-semibold;
-  color: var(--text-secondary);
-  background: var(--border-color-subtle);
-  border-radius: $radius-pill;
-  padding: $spacing-xxs $spacing-sm;
+  @include chip(var(--border-color-subtle), var(--text-secondary));
 }
 
 .admin-customer-row__role-badge--admin {
