@@ -5,7 +5,7 @@ import { LuClipboardList } from 'react-icons/lu';
 import { useGetAllOrdersQuery } from '@/entities/admin';
 import { ORDER_STATUS_MAP } from '@/entities/order';
 import { Alert, EmptyState } from '@/shared/ui';
-import { formatPrice, getErrorMessage } from '@/shared/lib';
+import { formatPrice, formatDate, getErrorMessage } from '@/shared/lib';
 
 import { AdminPanelCard } from '../AdminPanelCard/AdminPanelCard';
 import style from './admin-recent-orders-panel.module.scss';
@@ -24,9 +24,14 @@ export const AdminRecentOrdersPanel = () => {
                 <div className={style['admin-recent-orders-panel__list']}>
                     {Array.from({ length: RECENT_ORDERS_LIMIT }).map((_, index) => (
                         <div key={index} className={style['admin-recent-orders-panel__row']}>
-                            <Skeleton width={90} height={16} />
-                            <Skeleton width={70} height={16} />
-                            <Skeleton width={60} height={20} />
+                            <div className={style['admin-recent-orders-panel__main']}>
+                                <Skeleton width={90} height={16} />
+                                <Skeleton width={50} height={13} />
+                            </div>
+                            <div className={style['admin-recent-orders-panel__meta']}>
+                                <Skeleton width={60} height={16} />
+                                <Skeleton width={70} height={20} />
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -40,16 +45,18 @@ export const AdminRecentOrdersPanel = () => {
                             to={`/admin/orders?order=${order.id}`}
                             className={style['admin-recent-orders-panel__row']}
                         >
-                            <span className={style['admin-recent-orders-panel__number']}>#{order.orderId}</span>
-                            <span className={style['admin-recent-orders-panel__date']}>
-                                {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            <span className={style['admin-recent-orders-panel__main']}>
+                                <span className={style['admin-recent-orders-panel__number']}>#{order.orderId}</span>
+                                <span className={style['admin-recent-orders-panel__date']}>{formatDate(order.createdAt, 'compact')}</span>
                             </span>
-                            <span className={style['admin-recent-orders-panel__total']}>{formatPrice(order.totalAmount)}</span>
-                            <span
-                                className={`${style['admin-recent-orders-panel__status']} ${style[`admin-recent-orders-panel__status--${order.status}`]}`}
-                                data-status={order.status}
-                            >
-                                {ORDER_STATUS_MAP[order.status]?.label ?? order.status}
+                            <span className={style['admin-recent-orders-panel__meta']}>
+                                <span className={style['admin-recent-orders-panel__total']}>{formatPrice(order.totalAmount)}</span>
+                                <span
+                                    className={`${style['admin-recent-orders-panel__status']} ${style[`admin-recent-orders-panel__status--${order.status}`]}`}
+                                    data-status={order.status}
+                                >
+                                    {ORDER_STATUS_MAP[order.status]?.label ?? order.status}
+                                </span>
                             </span>
                         </Link>
                     ))}

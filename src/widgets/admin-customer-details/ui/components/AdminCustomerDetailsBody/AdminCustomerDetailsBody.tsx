@@ -5,7 +5,7 @@ import { LuShoppingBag, LuWallet, LuCalendarClock, LuCalendarCheck, LuPackageOpe
 
 import { AdminCustomer, useGetAllOrdersQuery, useGetAdminAuditLogQuery, AuditLogList } from '@/entities/admin';
 import { ORDER_STATUS_MAP } from '@/entities/order';
-import { formatPrice } from '@/shared/lib';
+import { formatPrice, formatDate } from '@/shared/lib';
 import { EmptyState, StatTile } from '@/shared/ui';
 
 import style from './admin-customer-details-body.module.scss';
@@ -17,10 +17,7 @@ interface AdminCustomerDetailsBodyProps {
 const RECENT_ORDERS_LIMIT = 5;
 const RECENT_ACTIVITY_LIMIT = 5;
 
-const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return '—';
-    return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-};
+const formatNullableDate = (dateStr: string | null) => (dateStr ? formatDate(dateStr, 'medium') : '—');
 
 export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ customer }) => {
     const { data, isLoading } = useGetAllOrdersQuery({
@@ -45,8 +42,8 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
     const tiles = [
         { key: 'orders', icon: <LuShoppingBag />, value: customer.ordersCount, label: 'Orders placed' },
         { key: 'spent', icon: <LuWallet />, value: formatPrice(customer.totalSpent), label: 'Total spent' },
-        { key: 'last-order', icon: <LuCalendarClock />, value: formatDate(customer.lastOrderAt), label: 'Last order' },
-        { key: 'registered', icon: <LuCalendarCheck />, value: formatDate(customer.registeredAt), label: 'Registered' },
+        { key: 'last-order', icon: <LuCalendarClock />, value: formatNullableDate(customer.lastOrderAt), label: 'Last order' },
+        { key: 'registered', icon: <LuCalendarCheck />, value: formatNullableDate(customer.registeredAt), label: 'Registered' },
     ];
 
     return (
@@ -71,9 +68,14 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
                     <div className={style['body__orders-list']}>
                         {Array.from({ length: 3 }).map((_, index) => (
                             <div key={index} className={style['body__order-row']}>
-                                <Skeleton width={90} height={16} />
-                                <Skeleton width={70} height={16} />
-                                <Skeleton width={60} height={20} />
+                                <div className={style['body__order-main']}>
+                                    <Skeleton width={90} height={16} />
+                                    <Skeleton width={50} height={13} />
+                                </div>
+                                <div className={style['body__order-meta']}>
+                                    <Skeleton width={60} height={16} />
+                                    <Skeleton width={70} height={20} />
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -91,16 +93,18 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
                                 to={`/admin/orders?order=${order.id}`}
                                 className={style['body__order-row']}
                             >
-                                <span className={style['body__order-number']}>#{order.orderId}</span>
-                                <span className={style['body__order-date']}>
-                                    {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                <span className={style['body__order-main']}>
+                                    <span className={style['body__order-number']}>#{order.orderId}</span>
+                                    <span className={style['body__order-date']}>{formatDate(order.createdAt, 'compact')}</span>
                                 </span>
-                                <span className={style['body__order-total']}>{formatPrice(order.totalAmount)}</span>
-                                <span
-                                    className={`${style['body__order-status']} ${style[`body__order-status--${order.status}`]}`}
-                                    data-status={order.status}
-                                >
-                                    {ORDER_STATUS_MAP[order.status]?.label ?? order.status}
+                                <span className={style['body__order-meta']}>
+                                    <span className={style['body__order-total']}>{formatPrice(order.totalAmount)}</span>
+                                    <span
+                                        className={`${style['body__order-status']} ${style[`body__order-status--${order.status}`]}`}
+                                        data-status={order.status}
+                                    >
+                                        {ORDER_STATUS_MAP[order.status]?.label ?? order.status}
+                                    </span>
                                 </span>
                             </Link>
                         ))}
