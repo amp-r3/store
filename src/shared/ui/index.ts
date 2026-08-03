@@ -26,4 +26,6 @@ export * from './rating-stars/RatingStars';
 export * from './segmented-tabs/SegmentedTabs';
 export * from './empty-state/EmptyState';
 export * from './section-header/SectionHeader';
+export * from './stat-tile/StatTile';
+export * from './stat-tile/StatTileSkeleton';
 export * from './button/Button';

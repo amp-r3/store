@@ -3,6 +3,7 @@ import Skeleton from 'react-loading-skeleton';
 import { FaPenNib, FaStar, FaThumbsUp, FaHourglassHalf } from 'react-icons/fa';
 
 import { ProductReview } from '@/entities/review';
+import { StatTile } from '@/shared/ui';
 
 import style from './user-reviews-header.module.scss';
 
@@ -57,17 +58,14 @@ export const UserReviewsHeader = ({ reviews, pendingCount, isLoading }: UserRevi
     return (
         <div className={style['reviews-header']}>
             {tiles.map((tile) => (
-                <div key={tile.key} className={style['reviews-header__tile']}>
-                    <div className={style['reviews-header__top']}>
-                        <span className={style['reviews-header__icon']} aria-hidden="true">
-                            {tile.icon}
-                        </span>
-                        <span className={style['reviews-header__value']}>
-                            {isLoading ? <Skeleton width={64} height={32} /> : tile.value}
-                        </span>
-                    </div>
-                    <span className={style['reviews-header__label']}>{tile.label}</span>
-                </div>
+                <StatTile
+                    key={tile.key}
+                    icon={tile.icon}
+                    label={tile.label}
+                    value={isLoading ? <Skeleton width={64} height={32} /> : tile.value}
+                    size="md"
+                    layout="column"
+                />
             ))}
         </div>
     );

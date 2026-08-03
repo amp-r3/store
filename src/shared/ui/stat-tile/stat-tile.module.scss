@@ -1,0 +1,118 @@
+@use '@/app/styles/index' as *;
+
+.stat-tile {
+  display: flex;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.stat-tile--row {
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: var(--background-component);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-tile--column {
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  background: var(--glass-background-subtle);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-lg;
+}
+
+.stat-tile--linked {
+  transition: border-color $transition-base $ease-in-out-smooth, transform $transition-base $ease-in-out-smooth;
+
+  &:hover {
+    border-color: var(--primary-accent);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.stat-tile__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-md;
+  background: rgba(var(--primary-accent-rgb), 0.12);
+  color: var(--primary-accent-light);
+}
+
+.stat-tile--column .stat-tile__icon {
+  color: var(--primary-accent);
+}
+
+.stat-tile--md .stat-tile__icon {
+  width: 44px;
+  height: 44px;
+  font-size: $fs-icon-lg;
+}
+
+.stat-tile--sm .stat-tile__icon {
+  width: 36px;
+  height: 36px;
+  font-size: $fs-base;
+}
+
+.stat-tile__body {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  min-width: 0;
+}
+
+.stat-tile__top {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.stat-tile__label {
+  font-size: $fs-xs;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.stat-tile--row .stat-tile__label {
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+}
+
+.stat-tile__value {
+  font-family: $font-display;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stat-tile--row .stat-tile__value {
+  font-size: $fs-lg;
+}
+
+.stat-tile--column .stat-tile__value {
+  font-size: $fs-xl;
+  font-weight: $fw-bold;
+  line-height: $lh-tight;
+}

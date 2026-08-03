@@ -6,7 +6,7 @@ import { LuShoppingBag, LuWallet, LuCalendarClock, LuCalendarCheck, LuPackageOpe
 import { AdminCustomer, useGetAllOrdersQuery } from '@/entities/admin';
 import { ORDER_STATUS_MAP } from '@/entities/order';
 import { formatPrice } from '@/shared/lib';
-import { EmptyState } from '@/shared/ui';
+import { EmptyState, StatTile } from '@/shared/ui';
 
 import style from './admin-customer-details-body.module.scss';
 
@@ -42,13 +42,14 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
         <div className={style['body']}>
             <div className={style['body__tiles']}>
                 {tiles.map((tile) => (
-                    <div key={tile.key} className={style['body__tile']}>
-                        <div className={style['body__tile-top']}>
-                            <span className={style['body__tile-icon']} aria-hidden="true">{tile.icon}</span>
-                            <span className={style['body__tile-value']}>{tile.value}</span>
-                        </div>
-                        <span className={style['body__tile-label']}>{tile.label}</span>
-                    </div>
+                    <StatTile
+                        key={tile.key}
+                        icon={tile.icon}
+                        label={tile.label}
+                        value={tile.value}
+                        size="sm"
+                        layout="column"
+                    />
                 ))}
             </div>
 
