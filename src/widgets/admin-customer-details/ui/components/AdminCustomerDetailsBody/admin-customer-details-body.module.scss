@@ -78,3 +78,26 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.body__activity-section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.body__activity-link {
+    align-self: flex-start;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--primary-accent);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: $focus-ring-width solid var(--focus-ring-color);
+        outline-offset: $focus-ring-offset;
+    }
+}

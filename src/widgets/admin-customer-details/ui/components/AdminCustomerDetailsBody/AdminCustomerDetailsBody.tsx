@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router';
-import { LuShoppingBag, LuWallet, LuCalendarClock, LuCalendarCheck, LuPackageOpen } from 'react-icons/lu';
+import { LuShoppingBag, LuWallet, LuCalendarClock, LuCalendarCheck, LuPackageOpen, LuScrollText } from 'react-icons/lu';
 
-import { AdminCustomer, useGetAllOrdersQuery } from '@/entities/admin';
+import { AdminCustomer, useGetAllOrdersQuery, useGetAdminAuditLogQuery, AuditLogList } from '@/entities/admin';
 import { ORDER_STATUS_MAP } from '@/entities/order';
 import { formatPrice } from '@/shared/lib';
 import { EmptyState, StatTile } from '@/shared/ui';
@@ -15,6 +15,7 @@ interface AdminCustomerDetailsBodyProps {
 }
 
 const RECENT_ORDERS_LIMIT = 5;
+const RECENT_ACTIVITY_LIMIT = 5;
 
 const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '—';
@@ -30,6 +31,16 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
     });
 
     const orders = data?.items ?? [];
+
+    const isAdmin = customer.role === 'admin';
+    // Only admins ever have audit-log rows tied to their id as actor — skip
+    // the request entirely for regular customers rather than firing a query
+    // that would always come back empty.
+    const { data: auditData, isLoading: isAuditLoading } = useGetAdminAuditLogQuery(
+        { page: 1, limit: RECENT_ACTIVITY_LIMIT, actorId: customer.id },
+        { skip: !isAdmin }
+    );
+    const auditEntries = auditData?.items ?? [];
 
     const tiles = [
         { key: 'orders', icon: <LuShoppingBag />, value: customer.ordersCount, label: 'Orders placed' },
@@ -96,6 +107,29 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
                     </div>
                 )}
             </div>
+
+            {isAdmin && (
+                <div className={style['body__activity-section']}>
+                    <h3 className={style['body__section-title']}>Admin activity</h3>
+
+                    {isAuditLoading ? (
+                        <AuditLogList entries={[]} isLoading limit={RECENT_ACTIVITY_LIMIT} compact />
+                    ) : auditEntries.length === 0 ? (
+                        <EmptyState
+                            icon={<LuScrollText />}
+                            title="No activity yet"
+                            text="Actions this admin takes will show up here."
+                        />
+                    ) : (
+                        <>
+                            <AuditLogList entries={auditEntries} isLoading={false} limit={RECENT_ACTIVITY_LIMIT} compact />
+                            <Link to={`/admin/audit?actor=${customer.id}`} className={style['body__activity-link']}>
+                                View all activity
+                            </Link>
+                        </>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
