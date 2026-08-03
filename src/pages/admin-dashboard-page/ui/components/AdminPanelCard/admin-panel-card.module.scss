@@ -1,0 +1,53 @@
+@use '@/app/styles/index' as *;
+@use '@/app/styles/surfaces' as *;
+
+.admin-panel-card {
+  @include panel;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  min-width: 0;
+}
+
+.admin-panel-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.admin-panel-card__title {
+  margin: 0;
+  font-family: $font-display;
+  font-size: $fs-md;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.admin-panel-card__controls {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.admin-panel-card__view-all {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--primary-accent);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.admin-panel-card__body {
+  min-width: 0;
+}

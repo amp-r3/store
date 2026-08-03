@@ -1,0 +1,58 @@
+@use '@/app/styles/index' as *;
+
+.admin-top-products-panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.admin-top-products-panel__row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  border-radius: $radius-md;
+  text-decoration: none;
+  color: inherit;
+  transition: background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.admin-top-products-panel__thumbnail {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-color-subtle);
+  object-fit: cover;
+}
+
+.admin-top-products-panel__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: $fs-sm;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-top-products-panel__metric {
+  flex-shrink: 0;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.admin-top-products-panel__metric--active {
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}

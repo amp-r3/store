@@ -1,0 +1,69 @@
+@use '@/app/styles/index' as *;
+
+.admin-low-stock-panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.admin-low-stock-panel__row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  border-radius: $radius-md;
+  text-decoration: none;
+  color: inherit;
+  transition: background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.admin-low-stock-panel__thumbnail {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-color-subtle);
+  object-fit: cover;
+}
+
+.admin-low-stock-panel__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: $fs-sm;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-low-stock-panel__size {
+  flex-shrink: 0;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+}
+
+.admin-low-stock-panel__stock {
+  flex-shrink: 0;
+  min-width: 24px;
+  text-align: right;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-low-stock-panel__stock--low {
+  color: var(--status-warning-text);
+}
+
+.admin-low-stock-panel__stock--empty {
+  color: var(--error-color);
+}

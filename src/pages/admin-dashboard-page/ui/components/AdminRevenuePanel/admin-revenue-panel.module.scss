@@ -1,0 +1,21 @@
+@use '@/app/styles/index' as *;
+
+.admin-revenue-panel__summary {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-sm;
+}
+
+.admin-revenue-panel__summary-value {
+  font-family: $font-display;
+  font-size: $fs-xl;
+  font-weight: $fw-bold;
+  color: var(--text-primary);
+}
+
+.admin-revenue-panel__summary-meta {
+  font-size: $fs-sm;
+  color: var(--text-muted);
+}

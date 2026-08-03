@@ -1,0 +1,56 @@
+@use '@/app/styles/index' as *;
+@use '@/app/styles/statuses' as status;
+
+.admin-recent-orders-panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.admin-recent-orders-panel__row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 0.7fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-md;
+  background: var(--background-component);
+  color: inherit;
+  text-decoration: none;
+  transition: background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.admin-recent-orders-panel__number {
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.admin-recent-orders-panel__date {
+  font-size: $fs-sm;
+  color: var(--text-muted);
+}
+
+.admin-recent-orders-panel__total {
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.admin-recent-orders-panel__status {
+  @include status.badge-base;
+  @include status.generate-modifiers;
+  justify-self: start;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
