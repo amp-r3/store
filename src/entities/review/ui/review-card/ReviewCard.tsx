@@ -9,7 +9,7 @@ import { ExpandableContent, RatingStars } from '@/shared/ui';
 import { ProductReview } from "@/entities/review";
 import { useAppSelector } from "@/shared/model";
 import { selectUser } from "@/entities/session";
-import { getErrorMessage } from "@/shared/lib";
+import { getErrorMessage, formatDate } from "@/shared/lib";
 
 interface ReviewCardProps {
     review: ProductReview;
@@ -130,11 +130,7 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
             <div className={style['review-card__meta']}>
                 <FaCalendarDay className={style['review-card__meta-icon']} aria-hidden="true" />
                 <time className={style['review-card__date']} dateTime={review.date}>
-                    {new Date(review.date).toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                    })}
+                    {formatDate(review.date, 'medium')}
                 </time>
                 {review.isEdited && <span className={style['review-card__edited']}>(edited)</span>}
             </div>

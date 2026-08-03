@@ -4,7 +4,7 @@ import { FaCalendarDay, FaThumbsUp, FaPen, FaTrash } from 'react-icons/fa';
 
 import { Modal, RatingStars } from '@/shared/ui';
 import { useHaptics } from '@/shared/lib/hooks';
-import { getErrorMessage } from '@/shared/lib';
+import { getErrorMessage, formatDate } from '@/shared/lib';
 import { useDeleteReviewMutation } from '@/entities/review';
 import { ProductReview, ReviewProductPreview } from '@/entities/review';
 
@@ -73,11 +73,7 @@ export const UserReviewCard = memo(({ review, product, onEdit }: UserReviewCardP
                     <div className={style['user-review-card__meta']}>
                         <FaCalendarDay className={style['user-review-card__meta-icon']} />
                         <time dateTime={review.date}>
-                            {new Date(review.date).toLocaleString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                            })}
+                            {formatDate(review.date, 'medium')}
                         </time>
                         {review.isEdited && (
                             <span className={style['user-review-card__edited']}>(edited)</span>

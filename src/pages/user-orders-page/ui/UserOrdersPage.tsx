@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router';
 
 import { useAppDispatch } from '@/shared/model';
 import { useMediaQuery, useHaptics } from '@/shared/lib/hooks';
-import { scrollToTop } from '@/shared/lib';
+import { scrollToTop, formatDate } from '@/shared/lib';
 import { OrdersList } from '@/widgets/orders-list';
 import { OrderDetails } from '@/widgets/order-details';
 import { CartProduct } from '@/entities/cart';
@@ -22,14 +22,7 @@ import {
 
 import { UserOrdersTabs, UserOrdersEmpty } from './components';
 
-const formatOrderDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+const formatOrderDate = (dateStr: string) => formatDate(dateStr, 'full');
 
 export const UserOrdersPage = () => {
     const dispatch = useAppDispatch();

@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { FaStar, FaRegStar, FaCalendarDay } from 'react-icons/fa';
 
 import { useHaptics } from '@/shared/lib/hooks';
+import { formatDate } from '@/shared/lib';
 import { ReviewProductPreview, UnreviewedPurchase } from '@/entities/review';
 
 import style from './pending-review-card.module.scss';
@@ -48,11 +49,7 @@ export const PendingReviewCard = memo(({ purchase, product, onRate }: PendingRev
                     <span className={style['pending-card__meta']}>
                         <FaCalendarDay className={style['pending-card__meta-icon']} />
                         Purchased{' '}
-                        {new Date(purchase.lastPurchasedAt).toLocaleString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                        })}
+                        {formatDate(purchase.lastPurchasedAt, 'medium')}
                         {purchase.purchaseCount > 1 && (
                             <span className={style['pending-card__repeat']}>
                                 bought {purchase.purchaseCount}&times;

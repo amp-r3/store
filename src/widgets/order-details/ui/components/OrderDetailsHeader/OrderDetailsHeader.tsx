@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { HiOutlineClipboardDocument, HiOutlineClipboardDocumentCheck, HiOutlineCalendar } from 'react-icons/hi2';
 import style from './order-details-header.module.scss';
 import { OrderStatus } from '@/entities/order';
+import { formatDate } from '@/shared/lib';
 
 interface OrderDetailsHeaderProps {
     orderId: string;
@@ -56,11 +57,7 @@ export const OrderDetailsHeader: FC<OrderDetailsHeaderProps> = ({
                 <div className={style['header__meta']}>
                     <HiOutlineCalendar className={style['header__meta-icon']} aria-hidden="true" />
                     <time dateTime={orderDate}>
-                        {new Date(orderDate).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                        })}
+                        {formatDate(orderDate, 'medium')}
                     </time>
                 </div>
             </div>
