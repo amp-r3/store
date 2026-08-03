@@ -1,0 +1,106 @@
+@use '@/app/styles/index' as *;
+
+.line-chart {
+  position: relative;
+  width: 100%;
+}
+
+.line-chart__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.line-chart__gridline {
+  stroke: var(--border-color-subtle);
+  stroke-width: 1;
+}
+
+.line-chart__y-label,
+.line-chart__x-label {
+  fill: var(--text-muted);
+  font-size: $fs-xs;
+  font-variant-numeric: tabular-nums;
+}
+
+.line-chart__y-label {
+  text-anchor: end;
+  dominant-baseline: middle;
+}
+
+.line-chart__area {
+  fill: var(--primary-accent);
+  opacity: 0.1;
+  stroke: none;
+}
+
+.line-chart__line {
+  fill: none;
+  stroke: var(--primary-accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.line-chart__marks {
+  transition: opacity $transition-base $ease-in-out-smooth;
+}
+
+.line-chart__marks--stale {
+  opacity: 0.6;
+  transition: opacity $transition-base $ease-in-out-smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-chart__marks,
+  .line-chart__marks--stale {
+    transition: none;
+  }
+}
+
+.line-chart__crosshair {
+  stroke: var(--border-color-strong);
+  stroke-width: 1;
+}
+
+.line-chart__active-dot {
+  fill: var(--primary-accent);
+  stroke: var(--background-component);
+  stroke-width: 2;
+}
+
+.line-chart__hit-area {
+  fill: transparent;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.line-chart__tooltip {
+  position: absolute;
+  top: $spacing-xs;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: $spacing-xxs $spacing-sm;
+  border-radius: $radius-md;
+  background: var(--background-component);
+  border: 1px solid var(--border-color-subtle);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(-50%);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.line-chart__tooltip-value {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+.line-chart__tooltip-label {
+  font-size: $fs-xs;
+  color: var(--text-secondary);
+}
