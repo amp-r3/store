@@ -1,0 +1,11 @@
+@use '@/app/styles/index' as *;
+
+.audit-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.audit-log-list--compact {
+  gap: $spacing-xs;
+}

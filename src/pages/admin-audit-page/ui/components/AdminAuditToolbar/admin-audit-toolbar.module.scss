@@ -1,0 +1,69 @@
+@use '@/app/styles/index' as *;
+
+.admin-audit-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  align-items: flex-end;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.admin-audit-toolbar__filter {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  font-size: $fs-xs;
+  color: var(--text-secondary);
+
+  select {
+    min-width: 180px;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    border: 1px solid var(--border-color-subtle);
+    background: var(--background-component);
+    color: var(--text-primary);
+    font-size: $fs-sm;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
+    }
+  }
+
+  @media (max-width: 600px) {
+    select {
+      width: 100%;
+    }
+  }
+}
+
+.admin-audit-toolbar__reset {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  border: 1px solid var(--border-color-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: $fs-sm;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--glass-background-subtle);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}

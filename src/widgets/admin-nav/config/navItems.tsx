@@ -1,5 +1,5 @@
 import type { IconType } from 'react-icons';
-import { LuLayoutDashboard, LuClipboardList, LuPackage, LuTag, LuUsers, LuStar, LuSettings } from 'react-icons/lu';
+import { LuLayoutDashboard, LuClipboardList, LuPackage, LuTag, LuUsers, LuStar, LuSettings, LuScrollText } from 'react-icons/lu';
 
 export interface AdminNavItem {
     id: 'dashboard' | 'orders' | 'products' | 'categories' | 'customers' | 'reviews' | 'settings' | 'audit';
@@ -20,4 +20,5 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     { id: 'customers', to: '/admin/customers', icon: LuUsers, label: 'Customers', shortLabel: 'Customers' },
     { id: 'reviews', to: '/admin/reviews', icon: LuStar, label: 'Reviews', shortLabel: 'Reviews' },
     { id: 'settings', to: '/admin/settings', icon: LuSettings, label: 'Settings', shortLabel: 'Settings' },
+    { id: 'audit', to: '/admin/audit', icon: LuScrollText, label: 'Audit log', shortLabel: 'Audit' },
 ];

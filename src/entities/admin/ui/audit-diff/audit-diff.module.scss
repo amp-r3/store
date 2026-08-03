@@ -1,0 +1,66 @@
+@use '@/app/styles/index' as *;
+
+.audit-diff {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.audit-diff__row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.6fr) minmax(0, 1.4fr);
+  gap: $spacing-sm;
+  font-size: $fs-sm;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-xxs;
+  }
+}
+
+.audit-diff__key {
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.audit-diff__values {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-xs;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.audit-diff__before {
+  color: var(--error-color);
+  text-decoration: line-through;
+}
+
+.audit-diff__after {
+  color: var(--success-color-dark);
+  font-weight: $fw-semibold;
+}
+
+.audit-diff__arrow {
+  color: var(--text-muted);
+}
+
+.audit-diff__pre {
+  margin: 0;
+  padding: $spacing-xs;
+  border-radius: $radius-sm;
+  background: var(--glass-background-subtle);
+  font-size: $fs-xs;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.audit-diff__empty {
+  margin: 0;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  font-style: italic;
+}
