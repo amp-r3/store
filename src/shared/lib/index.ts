@@ -1,4 +1,5 @@
 export * from './priceHelper';
+export * from './niceTicks';
 export * from './dateHelper';
 export * from './getErrorMessage';
 export * from './passwordRules';
