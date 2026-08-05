@@ -1,0 +1,49 @@
+@use './variables' as *;
+
+// ── Toolbar control (date input, threshold input, …) ────────────────────────
+// Matches the shared Select's `variant="toolbar"` metrics (min-height
+// $touch-target-min, $radius-md, $fs-sm, --background-component) so every
+// control in a filter row reads as one family.
+@mixin control-toolbar {
+    min-height: $touch-target-min;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    border: 1px solid var(--border-color-subtle);
+    background: var(--background-component);
+    color: var(--text-primary);
+    font-size: $fs-sm;
+    transition: border-color $transition-fast $ease-in-out-smooth;
+
+    &:hover {
+        border-color: var(--border-color);
+    }
+
+    &:focus-visible {
+        outline: $focus-ring-width solid var(--focus-ring-color);
+        outline-offset: $focus-ring-offset;
+    }
+}
+
+// ── Pill search input ─────────────────────────────────────────────────────
+// The rounded search-with-icon recipe repeated across the orders/products/
+// customers/reviews toolbars.
+@mixin control-search {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    padding-left: calc($spacing-md + $spacing-lg);
+    padding-right: calc($spacing-md + $spacing-lg);
+    border-radius: $radius-input;
+    border: 1px solid var(--border-color-subtle);
+    background: var(--background-component);
+    color: var(--text-primary);
+    font-size: $fs-sm;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:focus-visible {
+        outline: $focus-ring-width solid var(--focus-ring-color);
+        outline-offset: $focus-ring-offset;
+    }
+}

@@ -28,8 +28,14 @@
   width: 90vw;
   max-width: 400px;
   max-height: 85vh;
-  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-xl $spacing-lg;
   z-index: $z-index-modal;
+
+  @media (max-width: 480px) {
+    padding: $spacing-lg $spacing-md;
+  }
 
   &[data-state='open'] {
     animation: modalFadeIn $transition-layout $ease-out-expo;
@@ -63,6 +69,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
   gap: $spacing-sm;
   margin-bottom: $spacing-md;
   text-align: center;
@@ -90,15 +97,24 @@
 
 .description {
   margin: 0 0 $spacing-lg;
+  flex-shrink: 0;
   font-size: $fs-base;
   color: var(--text-muted);
   text-align: center;
   line-height: 1.5;
 }
 
+// flex: 1 1 auto lets this be the one region that shrinks/scrolls when the
+// form is taller than max-height allows — header/description/actions stay
+// full size. padding-top gives a FormField's floated label, which sits 4px
+// *above* its own box, room inside the scroll container instead of being
+// clipped by it (overflow-y:auto's scrollport is the padding box, so content
+// positioned above the content box with no padding buffer gets cut).
 .body {
+  flex: 1 1 auto;
+  min-height: 0;
   margin: 0 0 $spacing-lg;
-  max-height: 40vh;
+  padding-top: $spacing-sm;
   overflow-y: auto;
   font-size: $fs-sm;
   color: var(--text-secondary);
@@ -106,6 +122,7 @@
 
 .actions {
   display: flex;
+  flex-shrink: 0;
   gap: $spacing-sm;
   justify-content: flex-end;
 }
@@ -183,15 +200,15 @@
 .closeIconButton {
   font-family: inherit;
   border-radius: 100%;
-  height: 25px;
-  width: 25px;
+  height: $touch-target-min;
+  width: $touch-target-min;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
   position: absolute;
-  top: $spacing-sm;
-  right: $spacing-sm;
+  top: $spacing-xs;
+  right: $spacing-xs;
   background: transparent;
   border: none;
   cursor: pointer;

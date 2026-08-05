@@ -42,6 +42,7 @@ export const AdminProductRow = memo(({ product, onArchive, onRestore }: AdminPro
             className={`${style['admin-product-row']} ${product.isArchived ? style['admin-product-row--archived'] : ''}`}
         >
             <div className={style['admin-product-row__cell']}>
+                <span className={style['admin-product-row__cell-label']}>Product</span>
                 <img
                     className={style['admin-product-row__thumbnail']}
                     src={product.thumbnail ?? undefined}

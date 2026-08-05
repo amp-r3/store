@@ -107,6 +107,9 @@ export const AdminCustomersPage = () => {
     }, [customerId, customerFromList, customerByIdResult.isError, clearCustomerParam]);
 
     const hasActiveFilter = !!search || !!role;
+    // Search is always visible above the panel — only the collapsed
+    // filter (role) counts toward the disclosure's badge.
+    const activeFilterCount = role ? 1 : 0;
 
     return (
         <>
@@ -119,6 +122,7 @@ export const AdminCustomersPage = () => {
                 search={search}
                 role={role}
                 sort={sort}
+                activeFilterCount={activeFilterCount}
                 onSearchChange={handleSearchChange}
                 onRoleChange={handleRoleChange}
                 onSortChange={handleSortChange}

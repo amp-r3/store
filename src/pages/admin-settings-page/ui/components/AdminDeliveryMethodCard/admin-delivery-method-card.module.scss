@@ -13,13 +13,18 @@
   align-items: center;
   justify-content: space-between;
   gap: $spacing-md;
-  flex-wrap: wrap;
+  // nowrap on purpose: flex-wrap's line-break decision is based on each
+  // item's *unshrunk* preferred size, so with wrap allowed a long title
+  // pushed .toggle onto its own line even though the title (min-width: 0 +
+  // ellipsis) could always have shrunk to make room on one line.
+  flex-wrap: nowrap;
 }
 
 .admin-delivery-method-card__title-group {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
+  flex: 1 1 auto;
   min-width: 0;
 
   svg {
@@ -31,6 +36,10 @@
 
 .admin-delivery-method-card__title {
   margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-family: $font-display;
   font-size: $fs-md;
   font-weight: $fw-semibold;
@@ -48,9 +57,24 @@
   padding: $spacing-xxs $spacing-sm;
 }
 
+.admin-delivery-method-card__toggle {
+  flex-shrink: 0;
+}
+
 .admin-delivery-method-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.admin-delivery-method-card__fields {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   gap: $spacing-md;
   align-items: start;
+}
+
+.admin-delivery-method-card__actions {
+  display: flex;
+  justify-content: flex-end;
 }

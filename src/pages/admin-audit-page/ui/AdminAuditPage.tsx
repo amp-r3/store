@@ -83,7 +83,7 @@ export const AdminAuditPage = () => {
         scrollToTop();
     }, []);
 
-    const hasActiveFilter = !!action || !!entityType || !!actorId;
+    const activeFilterCount = [!!action, !!entityType, !!actorId].filter(Boolean).length;
 
     return (
         <>
@@ -97,7 +97,7 @@ export const AdminAuditPage = () => {
                 entityType={entityType}
                 actorId={actorId}
                 adminOptions={adminOptions}
-                hasActiveFilter={hasActiveFilter}
+                activeFilterCount={activeFilterCount}
                 onActionChange={handleActionChange}
                 onEntityTypeChange={handleEntityTypeChange}
                 onActorIdChange={handleActorIdChange}
@@ -109,8 +109,8 @@ export const AdminAuditPage = () => {
             {!isLoading && entries.length === 0 ? (
                 <EmptyState
                     icon={<LuScrollText />}
-                    title={hasActiveFilter ? 'No matching entries' : 'No activity yet'}
-                    text={hasActiveFilter
+                    title={activeFilterCount > 0 ? 'No matching entries' : 'No activity yet'}
+                    text={activeFilterCount > 0
                         ? 'Try a different filter combination.'
                         : 'Admin actions across the store will show up here.'}
                 />

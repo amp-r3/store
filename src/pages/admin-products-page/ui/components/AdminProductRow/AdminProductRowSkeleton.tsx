@@ -15,19 +15,24 @@ export const AdminProductRowSkeleton = ({ count = 1 }: AdminProductRowSkeletonPr
             {skeletons.map((_, index) => (
                 <article key={index} className={style['admin-product-row']} style={{ pointerEvents: 'none' }}>
                     <div className={style['admin-product-row__cell']}>
+                        <span className={style['admin-product-row__cell-label']}>Product</span>
                         <Skeleton width={44} height={44} borderRadius={8} />
                         <Skeleton width={140} height={16} />
                     </div>
                     <div className={style['admin-product-row__cell']}>
+                        <span className={style['admin-product-row__cell-label']}>SKU</span>
                         <Skeleton width={70} height={16} />
                     </div>
                     <div className={style['admin-product-row__cell']}>
+                        <span className={style['admin-product-row__cell-label']}>Category</span>
                         <Skeleton width={80} height={16} />
                     </div>
                     <div className={style['admin-product-row__cell']}>
+                        <span className={style['admin-product-row__cell-label']}>Price</span>
                         <Skeleton width={60} height={16} />
                     </div>
                     <div className={style['admin-product-row__cell']}>
+                        <span className={style['admin-product-row__cell-label']}>Rating</span>
                         <Skeleton width={50} height={16} />
                     </div>
                     <div className={style['admin-product-row__actions']}>

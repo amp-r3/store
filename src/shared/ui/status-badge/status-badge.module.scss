@@ -1,0 +1,22 @@
+@use '@/app/styles/index' as *;
+@use '@/app/styles/statuses' as status;
+
+.badge {
+  @include status.badge-base;
+  @include status.generate-modifiers;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badgeCompact {
+  gap: $spacing-xxs;
+  padding: $spacing-xs $spacing-sm;
+  font-size: $fs-xs;
+
+  &::before {
+    width: 6px;
+    height: 6px;
+  }
+}

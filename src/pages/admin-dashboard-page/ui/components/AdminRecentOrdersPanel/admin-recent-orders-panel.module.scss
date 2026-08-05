@@ -1,5 +1,4 @@
 @use '@/app/styles/index' as *;
-@use '@/app/styles/statuses' as status;
 
 .admin-recent-orders-panel__list {
   display: flex;
@@ -8,9 +7,9 @@
 }
 
 .admin-recent-orders-panel__row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: $spacing-sm;
   padding: $spacing-sm $spacing-md;
   border: 1px solid var(--border-color-subtle);
@@ -30,6 +29,8 @@
   }
 }
 
+// The identifying group — never sacrificed for the summary group, so the
+// order number always stays readable. Only the date shrinks.
 .admin-recent-orders-panel__main {
   display: flex;
   flex-direction: column;
@@ -37,38 +38,33 @@
   min-width: 0;
 }
 
+// The non-essential group — the badge stacks under the total instead of
+// competing with .__main on the same line, so it never forces the order
+// number to ellipsize first.
 .admin-recent-orders-panel__meta {
   display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $spacing-xxs;
   min-width: 0;
 }
 
 .admin-recent-orders-panel__number {
   font-weight: $fw-semibold;
   color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .admin-recent-orders-panel__date {
   font-size: $fs-xs;
   color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .admin-recent-orders-panel__total {
   font-weight: $fw-semibold;
   color: var(--text-primary);
-  white-space: nowrap;
-}
-
-.admin-recent-orders-panel__status {
-  @include status.badge-base($compact: true);
-  @include status.generate-modifiers;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }

@@ -38,7 +38,7 @@ export const AdminOrderStatusPanel = () => {
                             </span>
                             <span className={style['admin-order-status-panel__track']}>
                                 <span
-                                    className={`${style['admin-order-status-panel__bar']} ${style[`admin-order-status-panel__bar--${status}`]}`}
+                                    className={style['admin-order-status-panel__bar']}
                                     data-status={status}
                                     style={{ width: `${(count / maxCount) * 100}%` }}
                                 />

@@ -13,6 +13,7 @@ interface AdminLowStockRowProps {
 export const AdminLowStockRow = memo(({ item }: AdminLowStockRowProps) => (
     <article role="listitem" className={style['admin-low-stock-row']}>
         <div className={style['admin-low-stock-row__cell']}>
+            <span className={style['admin-low-stock-row__cell-label']}>Product</span>
             <img
                 className={style['admin-low-stock-row__thumbnail']}
                 src={item.thumbnail ?? undefined}

@@ -13,6 +13,7 @@ import {
 } from '@/entities/order';
 import { useUpdateOrderStatusMutation, OrderStatusTransitions } from '@/entities/admin';
 import { formatPrice, formatDate } from '@/shared/lib';
+import { StatusBadge } from '@/shared/ui';
 
 import style from './admin-order-row.module.scss';
 
@@ -61,17 +62,17 @@ export const AdminOrderRow = memo(({ order, transitions, onOpenDetails }: AdminO
             </div>
 
             <div className={style['admin-order-row__cell']}>
-                <span className={style['admin-order-row__cell-label']}>Order status</span>
-                <span
-                    className={`${style['admin-order-row__status-badge']} ${style[`admin-order-row__status-badge--${order.status}`]}`}
-                    data-status={order.status}
-                >
-                    {ORDER_STATUS_MAP[order.status]?.label ?? order.status}
-                </span>
+                <span className={style['admin-order-row__cell-label']}>Status</span>
+                <StatusBadge compact status={order.status} label={ORDER_STATUS_MAP[order.status]?.label ?? order.status} />
             </div>
 
             <div className={style['admin-order-row__cell']}>
+                {/* The Select's own label already gives the control its accessible
+                    name ("Payment status") — this mirrors it visually only, so a
+                    screen reader isn't told "Payment status" twice in a row. */}
+                <span className={style['admin-order-row__cell-label']} aria-hidden="true">Payment</span>
                 <OrderStatusSelect<PaymentStatus>
+                    compact
                     label="Payment status"
                     value={order.paymentStatus}
                     options={PAYMENT_STATUS_OPTIONS}
@@ -83,7 +84,9 @@ export const AdminOrderRow = memo(({ order, transitions, onOpenDetails }: AdminO
             </div>
 
             <div className={style['admin-order-row__cell']}>
+                <span className={style['admin-order-row__cell-label']} aria-hidden="true">Delivery</span>
                 <OrderStatusSelect<DeliveryStatus>
+                    compact
                     label="Delivery status"
                     value={order.deliveryStatus}
                     options={DELIVERY_STATUS_OPTIONS}

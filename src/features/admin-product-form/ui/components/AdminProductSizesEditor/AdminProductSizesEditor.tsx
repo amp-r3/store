@@ -100,6 +100,7 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
                 />
                 <FormField
                     label="Stock"
+                    showStepper
                     type="number"
                     min={0}
                     step="1"

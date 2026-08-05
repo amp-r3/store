@@ -66,6 +66,9 @@ export const AdminProductsPage = () => {
     }, [restoreProduct]);
 
     const hasActiveFilter = !!search || includeArchived;
+    // Search is always visible above the panel — only the collapsed
+    // filter (archived toggle) counts toward the disclosure's badge.
+    const activeFilterCount = includeArchived ? 1 : 0;
 
     return (
         <>
@@ -78,6 +81,7 @@ export const AdminProductsPage = () => {
             <AdminProductsToolbar
                 search={search}
                 includeArchived={includeArchived}
+                activeFilterCount={activeFilterCount}
                 onSearchChange={handleSearchChange}
                 onIncludeArchivedChange={handleIncludeArchivedChange}
             />

@@ -1,5 +1,6 @@
-import { InputHTMLAttributes, ReactNode, forwardRef, useId, useState } from "react";
+import { InputHTMLAttributes, ReactNode, forwardRef, useId, useRef, useState } from "react";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import { LuMinus, LuPlus } from "react-icons/lu";
 import style from './form-field.module.scss';
 
 export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -12,19 +13,42 @@ export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   optional?: boolean;
   icon?: ReactNode;
   placeholder?: string;
+  /** `type="number"` only — a muted unit glyph rendered inline, right of the value (e.g. "%", "kg", "cm"). */
+  suffix?: ReactNode;
+  /** `type="number"` only — renders −/+ buttons that step the native input and dispatch a real `input` event, so react-hook-form's registered onChange still fires. */
+  showStepper?: boolean;
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, description, warning, id, className, optional, icon, placeholder, type = 'text', ...props }, ref) => {
+  ({ label, error, description, warning, id, className, optional, icon, placeholder, suffix, showStepper, type = 'text', ...props }, ref) => {
     const generatedId = useId();
     const inputId = id || generatedId;
     const errorId = `${inputId}-error`;
     const descriptionId = `${inputId}-description`;
     const warningId = `${inputId}-warning`;
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const isPasswordType = type === 'password';
     const inputType = isPasswordType ? (isPasswordVisible ? 'text' : 'password') : type;
+
+    const setRefs = (node: HTMLInputElement | null) => {
+      inputRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    };
+
+    const handleStep = (direction: 1 | -1) => {
+      const node = inputRef.current;
+      if (!node) return;
+      if (direction === 1) node.stepUp();
+      else node.stepDown();
+      // stepUp/stepDown set .value through the browser's internal algorithm,
+      // bypassing the setter React's synthetic event system tracks — a plain
+      // dispatched 'input' event is what makes react-hook-form's registered
+      // onChange (and any other native input listener) see the new value.
+      node.dispatchEvent(new Event('input', { bubbles: true }));
+    };
 
     // `{...props}` is spread onto the input below, so a caller-supplied
     // aria-describedby must be merged here rather than overwritten by it.
@@ -51,16 +75,30 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             </span>
           )}
 
+          {showStepper && (
+            <button
+              type="button"
+              className={style.stepperButton}
+              tabIndex={-1}
+              disabled={props.disabled}
+              onClick={() => handleStep(-1)}
+              aria-label={`Decrease ${label}`}
+            >
+              <LuMinus aria-hidden="true" />
+            </button>
+          )}
+
           <div className={style.floatGroup}>
             <input
               id={inputId}
-              ref={ref}
+              ref={setRefs}
               placeholder=" "
               className={[
                 style.input,
                 icon ? style.inputWithIcon : '',
                 error ? style.inputError : '',
                 optional ? style.inputOptional : '',
+                showStepper ? style.inputCentered : '',
                 className || '',
               ].filter(Boolean).join(' ')}
               aria-invalid={!!error}
@@ -85,6 +123,25 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
               </span>
             )}
           </div>
+
+          {suffix && (
+            <span className={style.suffixSlot} aria-hidden="true">
+              {suffix}
+            </span>
+          )}
+
+          {showStepper && (
+            <button
+              type="button"
+              className={style.stepperButton}
+              tabIndex={-1}
+              disabled={props.disabled}
+              onClick={() => handleStep(1)}
+              aria-label={`Increase ${label}`}
+            >
+              <LuPlus aria-hidden="true" />
+            </button>
+          )}
 
           {isPasswordType && (
             <button

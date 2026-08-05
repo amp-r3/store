@@ -3,7 +3,7 @@ import { IoClose, IoSearchOutline } from 'react-icons/io5';
 
 import { useDebounce } from '@/shared/lib/hooks';
 import { AdminReviewSort } from '@/entities/admin';
-import { Select } from '@/shared/ui';
+import { Select, FilterPanel } from '@/shared/ui';
 
 import style from './admin-reviews-toolbar.module.scss';
 
@@ -14,8 +14,10 @@ const SORT_OPTIONS: { value: AdminReviewSort; label: string }[] = [
     { value: 'most_helpful', label: 'Most helpful' },
 ];
 
+// Radix Select reserves an empty string value to mean "no selection" — 'all'
+// is the sentinel mapped back to undefined at the onValueChange boundary below.
 const RATING_OPTIONS = [
-    { value: '', label: 'All ratings' },
+    { value: 'all', label: 'All ratings' },
     ...[5, 4, 3, 2, 1].map((stars) => ({ value: String(stars), label: `${stars} star${stars === 1 ? '' : 's'}` })),
 ];
 
@@ -23,6 +25,7 @@ interface AdminReviewsToolbarProps {
     search: string;
     rating: number | undefined;
     sort: AdminReviewSort;
+    activeFilterCount: number;
     onSearchChange: (search: string) => void;
     onRatingChange: (rating: number | undefined) => void;
     onSortChange: (sort: AdminReviewSort) => void;
@@ -32,6 +35,7 @@ export const AdminReviewsToolbar = ({
     search,
     rating,
     sort,
+    activeFilterCount,
     onSearchChange,
     onRatingChange,
     onSortChange,
@@ -65,34 +69,37 @@ export const AdminReviewsToolbar = ({
     };
 
     return (
-        <div className={style['admin-reviews-toolbar']}>
-            <form className={style['admin-reviews-toolbar__search']} onSubmit={handleSubmit}>
-                <IoSearchOutline className={style['admin-reviews-toolbar__search-icon']} aria-hidden="true" />
-                <input
-                    type="search"
-                    value={searchInput}
-                    onChange={(event) => setSearchInput(event.target.value)}
-                    placeholder="Search by product"
-                    aria-label="Search by product"
-                />
-                {searchInput && (
-                    <button
-                        type="button"
-                        className={style['admin-reviews-toolbar__clear']}
-                        onClick={handleClear}
-                        aria-label="Clear search"
-                    >
-                        <IoClose />
-                    </button>
-                )}
-            </form>
-
+        <FilterPanel
+            activeCount={activeFilterCount}
+            search={(
+                <form className={style['admin-reviews-toolbar__search']} onSubmit={handleSubmit}>
+                    <IoSearchOutline className={style['admin-reviews-toolbar__search-icon']} aria-hidden="true" />
+                    <input
+                        type="search"
+                        value={searchInput}
+                        onChange={(event) => setSearchInput(event.target.value)}
+                        placeholder="Search by product"
+                        aria-label="Search by product"
+                    />
+                    {searchInput && (
+                        <button
+                            type="button"
+                            className={style['admin-reviews-toolbar__clear']}
+                            onClick={handleClear}
+                            aria-label="Clear search"
+                        >
+                            <IoClose />
+                        </button>
+                    )}
+                </form>
+            )}
+        >
             <Select
                 variant="toolbar"
                 label="Rating"
-                value={rating !== undefined ? String(rating) : ''}
+                value={rating !== undefined ? String(rating) : 'all'}
                 options={RATING_OPTIONS}
-                onChange={(event) => onRatingChange(event.target.value ? Number(event.target.value) : undefined)}
+                onValueChange={(value) => onRatingChange(value === 'all' ? undefined : Number(value))}
             />
 
             <Select
@@ -100,8 +107,8 @@ export const AdminReviewsToolbar = ({
                 label="Sort by"
                 value={sort}
                 options={SORT_OPTIONS}
-                onChange={(event) => onSortChange(event.target.value as AdminReviewSort)}
+                onValueChange={(value) => onSortChange(value as AdminReviewSort)}
             />
-        </div>
+        </FilterPanel>
     );
 };

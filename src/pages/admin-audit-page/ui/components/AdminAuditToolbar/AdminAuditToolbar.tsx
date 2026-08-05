@@ -1,5 +1,5 @@
 import { AUDIT_ACTIONS, AUDIT_ACTION_LABELS, AUDIT_ENTITY_TYPES, AUDIT_ENTITY_LABELS } from '@/entities/admin';
-import { Select } from '@/shared/ui';
+import { Select, FilterPanel } from '@/shared/ui';
 
 import style from './admin-audit-toolbar.module.scss';
 
@@ -8,7 +8,7 @@ interface AdminAuditToolbarProps {
     entityType: string;
     actorId: string;
     adminOptions: { value: string; label: string }[];
-    hasActiveFilter: boolean;
+    activeFilterCount: number;
     onActionChange: (action: string) => void;
     onEntityTypeChange: (entityType: string) => void;
     onActorIdChange: (actorId: string) => void;
@@ -20,47 +20,49 @@ export const AdminAuditToolbar = ({
     entityType,
     actorId,
     adminOptions,
-    hasActiveFilter,
+    activeFilterCount,
     onActionChange,
     onEntityTypeChange,
     onActorIdChange,
     onResetFilters,
 }: AdminAuditToolbarProps) => (
-    <div className={style['admin-audit-toolbar']}>
+    // Radix Select reserves an empty string value to mean "no selection" —
+    // 'all' is the sentinel mapped back to '' at each onValueChange boundary.
+    <FilterPanel activeCount={activeFilterCount}>
         <Select
             variant="toolbar"
             label="Action"
-            value={action}
+            value={action || 'all'}
             options={[
-                { value: '', label: 'All actions' },
+                { value: 'all', label: 'All actions' },
                 ...AUDIT_ACTIONS.map((value) => ({ value, label: AUDIT_ACTION_LABELS[value] ?? value })),
             ]}
-            onChange={(event) => onActionChange(event.target.value)}
+            onValueChange={(value) => onActionChange(value === 'all' ? '' : value)}
         />
 
         <Select
             variant="toolbar"
             label="Entity type"
-            value={entityType}
+            value={entityType || 'all'}
             options={[
-                { value: '', label: 'All types' },
+                { value: 'all', label: 'All types' },
                 ...AUDIT_ENTITY_TYPES.map((value) => ({ value, label: AUDIT_ENTITY_LABELS[value] ?? value })),
             ]}
-            onChange={(event) => onEntityTypeChange(event.target.value)}
+            onValueChange={(value) => onEntityTypeChange(value === 'all' ? '' : value)}
         />
 
         <Select
             variant="toolbar"
             label="Admin"
-            value={actorId}
-            options={[{ value: '', label: 'All admins' }, ...adminOptions]}
-            onChange={(event) => onActorIdChange(event.target.value)}
+            value={actorId || 'all'}
+            options={[{ value: 'all', label: 'All admins' }, ...adminOptions]}
+            onValueChange={(value) => onActorIdChange(value === 'all' ? '' : value)}
         />
 
-        {hasActiveFilter && (
+        {activeFilterCount > 0 && (
             <button type="button" className={style['admin-audit-toolbar__reset']} onClick={onResetFilters}>
                 Reset filters
             </button>
         )}
-    </div>
+    </FilterPanel>
 );

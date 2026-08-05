@@ -15,12 +15,15 @@ export const AdminCategoryRowSkeleton = ({ count = 1 }: AdminCategoryRowSkeleton
             {skeletons.map((_, index) => (
                 <article key={index} className={style['admin-category-row']} style={{ pointerEvents: 'none' }}>
                     <div className={style['admin-category-row__cell']}>
+                        <span className={style['admin-category-row__cell-label']}>Name</span>
                         <Skeleton width={120} height={16} />
                     </div>
                     <div className={style['admin-category-row__cell']}>
+                        <span className={style['admin-category-row__cell-label']}>Slug</span>
                         <Skeleton width={100} height={14} />
                     </div>
                     <div className={style['admin-category-row__cell']}>
+                        <span className={style['admin-category-row__cell-label']}>Products</span>
                         <Skeleton width={30} height={14} />
                     </div>
                     <div className={style['admin-category-row__actions']}>

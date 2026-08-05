@@ -6,7 +6,7 @@ import { LuShoppingBag, LuWallet, LuCalendarClock, LuCalendarCheck, LuPackageOpe
 import { AdminCustomer, useGetAllOrdersQuery, useGetAdminAuditLogQuery, AuditLogList } from '@/entities/admin';
 import { ORDER_STATUS_MAP } from '@/entities/order';
 import { formatPrice, formatDate } from '@/shared/lib';
-import { EmptyState, StatTile } from '@/shared/ui';
+import { EmptyState, StatTile, StatusBadge } from '@/shared/ui';
 
 import style from './admin-customer-details-body.module.scss';
 
@@ -99,12 +99,11 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
                                 </span>
                                 <span className={style['body__order-meta']}>
                                     <span className={style['body__order-total']}>{formatPrice(order.totalAmount)}</span>
-                                    <span
-                                        className={`${style['body__order-status']} ${style[`body__order-status--${order.status}`]}`}
-                                        data-status={order.status}
-                                    >
-                                        {ORDER_STATUS_MAP[order.status]?.label ?? order.status}
-                                    </span>
+                                    <StatusBadge
+                                        compact
+                                        status={order.status}
+                                        label={ORDER_STATUS_MAP[order.status]?.label ?? order.status}
+                                    />
                                 </span>
                             </Link>
                         ))}

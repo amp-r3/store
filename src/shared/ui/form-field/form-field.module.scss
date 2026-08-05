@@ -198,6 +198,65 @@ $label-notch-padding : $spacing-xxs;
 
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Suffix slot (unit glyph — %, kg, cm)
+// ─────────────────────────────────────────────────────────────────────────────
+
+.suffixSlot {
+  flex-shrink: 0;
+  margin-right: $spacing-md;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Stepper buttons (−/+, number fields only)
+// ─────────────────────────────────────────────────────────────────────────────
+
+.stepperButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  margin: 0 $spacing-xs;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: $radius-circle;
+  transition:
+    color $transition-fast $ease-in-out-smooth,
+    background $transition-fast $ease-in-out-smooth;
+
+  &:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--glass-background-strong);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: -2px;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Password toggle
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -283,6 +342,10 @@ $label-notch-padding : $spacing-xxs;
   &:focus {
     opacity: 1;
   }
+}
+
+.inputCentered {
+  text-align: center;
 }
 
 

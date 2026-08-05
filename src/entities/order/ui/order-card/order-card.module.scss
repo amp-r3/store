@@ -1,5 +1,4 @@
 @use '@/app/styles/index' as *;
-@use '@/app/styles/statuses' as status;
 
 .orderCard {
   position: relative;
@@ -113,11 +112,6 @@
   font-weight: $fw-bold;
   letter-spacing: $letter-spacing-tight;
   color: var(--text-primary);
-}
-
-.orderStatus {
-  @include status.badge-base;
-  @include status.generate-modifiers;
 }
 
 .thumbnails {

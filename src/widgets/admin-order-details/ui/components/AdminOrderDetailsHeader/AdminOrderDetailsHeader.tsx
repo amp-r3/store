@@ -1,7 +1,8 @@
 import { FC, useState } from 'react';
 import { HiOutlineClipboardDocument, HiOutlineClipboardDocumentCheck, HiOutlineCalendar } from 'react-icons/hi2';
 import style from './admin-order-details-header.module.scss';
-import { OrderStatus } from '@/entities/order';
+import { OrderStatus, ORDER_STATUS_MAP } from '@/entities/order';
+import { StatusBadge } from '@/shared/ui';
 
 interface AdminOrderDetailsHeaderProps {
     orderId: string;
@@ -80,12 +81,11 @@ export const AdminOrderDetailsHeader: FC<AdminOrderDetailsHeaderProps> = ({
                         Updating...
                     </div>
                 )}
-                <div
-                    className={`${style['header__status']} ${style[`header__status--${orderStatus}`]}`}
-                    aria-label={`Order status: ${orderStatus}`}
-                >
-                    {orderStatus}
-                </div>
+                <StatusBadge
+                    status={orderStatus}
+                    label={ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}
+                    ariaLabel={`Order status: ${ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}`}
+                />
             </div>
         </header>
     );

@@ -1,61 +1,33 @@
 @use '@/app/styles/index' as *;
 @use '@/app/styles/surfaces' as *;
+@use '@/app/styles/admin-table' as table;
 
 // Tracks come from --admin-table-grid, set once on the .admin-reviews-table
 // wrapper this row always renders inside of, so the header row and every
 // data row (including the loading skeleton) share the exact same columns.
 .admin-review-row {
-  display: grid;
-  grid-template-columns: var(--admin-table-grid);
-  gap: $spacing-md;
-  align-items: center;
-  padding: $spacing-md;
-  background: var(--background-component);
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr 1fr;
-    gap: $spacing-xs $spacing-sm;
-
-    > :first-child,
-    > :nth-child(3),
-    > .admin-review-row__actions {
-      grid-column: 1 / -1;
-    }
-  }
+  @include table.row;
 }
 
 .admin-review-row__cell {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xxs;
-  min-width: 0;
+  @include table.cell;
+
+  // Pinned to row 1 with the actions trigger overlaid on its right edge
+  // (see .admin-review-row__actions below).
+  &:first-child {
+    @include table.card-heading;
+  }
+
+  // Rating and the review text each earn their own full-width row instead
+  // of pairing — a 3-line clamped paragraph needs more than half a card.
+  &:nth-child(2),
+  &:nth-child(3) {
+    @include table.cell-full;
+  }
 }
 
 .admin-review-row__cell-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-
-  @media (max-width: 1024px) {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 0;
-    clip: auto;
-    overflow: visible;
-    font-size: $fs-xs;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: $letter-spacing-wide;
-  }
+  @include table.cell-label;
 }
 
 .admin-review-row__product-link {
@@ -106,7 +78,7 @@
 }
 
 .admin-review-row__verified-badge {
-  @include chip(var(--success-background), var(--success-color-dark), $spacing-xs);
+  @include chip(var(--status-success-bg), var(--status-success-text), $spacing-xs);
 }
 
 .admin-review-row__date {
@@ -117,4 +89,5 @@
 .admin-review-row__actions {
   display: flex;
   justify-content: flex-end;
+  @include table.card-actions;
 }

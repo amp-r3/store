@@ -1,5 +1,4 @@
 @use '@/app/styles/index' as *;
-@use '@/app/styles/statuses' as status;
 
 .body {
     display: flex;
@@ -85,15 +84,6 @@
 .body__order-total {
     font-weight: $fw-semibold;
     color: var(--text-primary);
-    white-space: nowrap;
-}
-
-.body__order-status {
-    @include status.badge-base($compact: true);
-    @include status.generate-modifiers;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
 }
 

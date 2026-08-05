@@ -1,4 +1,5 @@
 @use '@/app/styles/index' as *;
+@use '@/app/styles/statuses' as status;
 
 .wrapper {
   display: flex;
@@ -20,6 +21,17 @@
   }
 }
 
+// A badge select (order/payment/delivery status) sits inline in a table cell
+// — it should never claim the wrapper's full block width or stack a label
+// above itself the way form/toolbar variants do. align-self keeps it sized to
+// its content instead of stretching to fill a flex-column parent's cross axis,
+// so it reads as the same content-sized pill as a plain StatusBadge next to it.
+.wrapperBadge {
+  width: auto;
+  gap: 0;
+  align-self: flex-start;
+}
+
 .label {
   display: flex;
   align-items: center;
@@ -37,65 +49,43 @@
   color: var(--text-muted);
 }
 
-.controlWrapper {
-  position: relative;
+// ── form / toolbar trigger ───────────────────────────────────────────────
+.control {
+  appearance: none;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
   width: 100%;
   min-height: 56px;
   background: var(--background-glass-base);
   border: 1px solid var(--border-color);
   border-radius: $radius-input;
   box-shadow: var(--shadow-xs);
-  transition: border-color $transition-fast $ease-in-out-smooth, box-shadow $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
-
-  &:hover:not(.controlWrapperError) {
-    border-color: var(--border-color-strong);
-  }
-
-  &:focus-within:not(.controlWrapperError) {
-    background: var(--background-component);
-    border-color: var(--primary-accent);
-    box-shadow: var(--shadow-focus-input);
-  }
-}
-
-.controlWrapperError {
-  border-color: rgba(var(--status-danger-rgb), 0.5);
-
-  &:focus-within {
-    border-color: rgba(var(--status-danger-rgb), 0.65);
-    box-shadow: 0 0 0 3px rgba(var(--status-danger-rgb), 0.08);
-  }
-}
-
-.controlWrapperToolbar {
-  width: auto;
-  min-width: 160px;
-  min-height: $touch-target-min;
-  background: var(--background-component);
-  border-color: var(--border-color-subtle);
-  border-radius: $radius-md;
-
-  &:hover:not(.controlWrapperError) {
-    border-color: var(--border-color);
-  }
-}
-
-.control {
-  flex: 1;
-  width: 100%;
-  min-width: 0;
-  appearance: none;
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
+  padding: $spacing-sm $spacing-md;
   font-family: $font-primary;
   font-size: $fs-base;
   font-weight: $fw-normal;
   color: var(--text-primary);
-  padding: $spacing-sm $spacing-xl $spacing-sm $spacing-md;
+  cursor: pointer;
+  text-align: left;
+  outline: none;
+  transition: border-color $transition-fast $ease-in-out-smooth, box-shadow $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
+
+  &:hover:not(:disabled):not(.controlError) {
+    border-color: var(--border-color-strong);
+  }
+
+  &[data-state='open']:not(.controlError),
+  &:focus-visible:not(.controlError) {
+    background: var(--background-component);
+    border-color: var(--primary-accent);
+    box-shadow: var(--shadow-focus-input);
+  }
+
+  &[data-placeholder] .value {
+    color: var(--text-muted);
+  }
 
   &:disabled {
     cursor: not-allowed;
@@ -103,16 +93,226 @@
   }
 }
 
+.controlError {
+  border-color: rgba(var(--status-danger-rgb), 0.5);
+
+  &[data-state='open'],
+  &:focus-visible {
+    border-color: rgba(var(--status-danger-rgb), 0.65);
+    box-shadow: 0 0 0 3px rgba(var(--status-danger-rgb), 0.08);
+  }
+}
+
 .controlToolbar {
+  width: auto;
+  min-width: 160px;
+  min-height: $touch-target-min;
+  background: var(--background-component);
+  border-color: var(--border-color-subtle);
+  border-radius: $radius-md;
   font-size: $fs-sm;
+
+  &:hover:not(:disabled):not(.controlError) {
+    border-color: var(--border-color);
+  }
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
 }
 
 .chevron {
-  position: absolute;
-  right: $spacing-md;
+  display: flex;
+  flex-shrink: 0;
   color: var(--text-muted);
-  pointer-events: none;
   font-size: $fs-icon-sm;
+  transition: transform $transition-fast $ease-in-out-smooth;
+}
+
+.control[data-state='open'] .chevron {
+  transform: rotate(180deg);
+}
+
+// ── badge trigger (order/payment/delivery status) ───────────────────────
+.controlBadge {
+  @include status.badge-base;
+  @include status.generate-modifiers;
+  appearance: none;
+  font-family: $font-primary;
+  cursor: pointer;
+  outline: none;
+  max-width: 100%;
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.controlBadgeCompact {
+  gap: $spacing-xxs;
+  padding: $spacing-xs $spacing-sm;
+  font-size: $fs-xs;
+
+  &::before {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+.valueBadge {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevronBadge {
+  display: flex;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+// ── popup ─────────────────────────────────────────────────────────────────
+.content {
+  background: var(--glass-background-strong);
+  backdrop-filter: $backdrop-blur;
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-lg);
+  // Select portals into #modal-root alongside every Drawer/Dialog, so it
+  // needs the layer reserved for overlay-adjacent popups ($z-index-modal is
+  // 500) rather than the plain in-flow dropdown layer (100) — otherwise a
+  // Select opened inside a Drawer paints behind the drawer panel.
+  z-index: $z-index-popover;
+  overflow: hidden;
+  min-width: var(--radix-select-trigger-width);
+  max-height: var(--radix-select-content-available-height);
+  transform-origin: var(--radix-select-content-transform-origin);
+  animation: select-in $transition-base $ease-spring;
+
+  &[data-state='closed'] {
+    animation: select-out $transition-fast $ease-in-out-smooth;
+  }
+}
+
+.viewport {
+  padding: $spacing-xs;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  min-height: $touch-target-min;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+
+  &[data-highlighted] {
+    background: rgba(var(--primary-accent-rgb), 0.12);
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.itemIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--primary-accent-light);
+  font-size: $fs-icon-sm;
+}
+
+// ── badge option (order/payment/delivery status list) ───────────────────
+// The whole row carries the status's color, not just a small pill floating
+// inside a neutral row — each option should read as one cohesive, at-a-
+// glance status, matching the closed trigger's own pill.
+.itemBadge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  min-height: $touch-target-min;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  border: 1px solid transparent;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  text-transform: capitalize;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: filter $transition-fast $ease-in-out-smooth;
+
+  &::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: $radius-circle;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  @include status.generate-modifiers;
+
+  &[data-highlighted] {
+    filter: brightness(1.25);
+  }
+
+  &[data-disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.itemBadgeLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemBadgeCheck {
+  flex-shrink: 0;
+  font-size: $fs-icon-sm;
+}
+
+.scrollButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: $spacing-lg;
+  color: var(--text-muted);
+  background: var(--glass-background-strong);
+  cursor: default;
 }
 
 .error {
@@ -127,4 +327,36 @@
   font-size: $fs-sm;
   color: var(--text-muted);
   margin-left: $spacing-xs;
+}
+
+@keyframes select-in {
+  from {
+    opacity: 0;
+    transform: scale($scale-down-md) translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes select-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+
+  .chevron {
+    transition: none;
+  }
 }

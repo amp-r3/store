@@ -71,6 +71,9 @@ export const AdminReviewsPage = () => {
     }, []);
 
     const hasActiveFilter = !!search || !!rating;
+    // Search is always visible above the panel — only the collapsed
+    // filter (rating) counts toward the disclosure's badge.
+    const activeFilterCount = rating ? 1 : 0;
 
     return (
         <>
@@ -83,6 +86,7 @@ export const AdminReviewsPage = () => {
                 search={search}
                 rating={rating}
                 sort={sort}
+                activeFilterCount={activeFilterCount}
                 onSearchChange={handleSearchChange}
                 onRatingChange={handleRatingChange}
                 onSortChange={handleSortChange}

@@ -1,0 +1,118 @@
+@use './variables' as *;
+
+// Shared contract for every admin CSS-grid table: the header, a data row and
+// its cells, all keyed off the same $collapse-at as the tracks change from
+// --admin-table-grid to a 2-column card. Header/row/skeleton stay pixel-
+// identical because they all pull from the same mixins instead of six
+// hand-copied blocks.
+
+@mixin header($collapse-at: 1024px) {
+    display: grid;
+    grid-template-columns: var(--admin-table-grid);
+    gap: $spacing-md;
+    padding-inline: $spacing-md;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+
+    @media (max-width: $collapse-at) {
+        display: none;
+    }
+}
+
+@mixin row($collapse-at: 1024px) {
+    display: grid;
+    grid-template-columns: var(--admin-table-grid);
+    gap: $spacing-md;
+    align-items: center;
+    padding: $spacing-md;
+    background: var(--background-component);
+    border: 1px solid var(--border-color-subtle);
+    border-radius: $radius-md;
+
+    @media (max-width: $collapse-at) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: $spacing-sm;
+    }
+
+    // A second step below $collapse-at: the card layout above was still
+    // sized for a tablet, not a 320–480px phone.
+    @media (max-width: 480px) {
+        padding: $spacing-sm;
+        gap: $spacing-xs $spacing-sm;
+    }
+}
+
+@mixin cell {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xxs;
+    min-width: 0;
+}
+
+// Visually hidden at the desktop grid width (the aria-hidden header row
+// supplies the visual column labels there); becomes a visible mini-label
+// once the header row is hidden below $collapse-at. Kept as its own mixin
+// rather than the sitewide .sr-only utility, whose meaning is "hidden
+// everywhere" — this needs to reveal itself responsively instead.
+@mixin cell-label($collapse-at: 1024px) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+
+    @media (max-width: $collapse-at) {
+        position: static;
+        width: auto;
+        height: auto;
+        margin: 0;
+        clip: auto;
+        overflow: visible;
+        font-size: $fs-xs;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: $letter-spacing-wide;
+    }
+}
+
+// Promotes a cell to its own full-width row below $collapse-at. No explicit
+// grid-row: the auto-placement algorithm slots it into the next open row on
+// its own, so calling this on several cells in DOM order never leaves a
+// leftover half-empty row — each one just claims the next line.
+@mixin cell-full($collapse-at: 1024px) {
+    @media (max-width: $collapse-at) {
+        grid-column: 1 / -1;
+    }
+}
+
+// The row's identifying cell (title/name/customer): pinned to row 1 and
+// padded to leave room for an actions trigger overlaid on its right edge,
+// so the actions control no longer reserves a full-width row of its own.
+@mixin card-heading($collapse-at: 1024px, $reserve: $touch-target-min) {
+    @media (max-width: $collapse-at) {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        padding-inline-end: calc(#{$reserve} + #{$spacing-xs});
+    }
+}
+
+// Pairs with card-heading: placed on the same explicit row 1, right-aligned,
+// so it overlaps the heading cell's reserved padding instead of the empty
+// area below the rest of the card. Relies on the actions element coming
+// after the heading cell in DOM order so it paints on top.
+@mixin card-actions($collapse-at: 1024px) {
+    @media (max-width: $collapse-at) {
+        grid-column: 2 / -1;
+        grid-row: 1;
+        justify-self: end;
+        align-self: start;
+    }
+}

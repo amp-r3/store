@@ -1,28 +1,77 @@
 @use '@/app/styles/index' as *;
 
-.input {
-  width: 80px;
+.wrapper {
+  display: inline-flex;
+  align-items: center;
   flex-shrink: 0;
-  padding: $spacing-xs $spacing-sm;
+  height: $touch-target-min;
   border-radius: $radius-sm;
   border: 1px solid var(--border-color);
   background: var(--background-component);
-  color: var(--text-primary);
-  font-size: $fs-sm;
-  text-align: right;
+  transition: border-color $transition-fast $ease-in-out-smooth;
+
+  &:focus-within {
+    border-color: var(--primary-accent);
+  }
+}
+
+.wrapperLow {
+  border-color: var(--status-warning-text);
+}
+
+.wrapperEmpty {
+  border-color: var(--error-color);
+}
+
+.stepButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: $touch-target-min;
+  height: 100%;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--glass-background-strong);
+  }
 
   &:focus-visible {
     outline: $focus-ring-width solid var(--focus-ring-color);
-    outline-offset: $focus-ring-offset;
+    outline-offset: -2px;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.input {
+  width: 44px;
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0 $spacing-xxs;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: $fs-sm;
+  text-align: center;
+
+  &:focus-visible {
+    outline: none;
   }
 }
 
 .inputLow {
-  border-color: var(--status-warning-text);
   color: var(--status-warning-text);
 }
 
 .inputEmpty {
-  border-color: var(--error-color);
   color: var(--error-color);
 }

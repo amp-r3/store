@@ -4,7 +4,7 @@ import { LuClipboardList } from 'react-icons/lu';
 
 import { useGetAllOrdersQuery } from '@/entities/admin';
 import { ORDER_STATUS_MAP } from '@/entities/order';
-import { Alert, EmptyState } from '@/shared/ui';
+import { Alert, EmptyState, StatusBadge } from '@/shared/ui';
 import { formatPrice, formatDate, getErrorMessage } from '@/shared/lib';
 
 import { AdminPanelCard } from '../AdminPanelCard/AdminPanelCard';
@@ -51,12 +51,11 @@ export const AdminRecentOrdersPanel = () => {
                             </span>
                             <span className={style['admin-recent-orders-panel__meta']}>
                                 <span className={style['admin-recent-orders-panel__total']}>{formatPrice(order.totalAmount)}</span>
-                                <span
-                                    className={`${style['admin-recent-orders-panel__status']} ${style[`admin-recent-orders-panel__status--${order.status}`]}`}
-                                    data-status={order.status}
-                                >
-                                    {ORDER_STATUS_MAP[order.status]?.label ?? order.status}
-                                </span>
+                                <StatusBadge
+                                    compact
+                                    status={order.status}
+                                    label={ORDER_STATUS_MAP[order.status]?.label ?? order.status}
+                                />
                             </span>
                         </Link>
                     ))}

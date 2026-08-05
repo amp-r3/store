@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { useForm, Control, UseFormRegister } from 'react-hook-form';
+import { useForm, useController, Control, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { LuTriangleAlert } from 'react-icons/lu';
@@ -67,10 +67,16 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const arrayFieldRegister = register as unknown as UseFormRegister<any>;
     /* eslint-enable @typescript-eslint/no-explicit-any */
 
+    // Radix Select reserves an empty string value to mean "no selection" —
+    // 'none' is the sentinel mapped back to '' (→ null via the schema's
+    // emptyToNull preprocessor) at the onValueChange boundary below.
     const categoryOptions = [
-        { value: '', label: 'No category' },
+        { value: 'none', label: 'No category' },
         ...(categories ?? []).map((category) => ({ value: String(category.id), label: category.name })),
     ];
+
+    const { field: categoryField } = useController({ control, name: 'categoryId' });
+    const { field: availabilityField } = useController({ control, name: 'availabilityStatus' });
 
     const onSubmit = async (values: ProductFormValues) => {
         try {
@@ -100,8 +106,9 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <Select
                     label="Category"
                     options={categoryOptions}
+                    value={(categoryField.value as string) || 'none'}
+                    onValueChange={(value) => categoryField.onChange(value === 'none' ? '' : value)}
                     error={errors.categoryId?.message}
-                    {...register('categoryId')}
                 />
                 <FormField label="Brand" optional error={errors.brand?.message} {...register('brand')} />
                 <FormField label="SKU" optional error={errors.sku?.message} {...register('sku')} />
@@ -118,7 +125,8 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     {...register('basePrice')}
                 />
                 <FormField
-                    label="Discount %"
+                    label="Discount"
+                    suffix="%"
                     type="number"
                     step="0.01"
                     min={0}
@@ -154,7 +162,8 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
 
             <AdminProductFormSection title="Logistics">
                 <FormField
-                    label="Weight (kg)"
+                    label="Weight"
+                    suffix="kg"
                     type="number"
                     step="0.01"
                     min={0}
@@ -164,6 +173,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 />
                 <FormField
                     label="Min. order quantity"
+                    showStepper
                     type="number"
                     step="1"
                     min={1}
@@ -171,7 +181,8 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     {...register('minimumOrderQuantity')}
                 />
                 <FormField
-                    label="Width (cm)"
+                    label="Width"
+                    suffix="cm"
                     type="number"
                     step="0.01"
                     min={0}
@@ -179,7 +190,8 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     {...register('dimensions.width')}
                 />
                 <FormField
-                    label="Height (cm)"
+                    label="Height"
+                    suffix="cm"
                     type="number"
                     step="0.01"
                     min={0}
@@ -187,7 +199,8 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     {...register('dimensions.height')}
                 />
                 <FormField
-                    label="Depth (cm)"
+                    label="Depth"
+                    suffix="cm"
                     type="number"
                     step="0.01"
                     min={0}
@@ -206,8 +219,9 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <Select
                     label="Availability status"
                     options={[...AVAILABILITY_STATUS_OPTIONS]}
+                    value={availabilityField.value}
+                    onValueChange={availabilityField.onChange}
                     error={errors.availabilityStatus?.message}
-                    {...register('availabilityStatus')}
                 />
                 <Textarea
                     label="Warranty information"

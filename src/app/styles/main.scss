@@ -109,6 +109,20 @@ button {
     cursor: pointer;
 }
 
+// Hide the browser's own spinner so every number field goes through one of
+// the app's own recipes (FormField's optional −/+ stepper, or none at all)
+// instead of three different-looking native arrow widgets.
+input[type='number'] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
 *,
 *::before,
 *::after {

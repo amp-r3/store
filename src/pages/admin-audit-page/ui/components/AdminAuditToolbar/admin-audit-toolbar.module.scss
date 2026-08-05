@@ -1,17 +1,5 @@
 @use '@/app/styles/index' as *;
 
-.admin-audit-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-  align-items: flex-end;
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
 .admin-audit-toolbar__reset {
   padding: $spacing-sm $spacing-md;
   border-radius: $radius-md;

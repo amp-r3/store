@@ -1,4 +1,5 @@
 @use '@/app/styles/index' as *;
+@use '@/app/styles/admin-table' as table;
 
 // Single source of truth for the column tracks, shared with AdminCategoryRow
 // via a CSS custom property so the header and every row (including the
@@ -13,17 +14,5 @@
 }
 
 .admin-categories-table__header {
-  display: grid;
-  grid-template-columns: var(--admin-table-grid);
-  gap: $spacing-md;
-  padding-inline: $spacing-md;
-  font-size: $fs-xs;
-  font-weight: $fw-semibold;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: $letter-spacing-wide;
-
-  @media (max-width: 1024px) {
-    display: none;
-  }
+  @include table.header;
 }

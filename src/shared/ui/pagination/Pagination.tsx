@@ -14,9 +14,14 @@ interface PaginationProps {
 
 // Thresholds derived from the pill's own tokens (see pagination.module.scss):
 // how many 44px touch targets + gaps + padding fit at a given container width.
-// Keep these in sync with the gap/padding values there.
 const SIBLINGS_MIN_WIDTH = 496;
-const NUMBERED_MIN_WIDTH = 360;
+const TIGHT_MAX_WIDTH = 420;
+// 20px of headroom below the tightest fit (359px) so a future change to
+// item size, gap or border doesn't silently turn into overflow —
+// .pagination__item is flex-shrink: 0 by design (44px is the touch-target
+// floor), so the only thing that can absorb a small size change is switching
+// to the compact status a little earlier.
+const NUMBERED_MIN_WIDTH = 380;
 
 export const Pagination = ({
     totalItems,
@@ -30,6 +35,7 @@ export const Pagination = ({
     const width = useElementWidth(containerRef);
     const siblingCount = width >= SIBLINGS_MIN_WIDTH ? 1 : 0;
     const isCompact = width > 0 && width < NUMBERED_MIN_WIDTH;
+    const isTight = width > 0 && width < TIGHT_MAX_WIDTH;
 
     const { paginationRange, totalPages } = usePagination({
         totalItems,
@@ -54,7 +60,10 @@ export const Pagination = ({
 
     return (
         <div ref={containerRef} className={style.pagination}>
-            <nav className={style.pagination__bar} aria-label="Pagination">
+            <nav
+                className={`${style.pagination__bar} ${isTight ? style['pagination__bar--tight'] : ''}`}
+                aria-label="Pagination"
+            >
 
                 <button
                     className={`${style.pagination__item} ${isFirst ? style['pagination__item--disabled'] : ''}`}
@@ -71,7 +80,7 @@ export const Pagination = ({
                         <span aria-hidden="true">{currentPage} / {totalPages}</span>
                     </span>
                 ) : (
-                    <div className={style.pagination__pages}>
+                    <div className={`${style.pagination__pages} ${isTight ? style['pagination__pages--tight'] : ''}`}>
                         {paginationRange.map((pageNumber, index) => {
                             if (pageNumber === DOTS) {
                                 return (

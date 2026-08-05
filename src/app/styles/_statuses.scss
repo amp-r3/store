@@ -5,7 +5,8 @@
 //   STATUS BADGE — MAP & MIXINS
 //
 //   Covers all three domain types:
-//     OrderStatus:    pending | processing | shipped | completed | cancelled
+//     OrderStatus:    pending | processing | shipped | completed | cancelled |
+//                     returned | refunded
 //     PaymentStatus:  awaiting_payment | paid | failed | refunded
 //     DeliveryStatus: awaiting_dispatch | dispatched | in_transit |
 //                     delivered | returned | cancelled
@@ -16,15 +17,15 @@ $status-map: (
     // OrderStatus: completed
     // PaymentStatus: paid
     // DeliveryStatus: delivered
-    'completed': (bg: var(--success-background),
-        text: var(--success-color-dark),
-        border: rgba(var(--success-color-rgb), 0.12)),
-    'delivered': (bg: var(--success-background),
-        text: var(--success-color-dark),
-        border: rgba(var(--success-color-rgb), 0.12)),
-    'paid': (bg: var(--success-background),
-        text: var(--success-color-dark),
-        border: rgba(var(--success-color-rgb), 0.12)),
+    'completed': (bg: var(--status-success-bg),
+        text: var(--status-success-text),
+        border: var(--status-success-border)),
+    'delivered': (bg: var(--status-success-bg),
+        text: var(--status-success-text),
+        border: var(--status-success-border)),
+    'paid': (bg: var(--status-success-bg),
+        text: var(--status-success-text),
+        border: var(--status-success-border)),
 
     // ── Info (processing/in-motion) ───────────
     // OrderStatus: processing | shipped
@@ -79,15 +80,13 @@ $status-map: (
 );
 
 // ── Base badge layout ──────────────────────────────────────────────────────
-// $compact: true shrinks the padding/gap for dense contexts (dashboard rows)
-// while keeping the same dot + font-size identity as the default badge.
-@mixin badge-base($compact: false) {
+@mixin badge-base {
     display: inline-flex;
     align-items: center;
-    gap: if($compact, $spacing-xxs, $spacing-xs);
-    padding: if($compact, $spacing-xxs $spacing-xs, $spacing-xs $spacing-sm);
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
     border-radius: $radius-pill;
-    font-size: $fs-xs;
+    font-size: $fs-sm;
     font-weight: $fw-semibold;
     line-height: $lh-ui;
     border: 1px solid transparent;
@@ -96,18 +95,20 @@ $status-map: (
 
     &::before {
         content: '';
-        width: 6px;
-        height: 6px;
+        width: 7px;
+        height: 7px;
         border-radius: $radius-circle;
         background: currentColor;
         flex-shrink: 0;
     }
 }
 
-// ── BEM modifier generator ─────────────────────────────────────────────────
+// ── data-status modifier generator ─────────────────────────────────────────
+// Keyed on the `data-status` attribute every consumer already sets, rather
+// than a `--${status}` BEM class — one lookup shape instead of two.
 @mixin generate-modifiers {
     @each $status-name, $theme in $status-map {
-        &--#{$status-name} {
+        &[data-status='#{$status-name}'] {
             background: map.get($theme, bg);
             color: map.get($theme, text);
             border-color: map.get($theme, border);

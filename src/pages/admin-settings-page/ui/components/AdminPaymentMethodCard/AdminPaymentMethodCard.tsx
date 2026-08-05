@@ -83,38 +83,45 @@ export const AdminPaymentMethodCard = ({ method }: AdminPaymentMethodCardProps) 
                     <h3 className={style['admin-payment-method-card__title']}>{method.name}</h3>
                     <span className={style['admin-payment-method-card__code']}>{method.code}</span>
                 </div>
-                <Switch label="Active" checked={method.isActive} onChange={handleActiveChange} />
+                <div className={style['admin-payment-method-card__toggle']}>
+                    <Switch label="Active" checked={method.isActive} onChange={handleActiveChange} />
+                </div>
             </header>
 
             <form className={style['admin-payment-method-card__form']} onSubmit={handleSubmit(onSubmit)} noValidate>
                 {!!error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
 
-                <FormField label="Name" error={errors.name?.message} {...register('name')} />
-                <FormField
-                    label="Fee percentage"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    max={100}
-                    error={errors.feePercentage?.message}
-                    {...register('feePercentage')}
-                />
-                <FormField
-                    label="Fixed fee"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    error={errors.feeFixed?.message}
-                    {...register('feeFixed')}
-                />
+                <div className={style['admin-payment-method-card__fields']}>
+                    <FormField label="Name" error={errors.name?.message} {...register('name')} />
+                    <FormField
+                        label="Fee"
+                        suffix="%"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        max={100}
+                        error={errors.feePercentage?.message}
+                        {...register('feePercentage')}
+                    />
+                    <FormField
+                        label="Fixed fee"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        error={errors.feeFixed?.message}
+                        {...register('feeFixed')}
+                    />
+                </div>
 
                 <p className={style['admin-payment-method-card__example']}>
                     On a {formatPrice(EXAMPLE_ORDER_TOTAL)} order: <strong>{formatPrice(exampleFee)}</strong> fee
                 </p>
 
-                <Button type="submit" variant="primary" isLoading={isLoading} disabled={!isDirty}>
-                    Save
-                </Button>
+                <div className={style['admin-payment-method-card__actions']}>
+                    <Button type="submit" variant="primary" isLoading={isLoading} disabled={!isDirty}>
+                        Save
+                    </Button>
+                </div>
             </form>
 
             <AdminMethodDisableModal

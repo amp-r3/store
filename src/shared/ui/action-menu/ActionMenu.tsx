@@ -7,6 +7,8 @@ import { useHaptics } from '@/shared/lib/hooks';
 import { IconButton } from '../icon-button/IconButton';
 import style from './action-menu.module.scss';
 
+const MODAL_ROOT = document.getElementById('modal-root')!;
+
 export interface ActionMenuItem {
     key: string;
     label: string;
@@ -40,7 +42,7 @@ export const ActionMenu = ({ label, items, align = 'end', icon }: ActionMenuProp
                     {icon ?? <LuEllipsisVertical aria-hidden="true" />}
                 </IconButton>
             </DropdownMenu.Trigger>
-            <DropdownMenu.Portal container={document.getElementById('modal-root')!}>
+            <DropdownMenu.Portal container={MODAL_ROOT}>
                 <DropdownMenu.Content className={style['action-menu__content']} sideOffset={8} align={align}>
                     {items.map((item) => {
                         const itemClassName = [style['action-menu__item'], item.danger ? style['action-menu__item--danger'] : '']

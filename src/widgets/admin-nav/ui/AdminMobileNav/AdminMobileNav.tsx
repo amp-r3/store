@@ -1,14 +1,20 @@
-import { Link, NavLink } from 'react-router';
-import { LuArrowLeft, LuUserRound } from 'react-icons/lu';
+import { Link, useLocation } from 'react-router';
+import { LuArrowLeft, LuCheck, LuChevronDown, LuUserRound } from 'react-icons/lu';
+import { DropdownMenu } from 'radix-ui';
 
 import { useHaptics } from '@/shared/lib/hooks';
 
 import { ADMIN_NAV_ITEMS } from '../../config/navItems';
+import { resolveActiveNavItem } from '../../lib/resolveActiveNavItem';
 
 import style from './admin-mobile-nav.module.scss';
 
 export const AdminMobileNav = () => {
     const { soft } = useHaptics();
+    const { pathname } = useLocation();
+
+    const activeItem = resolveActiveNavItem(pathname);
+    const ActiveIcon = activeItem.icon;
 
     return (
         <div className={style['admin-mobile-nav']}>
@@ -23,21 +29,41 @@ export const AdminMobileNav = () => {
                 </Link>
             </div>
 
-            <nav className={style['admin-mobile-nav__tabs']} aria-label="Admin sections">
-                {ADMIN_NAV_ITEMS.map(({ id, to, end, icon: Icon, shortLabel }) => (
-                    <NavLink
-                        key={id}
-                        to={to}
-                        end={end}
-                        replace
-                        className={({ isActive }) => `${style['admin-mobile-nav__tab']} ${isActive ? style['admin-mobile-nav__tab--active'] : ''}`}
-                        onClick={() => soft()}
+            <DropdownMenu.Root onOpenChange={(open) => open && soft()}>
+                <DropdownMenu.Trigger asChild>
+                    <button type="button" className={style['admin-mobile-nav__trigger']}>
+                        <ActiveIcon className={style['admin-mobile-nav__trigger-icon']} aria-hidden="true" />
+                        <span className={style['admin-mobile-nav__trigger-label']}>{activeItem.label}</span>
+                        <LuChevronDown className={style['admin-mobile-nav__trigger-chevron']} aria-hidden="true" />
+                    </button>
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Portal container={document.getElementById('modal-root')!}>
+                    <DropdownMenu.Content
+                        className={style['admin-mobile-nav__content']}
+                        sideOffset={8}
+                        align="start"
+                        aria-label="Admin sections"
                     >
-                        <Icon className={style['admin-mobile-nav__icon']} />
-                        <span className={style['admin-mobile-nav__label']}>{shortLabel}</span>
-                    </NavLink>
-                ))}
-            </nav>
+                        {ADMIN_NAV_ITEMS.map(({ id, to, icon: Icon, label }) => {
+                            const isActive = id === activeItem.id;
+                            return (
+                                <DropdownMenu.Item
+                                    key={id}
+                                    asChild
+                                    className={`${style['admin-mobile-nav__item']} ${isActive ? style['admin-mobile-nav__item--active'] : ''}`}
+                                >
+                                    <Link to={to} replace onClick={() => soft()}>
+                                        <Icon className={style['admin-mobile-nav__item-icon']} aria-hidden="true" />
+                                        <span className={style['admin-mobile-nav__item-label']}>{label}</span>
+                                        {isActive && <LuCheck className={style['admin-mobile-nav__item-check']} aria-hidden="true" />}
+                                    </Link>
+                                </DropdownMenu.Item>
+                            );
+                        })}
+                    </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+            </DropdownMenu.Root>
         </div>
     );
 };

@@ -17,7 +17,7 @@ export const AdminCategoriesTable = ({ categories, isLoading, onEdit, onDelete }
             <span>Name</span>
             <span>Slug</span>
             <span>Products</span>
-            <span>Actions</span>
+            <span />
         </div>
 
         {isLoading ? (

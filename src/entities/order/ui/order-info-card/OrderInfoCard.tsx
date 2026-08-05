@@ -7,6 +7,7 @@ import {
 } from '@/entities/order';
 import { DeliveryStatus, PaymentStatus } from '@/entities/order';
 import { DeliveryOptions, PaymentOptions } from '@/entities/order';
+import { StatusBadge } from '@/shared/ui';
 import style from './order-info-card.module.scss';
 
 interface OrderInfoCardProps {
@@ -53,17 +54,18 @@ export const OrderInfoCard: FC<OrderInfoCardProps> = ({
                 <div className={style['info-card__method-group']}>
                     <p className={style['info-card__method']}>{finalMethodLabel}</p>
 
-                    <span
-                        className={`${style['info-card__status-badge']} ${style[`info-card__status-badge--${status}`]}`}
-                        aria-label={`Current status: ${finalStatusLabel}`}
-                    >
-                        {statusData?.hasIcon && statusData.icon && (
-                            <div className={style['info-card__spin-icon']} aria-hidden="true">
-                                {statusData.icon}
-                            </div>
-                        )}
-                        {finalStatusLabel}
-                    </span>
+                    <StatusBadge
+                        status={status}
+                        label={finalStatusLabel}
+                        ariaLabel={`Current status: ${finalStatusLabel}`}
+                        icon={
+                            statusData?.hasIcon && statusData.icon ? (
+                                <span className={style['info-card__spin-icon']} aria-hidden="true">
+                                    {statusData.icon}
+                                </span>
+                            ) : undefined
+                        }
+                    />
                 </div>
 
                 {subtitle && (

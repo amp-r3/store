@@ -3,7 +3,7 @@ import { IoClose, IoSearchOutline } from 'react-icons/io5';
 
 import { useDebounce } from '@/shared/lib/hooks';
 import { AdminCustomersSort, UserRole } from '@/entities/admin';
-import { Select } from '@/shared/ui';
+import { Select, FilterPanel } from '@/shared/ui';
 
 import style from './admin-customers-toolbar.module.scss';
 
@@ -13,8 +13,10 @@ const SORT_OPTIONS: { value: AdminCustomersSort; label: string }[] = [
     { value: 'most_orders', label: 'Most orders' },
 ];
 
+// Radix Select reserves an empty string value to mean "no selection" — 'all'
+// is the sentinel mapped back to '' at the onValueChange boundary below.
 const ROLE_OPTIONS = [
-    { value: '', label: 'All roles' },
+    { value: 'all', label: 'All roles' },
     { value: 'admin', label: 'Admin' },
     { value: 'user', label: 'Customer' },
 ];
@@ -23,6 +25,7 @@ interface AdminCustomersToolbarProps {
     search: string;
     role: UserRole | '';
     sort: AdminCustomersSort;
+    activeFilterCount: number;
     onSearchChange: (search: string) => void;
     onRoleChange: (role: UserRole | '') => void;
     onSortChange: (sort: AdminCustomersSort) => void;
@@ -32,6 +35,7 @@ export const AdminCustomersToolbar = ({
     search,
     role,
     sort,
+    activeFilterCount,
     onSearchChange,
     onRoleChange,
     onSortChange,
@@ -65,34 +69,37 @@ export const AdminCustomersToolbar = ({
     };
 
     return (
-        <div className={style['admin-customers-toolbar']}>
-            <form className={style['admin-customers-toolbar__search']} onSubmit={handleSubmit}>
-                <IoSearchOutline className={style['admin-customers-toolbar__search-icon']} aria-hidden="true" />
-                <input
-                    type="search"
-                    value={searchInput}
-                    onChange={(event) => setSearchInput(event.target.value)}
-                    placeholder="Search by name, username or email"
-                    aria-label="Search by name, username or email"
-                />
-                {searchInput && (
-                    <button
-                        type="button"
-                        className={style['admin-customers-toolbar__clear']}
-                        onClick={handleClear}
-                        aria-label="Clear search"
-                    >
-                        <IoClose />
-                    </button>
-                )}
-            </form>
-
+        <FilterPanel
+            activeCount={activeFilterCount}
+            search={(
+                <form className={style['admin-customers-toolbar__search']} onSubmit={handleSubmit}>
+                    <IoSearchOutline className={style['admin-customers-toolbar__search-icon']} aria-hidden="true" />
+                    <input
+                        type="search"
+                        value={searchInput}
+                        onChange={(event) => setSearchInput(event.target.value)}
+                        placeholder="Search by name, username or email"
+                        aria-label="Search by name, username or email"
+                    />
+                    {searchInput && (
+                        <button
+                            type="button"
+                            className={style['admin-customers-toolbar__clear']}
+                            onClick={handleClear}
+                            aria-label="Clear search"
+                        >
+                            <IoClose />
+                        </button>
+                    )}
+                </form>
+            )}
+        >
             <Select
                 variant="toolbar"
                 label="Role"
-                value={role}
+                value={role || 'all'}
                 options={ROLE_OPTIONS}
-                onChange={(event) => onRoleChange(event.target.value as UserRole | '')}
+                onValueChange={(value) => onRoleChange(value === 'all' ? '' : (value as UserRole))}
             />
 
             <Select
@@ -100,8 +107,8 @@ export const AdminCustomersToolbar = ({
                 label="Sort by"
                 value={sort}
                 options={SORT_OPTIONS}
-                onChange={(event) => onSortChange(event.target.value as AdminCustomersSort)}
+                onValueChange={(value) => onSortChange(value as AdminCustomersSort)}
             />
-        </div>
+        </FilterPanel>
     );
 };

@@ -15,13 +15,16 @@ export const AdminLowStockRowSkeleton = ({ count = 1 }: AdminLowStockRowSkeleton
             {skeletons.map((_, index) => (
                 <article key={index} className={style['admin-low-stock-row']} style={{ pointerEvents: 'none' }}>
                     <div className={style['admin-low-stock-row__cell']}>
+                        <span className={style['admin-low-stock-row__cell-label']}>Product</span>
                         <Skeleton width={44} height={44} borderRadius={8} />
                         <Skeleton width={140} height={16} />
                     </div>
                     <div className={style['admin-low-stock-row__cell']}>
+                        <span className={style['admin-low-stock-row__cell-label']}>Size</span>
                         <Skeleton width={40} height={16} />
                     </div>
                     <div className={style['admin-low-stock-row__cell']}>
+                        <span className={style['admin-low-stock-row__cell-label']}>Stock</span>
                         <Skeleton width={80} height={28} />
                     </div>
                 </article>

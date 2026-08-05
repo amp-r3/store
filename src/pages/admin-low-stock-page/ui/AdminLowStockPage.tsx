@@ -1,5 +1,6 @@
+import { useRef } from 'react';
 import { useSearchParams } from 'react-router';
-import { LuPackageSearch } from 'react-icons/lu';
+import { LuMinus, LuPackageSearch, LuPlus } from 'react-icons/lu';
 
 import { getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Alert, EmptyState } from '@/shared/ui';
@@ -13,6 +14,7 @@ const DEFAULT_THRESHOLD = 5;
 export const AdminLowStockPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const threshold = Number(searchParams.get('threshold')) || DEFAULT_THRESHOLD;
+    const thresholdInputRef = useRef<HTMLInputElement>(null);
 
     const { data, isLoading, error } = useGetAdminLowStockQuery({ threshold });
     const items = data ?? [];
@@ -24,6 +26,17 @@ export const AdminLowStockPage = () => {
         }, { replace: true });
     };
 
+    // The input is controlled by the URL, so a plain stepUp/Down (which
+    // mutates the DOM value directly) needs a dispatched 'input' event to
+    // route back through onChange — otherwise the next render just reverts it.
+    const handleStep = (direction: 1 | -1) => {
+        const node = thresholdInputRef.current;
+        if (!node) return;
+        if (direction === 1) node.stepUp();
+        else node.stepDown();
+        node.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
     return (
         <>
             <SectionHeader
@@ -31,16 +44,41 @@ export const AdminLowStockPage = () => {
                 subtitle="Sizes at or below the threshold, lowest first."
             />
 
-            <label className={style['admin-low-stock-page__threshold']}>
-                <span>Threshold</span>
-                <input
-                    type="number"
-                    min={0}
-                    step="1"
-                    value={threshold}
-                    onChange={(event) => handleThresholdChange(Math.max(0, Number(event.target.value) || 0))}
-                />
-            </label>
+            <div className={style['admin-low-stock-page__threshold']}>
+                {/* Decorative only — the input carries its own aria-label so a
+                    screen reader isn't told "Threshold" twice in a row. */}
+                <span aria-hidden="true">Threshold</span>
+                <div className={style['admin-low-stock-page__threshold-control']}>
+                    <button
+                        type="button"
+                        className={style['admin-low-stock-page__threshold-step']}
+                        tabIndex={-1}
+                        onClick={() => handleStep(-1)}
+                        aria-label="Decrease threshold"
+                    >
+                        <LuMinus aria-hidden="true" />
+                    </button>
+                    <input
+                        ref={thresholdInputRef}
+                        type="number"
+                        min={0}
+                        step="1"
+                        value={threshold}
+                        onChange={(event) => handleThresholdChange(Math.max(0, Number(event.target.value) || 0))}
+                        className={style['admin-low-stock-page__threshold-input']}
+                        aria-label="Threshold"
+                    />
+                    <button
+                        type="button"
+                        className={style['admin-low-stock-page__threshold-step']}
+                        tabIndex={-1}
+                        onClick={() => handleStep(1)}
+                        aria-label="Increase threshold"
+                    >
+                        <LuPlus aria-hidden="true" />
+                    </button>
+                </div>
+            </div>
 
             {error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
 

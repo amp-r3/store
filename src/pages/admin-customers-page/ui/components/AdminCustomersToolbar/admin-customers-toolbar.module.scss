@@ -1,16 +1,5 @@
 @use '@/app/styles/index' as *;
-
-.admin-customers-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-  align-items: flex-end;
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
+@use '@/app/styles/controls' as *;
 
 .admin-customers-toolbar__search {
   position: relative;
@@ -24,24 +13,7 @@
   }
 
   input {
-    width: 100%;
-    padding: $spacing-sm $spacing-md;
-    padding-left: calc($spacing-md + $spacing-lg);
-    padding-right: calc($spacing-md + $spacing-lg);
-    border-radius: $radius-input;
-    border: 1px solid var(--border-color-subtle);
-    background: var(--background-component);
-    color: var(--text-primary);
-    font-size: $fs-sm;
-
-    &::placeholder {
-      color: var(--text-muted);
-    }
-
-    &:focus-visible {
-      outline: $focus-ring-width solid var(--focus-ring-color);
-      outline-offset: $focus-ring-offset;
-    }
+    @include control-search;
   }
 }
 

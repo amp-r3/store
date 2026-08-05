@@ -9,17 +9,11 @@ $_item-transition:
     box-shadow       $transition-fast $ease-in-out-smooth;
 
 // Outer wrapper: always 100% of whatever slot it's placed in (a flex column
-// in the page, a sidebar-narrowed content panel, ...) and establishes the
-// inline-size container the pill and its children query against. The pill
-// itself can't be the container it queries — an element can't size itself
-// off its own container context.
+// in the page, a sidebar-narrowed content panel, ...).
 .pagination {
     display: flex;
     justify-content: center;
     width: 100%;
-    container-type: inline-size;
-    margin-top: $spacing-xl;
-    margin-bottom: $spacing-md;
 }
 
 .pagination__bar {
@@ -43,11 +37,9 @@ $_item-transition:
         background: var(--glass-background-fallback);
     }
 
-    // Mirrors Pagination.tsx's NUMBERED_MIN_WIDTH (360px): below that, the
-    // component itself switches to the compact "‹ N / M ›" status instead of
-    // rendering page-number buttons, so this only ever tightens spacing for
-    // the 5-number mode.
-    @container (width < 420px) {
+    // Driven by the same JS width measurement as isCompact, not a separate
+    // breakpoint — Pagination.tsx sets this below TIGHT_MAX_WIDTH (420px).
+    &--tight {
         padding: $spacing-xs $spacing-sm;
         gap: $spacing-xxs;
     }
@@ -59,7 +51,7 @@ $_item-transition:
     min-width: 0;
     gap: $spacing-xs;
 
-    @container (width < 420px) {
+    &--tight {
         gap: $spacing-xxs;
     }
 }

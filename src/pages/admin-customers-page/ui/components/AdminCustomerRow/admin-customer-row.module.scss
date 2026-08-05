@@ -1,60 +1,31 @@
 @use '@/app/styles/index' as *;
 @use '@/app/styles/surfaces' as *;
+@use '@/app/styles/admin-table' as table;
 
 // Tracks come from --admin-table-grid, set once on the .admin-customers-table
 // wrapper this row always renders inside of, so the header row and every
 // data row (including the loading skeleton) share the exact same columns.
 .admin-customer-row {
-  display: grid;
-  grid-template-columns: var(--admin-table-grid);
-  gap: $spacing-md;
-  align-items: center;
-  padding: $spacing-md;
-  background: var(--background-component);
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr 1fr;
-    gap: $spacing-xs $spacing-sm;
-
-    > :first-child,
-    > .admin-customer-row__actions {
-      grid-column: 1 / -1;
-    }
-  }
+  @include table.row;
 }
 
 .admin-customer-row__cell {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xxs;
-  min-width: 0;
+  @include table.cell;
+
+  // Pinned to row 1 with the actions trigger overlaid on its right edge
+  // (see .admin-customer-row__actions below).
+  &:first-child {
+    @include table.card-heading;
+  }
+
+  // Long enough that it earns its own full-width row instead of pairing.
+  &:nth-child(2) {
+    @include table.cell-full;
+  }
 }
 
 .admin-customer-row__cell-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-
-  @media (max-width: 1024px) {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 0;
-    clip: auto;
-    overflow: visible;
-    font-size: $fs-xs;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: $letter-spacing-wide;
-  }
+  @include table.cell-label;
 }
 
 .admin-customer-row__identity {
@@ -139,4 +110,5 @@
 .admin-customer-row__actions {
   display: flex;
   justify-content: flex-end;
+  @include table.card-actions;
 }

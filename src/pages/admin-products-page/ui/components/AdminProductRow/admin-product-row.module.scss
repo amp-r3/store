@@ -1,31 +1,12 @@
 @use '@/app/styles/index' as *;
 @use '@/app/styles/surfaces' as *;
+@use '@/app/styles/admin-table' as table;
 
 // Tracks come from --admin-table-grid, set once on the .admin-products-table
 // wrapper this row always renders inside of, so the header row and every
 // data row (including the loading skeleton) share the exact same columns.
 .admin-product-row {
-  display: grid;
-  grid-template-columns: var(--admin-table-grid);
-  gap: $spacing-md;
-  align-items: center;
-  padding: $spacing-md;
-  background: var(--background-component);
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr 1fr;
-    gap: $spacing-xs $spacing-sm;
-
-    // Target by class rather than :first-child/:last-child — the stock
-    // panel renders conditionally as an extra child after actions, which
-    // would otherwise steal the :last-child promotion once open.
-    > :first-child,
-    > .admin-product-row__actions {
-      grid-column: 1 / -1;
-    }
-  }
+  @include table.row;
 }
 
 .admin-product-row--archived {
@@ -33,41 +14,21 @@
 }
 
 .admin-product-row__cell {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xxs;
-  min-width: 0;
+  @include table.cell;
 
   &:first-child {
     flex-direction: row;
     align-items: center;
     gap: $spacing-md;
+    // Pinned to row 1 with the actions trigger overlaid on its right edge
+    // (see .admin-product-row__actions below) instead of reserving a
+    // separate full-width row for a single 44px button.
+    @include table.card-heading;
   }
 }
 
 .admin-product-row__cell-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-
-  @media (max-width: 1024px) {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 0;
-    clip: auto;
-    overflow: visible;
-    font-size: $fs-xs;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: $letter-spacing-wide;
-  }
+  @include table.cell-label;
 }
 
 .admin-product-row__thumbnail {
@@ -125,6 +86,7 @@
 .admin-product-row__actions {
   display: flex;
   justify-content: flex-end;
+  @include table.card-actions;
 }
 
 .admin-product-row__stock-panel {

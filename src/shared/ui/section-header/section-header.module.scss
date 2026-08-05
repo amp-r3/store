@@ -11,6 +11,16 @@
     @media (max-width: 549px) {
         flex-direction: column;
     }
+
+    // The subtitle disappears at the same 768px step (below), leaving a
+    // single line of text — the desktop-sized rule gap no longer fits it.
+    @media (max-width: 768px) {
+        padding-bottom: $spacing-md;
+    }
+
+    @media (max-width: 480px) {
+        padding-bottom: $spacing-sm;
+    }
 }
 
 .section-header__heading {

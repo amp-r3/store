@@ -132,7 +132,7 @@ export const AdminOrdersPage = () => {
         isFetching: isItemsFetching,
     } = useEnrichedOrderItems(activeOrder?.orderItems ?? []);
 
-    const hasActiveFilter = status !== 'all' || !!search || !!dateFrom || !!dateTo;
+    const activeFilterCount = [status !== 'all', !!search, !!dateFrom, !!dateTo].filter(Boolean).length;
 
     return (
         <>
@@ -146,7 +146,7 @@ export const AdminOrdersPage = () => {
                 search={search}
                 dateFrom={dateFrom}
                 dateTo={dateTo}
-                hasActiveFilter={hasActiveFilter}
+                activeFilterCount={activeFilterCount}
                 onStatusChange={handleStatusChange}
                 onSearchChange={handleSearchChange}
                 onDateFromChange={handleDateFromChange}
@@ -159,8 +159,8 @@ export const AdminOrdersPage = () => {
             {!isLoading && orders.length === 0 ? (
                 <EmptyState
                     icon={<LuClipboardList />}
-                    title={hasActiveFilter ? 'No matching orders' : 'No orders yet'}
-                    text={hasActiveFilter
+                    title={activeFilterCount > 0 ? 'No matching orders' : 'No orders yet'}
+                    text={activeFilterCount > 0
                         ? 'Try a different status filter or search term.'
                         : 'Orders placed by customers will show up here.'}
                 />

@@ -30,6 +30,10 @@ main.admin-layout {
   gap: $spacing-xxl;
   align-items: start;
 
+  > * {
+    min-width: 0;
+  }
+
   @media (max-width: 1024px) {
     gap: $spacing-xl;
     grid-template-columns: 240px 1fr;
@@ -57,10 +61,12 @@ main.admin-layout {
   @media (max-width: 768px) {
     padding: $spacing-lg;
     border-radius: $radius-lg;
+    gap: $spacing-md;
   }
 
   @media (max-width: 480px) {
     padding: $spacing-md;
+    gap: $spacing-sm;
   }
 }
 

@@ -1,5 +1,4 @@
 @use '@/app/styles/index' as *;
-@use '@/app/styles/statuses' as status;
 
 .info-card {
     background: var(--background-glass-base);
@@ -92,11 +91,6 @@
         }
     }
 
-
-    &__status-badge {
-        @include status.badge-base;
-        @include status.generate-modifiers;
-    }
 
     &__spin-icon {
         width: $spacing-sm;

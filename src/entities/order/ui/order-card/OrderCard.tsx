@@ -2,8 +2,10 @@ import { memo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { OrderItem, OrderStatus } from '@/entities/order/model/types';
+import { ORDER_STATUS_MAP } from '@/entities/order/config/order-management.config';
 import style from './order-card.module.scss';
 import { formatPrice } from '@/shared/lib';
+import { StatusBadge } from '@/shared/ui';
 
 const MAX_THUMBNAILS = 3;
 
@@ -47,12 +49,11 @@ export const OrderCard = memo(({
       }}
     >
       <div className={style.mainInfo}>
-        <div
-          className={`${style['orderStatus']} ${style[`orderStatus--${orderStatus}`]}`}
-          aria-label={`Order status: ${orderStatus}`}
-          data-status={orderStatus}>
-          {orderStatus}
-        </div>
+        <StatusBadge
+          status={orderStatus}
+          label={ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}
+          ariaLabel={`Order status: ${ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}`}
+        />
         <div className={style.orderTotal}>
           {formatPrice(orderTotalAmount)}
         </div>

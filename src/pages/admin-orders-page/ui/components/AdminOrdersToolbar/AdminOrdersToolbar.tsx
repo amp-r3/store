@@ -3,7 +3,7 @@ import { IoClose, IoSearchOutline } from 'react-icons/io5';
 
 import { useDebounce } from '@/shared/lib/hooks';
 import { AdminOrderStatusFilter, ORDER_STATUS_OPTIONS, ORDER_STATUS_MAP } from '@/entities/order';
-import { Select } from '@/shared/ui';
+import { Select, FilterPanel } from '@/shared/ui';
 
 import style from './admin-orders-toolbar.module.scss';
 
@@ -17,7 +17,7 @@ interface AdminOrdersToolbarProps {
     search: string;
     dateFrom: string;
     dateTo: string;
-    hasActiveFilter: boolean;
+    activeFilterCount: number;
     onStatusChange: (status: AdminOrderStatusFilter) => void;
     onSearchChange: (search: string) => void;
     onDateFromChange: (date: string) => void;
@@ -30,7 +30,7 @@ export const AdminOrdersToolbar = ({
     search,
     dateFrom,
     dateTo,
-    hasActiveFilter,
+    activeFilterCount,
     onStatusChange,
     onSearchChange,
     onDateFromChange,
@@ -66,13 +66,37 @@ export const AdminOrdersToolbar = ({
     };
 
     return (
-        <div className={style['admin-orders-toolbar']}>
+        <FilterPanel
+            activeCount={activeFilterCount}
+            search={(
+                <form className={style['admin-orders-toolbar__search']} onSubmit={handleSubmit}>
+                    <IoSearchOutline className={style['admin-orders-toolbar__search-icon']} aria-hidden="true" />
+                    <input
+                        type="search"
+                        value={searchInput}
+                        onChange={(event) => setSearchInput(event.target.value)}
+                        placeholder="Search by order number"
+                        aria-label="Search by order number"
+                    />
+                    {searchInput && (
+                        <button
+                            type="button"
+                            className={style['admin-orders-toolbar__clear']}
+                            onClick={handleClear}
+                            aria-label="Clear search"
+                        >
+                            <IoClose />
+                        </button>
+                    )}
+                </form>
+            )}
+        >
             <Select
                 variant="toolbar"
                 label="Status"
                 value={status}
                 options={STATUS_SELECT_OPTIONS}
-                onChange={(event) => onStatusChange(event.target.value as AdminOrderStatusFilter)}
+                onValueChange={(value) => onStatusChange(value as AdminOrderStatusFilter)}
             />
 
             <label className={style['admin-orders-toolbar__filter']}>
@@ -97,28 +121,7 @@ export const AdminOrdersToolbar = ({
                 />
             </label>
 
-            <form className={style['admin-orders-toolbar__search']} onSubmit={handleSubmit}>
-                <IoSearchOutline className={style['admin-orders-toolbar__search-icon']} aria-hidden="true" />
-                <input
-                    type="search"
-                    value={searchInput}
-                    onChange={(event) => setSearchInput(event.target.value)}
-                    placeholder="Search by order number"
-                    aria-label="Search by order number"
-                />
-                {searchInput && (
-                    <button
-                        type="button"
-                        className={style['admin-orders-toolbar__clear']}
-                        onClick={handleClear}
-                        aria-label="Clear search"
-                    >
-                        <IoClose />
-                    </button>
-                )}
-            </form>
-
-            {hasActiveFilter && (
+            {activeFilterCount > 0 && (
                 <button
                     type="button"
                     className={style['admin-orders-toolbar__reset']}
@@ -127,6 +130,6 @@ export const AdminOrdersToolbar = ({
                     Reset filters
                 </button>
             )}
-        </div>
+        </FilterPanel>
     );
 };

@@ -1,8 +1,5 @@
-import { IoChevronDown } from 'react-icons/io5';
-
 import type { StatusMeta } from '@/entities/order';
-
-import style from './order-status-select.module.scss';
+import { Select } from '@/shared/ui';
 
 interface OrderStatusSelectProps<T extends string> {
     label: string;
@@ -18,6 +15,8 @@ interface OrderStatusSelectProps<T extends string> {
      * still validates regardless). `[]` = current value is terminal.
      */
     allowedValues?: readonly T[];
+    /** Matches a compact StatusBadge sitting in the same dense row (e.g. AdminOrderRow). */
+    compact?: boolean;
 }
 
 export function OrderStatusSelect<T extends string>({
@@ -28,39 +27,35 @@ export function OrderStatusSelect<T extends string>({
     onChange,
     disabled,
     allowedValues,
+    compact,
 }: OrderStatusSelectProps<T>) {
     const currentLabel = statusMap[value]?.label ?? value;
     const isTerminal = allowedValues !== undefined && allowedValues.length === 0;
     const controlTitle = isTerminal ? `${currentLabel} is a final status` : currentLabel;
 
+    const selectOptions = options.map((option) => ({
+        value: option,
+        label: statusMap[option]?.label ?? option,
+        status: option,
+        disabled: !(option === value || allowedValues === undefined || allowedValues.includes(option)),
+    }));
+
     return (
-        <label className={style['order-status-select']}>
-            <span className="sr-only">{label}</span>
-            <select
-                className={`${style['order-status-select__control']} ${style[`order-status-select__control--${value}`] ?? ''}`}
-                data-status={value}
+        <>
+            <Select
+                variant="badge"
+                compact={compact}
+                hideLabel
+                label={label}
                 value={value}
+                options={selectOptions}
+                onValueChange={(next) => onChange(next as T)}
                 disabled={disabled || isTerminal}
-                // Native <select> never wraps its closed-state text, so at the
-                // column widths this row has to work with, a long label
-                // ("Awaiting Dispatch") can still end up truncated — title
-                // surfaces the full value on hover/long-press as a fallback.
                 title={controlTitle}
-                onChange={(e) => onChange(e.target.value as T)}
-            >
-                {options.map((option) => {
-                    const isAllowed = option === value || allowedValues === undefined || allowedValues.includes(option);
-                    return (
-                        <option key={option} value={option} disabled={!isAllowed}>
-                            {statusMap[option]?.label ?? option}
-                        </option>
-                    );
-                })}
-            </select>
-            <IoChevronDown className={style['order-status-select__chevron']} aria-hidden="true" />
+            />
             {isTerminal && (
                 <span className="sr-only">{currentLabel} is a final status and cannot be changed.</span>
             )}
-        </label>
+        </>
     );
 }
