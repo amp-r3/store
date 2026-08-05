@@ -1373,6 +1373,22 @@ $$;
 ALTER FUNCTION "public"."log_admin_action"("p_action" "text", "p_entity_type" "text", "p_entity_id" "text", "p_before" "jsonb", "p_after" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."record_order_status_event"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+begin
+  insert into public.order_status_events (order_id, status, payment_status, delivery_status)
+  values (NEW.id, NEW.status, NEW.payment_status, NEW.delivery_status);
+
+  return NEW;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."record_order_status_event"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."rls_auto_enable"() RETURNS "event_trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'pg_catalog'
@@ -1747,6 +1763,19 @@ CREATE SEQUENCE IF NOT EXISTS "public"."order_number_seq"
 ALTER SEQUENCE "public"."order_number_seq" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."order_status_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "order_id" "uuid" NOT NULL,
+    "status" "public"."order_status" NOT NULL,
+    "payment_status" "public"."payment_status" NOT NULL,
+    "delivery_status" "public"."delivery_status" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."order_status_events" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."payment_methods" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "code" "public"."payment_method_type" NOT NULL,
@@ -1977,6 +2006,11 @@ ALTER TABLE ONLY "public"."order_items"
 
 
 
+ALTER TABLE ONLY "public"."order_status_events"
+    ADD CONSTRAINT "order_status_events_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."orders"
     ADD CONSTRAINT "orders_pkey" PRIMARY KEY ("id");
 
@@ -2101,6 +2135,10 @@ CREATE INDEX "notifications_user_unread_idx" ON "public"."notifications" USING "
 
 
 
+CREATE INDEX "order_status_events_order_created_idx" ON "public"."order_status_events" USING "btree" ("order_id", "created_at");
+
+
+
 CREATE OR REPLACE TRIGGER "notify_on_order_change" AFTER UPDATE ON "public"."orders" FOR EACH ROW EXECUTE FUNCTION "public"."handle_order_notifications"();
 
 
@@ -2114,6 +2152,10 @@ CREATE OR REPLACE TRIGGER "on_like_change" AFTER INSERT OR DELETE ON "public"."r
 
 
 CREATE OR REPLACE TRIGGER "on_review_change" AFTER INSERT OR DELETE OR UPDATE ON "public"."product_reviews" FOR EACH ROW EXECUTE FUNCTION "public"."update_product_rating"();
+
+
+
+CREATE OR REPLACE TRIGGER "record_order_status_event_trigger" AFTER INSERT OR UPDATE OF "payment_status", "delivery_status" ON "public"."orders" FOR EACH ROW EXECUTE FUNCTION "public"."record_order_status_event"();
 
 
 
@@ -2157,6 +2199,11 @@ ALTER TABLE ONLY "public"."order_items"
 
 ALTER TABLE ONLY "public"."order_items"
     ADD CONSTRAINT "order_items_size_id_fkey" FOREIGN KEY ("size_id") REFERENCES "public"."product_sizes"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."order_status_events"
+    ADD CONSTRAINT "order_status_events_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE CASCADE;
 
 
 
@@ -2221,6 +2268,10 @@ ALTER TABLE ONLY "public"."wishlist_items"
 
 
 CREATE POLICY "Admins can view all order items" ON "public"."order_items" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
+
+
+
+CREATE POLICY "Admins can view all order status events" ON "public"."order_status_events" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_admin"() AS "is_admin"));
 
 
 
@@ -2326,6 +2377,12 @@ CREATE POLICY "Users can view their own order items" ON "public"."order_items" F
 
 
 
+CREATE POLICY "Users can view their own order status events" ON "public"."order_status_events" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."orders" "o"
+  WHERE (("o"."id" = "order_status_events"."order_id") AND ("o"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
+
+
+
 CREATE POLICY "Users can view their own orders" ON "public"."orders" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
@@ -2361,6 +2418,9 @@ ALTER TABLE "public"."notifications" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."order_items" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."order_status_events" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."orders" ENABLE ROW LEVEL SECURITY;
@@ -2585,6 +2645,12 @@ GRANT ALL ON FUNCTION "public"."log_admin_action"("p_action" "text", "p_entity_t
 
 
 
+GRANT ALL ON FUNCTION "public"."record_order_status_event"() TO "anon";
+GRANT ALL ON FUNCTION "public"."record_order_status_event"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."record_order_status_event"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."rls_auto_enable"() TO "anon";
 GRANT ALL ON FUNCTION "public"."rls_auto_enable"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."rls_auto_enable"() TO "service_role";
@@ -2706,6 +2772,11 @@ GRANT ALL ON TABLE "public"."order_items" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."order_number_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."order_number_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."order_number_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."order_status_events" TO "service_role";
+GRANT SELECT ON TABLE "public"."order_status_events" TO "authenticated";
 
 
 
