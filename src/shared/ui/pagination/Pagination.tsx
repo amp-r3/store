@@ -1,5 +1,3 @@
-import { useRef } from 'react';
-
 import style from './pagination.module.scss';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { usePagination, DOTS } from "@/shared/lib/hooks";
@@ -12,16 +10,26 @@ interface PaginationProps {
     onPageChange: (page: number) => void;
 }
 
-// Thresholds derived from the pill's own tokens (see pagination.module.scss):
-// how many 44px touch targets + gaps + padding fit at a given container width.
-const SIBLINGS_MIN_WIDTH = 496;
-const TIGHT_MAX_WIDTH = 420;
-// 20px of headroom below the tightest fit (359px) so a future change to
-// item size, gap or border doesn't silently turn into overflow —
-// .pagination__item is flex-shrink: 0 by design (44px is the touch-target
-// floor), so the only thing that can absorb a small size change is switching
-// to the compact status a little earlier.
-const NUMBERED_MIN_WIDTH = 380;
+// Geometry mirrors pagination.module.scss: .pagination__item is a
+// $touch-target-min square, .pagination__bar adds inline padding + a 1.5px
+// border, prev/next sit outside the numbered row.
+const ITEM_SIZE = 44;   // $touch-target-min
+const BORDER = 1.5;
+const GAP = 8;          // $spacing-xs
+const GAP_TIGHT = 4;    // $spacing-xxs
+const PAD_X = 16;       // $spacing-md
+const PAD_X_TIGHT = 12; // $spacing-sm
+// Headroom for subpixel rounding and larger system font scaling — without
+// it the fit computed here lands exactly at the edge, and any 1px drift
+// turns back into overflow.
+const SAFETY = 8;
+
+/** How many numbered slots fit in `width` given a gap/padding pairing. */
+const slotsThatFit = (width: number, gap: number, padX: number): number => {
+    // prev + gap + [n slots separated by gap] + gap + next, plus the bar's padding and border
+    const fixed = padX * 2 + BORDER * 2 + ITEM_SIZE * 2 + gap * 2 + SAFETY;
+    return Math.floor((width - fixed + gap) / (ITEM_SIZE + gap));
+};
 
 export const Pagination = ({
     totalItems,
@@ -31,11 +39,11 @@ export const Pagination = ({
 }: PaginationProps) => {
 
     const { soft } = useHaptics();
-    const containerRef = useRef<HTMLDivElement>(null);
-    const width = useElementWidth(containerRef);
-    const siblingCount = width >= SIBLINGS_MIN_WIDTH ? 1 : 0;
-    const isCompact = width > 0 && width < NUMBERED_MIN_WIDTH;
-    const isTight = width > 0 && width < TIGHT_MAX_WIDTH;
+    const { ref: containerRef, width } = useElementWidth<HTMLDivElement>();
+
+    const roomySlots = slotsThatFit(width, GAP, PAD_X);
+    const tightSlots = slotsThatFit(width, GAP_TIGHT, PAD_X_TIGHT);
+    const siblingCount = Math.max(roomySlots, tightSlots) >= 7 ? 1 : 0;
 
     const { paginationRange, totalPages } = usePagination({
         totalItems,
@@ -45,6 +53,15 @@ export const Pagination = ({
     });
 
     if (totalPages <= 1) return null;
+
+    // paginationRange.length is the exact slot count that will render
+    // (usePagination collapses the range itself when there are fewer pages
+    // than slots), so fit is checked against it rather than a hardcoded 5/7.
+    const neededSlots = paginationRange.length;
+    // width === 0 means not measured yet — default to the compact view,
+    // since it can't overflow any container.
+    const isCompact = width === 0 || tightSlots < neededSlots;
+    const isTight = !isCompact && roomySlots < neededSlots;
 
     const handlePageChange = (page: number) => {
         if (page === currentPage) return;

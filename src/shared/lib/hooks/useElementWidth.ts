@@ -1,10 +1,23 @@
-import { useLayoutEffect, useState, type RefObject } from 'react';
+import { useLayoutEffect, useState, useCallback } from 'react';
 
-export function useElementWidth<T extends Element>(target: RefObject<T | null>): number {
+export function useElementWidth<T extends Element>(): {
+    ref: (node: T | null) => void;
+    width: number;
+} {
+    // Node lives in state, not a ref: setState from a callback ref is stable
+    // by identity, so React calls it only when the node actually mounts or
+    // unmounts, giving the effect a truthful dependency. A RefObject can't
+    // offer that — ref.current is assigned in the commit phase, after deps
+    // are already compared, so a node that mounts after an earlier
+    // conditional `return null` is never observed.
+    const [node, setNode] = useState<T | null>(null);
     const [width, setWidth] = useState(0);
 
+    const ref = useCallback((next: T | null) => {
+        setNode(next);
+    }, []);
+
     useLayoutEffect(() => {
-        const node = target.current;
         if (!node) return;
 
         setWidth(node.getBoundingClientRect().width);
@@ -15,12 +28,7 @@ export function useElementWidth<T extends Element>(target: RefObject<T | null>):
 
         observer.observe(node);
         return () => observer.disconnect();
-        // target.current, not target: the ref object itself is stable across
-        // renders, so an effect keyed on it would never re-fire when a
-        // conditionally-rendered node (e.g. Pagination returning null while
-        // hidden) later mounts on the same component instance.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [target.current]);
+    }, [node]);
 
-    return width;
+    return { ref, width };
 }

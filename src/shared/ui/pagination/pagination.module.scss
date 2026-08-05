@@ -47,10 +47,17 @@ $_item-transition:
 
 .pagination__pages {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     min-width: 0;
     gap: $spacing-xs;
+    row-gap: $spacing-xxs;
 
+    // Slot count is fitted to the measured container width in Pagination.tsx,
+    // so this shouldn't engage — a safety net against the fit calculation and
+    // this file's geometry drifting out of sync, in which case pages wrap
+    // inside the pill instead of overflowing it.
     &--tight {
         gap: $spacing-xxs;
     }
