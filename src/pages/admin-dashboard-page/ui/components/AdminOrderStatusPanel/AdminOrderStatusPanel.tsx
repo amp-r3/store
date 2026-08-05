@@ -3,10 +3,9 @@ import { Link } from 'react-router';
 
 import { useGetAdminOrdersByStatusQuery } from '@/entities/admin';
 import { ORDER_STATUS_MAP, ORDER_STATUS_OPTIONS } from '@/entities/order';
-import { Alert } from '@/shared/ui';
+import { Alert, PanelCard } from '@/shared/ui';
 import { getErrorMessage } from '@/shared/lib';
 
-import { AdminPanelCard } from '../AdminPanelCard/AdminPanelCard';
 import style from './admin-order-status-panel.module.scss';
 
 export const AdminOrderStatusPanel = () => {
@@ -18,7 +17,7 @@ export const AdminOrderStatusPanel = () => {
     const maxCount = Math.max(...counts.map((entry) => entry.count), 1);
 
     return (
-        <AdminPanelCard title="Orders by status" to="/admin/orders">
+        <PanelCard title="Orders by status" to="/admin/orders">
             {!!error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
 
             <div className={style['admin-order-status-panel__list']}>
@@ -48,6 +47,6 @@ export const AdminOrderStatusPanel = () => {
                     ))
                 )}
             </div>
-        </AdminPanelCard>
+        </PanelCard>
     );
 };

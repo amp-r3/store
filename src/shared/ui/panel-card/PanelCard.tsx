@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router';
 
-import style from './admin-panel-card.module.scss';
+import style from './panel-card.module.scss';
 
-interface AdminPanelCardProps {
+interface PanelCardProps {
     title: string;
     /** A control rendered in the header, e.g. a period switcher. */
     action?: ReactNode;
@@ -12,20 +12,20 @@ interface AdminPanelCardProps {
     children: ReactNode;
 }
 
-export const AdminPanelCard = ({ title, action, to, children }: AdminPanelCardProps) => (
-    <section className={style['admin-panel-card']}>
-        <header className={style['admin-panel-card__header']}>
-            <h2 className={style['admin-panel-card__title']}>{title}</h2>
-            <div className={style['admin-panel-card__controls']}>
+export const PanelCard = ({ title, action, to, children }: PanelCardProps) => (
+    <section className={style['panel-card']}>
+        <header className={style['panel-card__header']}>
+            <h2 className={style['panel-card__title']}>{title}</h2>
+            <div className={style['panel-card__controls']}>
                 {action}
                 {to && (
-                    <Link to={to} className={style['admin-panel-card__view-all']}>
+                    <Link to={to} className={style['panel-card__view-all']}>
                         View all
                     </Link>
                 )}
             </div>
         </header>
 
-        <div className={style['admin-panel-card__body']}>{children}</div>
+        <div className={style['panel-card__body']}>{children}</div>
     </section>
 );

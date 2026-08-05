@@ -3,10 +3,9 @@ import { Link } from 'react-router';
 import { LuPackageOpen } from 'react-icons/lu';
 
 import { useGetAdminLowStockQuery } from '@/entities/admin';
-import { Alert, EmptyState } from '@/shared/ui';
+import { Alert, EmptyState, PanelCard } from '@/shared/ui';
 import { getErrorMessage } from '@/shared/lib';
 
-import { AdminPanelCard } from '../AdminPanelCard/AdminPanelCard';
 import style from './admin-low-stock-panel.module.scss';
 
 const LOW_STOCK_THRESHOLD = 5;
@@ -17,7 +16,7 @@ export const AdminLowStockPanel = () => {
     const items = data ?? [];
 
     return (
-        <AdminPanelCard title="Low stock" to="/admin/products/low-stock">
+        <PanelCard title="Low stock" to="/admin/products/low-stock">
             {!!error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
 
             {isLoading ? (
@@ -58,6 +57,6 @@ export const AdminLowStockPanel = () => {
                     ))}
                 </div>
             )}
-        </AdminPanelCard>
+        </PanelCard>
     );
 };

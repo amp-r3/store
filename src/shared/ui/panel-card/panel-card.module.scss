@@ -1,7 +1,7 @@
 @use '@/app/styles/index' as *;
 @use '@/app/styles/surfaces' as *;
 
-.admin-panel-card {
+.panel-card {
   @include panel;
   display: flex;
   flex-direction: column;
@@ -9,15 +9,20 @@
   min-width: 0;
 }
 
-.admin-panel-card__header {
+.panel-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: $spacing-md;
   flex-wrap: wrap;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
-.admin-panel-card__title {
+.panel-card__title {
   margin: 0;
   font-family: $font-display;
   font-size: $fs-md;
@@ -25,13 +30,18 @@
   color: var(--text-primary);
 }
 
-.admin-panel-card__controls {
+.panel-card__controls {
   display: flex;
   align-items: center;
   gap: $spacing-md;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
-.admin-panel-card__view-all {
+.panel-card__view-all {
   font-size: $fs-sm;
   font-weight: $fw-semibold;
   color: var(--primary-accent);
@@ -48,6 +58,6 @@
   }
 }
 
-.admin-panel-card__body {
+.panel-card__body {
   min-width: 0;
 }

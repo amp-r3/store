@@ -4,10 +4,9 @@ import { LuClipboardList } from 'react-icons/lu';
 
 import { useGetAllOrdersQuery } from '@/entities/admin';
 import { ORDER_STATUS_MAP } from '@/entities/order';
-import { Alert, EmptyState, StatusBadge } from '@/shared/ui';
+import { Alert, EmptyState, PanelCard, StatusBadge } from '@/shared/ui';
 import { formatPrice, formatDate, getErrorMessage } from '@/shared/lib';
 
-import { AdminPanelCard } from '../AdminPanelCard/AdminPanelCard';
 import style from './admin-recent-orders-panel.module.scss';
 
 const RECENT_ORDERS_LIMIT = 5;
@@ -17,7 +16,7 @@ export const AdminRecentOrdersPanel = () => {
     const orders = data?.items ?? [];
 
     return (
-        <AdminPanelCard title="Recent orders" to="/admin/orders">
+        <PanelCard title="Recent orders" to="/admin/orders">
             {!!error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
 
             {isLoading ? (
@@ -61,6 +60,6 @@ export const AdminRecentOrdersPanel = () => {
                     ))}
                 </div>
             )}
-        </AdminPanelCard>
+        </PanelCard>
     );
 };
