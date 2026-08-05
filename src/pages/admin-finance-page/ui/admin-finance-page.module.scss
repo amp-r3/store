@@ -1,0 +1,22 @@
+@use '@/app/styles/index' as *;
+
+.admin-finance-page__controls {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.admin-finance-page__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-lg;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-finance-page__span-2 {
+  grid-column: 1 / -1;
+}

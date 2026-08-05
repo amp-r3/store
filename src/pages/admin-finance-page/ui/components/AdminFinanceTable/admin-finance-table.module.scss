@@ -1,0 +1,70 @@
+@use '@/app/styles/index' as *;
+
+.admin-finance-table {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.admin-finance-table__subheading {
+  margin: 0 0 $spacing-sm;
+  font-family: $font-display;
+  font-size: $fs-md;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+}
+
+// A dense numeric matrix (many day rows × 7 columns) reads better scrolling
+// horizontally on narrow viewports than card-collapsing into a long stack of
+// unlabeled 2-column cards — the admin-table mixins are built for the latter
+// and don't fit here.
+.admin-finance-table__grid,
+.admin-finance-table__grid--breakdown {
+  display: grid;
+  grid-template-columns: minmax(96px, 1.2fr) repeat(6, minmax(88px, 1fr));
+  gap: $spacing-xs $spacing-md;
+  overflow-x: auto;
+  padding-bottom: $spacing-xxs;
+}
+
+.admin-finance-table__grid--breakdown {
+  grid-template-columns: minmax(140px, 1.6fr) repeat(3, minmax(88px, 1fr));
+}
+
+.admin-finance-table__header {
+  display: contents;
+
+  span {
+    padding-block: $spacing-xs;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border-color-subtle);
+  }
+}
+
+.admin-finance-table__row {
+  display: contents;
+
+  span {
+    padding-block: $spacing-xs;
+    font-size: $fs-sm;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+
+    &:first-child {
+      font-variant-numeric: normal;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.admin-finance-table__row--total span {
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-color);
+}

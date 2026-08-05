@@ -1,0 +1,34 @@
+@use '@/app/styles/index' as *;
+
+.admin-money-flow-panel__context {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm $spacing-lg;
+  margin: $spacing-md 0 0;
+  padding-top: $spacing-md;
+  border-top: 1px solid var(--border-color-subtle);
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-money-flow-panel__context-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-sm;
+
+  dt {
+    font-size: $fs-sm;
+    color: var(--text-secondary);
+  }
+
+  dd {
+    margin: 0;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+}
