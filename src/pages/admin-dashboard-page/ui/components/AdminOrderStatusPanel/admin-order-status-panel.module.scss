@@ -39,15 +39,16 @@
   overflow: hidden;
 }
 
-// The bar is a filled rect, not a status pill — pull only the color values
-// out of the status map (generate-modifiers), skip badge-base's padding/dot.
+// The bar is a filled rect, not a status pill — use the solid fill variant
+// (generate-fill-modifiers) so each status reads clearly against the track,
+// instead of the badge's low-alpha background meant to sit behind text.
 .admin-order-status-panel__bar {
   display: block;
   height: 100%;
   min-width: 2px;
   border-radius: 0 $radius-pill $radius-pill 0;
 
-  @include status.generate-modifiers;
+  @include status.generate-fill-modifiers;
 }
 
 .admin-order-status-panel__count {

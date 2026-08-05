@@ -115,3 +115,16 @@ $status-map: (
         }
     }
 }
+
+// ── data-status modifier generator (solid fill) ────────────────────────────
+// For chart/bar fills, which need a vivid, clearly-visible color — the badge
+// `bg` tone (8-10% alpha, meant to sit behind text) reads as barely-there
+// against a track background of similar opacity. Reuses the same mapping,
+// keyed off `text` instead.
+@mixin generate-fill-modifiers {
+    @each $status-name, $theme in $status-map {
+        &[data-status='#{$status-name}'] {
+            background: map.get($theme, text);
+        }
+    }
+}
