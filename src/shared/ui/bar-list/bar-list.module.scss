@@ -1,0 +1,62 @@
+@use '@/app/styles/index' as *;
+
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bar-list__row {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+}
+
+.bar-list__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.bar-list__label {
+  font-size: $fs-sm;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-list__value {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bar-list__track {
+  height: 8px;
+  border-radius: $radius-pill;
+  background: var(--glass-background-subtle);
+  overflow: hidden;
+}
+
+.bar-list__fill {
+  height: 100%;
+  border-radius: $radius-pill;
+  background: var(--primary-accent);
+  transition: width $transition-base $ease-out-expo;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.bar-list__meta {
+  font-size: $fs-xs;
+  color: var(--text-muted);
+}

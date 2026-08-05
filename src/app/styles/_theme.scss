@@ -172,6 +172,26 @@
   --provider-telegram-border: rgba(42, 171, 238, 0.28);
   --provider-telegram-hover: #112840;
 
+  // --- Chart Series (categorical, fixed order — never cycled) ---
+  // Deepened, desaturated steps of the site's own hue families (lavender,
+  // coral/secondary-accent, teal, gold, rose) rather than the dataviz
+  // skill's stock web-saturated defaults, so charts read as part of this
+  // theme instead of a generic dashboard. Slot 2 is exactly
+  // --secondary-accent-dark. Still validated against --background-component
+  // (#232329) via the dataviz skill's palette validator: lightness band,
+  // chroma floor, CVD adjacent-pair separation (worst ΔE 10.3 protan) and
+  // normal-vision floor (worst ΔE 17.0) all pass.
+  --chart-series-1: #8b78d0;
+  --chart-series-1-rgb: 139, 120, 208;
+  --chart-series-2: #e65d46;
+  --chart-series-2-rgb: 230, 93, 70;
+  --chart-series-3: #2f9b83;
+  --chart-series-3-rgb: 47, 155, 131;
+  --chart-series-4: #b8862a;
+  --chart-series-4-rgb: 184, 134, 42;
+  --chart-series-5: #c25f92;
+  --chart-series-5-rgb: 194, 95, 146;
+
   // --- Switch Component ---
   --switch-track-bg: #0e0e12;
   --switch-track-border: rgba(255, 255, 255, 0.05);
