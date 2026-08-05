@@ -71,6 +71,15 @@ export interface OrderItem {
   createdAt: string;
 }
 
+export interface OrderStatusEvent {
+  id: string;
+  orderId: string;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  deliveryStatus: DeliveryStatus;
+  createdAt: string;
+}
+
 export interface Order {
   id: string;
   orderId: string;

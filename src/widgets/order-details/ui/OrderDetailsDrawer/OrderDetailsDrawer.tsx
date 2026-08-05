@@ -3,6 +3,7 @@ import { Drawer } from 'vaul';
 import { VisuallyHidden } from 'radix-ui';
 import { IoClose } from 'react-icons/io5';
 import { OrderDetailsHeader, OrderDetailsBody, OrderDetailsFooter } from "../components";
+import { OrderProgress, OrderStatusEvent } from '@/entities/order';
 import style from './order-details-drawer.module.scss';
 import { OrderDetailsProps } from '../OrderDetails';
 
@@ -11,6 +12,8 @@ const MODAL_ROOT = document.getElementById('modal-root')!;
 
 type OrderDetailsDrawerProps = OrderDetailsProps & {
     direction: 'bottom' | 'right';
+    events: OrderStatusEvent[];
+    isEventsLoading: boolean;
 };
 
 export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
@@ -26,6 +29,8 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
     formatOrderDate,
     onRateClick,
     direction,
+    events,
+    isEventsLoading,
 }) => {
 
     return (
@@ -65,6 +70,9 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
                             orderStatus={order.status}
                             isFetching={isFetching || isItemsFetching}
                             orderDate={formatOrderDate(order.createdAt)} />
+
+                        {/* ── STICKY PROGRESS ── */}
+                        <OrderProgress order={order} events={events} isLoading={isEventsLoading} />
 
                         {/* ── SCROLLABLE BODY ── */}
                         <OrderDetailsBody

@@ -1,6 +1,6 @@
 import { FC, useMemo } from "react";
 import { AdminOrderDetailsDrawer } from "./AdminOrderDetailsDrawer/AdminOrderDetailsDrawer";
-import { EnrichedOrderItem, Order } from "@/entities/order";
+import { EnrichedOrderItem, Order, useGetOrderStatusEventsQuery } from "@/entities/order";
 import { useMediaQuery } from "@/shared/lib/hooks";
 
 export interface AdminOrderDetailsProps {
@@ -25,5 +25,23 @@ export const AdminOrderDetails: FC<AdminOrderDetailsProps> = (props) => {
         [props.order]
     );
 
-    return <AdminOrderDetailsDrawer key={direction} direction={direction} goodsTotal={goodsTotal} {...props} />;
+    // Fetched here, not inside AdminOrderDetailsDrawer — the drawer remounts
+    // on every direction change (key={direction}), which would otherwise
+    // refire this query for no reason. RLS lets is_admin() read any order's
+    // history, so this is the same endpoint the customer drawer uses.
+    const { data: events = [], isLoading: isEventsLoading } = useGetOrderStatusEventsQuery(
+        props.order.id,
+        { skip: !props.open },
+    );
+
+    return (
+        <AdminOrderDetailsDrawer
+            key={direction}
+            direction={direction}
+            goodsTotal={goodsTotal}
+            events={events}
+            isEventsLoading={isEventsLoading}
+            {...props}
+        />
+    );
 };

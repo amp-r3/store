@@ -1,7 +1,7 @@
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
-import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod } from '@/entities/order/model/types';
+import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, OrderStatusEvent } from '@/entities/order/model/types';
 import { TERMINAL_ORDER_STATUSES } from '@/entities/order/config/order-management.config';
 
 const TERMINAL_STATUSES_LIST = `(${TERMINAL_ORDER_STATUSES.join(',')})`;
@@ -91,6 +91,15 @@ export const mapOrderResponseToOrder = (order: OrderRow): Order => ({
     priceAtPurchase: Number(item.price_at_purchase),
     createdAt: item.created_at,
   })),
+});
+
+const mapStatusEventRow = (row: Database['public']['Tables']['order_status_events']['Row']): OrderStatusEvent => ({
+  id: row.id,
+  orderId: row.order_id,
+  status: row.status,
+  paymentStatus: row.payment_status,
+  deliveryStatus: row.delivery_status,
+  createdAt: row.created_at,
 });
 
 const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
@@ -312,6 +321,26 @@ export const orderApi = baseApi.injectEndpoints({
       },
       providesTags: ['PaymentMethod'],
     }),
+
+    // RLS on order_status_events gates rows to the order's own owner or an
+    // admin (public.is_admin()), so this one endpoint serves both the
+    // customer and the admin order-details drawer — no separate admin query.
+    getOrderStatusEvents: builder.query<OrderStatusEvent[], string>({
+      queryFn: async (orderId) => {
+        const { data, error } = await supabase
+          .from('order_status_events')
+          .select('id, order_id, status, payment_status, delivery_status, created_at')
+          .eq('order_id', orderId)
+          .order('created_at', { ascending: true });
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: data.map(mapStatusEventRow) };
+      },
+      providesTags: (_result, _error, orderId) => [{ type: 'Order', id: orderId }],
+    }),
   }),
 });
 
@@ -324,4 +353,5 @@ export const {
   useGetDeliveryMethodsQuery,
   useGetPaymentMethodsQuery,
   useGetLastShippingAddressQuery,
+  useGetOrderStatusEventsQuery,
 } = orderApi;

@@ -3,6 +3,7 @@ import { Drawer } from 'vaul';
 import { VisuallyHidden } from 'radix-ui';
 import { IoClose } from 'react-icons/io5';
 import { AdminOrderDetailsHeader, AdminOrderDetailsBody, AdminOrderDetailsFooter } from "../components";
+import { OrderProgress, OrderStatusEvent } from '@/entities/order';
 import { formatDate } from '@/shared/lib';
 import style from './admin-order-details-drawer.module.scss';
 import { AdminOrderDetailsProps } from '../AdminOrderDetails';
@@ -13,6 +14,8 @@ const MODAL_ROOT = document.getElementById('modal-root')!;
 type AdminOrderDetailsDrawerProps = AdminOrderDetailsProps & {
     direction: 'bottom' | 'right';
     goodsTotal: number;
+    events: OrderStatusEvent[];
+    isEventsLoading: boolean;
 };
 
 export const AdminOrderDetailsDrawer: FC<AdminOrderDetailsDrawerProps> = ({
@@ -25,6 +28,8 @@ export const AdminOrderDetailsDrawer: FC<AdminOrderDetailsDrawerProps> = ({
     goodsTotal,
     onOpenChange,
     direction,
+    events,
+    isEventsLoading,
 }) => {
 
     return (
@@ -66,6 +71,9 @@ export const AdminOrderDetailsDrawer: FC<AdminOrderDetailsDrawerProps> = ({
                             orderDate={formatDate(order.createdAt, 'full')}
                             updatedDate={formatDate(order.updatedAt, 'full')}
                         />
+
+                        {/* ── STICKY PROGRESS ── */}
+                        <OrderProgress order={order} events={events} isLoading={isEventsLoading} />
 
                         {/* ── SCROLLABLE BODY ── */}
                         <AdminOrderDetailsBody

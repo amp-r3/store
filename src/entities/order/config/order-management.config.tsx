@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { FaCreditCard, FaPaypal } from 'react-icons/fa'
 import { SiKlarna, SiSepa } from 'react-icons/si'
-import { LuBanknote, LuHandCoins, LuClipboardCheck, LuCircleAlert, LuShieldCheck, LuClock, LuTruck, LuPlaneTakeoff, LuStore, LuRefreshCw, LuHouse, LuPackageOpen, LuMapPin } from 'react-icons/lu'
+import { LuBanknote, LuHandCoins, LuClipboardCheck, LuCircleAlert, LuShieldCheck, LuClock, LuTruck, LuPlaneTakeoff, LuStore, LuRefreshCw, LuHouse, LuPackageOpen, LuMapPin, LuReceiptText, LuPackage, LuCheck } from 'react-icons/lu'
 import { DeliveryStatus, OrderStatus, PaymentStatus } from '@/entities/order/model/types'
 import type { InfoBannerItem, InfoBannerProps } from '@/shared/ui'
 
@@ -149,3 +149,19 @@ export const DELIVERY_STATUS_OPTIONS = ['awaiting_dispatch', 'dispatched', 'in_t
 // the DB function; this is read-only UI/query-filter usage, not a second
 // implementation of the derivation rules themselves).
 export const TERMINAL_ORDER_STATUSES = ['completed', 'cancelled', 'returned', 'refunded'] as const satisfies readonly OrderStatus[];
+
+export interface OrderProgressStep {
+  status: OrderStatus;
+  label: string;
+  icon: ReactNode;
+}
+
+// The happy-path order of statuses the progress stepper walks through.
+// Terminal-negative statuses (cancelled/returned/refunded) aren't part of
+// this rail — they derail it instead, see buildOrderProgress().
+export const ORDER_PROGRESS_STEPS: OrderProgressStep[] = [
+  { status: 'pending', label: 'Placed', icon: <LuReceiptText /> },
+  { status: 'processing', label: 'Processing', icon: <LuPackage /> },
+  { status: 'shipped', label: 'Shipped', icon: <LuTruck /> },
+  { status: 'completed', label: 'Delivered', icon: <LuCheck /> },
+];
