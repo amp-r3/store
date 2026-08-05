@@ -1,6 +1,7 @@
 @use '@/app/styles/index' as *;
 
 .info-card {
+    container-type: inline-size;
     background: var(--background-glass-base);
     border: 1px solid var(--border-color-subtle);
     border-radius: $radius-md;
@@ -65,7 +66,6 @@
         align-items: center;
         justify-content: space-between;
         gap: $spacing-sm;
-        flex-wrap: wrap;
     }
 
     &__method {
@@ -73,6 +73,8 @@
         font-size: $fs-sm;
         font-weight: $fw-semibold;
         color: var(--text-primary);
+        min-width: 0;
+        overflow-wrap: break-word;
     }
 
     &__subtitle {
@@ -111,5 +113,16 @@
 
     to {
         transform: rotate(360deg);
+    }
+}
+
+// Card width varies with grid column count (1-3 cols depending on the
+// bottom sheet/drawer's viewport), so react to the card's own size rather
+// than the viewport — a long method label + status badge stop fighting for
+// one row and stack instead of squeezing the badge into an ellipsis.
+@container (max-width: 260px) {
+    .info-card__method-group {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
