@@ -13,6 +13,10 @@
   font-size: $fs-xl;
   font-weight: $fw-bold;
   color: var(--text-primary);
+
+  @media (max-width: 600px) {
+    font-size: $fs-lg;
+  }
 }
 
 .admin-revenue-panel__summary-meta {

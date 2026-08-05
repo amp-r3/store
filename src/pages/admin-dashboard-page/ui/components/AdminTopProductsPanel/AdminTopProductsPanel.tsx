@@ -4,10 +4,9 @@ import Skeleton from 'react-loading-skeleton';
 import { LuPackage } from 'react-icons/lu';
 
 import { useGetAdminTopProductsQuery } from '@/entities/admin';
-import { Alert, EmptyState, SegmentedTabs, type SegmentedTabItem } from '@/shared/ui';
+import { Alert, EmptyState, PanelCard, SegmentedTabs, type SegmentedTabItem } from '@/shared/ui';
 import { formatPrice, getErrorMessage } from '@/shared/lib';
 
-import { AdminPanelCard } from '../AdminPanelCard/AdminPanelCard';
 import style from './admin-top-products-panel.module.scss';
 
 type TopProductsMetric = 'units' | 'revenue';
@@ -31,7 +30,7 @@ export const AdminTopProductsPanel = () => {
     }, [data, metric]);
 
     return (
-        <AdminPanelCard
+        <PanelCard
             title="Top products"
             action={
                 <SegmentedTabs
@@ -40,6 +39,7 @@ export const AdminTopProductsPanel = () => {
                     onChange={setMetric}
                     idPrefix="top-products-metric"
                     ariaLabel="Rank by"
+                    size="sm"
                 />
             }
             to="/admin/products"
@@ -88,6 +88,6 @@ export const AdminTopProductsPanel = () => {
                     ))}
                 </div>
             )}
-        </AdminPanelCard>
+        </PanelCard>
     );
 };
