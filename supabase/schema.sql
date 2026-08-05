@@ -399,6 +399,172 @@ $$;
 ALTER FUNCTION "public"."admin_delete_review"("p_review_id" bigint) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."admin_finance_breakdown"("p_days" integer DEFAULT 30) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_result jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    with orders_window as (
+        select o.*
+        from public.orders o
+        where o.payment_status = 'paid'
+          and o.created_at::date between (current_date - (greatest(p_days, 1) - 1)) and current_date
+    ),
+    pm_agg as (
+        select
+            pm.code,
+            pm.name,
+            pm.fee_percentage,
+            pm.fee_fixed,
+            count(ow.id) as orders_count,
+            coalesce(sum(ow.total_amount), 0) as gross,
+            coalesce(sum(ow.payment_fee), 0) as fees
+        from public.payment_methods pm
+        left join orders_window ow on ow.payment_method_id = pm.id
+        group by pm.id, pm.code, pm.name, pm.fee_percentage, pm.fee_fixed
+        having count(ow.id) > 0
+    ),
+    dm_agg as (
+        select
+            dm.code,
+            dm.name,
+            count(ow.id) as orders_count,
+            coalesce(sum(ow.delivery_cost), 0) as collected,
+            count(ow.id) filter (where ow.delivery_cost = 0 and dm.price > 0) as free_count,
+            coalesce(sum(greatest(dm.price - ow.delivery_cost, 0)), 0) as subsidy
+        from public.delivery_methods dm
+        left join orders_window ow on ow.delivery_method_id = dm.id
+        group by dm.id, dm.code, dm.name, dm.price
+        having count(ow.id) > 0
+    )
+    select jsonb_build_object(
+        'payment_methods', coalesce((select jsonb_agg(pma order by pma.gross desc) from pm_agg pma), '[]'::jsonb),
+        'delivery_methods', coalesce((select jsonb_agg(dma order by dma.collected desc) from dm_agg dma), '[]'::jsonb)
+    ) into v_result;
+
+    return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_finance_breakdown"("p_days" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_finance_series"("p_days" integer DEFAULT 30) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_result jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    with days as (
+        select gs.day::date as day
+        from generate_series(current_date - (greatest(p_days, 1) - 1), current_date, interval '1 day') as gs(day)
+    ),
+    orders_paid as (
+        select o.id, o.created_at::date as day, o.delivery_cost, o.payment_fee
+        from public.orders o
+        where o.payment_status = 'paid'
+    ),
+    items_agg as (
+        select oi.order_id, sum(oi.price_at_purchase * oi.quantity) as items_subtotal
+        from public.order_items oi
+        group by oi.order_id
+    ),
+    refunded_by_day as (
+        select o.created_at::date as day, sum(o.total_amount) as refunded
+        from public.orders o
+        where o.payment_status = 'refunded'
+        group by o.created_at::date
+    )
+    select coalesce(jsonb_agg(t order by t.day), '[]'::jsonb) into v_result
+    from (
+        select
+            d.day,
+            coalesce(sum(ia.items_subtotal), 0) as items_subtotal,
+            coalesce(sum(op.delivery_cost), 0) as delivery_cost,
+            coalesce(sum(op.payment_fee), 0) as payment_fee,
+            coalesce(rbd.refunded, 0) as refunded,
+            count(op.id) as orders_count
+        from days d
+        left join orders_paid op on op.day = d.day
+        left join items_agg ia on ia.order_id = op.id
+        left join refunded_by_day rbd on rbd.day = d.day
+        group by d.day, rbd.refunded
+    ) t;
+
+    return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_finance_series"("p_days" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_finance_summary"("p_days" integer DEFAULT 30) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+    v_result jsonb;
+begin
+    if not public.is_admin() then
+        raise exception 'Not authorized';
+    end if;
+
+    with orders_window as (
+        select o.*
+        from public.orders o
+        where o.created_at::date between (current_date - (greatest(p_days, 1) - 1)) and current_date
+    ),
+    items_agg as (
+        select
+            oi.order_id,
+            sum(oi.price_at_purchase * oi.quantity) as items_subtotal,
+            sum((oi.base_price_at_purchase - oi.price_at_purchase) * oi.quantity) as discount_amount
+        from public.order_items oi
+        join orders_window ow on ow.id = oi.order_id
+        group by oi.order_id
+    ),
+    paid_count as (
+        select count(*) as n from orders_window where payment_status = 'paid'
+    )
+    select jsonb_build_object(
+        'gross_collected', coalesce(sum(ow.total_amount) filter (where ow.payment_status = 'paid'), 0),
+        'items_subtotal', coalesce(sum(ia.items_subtotal) filter (where ow.payment_status = 'paid'), 0),
+        'delivery_collected', coalesce(sum(ow.delivery_cost) filter (where ow.payment_status = 'paid'), 0),
+        'payment_fees', coalesce(sum(ow.payment_fee) filter (where ow.payment_status = 'paid'), 0),
+        'discounts_given', coalesce(sum(ia.discount_amount) filter (where ow.payment_status = 'paid'), 0),
+        'shipping_subsidy', coalesce(sum(greatest(dm.price - ow.delivery_cost, 0)) filter (where ow.payment_status = 'paid'), 0),
+        'refunded_amount', coalesce(sum(ow.total_amount) filter (where ow.payment_status = 'refunded'), 0),
+        'cancelled_amount', coalesce(sum(ow.total_amount) filter (where ow.status in ('cancelled', 'returned')), 0),
+        'paid_orders', (select n from paid_count),
+        'avg_order_value', case when (select n from paid_count) = 0 then 0
+            else round(coalesce(sum(ow.total_amount) filter (where ow.payment_status = 'paid'), 0) / (select n from paid_count), 2)
+        end
+    ) into v_result
+    from orders_window ow
+    left join items_agg ia on ia.order_id = ow.id
+    left join public.delivery_methods dm on dm.id = ow.delivery_method_id;
+
+    return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."admin_finance_summary"("p_days" integer) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."admin_low_stock"("p_threshold" integer DEFAULT 5, "p_limit" integer DEFAULT 20) RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
@@ -914,11 +1080,12 @@ begin
     ps.id as size_id,
     ps.product_id as product_id,
     p.price as price,
+    p.base_price as base_price,
     sum((i ->> 'quantity')::int) as qty
   from jsonb_array_elements(p_items) as i
     join public.product_sizes ps on ps.id = (i ->> 'size_id')::bigint
     join public.products p on p.id = ps.product_id
-  group by ps.id, ps.product_id, p.price;
+  group by ps.id, ps.product_id, p.price, p.base_price;
 
   -- Проверяем, что все переданные size_id реально существуют
   IF (select count(*) from tmp_order_items) <> (
@@ -1016,9 +1183,9 @@ begin
 
   -- 5. Создание записей в order_items
   insert into public.order_items (
-    order_id, product_id, size_id, quantity, price_at_purchase
+    order_id, product_id, size_id, quantity, price_at_purchase, base_price_at_purchase
   )
-  select v_order_id, t.product_id, t.size_id, t.qty, t.price
+  select v_order_id, t.product_id, t.size_id, t.qty, t.price, t.base_price
   from tmp_order_items t;
 
   -- 6. Списание остатков конкретного размера (Stock update)
@@ -1744,6 +1911,8 @@ CREATE TABLE IF NOT EXISTS "public"."order_items" (
     "price_at_purchase" numeric(10,2) NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "size_id" bigint NOT NULL,
+    "base_price_at_purchase" numeric(10,2) NOT NULL,
+    CONSTRAINT "order_items_base_price_at_purchase_check" CHECK (("base_price_at_purchase" >= "price_at_purchase")),
     CONSTRAINT "order_items_price_at_purchase_nonneg" CHECK (("price_at_purchase" >= (0)::numeric)),
     CONSTRAINT "order_items_quantity_check" CHECK (("quantity" > 0))
 );
@@ -2503,6 +2672,24 @@ GRANT ALL ON FUNCTION "public"."admin_delete_product_size"("p_size_id" bigint) T
 REVOKE ALL ON FUNCTION "public"."admin_delete_review"("p_review_id" bigint) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."admin_delete_review"("p_review_id" bigint) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_delete_review"("p_review_id" bigint) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."admin_finance_breakdown"("p_days" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."admin_finance_breakdown"("p_days" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_finance_breakdown"("p_days" integer) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."admin_finance_series"("p_days" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."admin_finance_series"("p_days" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_finance_series"("p_days" integer) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."admin_finance_summary"("p_days" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."admin_finance_summary"("p_days" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_finance_summary"("p_days" integer) TO "service_role";
 
 
 

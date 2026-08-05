@@ -211,6 +211,7 @@ export type Database = {
       }
       order_items: {
         Row: {
+          base_price_at_purchase: number
           created_at: string
           id: string
           order_id: string
@@ -220,6 +221,7 @@ export type Database = {
           size_id: number
         }
         Insert: {
+          base_price_at_purchase: number
           created_at?: string
           id?: string
           order_id: string
@@ -229,6 +231,7 @@ export type Database = {
           size_id: number
         }
         Update: {
+          base_price_at_purchase?: number
           created_at?: string
           id?: string
           order_id?: string
@@ -809,6 +812,9 @@ export type Database = {
         Returns: undefined
       }
       admin_delete_review: { Args: { p_review_id: number }; Returns: undefined }
+      admin_finance_breakdown: { Args: { p_days?: number }; Returns: Json }
+      admin_finance_series: { Args: { p_days?: number }; Returns: Json }
+      admin_finance_summary: { Args: { p_days?: number }; Returns: Json }
       admin_low_stock: {
         Args: { p_limit?: number; p_threshold?: number }
         Returns: Json
