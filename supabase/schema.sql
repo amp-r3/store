@@ -475,7 +475,7 @@ begin
         select
             gs.day::date as day,
             coalesce(sum(o.total_amount) filter (where o.payment_status = 'paid'), 0) as revenue,
-            count(o.id) as orders_count
+            count(o.id) filter (where o.payment_status = 'paid') as orders_count
         from generate_series(current_date - (greatest(p_days, 1) - 1), current_date, interval '1 day') as gs(day)
         left join public.orders o on o.created_at::date = gs.day
         group by gs.day
