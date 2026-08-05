@@ -87,6 +87,15 @@
   gap: $spacing-sm;
 }
 
+.stat-tile--column .stat-tile__top {
+  align-items: flex-start;
+}
+
+.stat-tile--sm.stat-tile--column .stat-tile__top {
+  flex-direction: column;
+  gap: $spacing-xxs;
+}
+
 .stat-tile__label {
   font-size: $fs-xs;
   color: var(--text-muted);
@@ -115,4 +124,13 @@
   font-size: $fs-xl;
   font-weight: $fw-bold;
   line-height: $lh-tight;
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: break-word;
+}
+
+.stat-tile--sm.stat-tile--column .stat-tile__value {
+  font-size: $fs-md;
 }
