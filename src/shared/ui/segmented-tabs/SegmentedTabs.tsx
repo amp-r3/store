@@ -14,9 +14,12 @@ interface SegmentedTabsProps<T extends string> {
     items: SegmentedTabItem<T>[];
     value: T;
     onChange: (id: T) => void;
-    /** Prefixes generated ids/aria-controls: `${idPrefix}-tab-${id}` / `${idPrefix}-panel-${id}`. */
+    /** Prefixes generated tab ids: `${idPrefix}-tab-${id}`. */
     idPrefix: string;
     ariaLabel: string;
+    /** Rendered tabpanel's id, if one exists — sets aria-controls on each tab. Omit when there's no separate panel element to point to. */
+    panelId?: string;
+    size?: 'sm' | 'md';
 }
 
 export const SegmentedTabs = <T extends string>({
@@ -25,6 +28,8 @@ export const SegmentedTabs = <T extends string>({
     onChange,
     idPrefix,
     ariaLabel,
+    panelId,
+    size = 'md',
 }: SegmentedTabsProps<T>) => {
     const { light } = useHaptics();
     const listRef = useRef<HTMLDivElement>(null);
@@ -54,7 +59,7 @@ export const SegmentedTabs = <T extends string>({
     return (
         <div
             ref={listRef}
-            className={style['tabs']}
+            className={`${style['tabs']} ${size === 'sm' ? style['tabs--sm'] : ''}`}
             role="tablist"
             aria-label={ariaLabel}
             onKeyDown={handleKeyDown}
@@ -76,7 +81,7 @@ export const SegmentedTabs = <T extends string>({
                         type="button"
                         role="tab"
                         aria-selected={isActive}
-                        aria-controls={`${idPrefix}-panel-${item.id}`}
+                        aria-controls={panelId}
                         tabIndex={isActive ? 0 : -1}
                         className={`${style['tabs__tab']} ${isActive ? style['tabs__tab--active'] : ''}`}
                         onClick={() => select(item.id)}

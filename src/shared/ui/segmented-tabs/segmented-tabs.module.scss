@@ -64,6 +64,19 @@
     }
 }
 
+// A period switcher inside a panel header doesn't need full touch-target
+// height on a precise pointer — only restore it where the pointer is coarse
+// (touch), so the accessibility floor from CLAUDE.md still holds on mobile.
+.tabs--sm .tabs__tab {
+    min-height: 32px;
+    padding-inline: $spacing-sm;
+    font-size: $fs-xs;
+
+    @media (pointer: coarse) {
+        min-height: $touch-target-min;
+    }
+}
+
 .tabs__count {
     display: inline-flex;
     align-items: center;
