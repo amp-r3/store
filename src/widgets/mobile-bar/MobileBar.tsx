@@ -81,6 +81,10 @@ export const MobileBar = () => {
     const isCartLoaded = isRehydrated && (cartTotals ?? 0) >= 1;
     const isWishlistLoaded = isRehydrated && (wishlistTotals ?? 0) >= 1;
     const hasUnread = (unreadCount ?? 0) >= 1;
+    // auth.user is persisted too, so isAuth can already be true on the
+    // client's first render (SSR always renders false) — gate the
+    // profile-vs-login branch on it or the link's href/label/icon mismatch.
+    const isAuthReady = isRehydrated && isAuth;
 
     const closeSearch = () => setIsSearchOpen(false);
     const closePurchase = () => setIsNavPinned(true);
@@ -185,7 +189,7 @@ export const MobileBar = () => {
                             {isCartLoaded && <span className={style.navbar__badge}>{cartTotals}</span>}
                             <IoCartOutline />
                         </button>
-                        {isAuth ? (
+                        {isAuthReady ? (
                             <Link href="/user" aria-label="Open profile" className={navLinkClass(isUserActive)} onClick={() => soft()}>
                                 {hasUnread && !isInUserSection && (
                                     <span className={style.navbar__badge}>

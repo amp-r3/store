@@ -27,6 +27,11 @@ export const NavActions = () => {
     const isCartLoaded = isRehydrated && (cartTotals ?? 0) >= 1;
     const isWishlistLoaded = isRehydrated && (wishlistTotals ?? 0) >= 1;
     const hasUnread = (unreadCount ?? 0) >= 1;
+    // Same reasoning: auth.user is persisted too, so isAuth can already be
+    // true on the client's first render (SSR always renders false, no
+    // session available there) — gate the profile-vs-login branch on it or
+    // the link's href/label/icon mismatch between server and client.
+    const isAuthReady = isRehydrated && isAuth;
 
     const btnClass = style['nav-actions__btn'];
 
@@ -47,7 +52,7 @@ export const NavActions = () => {
                 <IoCartOutline />
             </button>
 
-            {isAuth ? (
+            {isAuthReady ? (
                 <Link href={'/user'} aria-label="open profile" className={btnClass}>
                     {hasUnread && (
                         <span className={style['nav-actions__btn__count']}>
