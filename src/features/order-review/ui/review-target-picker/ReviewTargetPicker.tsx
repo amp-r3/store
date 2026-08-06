@@ -6,6 +6,7 @@ import { LuStar } from 'react-icons/lu';
 import { EnrichedOrderItem } from "@/entities/order";
 import style from './review-target-picker.module.scss'
 import { useMediaQuery } from "@/shared/lib/hooks";
+import { getModalRoot } from "@/shared/lib";
 import { OrderItem } from "@/entities/order";
 import { OrderItemSkeleton } from "@/entities/order";
 
@@ -48,11 +49,12 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
     isLoading,
 }) => {
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const modalRoot = getModalRoot();
 
     if (isMobile) {
         return (
             <Drawer.Root open={isOpen} onOpenChange={onOpenChange} direction="bottom">
-                <Drawer.Portal container={document.getElementById('modal-root')!}>
+                <Drawer.Portal container={modalRoot}>
                     <Drawer.Overlay className={style['review-drawer__overlay']} />
                     <Drawer.Content className={style['review-drawer__content']} aria-label="Which item you want to rate">
                         <Drawer.Handle className={style['review-drawer__handle']} />
@@ -91,7 +93,7 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
 
     return (
         <Dialog.Root open={isOpen} onOpenChange={onOpenChange} >
-            <Dialog.Portal container={document.getElementById('modal-root')!}>
+            <Dialog.Portal container={modalRoot}>
                 <Dialog.Overlay className={style['review-modal__overlay']} />
                 <Dialog.Content className={style['review-modal__content']}>
                     <Dialog.Close asChild>

@@ -5,6 +5,7 @@ import { IoChevronDown, IoCheckmark, IoClose } from 'react-icons/io5';
 import { FaSortAmountDown } from 'react-icons/fa';
 import style from './reviews-sort.module.scss';
 import { useHaptics, useMediaQuery } from "@/shared/lib/hooks";
+import { getModalRoot } from "@/shared/lib";
 import type { ReviewSort } from '@/entities/review';
 
 export interface SortOption {
@@ -122,15 +123,13 @@ export const ReviewsSort = ({ value, onChange }: ReviewsSortProps) => {
         );
     }
 
-    const modalRoot = document.getElementById('modal-root');
-
     return (
         <div className={style['reviews-sort__container']}>
             <DropdownMenu.Root open={isOpen} onOpenChange={handleTriggerClick}>
                 <DropdownMenu.Trigger asChild>
                     {triggerButton}
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Portal container={modalRoot ?? undefined}>
+                <DropdownMenu.Portal container={getModalRoot()}>
                     <DropdownMenu.Content
                         className={style['reviews-sort__dropdown']}
                         sideOffset={8}

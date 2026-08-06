@@ -3,6 +3,12 @@ import { createServerSupabaseClient } from '@/shared/api/supabase/server';
 import { AdminRoute } from '@/app/providers/AdminRoute/AdminRoute';
 import { AdminLayout } from '@/app/layouts/AdminLayout/AdminLayout';
 
+// Reads the session on every request anyway (the role check below) and every
+// page under here is per-user admin data — force dynamic rather than
+// auditing every useSearchParams() call across the admin tables for a
+// Suspense boundary.
+export const dynamic = 'force-dynamic';
+
 // Server-side gate: redirects a non-admin before any admin HTML reaches the
 // browser, so a hard refresh no longer flashes the page before AdminRoute's
 // client-side check (still the second line of defense — see AdminRoute)

@@ -1,6 +1,7 @@
 import { Dialog, VisuallyHidden } from 'radix-ui';
 import style from './product-image-modal.module.scss';
 import { useImageView } from "@/shared/lib/hooks";
+import { getModalRoot } from "@/shared/lib";
 
 interface ProductImageModalProps {
   imageSrc: string;
@@ -20,7 +21,7 @@ export const ProductImageModal = ({ imageSrc, imageAlt, onClose, isOpen }: Produ
         if (!open) onClose();
       }}
     >
-      <Dialog.Portal container={document.getElementById('modal-root')!}>
+      <Dialog.Portal container={getModalRoot()}>
         <Dialog.Overlay className={style['modal-backdrop']} />
 
         <Dialog.Content

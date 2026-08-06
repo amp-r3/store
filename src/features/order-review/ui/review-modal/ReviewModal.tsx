@@ -3,6 +3,7 @@ import { useReviewModal } from '../../model/useReviewModal';
 import { Dialog } from 'radix-ui';
 import { Controller } from 'react-hook-form';
 import { FaStar, FaTimes } from 'react-icons/fa';
+import { getModalRoot } from '@/shared/lib';
 import style from './review-modal.module.scss';
 
 export const ReviewModal: React.FC = () => {
@@ -30,7 +31,7 @@ export const ReviewModal: React.FC = () => {
 
   return (
     <Dialog.Root open={!!isOpen} onOpenChange={handleOpenChange}>
-      <Dialog.Portal container={document.getElementById('modal-root')}>
+      <Dialog.Portal container={getModalRoot()}>
         <Dialog.Overlay className={style['review-modal__overlay']} />
         <Dialog.Content className={style['review-modal__content']}>
           <Dialog.Title className={style['review-modal__title']}>

@@ -4,6 +4,7 @@ import { ICategoryProps } from '../CategoryControl';
 import { CategoryList } from '../../category-list/CategoryList';
 import style from './category-popup.module.scss';
 import { Dialog } from 'radix-ui';
+import { getModalRoot } from '@/shared/lib';
 
 
 export const CategoryPopup: FC<ICategoryProps> = ({
@@ -26,7 +27,7 @@ export const CategoryPopup: FC<ICategoryProps> = ({
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
         >
-            <Dialog.Portal container={document.getElementById('modal-root')!}>
+            <Dialog.Portal container={getModalRoot()}>
                 <Dialog.Overlay
                     
                     className={style['category-popup__backdrop']}

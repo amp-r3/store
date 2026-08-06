@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 
 // Custom Components
@@ -37,7 +38,13 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
         <>
             <TopBar isOverlay={isHomePage} />
             <div className={style.layout}>
-                <Navbar isOverlay={isHomePage} />
+                {/* Navbar/MobileBar read the URL (search box) via useSearchParams,
+                    which opts a static page into full CSR without a Suspense
+                    boundary around it — wrap here instead of forcing the page
+                    content below (children) to give up static generation too. */}
+                <Suspense fallback={null}>
+                    <Navbar isOverlay={isHomePage} />
+                </Suspense>
                 {children}
                 <CartDrawer
                     isOpen={isOpen}
@@ -46,7 +53,9 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
                 <ReviewModal />
                 {isMobileBarWidth && (
                     <div className={style.mobileBar}>
-                        <MobileBar />
+                        <Suspense fallback={null}>
+                            <MobileBar />
+                        </Suspense>
                     </div>
                 )}
             </div>
