@@ -9,10 +9,6 @@ import 'react-loading-skeleton/dist/skeleton.css';
 // app/(shop)/product/[id]/page.tsx) resolve to absolute URLs.
 // NEXT_PUBLIC_SITE_URL must be set (see .env) since there's no request to
 // read window.location from here.
-
-// TODO(stage 5): update NEXT_PUBLIC_SITE_URL to the Vercel domain once live
-// — og:url/og:image (and every canonical/sitemap URL, all built from
-// getSiteOrigin()) follow it automatically.
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteOrigin() || 'http://localhost:3000'),
   title: 'Store',
