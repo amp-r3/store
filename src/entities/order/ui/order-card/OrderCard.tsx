@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import Image from 'next/image';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { OrderItem, OrderStatus } from '@/entities/order/model/types';
@@ -72,15 +73,14 @@ export const OrderCard = memo(({
         <div className={style.thumbnails}>
           {visibleItems.map((item) => (
             thumbnailsById ? (
-              <img
+              <Image
                 key={item.id}
                 className={style.thumbnail}
                 src={thumbnailsById[item.productId]}
                 alt=""
                 aria-hidden="true"
-                loading="lazy"
-                decoding="async"
-                fetchPriority="low"
+                width={44}
+                height={44}
               />
             ) : (
               <Skeleton

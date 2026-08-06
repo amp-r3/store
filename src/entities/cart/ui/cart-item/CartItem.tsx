@@ -7,6 +7,7 @@ import styles from './cart-item.module.scss';
 import { CartItemDetails as CartItemType } from '@/entities/cart/model/types';
 import { formatPrice } from '@/shared/lib';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useGetSizesQuery } from "@/entities/product";
 import { useAppSelector } from "@/shared/model";
 import { selectIsMaxReached } from "@/entities/cart";
@@ -45,14 +46,12 @@ export const CartItem = memo<CartItemProps>(({
             {/* --- Media Section --- */}
 
             <div className={styles['cart-item__media']}>
-                <img
+                <Image
                     src={thumbnail}
                     alt={title}
+                    fill
+                    sizes="110px"
                     className={styles['cart-item__image']}
-                    loading="lazy"
-                    decoding="async"
-                    width="108"
-                    height="108"
                 />
             </div>
 

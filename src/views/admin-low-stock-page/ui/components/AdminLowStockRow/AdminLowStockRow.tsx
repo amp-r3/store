@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { AdminLowStockItem } from '@/entities/admin';
 import { AdminStockInput } from '@/features/admin-product-form';
@@ -14,14 +15,16 @@ export const AdminLowStockRow = memo(({ item }: AdminLowStockRowProps) => (
     <article role="listitem" className={style['admin-low-stock-row']}>
         <div className={style['admin-low-stock-row__cell']}>
             <span className={style['admin-low-stock-row__cell-label']}>Product</span>
-            <img
-                className={style['admin-low-stock-row__thumbnail']}
-                src={item.thumbnail ?? undefined}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                decoding="async"
-            />
+            {item.thumbnail && (
+                <Image
+                    className={style['admin-low-stock-row__thumbnail']}
+                    src={item.thumbnail}
+                    alt=""
+                    aria-hidden="true"
+                    width={44}
+                    height={44}
+                />
+            )}
             <Link href={`/admin/products/${item.productId}/edit`} className={style['admin-low-stock-row__title']}>
                 {item.title}
             </Link>

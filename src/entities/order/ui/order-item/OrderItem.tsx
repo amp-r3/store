@@ -4,6 +4,7 @@ import { EnrichedOrderItem } from '@/entities/order/model/types';
 import { useGetSizesQuery } from '@/entities/product';
 import { formatPrice } from '@/shared/lib';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface OrderItemProps {
   item: EnrichedOrderItem;
@@ -32,9 +33,11 @@ export const OrderItem: React.FC<OrderItemProps> = React.memo(({ item, onClose, 
 
       <div className={style['order-item__image-wrapper']}>
         {product.thumbnail ? (
-          <img
+          <Image
             src={product.thumbnail}
             alt={product.title}
+            fill
+            sizes="68px"
             className={style['order-item__image']}
           />
         ) : (

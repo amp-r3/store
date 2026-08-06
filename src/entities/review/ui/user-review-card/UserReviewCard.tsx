@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaCalendarDay, FaThumbsUp, FaPen, FaTrash } from 'react-icons/fa';
 
 import { Modal, RatingStars } from '@/shared/ui';
@@ -48,12 +49,12 @@ export const UserReviewCard = memo(({ review, product, onEdit }: UserReviewCardP
                 onClick={soft}
             >
                 {product?.thumbnail ? (
-                    <img
+                    <Image
                         src={product.thumbnail}
                         alt=""
+                        width={56}
+                        height={56}
                         className={style['user-review-card__thumb']}
-                        loading="lazy"
-                        decoding="async"
                     />
                 ) : (
                     <div className={style['user-review-card__thumb--fallback']} aria-hidden="true" />

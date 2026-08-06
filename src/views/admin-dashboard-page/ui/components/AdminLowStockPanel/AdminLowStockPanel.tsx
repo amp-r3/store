@@ -1,5 +1,6 @@
 import Skeleton from 'react-loading-skeleton';
 import Link from 'next/link';
+import Image from 'next/image';
 import { LuPackageOpen } from 'react-icons/lu';
 
 import { useGetAdminLowStockQuery } from '@/entities/admin';
@@ -38,14 +39,16 @@ export const AdminLowStockPanel = () => {
                             href={`/admin/products/${item.productId}/edit`}
                             className={style['admin-low-stock-panel__row']}
                         >
-                            <img
-                                className={style['admin-low-stock-panel__thumbnail']}
-                                src={item.thumbnail ?? undefined}
-                                alt=""
-                                aria-hidden="true"
-                                loading="lazy"
-                                decoding="async"
-                            />
+                            {item.thumbnail && (
+                                <Image
+                                    className={style['admin-low-stock-panel__thumbnail']}
+                                    src={item.thumbnail}
+                                    alt=""
+                                    aria-hidden="true"
+                                    width={40}
+                                    height={40}
+                                />
+                            )}
                             <span className={style['admin-low-stock-panel__title']}>{item.title}</span>
                             <span className={style['admin-low-stock-panel__size']}>{item.value}</span>
                             <span

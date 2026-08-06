@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Skeleton from 'react-loading-skeleton';
 import { LuPackage } from 'react-icons/lu';
 
@@ -65,14 +66,16 @@ export const AdminTopProductsPanel = () => {
                             href={`/admin/products/${product.productId}/edit`}
                             className={style['admin-top-products-panel__row']}
                         >
-                            <img
-                                className={style['admin-top-products-panel__thumbnail']}
-                                src={product.thumbnail ?? undefined}
-                                alt=""
-                                aria-hidden="true"
-                                loading="lazy"
-                                decoding="async"
-                            />
+                            {product.thumbnail && (
+                                <Image
+                                    className={style['admin-top-products-panel__thumbnail']}
+                                    src={product.thumbnail}
+                                    alt=""
+                                    aria-hidden="true"
+                                    width={40}
+                                    height={40}
+                                />
+                            )}
                             <span className={style['admin-top-products-panel__title']}>{product.title}</span>
                             <span
                                 className={`${style['admin-top-products-panel__metric']} ${metric === 'units' ? style['admin-top-products-panel__metric--active'] : ''}`}

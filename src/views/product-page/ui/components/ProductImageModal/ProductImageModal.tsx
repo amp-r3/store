@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Dialog, VisuallyHidden } from 'radix-ui';
 import style from './product-image-modal.module.scss';
 import { useImageView } from "@/shared/lib/hooks";
@@ -43,11 +44,14 @@ export const ProductImageModal = ({ imageSrc, imageAlt, onClose, isOpen }: Produ
           </div>
 
           <div className={style['image-container']}>
-            <img
+            <Image
               {...bindPinch()}
               ref={imageRef}
               src={imageSrc}
               alt={imageAlt}
+              width={1200}
+              height={1200}
+              sizes="100vw"
               className={style['image']}
               style={{ touchAction: 'none' }}
             />

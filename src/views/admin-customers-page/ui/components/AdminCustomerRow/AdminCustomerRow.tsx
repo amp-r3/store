@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import Image from 'next/image';
 import { LuShieldCheck, LuUserCog } from 'react-icons/lu';
 
 import { AdminCustomer } from '@/entities/admin';
@@ -36,7 +37,7 @@ export const AdminCustomerRow = memo(({ customer, isCurrentUser, onOpenDetails, 
                     onClick={() => onOpenDetails(customer.id)}
                 >
                     {customer.avatarUrl ? (
-                        <img src={customer.avatarUrl} alt="" className={style['admin-customer-row__avatar']} />
+                        <Image src={customer.avatarUrl} alt="" width={36} height={36} className={style['admin-customer-row__avatar']} />
                     ) : (
                         <span className={style['admin-customer-row__avatar-fallback']} aria-hidden="true">
                             {getInitial(customer)}

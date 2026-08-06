@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import style from './product-gallery.module.scss';
 
@@ -13,7 +14,14 @@ export const ProductGallery = ({ imageUrl, title, isFavorite, handleAddToWishlis
     return (
         <div className={style['image-column']}>
             <div className={style['image-wrapper']} onClick={onClick}>
-                <img src={imageUrl} alt={title} className={style['image']} />
+                <Image
+                    src={imageUrl}
+                    alt={title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 45vw"
+                    className={style['image']}
+                    priority
+                />
                 <button className={style['image-add-to-favorites']} onClick={(e) => { e.stopPropagation(); handleAddToWishlist() }} aria-label={isFavorite ? 'Remove from wishlist' : 'Add to wishlist'}>
                     {
                         isFavorite ?

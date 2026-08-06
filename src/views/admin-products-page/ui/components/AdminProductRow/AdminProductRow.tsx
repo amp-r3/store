@@ -1,4 +1,5 @@
 import { memo, useState } from 'react';
+import Image from 'next/image';
 import { FaStar } from 'react-icons/fa6';
 import { LuPencil, LuArchiveRestore, LuArchive, LuBoxes } from 'react-icons/lu';
 
@@ -43,14 +44,16 @@ export const AdminProductRow = memo(({ product, onArchive, onRestore }: AdminPro
         >
             <div className={style['admin-product-row__cell']}>
                 <span className={style['admin-product-row__cell-label']}>Product</span>
-                <img
-                    className={style['admin-product-row__thumbnail']}
-                    src={product.thumbnail ?? undefined}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    decoding="async"
-                />
+                {product.thumbnail && (
+                    <Image
+                        className={style['admin-product-row__thumbnail']}
+                        src={product.thumbnail}
+                        alt=""
+                        aria-hidden="true"
+                        width={44}
+                        height={44}
+                    />
+                )}
                 <span className={style['admin-product-row__title']}>{product.title}</span>
                 {product.isArchived && <span className={style['admin-product-row__archived-badge']}>Archived</span>}
             </div>

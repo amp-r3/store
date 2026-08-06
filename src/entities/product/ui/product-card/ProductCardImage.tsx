@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import Image from 'next/image';
 
 import style from './product-card.module.scss';
 import { ProductSize } from '@/entities/product/model/types';
@@ -29,15 +30,13 @@ export const ProductCardImage: FC<ProductCardImageProps> = ({
 
     return (
         <div className={style.card__imageWrapper}>
-            <img
+            <Image
                 src={thumbnail}
                 alt={title}
+                fill
+                sizes="(max-width: 500px) 50vw, (max-width: 768px) 33vw, 25vw"
                 className={style.card__image}
-                loading={priority ? 'eager' : 'lazy'}
-                decoding={priority ? 'sync' : 'async'}
-                fetchPriority={priority ? 'high' : 'low'}
-                width="241"
-                height="241"
+                priority={priority}
             />
             <div className={style['card__promo-block']}>
                 <span className={style.card__category}>{category}</span>

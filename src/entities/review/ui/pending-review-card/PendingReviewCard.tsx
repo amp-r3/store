@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaStar, FaRegStar, FaCalendarDay } from 'react-icons/fa';
 
 import { useHaptics } from '@/shared/lib/hooks';
@@ -34,12 +35,12 @@ export const PendingReviewCard = memo(({ purchase, product, onRate }: PendingRev
                 onClick={soft}
             >
                 {product?.thumbnail ? (
-                    <img
+                    <Image
                         src={product.thumbnail}
                         alt=""
+                        width={56}
+                        height={56}
                         className={style['pending-card__thumb']}
-                        loading="lazy"
-                        decoding="async"
                     />
                 ) : (
                     <div className={style['pending-card__thumb--fallback']} aria-hidden="true" />

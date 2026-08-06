@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import Image from 'next/image';
 import { LuShieldCheck } from 'react-icons/lu';
 
 import { AdminCustomer } from '@/entities/admin';
@@ -25,7 +26,7 @@ export const AdminCustomerDetailsHeader: FC<AdminCustomerDetailsHeaderProps> = (
     <header className={style['header']} aria-label="Customer details header">
         <div className={style['header__identity']}>
             {customer.avatarUrl ? (
-                <img src={customer.avatarUrl} alt="" className={style['header__avatar']} />
+                <Image src={customer.avatarUrl} alt="" width={56} height={56} className={style['header__avatar']} />
             ) : (
                 <span className={style['header__avatar-fallback']} aria-hidden="true">
                     {getInitial(customer)}
