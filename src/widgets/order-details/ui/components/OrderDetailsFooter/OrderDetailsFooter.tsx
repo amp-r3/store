@@ -4,7 +4,7 @@ import { LuMessageSquareQuote, LuCopyCheck } from 'react-icons/lu';
 import style from './order-details-footer.module.scss';
 import { addToCheckout, clearCheckout } from '@/features/checkout-process';
 import { CartProduct } from '@/entities/cart';
-import { useNavigate } from 'react-router';
+import { useRouter } from 'next/navigation';
 import { Modal } from '@/shared/ui';
 import { formatPrice } from "@/shared/lib";
 import { useAppDispatch } from "@/shared/model";
@@ -19,7 +19,7 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
     orderCartProduct,
 }) => {
     const dispatch = useAppDispatch()
-    const navigate = useNavigate()
+    const router = useRouter()
     const [modal, setModal] = useState(false);
     const onOpenChange = () => {
         setModal((prev) => !prev)
@@ -27,7 +27,7 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
     const handleRepeat = () => {
         dispatch(clearCheckout())
         dispatch(addToCheckout(orderCartProduct))
-        navigate('/checkout')
+        router.push('/checkout')
     }
     return (
         <footer className={style['footer']}>

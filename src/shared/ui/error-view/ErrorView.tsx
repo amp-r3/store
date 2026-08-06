@@ -1,6 +1,5 @@
 import style from './error-view.module.scss';
 import { TbAlertTriangle } from 'react-icons/tb';
-import { useNavigate } from 'react-router';
 import { FC } from 'react';
 import { useHaptics } from "@/shared/lib/hooks";
 
@@ -9,12 +8,15 @@ interface ErrorViewProps {
 }
 
 export const ErrorView: FC<ErrorViewProps> = ({ error }) => {
-    const navigate = useNavigate();
     const { light } = useHaptics()
 
+    // A hard reload, not router.refresh(): every query on the page is
+    // client-fetched RTK Query state, which a server-payload refresh doesn't
+    // touch. This is also what react-router's old `navigate(0)` actually did
+    // (history.go(0) reloads the document in every browser).
     const onRetry = () => {
         light()
-        navigate(0);
+        window.location.reload();
     }
 
     return (

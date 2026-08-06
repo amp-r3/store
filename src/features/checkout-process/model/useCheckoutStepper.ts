@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { useUrlState } from '@/shared/lib/hooks';
 import { UseFormReturn } from 'react-hook-form';
 import { useHaptics } from '@/shared/lib/hooks';
 import { scrollToElement } from '@/shared/lib';
@@ -27,7 +27,7 @@ export const useCheckoutStepper = (
   methods: UseFormReturn<CheckoutFormValues>,
   draft: Partial<CheckoutFormValues> | null
 ) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useUrlState();
   const [maxReachedIndex, setMaxReachedIndex] = useState(() => computeMaxReachedIndex(draft));
   const { soft } = useHaptics();
 

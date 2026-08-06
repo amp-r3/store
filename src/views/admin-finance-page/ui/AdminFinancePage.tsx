@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router';
+import { useUrlState } from '@/shared/lib/hooks';
 
 import { SectionHeader, SegmentedTabs, type SegmentedTabItem } from '@/shared/ui';
 
@@ -30,7 +30,7 @@ const isFinanceRange = (value: string | null): value is FinanceRange => value ==
 const isFinanceView = (value: string | null): value is FinanceView => value === 'charts' || value === 'numbers';
 
 export const AdminFinancePage = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const rangeParam = searchParams.get('days');
     const viewParam = searchParams.get('view');

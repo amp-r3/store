@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import { LuScrollText } from 'react-icons/lu';
 
-import { useMediaQuery, usePaginationBounds } from '@/shared/lib/hooks';
+import { useMediaQuery, usePaginationBounds, useUrlState } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, EmptyState, Alert } from '@/shared/ui';
 import { useGetAdminAuditLogQuery, useGetAdminCustomersQuery, AuditLogList } from '@/entities/admin';
@@ -13,7 +12,7 @@ const ADMIN_OPTIONS_LIMIT = 100;
 
 export const AdminAuditPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const action = searchParams.get('action') ?? '';
     const entityType = searchParams.get('entity') ?? '';

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useParams } from 'next/navigation';
 
 import { getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Loader, Alert } from '@/shared/ui';

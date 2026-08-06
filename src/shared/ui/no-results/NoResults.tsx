@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useRouter } from 'next/navigation'
 import { TbSearchOff } from 'react-icons/tb'
 import style from './noResults.module.scss'
 import { useHaptics } from "@/shared/lib/hooks";
@@ -9,12 +9,12 @@ interface NoResultsProps {
 }
 
 export const NoResults = ({ query, description }: NoResultsProps) => {
-  const navigate = useNavigate()
+  const router = useRouter()
   const { light } = useHaptics()
 
   const handleReset = () => {
     light()
-    navigate('/catalog', { replace: true })
+    router.replace('/catalog')
   }
 
   return (
@@ -33,7 +33,7 @@ export const NoResults = ({ query, description }: NoResultsProps) => {
             description
           ) : query ? (
             <>
-              We couldn't find any items matching <span className={style.noResults__highlight}>"{query}"</span>.
+              We couldn&apos;t find any items matching <span className={style.noResults__highlight}>&quot;{query}&quot;</span>.
             </>
           ) : (
             'Try adjusting your search or filter settings to find what you are looking for.'

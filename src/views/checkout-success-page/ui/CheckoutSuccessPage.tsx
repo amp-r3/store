@@ -2,7 +2,7 @@ import { Modal, PageLayout } from '@/shared/ui';
 import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { TbShoppingCartCheck } from 'react-icons/tb';
-import { useLocation, useNavigate } from 'react-router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch } from '@/shared/model';
 import { clearCheckout, clearCheckoutDraft } from '@/features/checkout-process';
 
@@ -28,14 +28,14 @@ const fireSideConfetti = () => {
 };
 
 export const CheckoutSuccessPage = () => {
-  const { state } = useLocation()
-  const navigate = useNavigate()
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const dispatch = useAppDispatch()
-  const orderId = state?.orderId
+  const orderId = searchParams.get('order')
 
   useEffect(() => {
     if (!orderId) {
-      navigate('/', { replace: true })
+      router.replace('/')
       return
     }
     // Cleared here (not right after the order is created) so the still-empty
@@ -43,7 +43,7 @@ export const CheckoutSuccessPage = () => {
     // lazy-loaded success page has actually committed and carries orderId.
     dispatch(clearCheckout())
     dispatch(clearCheckoutDraft())
-  }, [orderId, navigate, dispatch])
+  }, [orderId, router, dispatch])
 
   useEffect(() => {
     if (!orderId) return
@@ -57,12 +57,12 @@ export const CheckoutSuccessPage = () => {
     <PageLayout>
       <Modal
         isOpen={true}
-        onOpenChange={() => { navigate('/', { replace: true }) }}
+        onOpenChange={() => { router.replace('/') }}
         title="You're all set!"
         description={`Order №${orderId} has been confirmed. You can track its status on the orders page.`}
         icon={<TbShoppingCartCheck size={50} />}
         actionLabel="My Orders"
-        onAction={() => { navigate('/user/orders', { replace: true }) }}
+        onAction={() => { router.replace('/user/orders') }}
         actionVariant='success'
       />
     </PageLayout>

@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router";
+import { useUrlState } from "@/shared/lib/hooks";
 import { sortingOptions, SortingOption } from "@/features/product-sort";
 import { Categories, Category } from "@/entities/product";
 import { useCallback, useMemo } from "react";
@@ -41,7 +41,7 @@ export function useFilters(
         error: categoriesError,
     }: CategoriesQueryProps
 ): UseFilterReturn {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const parsed = useMemo(() => {
         const rawParams = {

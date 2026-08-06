@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useRouter } from 'next/navigation';
 import { useForm, useController, Control, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -27,7 +27,7 @@ interface AdminProductFormProps {
 }
 
 export const AdminProductForm = ({ product }: AdminProductFormProps) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const isEditMode = !!product;
 
     const { data: categories } = useGetAdminCategoriesQuery();
@@ -84,7 +84,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 await updateProduct({ id: product.id, payload: formValuesToPayload(values) }).unwrap();
             } else {
                 const newId = await createProduct(formValuesToCreatePayload(values)).unwrap();
-                navigate(`/admin/products/${newId}/edit`);
+                router.push(`/admin/products/${newId}/edit`);
                 return;
             }
         } catch (err) {
@@ -259,7 +259,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
             </AdminProductFormSection>
 
             <div className={style.actions}>
-                <Button type="button" variant="ghost" onClick={() => navigate('/admin/products')} disabled={isSaving}>
+                <Button type="button" variant="ghost" onClick={() => router.push('/admin/products')} disabled={isSaving}>
                     Cancel
                 </Button>
                 <Button type="submit" variant="primary" isLoading={isSaving}>

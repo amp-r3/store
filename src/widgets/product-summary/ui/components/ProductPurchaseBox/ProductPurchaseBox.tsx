@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import style from './product-purchase-box.module.scss';
 import { CartProduct } from '@/entities/cart';
 import { addToCheckout, clearCheckout } from '@/features/checkout-process';
-import { useNavigate } from 'react-router';
+import { useRouter } from 'next/navigation';
 import { formatPrice } from "@/shared/lib";
 import { ProductSize, getPurchaseState } from "@/entities/product";
 import { useAppDispatch } from "@/shared/model";
@@ -32,7 +32,7 @@ export const ProductPurchaseBox = ({
     hasSizes,
 }: ProductPurchaseBoxProps) => {
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+    const router = useRouter();
     const [isWarning, setIsWarning] = useState(false);
     const [isShaking, setIsShaking] = useState(false);
 
@@ -68,7 +68,7 @@ export const ProductPurchaseBox = ({
         }
         dispatch(clearCheckout());
         dispatch(addToCheckout(cartProduct));
-        navigate('/checkout');
+        router.push('/checkout');
     };
 
     useEffect(() => {

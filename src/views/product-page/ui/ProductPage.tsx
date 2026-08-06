@@ -4,7 +4,8 @@ import { ProductSummary } from "@/widgets/product-summary";
 import { useEffect } from 'react';
 
 // Router
-import { useParams, Navigate, useSearchParams } from 'react-router';
+import { useParams, notFound } from 'next/navigation';
+import { useUrlState } from '@/shared/lib/hooks';
 
 // Components
 import { ErrorView, ExpandableContent, PageLayout, ShareCopyBtn, HOME_CRUMB, CATALOG_CRUMB, categoryCrumb } from '@/shared/ui';
@@ -27,13 +28,13 @@ import { useAppSelector } from "@/shared/model";
 import { selectIsAuth } from "@/entities/session";
 
 export const ProductPage = () => {
-    const searchParams = useSearchParams()
-    const { id } = useParams();
+    const [searchParams, setSearchParams] = useUrlState()
+    const { id } = useParams<{ id?: string }>();
     const { onIncrease, onDecrease } = useCartActions()
     const { onWishlist } = useWishlistActions()
     const { wishlistItems } = useWishlistDetails()
     const isFavorite = wishlistItems.some(item => item?.id === +(id || 0))
-    const openedImage = searchParams[0].get('view') === 'true';
+    const openedImage = searchParams.get('view') === 'true';
     const { product, isLoading, error, isNotFound } = useProduct(id);
     const { data: sizes, isLoading: isSizesLoading } = useGetSizesQuery(+(id || 0))
     const { selectedSizeId, setSelectedSizeId } = useSelectedSize(sizes);
@@ -48,7 +49,7 @@ export const ProductPage = () => {
 
 
     const onImageClick = (): void => {
-        searchParams[1]((prev) => {
+        setSearchParams((prev) => {
             const next = new URLSearchParams(prev);
             next.set('view', 'true');
             return next;
@@ -56,7 +57,7 @@ export const ProductPage = () => {
     }
 
     const onCloseModal = (): void => {
-        searchParams[1]((prev) => {
+        setSearchParams((prev) => {
             const next = new URLSearchParams(prev);
             next.delete('view');
             return next;
@@ -84,7 +85,7 @@ export const ProductPage = () => {
 
     if (isLoading || !product) return <ProductPageSkeleton />;
     if (error) return <ErrorView error={getErrorMessage(error)} />;
-    if (isNotFound) return <Navigate to="/404" replace />;
+    if (isNotFound) notFound();
 
     const { id: productId, title, basePrice, price, description, category, brand, images,
         rating, reviewsCount, discountPercentage, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;

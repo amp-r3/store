@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import { LuUsers } from 'react-icons/lu';
 
-import { useMediaQuery, useHaptics } from '@/shared/lib/hooks';
+import { useMediaQuery, useHaptics, useUrlState } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, EmptyState, Alert } from '@/shared/ui';
@@ -17,7 +16,7 @@ export const AdminCustomersPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { soft } = useHaptics();
     const currentUser = useAppSelector(selectUser);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const search = searchParams.get('q') ?? '';
     const role = (searchParams.get('role') as UserRole | null) ?? '';

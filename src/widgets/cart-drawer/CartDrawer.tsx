@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Drawer } from 'vaul';
-import { useNavigate } from 'react-router';
+import { useRouter } from 'next/navigation';
 import { VisuallyHidden } from 'radix-ui'
 import { IoWarningOutline } from "react-icons/io5";
 
@@ -29,7 +29,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { cartDetails, isEmpty, totals, isLoading, isFetching, cartItems, totalQuantity, refetchCart } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const navigate = useNavigate();
+  const router = useRouter();
   const { soft } = useHaptics();
   const dispatch = useAppDispatch()
   const modalRoot = getModalRoot();
@@ -46,13 +46,13 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
       console.error("Error reconciling cart:", error);
     }
     dispatch(addToCheckout(cartItems))
-    navigate('/checkout');
+    router.push('/checkout');
     onClose();
   };
 
   const onStartShopping = () => {
     soft();
-    navigate('/', { replace: true });
+    router.replace('/');
     onClose();
   };
 
@@ -154,7 +154,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           description="To continue you need to register"
           icon={<IoWarningOutline size={50} />}
           actionLabel="register"
-          onAction={() => { navigate('/register'); setIsModalOpen(false) }}
+          onAction={() => { router.push('/register'); setIsModalOpen(false) }}
         />
       }
     </>

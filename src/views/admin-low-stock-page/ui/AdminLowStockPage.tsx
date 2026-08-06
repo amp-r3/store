@@ -1,8 +1,8 @@
 import { useRef } from 'react';
-import { useSearchParams } from 'react-router';
 import { LuMinus, LuPackageSearch, LuPlus } from 'react-icons/lu';
 
 import { getErrorMessage } from '@/shared/lib';
+import { useUrlState } from '@/shared/lib/hooks';
 import { SectionHeader, Alert, EmptyState } from '@/shared/ui';
 import { useGetAdminLowStockQuery } from '@/entities/admin';
 
@@ -12,7 +12,7 @@ import style from './admin-low-stock-page.module.scss';
 const DEFAULT_THRESHOLD = 5;
 
 export const AdminLowStockPage = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
     const threshold = Number(searchParams.get('threshold')) || DEFAULT_THRESHOLD;
     const thresholdInputRef = useRef<HTMLInputElement>(null);
 

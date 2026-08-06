@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router';
+import { useRouter } from 'next/navigation';
 import { UseFormSetError } from 'react-hook-form';
 import { useAppDispatch } from '@/shared/model';
 import { useHaptics } from '@/shared/lib/hooks';
@@ -17,7 +17,7 @@ interface UseCheckoutSubmitParams {
 
 export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError }: UseCheckoutSubmitParams) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { success } = useHaptics();
   const [createOrder, { isLoading: isCreating }] = useCreateOrderMutation();
   const [clearServerCart, { isLoading: isClearing }] = useClearCartMutation();
@@ -53,11 +53,11 @@ export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError 
       dispatch(notify({ type: 'success', text: 'Order placed' }));
       success();
 
-      navigate('/checkout/success', { state: { orderId }, replace: true });
+      router.replace(`/checkout/success?order=${encodeURIComponent(orderId)}`);
     } catch (err) {
       setError('root', { type: 'server', message: getErrorMessage(err) });
     }
-  }, [checkoutItems, isShippingRequired, createOrder, clearServerCart, dispatch, navigate, success, setError]);
+  }, [checkoutItems, isShippingRequired, createOrder, clearServerCart, dispatch, router, success, setError]);
 
   return {
     submitOrder,

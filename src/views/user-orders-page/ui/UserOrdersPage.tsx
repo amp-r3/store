@@ -1,8 +1,7 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
-import { useSearchParams } from 'react-router';
 
 import { useAppDispatch } from '@/shared/model';
-import { useMediaQuery, useHaptics } from '@/shared/lib/hooks';
+import { useMediaQuery, useHaptics, useUrlState } from '@/shared/lib/hooks';
 import { scrollToTop, formatDate } from '@/shared/lib';
 import { OrdersList } from '@/widgets/orders-list';
 import { OrderDetails } from '@/widgets/order-details';
@@ -28,7 +27,7 @@ export const UserOrdersPage = () => {
     const dispatch = useAppDispatch();
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { soft } = useHaptics();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const tab: OrdersScope = searchParams.get('tab') === 'completed' ? 'completed' : 'active';
     const orderId = searchParams.get('order');

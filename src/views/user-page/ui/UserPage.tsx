@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate } from "react-router"
+import { useRouter } from "next/navigation"
 import { selectUser, useDeleteAccountMutation, useSignOutMutation } from "@/entities/session"
 import { UserProfileForm, UserProfileView } from "@/features/profile-edit"
 import { useAppSelector } from "@/shared/model";
@@ -9,7 +9,7 @@ import { ChangePasswordSection } from "./components/change-password-section/Chan
 
 export const UserPage = () => {
   const user = useAppSelector(selectUser)
-  const navigate = useNavigate()
+  const router = useRouter()
   const [deleteAccount, { error: deleteError, reset: resetDeleteError }] = useDeleteAccountMutation()
   const [signOut] = useSignOutMutation()
 
@@ -22,14 +22,14 @@ export const UserPage = () => {
   const handleDeleteAccount = async () => {
     try {
       await deleteAccount().unwrap()
-      navigate('/', { replace: true })
+      router.replace('/')
     } catch {
       // Surfaced through `deleteError` below.
     }
   }
 
   const handleLogout = async () => {
-    navigate('/', { replace: true })
+    router.replace('/')
     await signOut()
   }
 

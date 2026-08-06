@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router';
+import { useUrlState } from '@/shared/lib/hooks';
 
 import { useAppDispatch } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
@@ -23,7 +23,7 @@ const MAX_STAGGER_INDEX = 8;
 
 export const UserReviews = () => {
     const dispatch = useAppDispatch();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const tab: ReviewsTab = searchParams.get('tab') === 'pending' ? 'pending' : 'written';
 

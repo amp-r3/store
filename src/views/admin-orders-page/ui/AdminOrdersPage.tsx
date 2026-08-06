@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import { LuClipboardList } from 'react-icons/lu';
 
-import { useMediaQuery, useHaptics } from '@/shared/lib/hooks';
+import { useMediaQuery, useHaptics, useUrlState } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, EmptyState, Alert } from '@/shared/ui';
@@ -15,7 +14,7 @@ import { AdminOrdersToolbar, AdminOrdersTable } from './components';
 export const AdminOrdersPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { soft } = useHaptics();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const status = (searchParams.get('status') as AdminOrderStatusFilter | null) ?? 'all';
     const search = searchParams.get('q') ?? '';

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router";
+import { usePathname, useRouter } from "next/navigation";
+import { useUrlState } from "@/shared/lib/hooks";
 
 export function useSearch() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const isCatalogPage = location.pathname === '/catalog';
-    const [searchParams, setSearchParams] = useSearchParams();
+    const pathname = usePathname();
+    const router = useRouter();
+    const isCatalogPage = pathname === '/catalog';
+    const [searchParams, setSearchParams] = useUrlState();
 
     const queryFromUrl = searchParams.get('q') || '';
     const [inputValue, setInputValue] = useState(queryFromUrl);
@@ -56,8 +57,8 @@ export function useSearch() {
         const trimmedQuery = inputValue.trim();
         if (!trimmedQuery) return;
 
-        navigate(`/catalog?q=${encodeURIComponent(trimmedQuery)}`);
-    }, [isCatalogPage, inputValue, navigate]);
+        router.push(`/catalog?q=${encodeURIComponent(trimmedQuery)}`);
+    }, [isCatalogPage, inputValue, router]);
 
     return {
         inputValue,

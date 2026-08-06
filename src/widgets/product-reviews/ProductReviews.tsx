@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router';
+import { useUrlState } from '@/shared/lib/hooks';
 import { FaComments, FaArrowUp } from 'react-icons/fa';
 
 import { ReviewsStats, ReviewsStatsSkeleton, ReviewsControls } from '@/entities/review';
@@ -35,7 +35,7 @@ const parsePage = (value: string | null): number => {
 };
 
 export const ProductReviews = ({ productId }: ProductReviewsProps) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
     const sort = parseSort(searchParams.get('reviewSort'));

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useRouter } from 'next/navigation';
 import { selectToken } from '@/entities/session';
 import { useAppSelector } from '@/shared/model';
 import { AuthCard, Loader } from '@/shared/ui';
@@ -15,7 +15,7 @@ const CALLBACK_TIMEOUT_MS = 12_000;
  * mirrors the resulting session into `selectToken`. This page only waits for
  * that and then routes onward to the stashed pre-login destination. */
 export const AuthCallbackPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const token = useAppSelector(selectToken);
   const [hasTimedOut, setHasTimedOut] = useState(false);
 
@@ -30,8 +30,8 @@ export const AuthCallbackPage = () => {
     const storedFrom = sessionStorage.getItem(AUTH_STORAGE_KEYS.redirectFrom);
     sessionStorage.removeItem(AUTH_STORAGE_KEYS.redirectFrom);
 
-    navigate(safeRedirectPath(storedFrom), { replace: true });
-  }, [token, navigate]);
+    router.replace(safeRedirectPath(storedFrom));
+  }, [token, router]);
 
   useEffect(() => {
     if (!hasTimedOut || token) return;
@@ -41,8 +41,8 @@ export const AuthCallbackPage = () => {
     const description = encodeURIComponent(
       "We couldn't finish signing you in. If you opened a link from an email, open it in the browser you requested it from."
     );
-    navigate(`/login?error=callback_failed&error_description=${description}`, { replace: true });
-  }, [hasTimedOut, token, navigate]);
+    router.replace(`/login?error=callback_failed&error_description=${description}`);
+  }, [hasTimedOut, token, router]);
 
   return (
     <AuthCard title="Finishing sign-in…" subtitle="Hang tight, this only takes a second." backTo={null}>

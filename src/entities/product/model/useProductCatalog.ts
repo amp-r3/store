@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams } from "next/navigation";
 import { useFilters } from "@/features/product-filter";
 import { usePaginationBounds } from "@/shared/lib/hooks";
 import { getItemsToRender } from "../lib/formatters";
@@ -9,7 +9,7 @@ import { ProductParams } from "../api/productsApi";
 const ITEMS_PER_PAGE = 12;
 
 export function useProductCatalog() {
-    const [searchParams] = useSearchParams();
+    const searchParams = useSearchParams();
     const categories = useGetCategoriesQuery();
     const filters = useFilters(1, categories);
 

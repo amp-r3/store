@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import { LuMessageSquare } from 'react-icons/lu';
 
-import { useMediaQuery } from '@/shared/lib/hooks';
+import { useMediaQuery, useUrlState } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, EmptyState, Alert } from '@/shared/ui';
@@ -12,7 +11,7 @@ import { AdminReviewsToolbar, AdminReviewsTable, AdminReviewDeleteModal } from '
 
 export const AdminReviewsPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const search = searchParams.get('q') ?? '';
     const ratingParam = searchParams.get('rating');

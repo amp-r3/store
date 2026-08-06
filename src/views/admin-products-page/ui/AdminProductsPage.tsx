@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router';
+import Link from 'next/link';
 import { LuPackage, LuPlus } from 'react-icons/lu';
 
-import { useMediaQuery } from '@/shared/lib/hooks';
+import { useMediaQuery, useUrlState } from '@/shared/lib/hooks';
 import { usePaginationBounds } from '@/shared/lib/hooks';
 import { scrollToTop, getErrorMessage } from '@/shared/lib';
 import { SectionHeader, Pagination, Alert, EmptyState } from '@/shared/ui';
@@ -13,7 +13,7 @@ import style from './admin-products-page.module.scss';
 
 export const AdminProductsPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const search = searchParams.get('q') ?? '';
     const includeArchived = searchParams.get('archived') === '1';
@@ -75,7 +75,7 @@ export const AdminProductsPage = () => {
             <SectionHeader
                 title="Products"
                 subtitle="Every product currently in the catalog."
-                action={<Link to="/admin/products/new" className={style['admin-products-page__new-link']}><LuPlus /> New product</Link>}
+                action={<Link href="/admin/products/new" className={style['admin-products-page__new-link']}><LuPlus /> New product</Link>}
             />
 
             <AdminProductsToolbar

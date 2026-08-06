@@ -1,8 +1,8 @@
-import { useSearchParams } from 'react-router';
+import { useUrlState } from '@/shared/lib/hooks';
 import { ProductSize } from '../model/types';
 
 export const useSelectedSize = (sizes?: ProductSize[]) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useUrlState();
 
     const rawSizeId = searchParams.get('size');
     const parsedSizeId = rawSizeId ? Number(rawSizeId) : undefined;
