@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { supabase } from "@/shared/api/supabase";
+import { supabase } from "@/shared/api/supabase/client";
 import { useAppDispatch } from "@/shared/model";
 import { setSession, setRole } from "@/entities/session";
 import { AUTH_STORAGE_KEYS } from "@/shared/config";
@@ -8,6 +8,13 @@ import { AUTH_STORAGE_KEYS } from "@/shared/config";
  * on sign-in: once immediately with an empty name/username so `isAuth`
  * flips right away (letting PublicRoute/ProtectedRoute react without waiting
  * on a network round-trip), then again once the `profiles` row has loaded.
+ *
+ * Kept as two dispatches even though app/admin/layout.tsx now gates access
+ * server-side (redux-persist's restored `user` covers returning visitors
+ * before this ever runs) — a brand-new session with nothing persisted yet
+ * (e.g. right after /auth/callback/complete) still needs `isAuth` to flip
+ * before the profile round-trip resolves, or ProtectedRoute's client-side
+ * check would bounce an already-authenticated user to /login for one frame.
  *
  * PublicRoute is the sole owner of the post-login redirect (it reacts to
  * `isAuth` becoming true and reads/clears the stored `from` itself) — this
