@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { selectIsAuth } from '@/entities/session';
-import { useAppSelector } from "@/shared/model";
+import { useAppSelector, useIsRehydrated } from "@/shared/model";
 import { safeRedirectPath } from "@/shared/lib";
 import { AUTH_STORAGE_KEYS } from "@/shared/config";
 
@@ -16,11 +16,12 @@ import { AUTH_STORAGE_KEYS } from "@/shared/config";
  * read+clear can't run twice against a StrictMode double-render. */
 export const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuth = useAppSelector(selectIsAuth);
+  const isRehydrated = useIsRehydrated();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!isAuth) return;
+    if (!isRehydrated || !isAuth) return;
 
     const storedFrom = sessionStorage.getItem(AUTH_STORAGE_KEYS.redirectFrom);
     const from = safeRedirectPath(storedFrom || searchParams.get('from'));
@@ -30,8 +31,12 @@ export const PublicRoute = ({ children }: { children: React.ReactNode }) => {
     }
 
     router.replace(from);
-  }, [isAuth, router, searchParams]);
+  }, [isRehydrated, isAuth, router, searchParams]);
 
+  // Without PersistGate, auth.user starts null until redux-persist restores
+  // it — rendering the form immediately would flash /login at an
+  // already-authenticated returning visitor for one frame.
+  if (!isRehydrated) return null;
   if (isAuth) return null;
 
   return <>{children}</>;

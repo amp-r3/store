@@ -16,7 +16,7 @@ import { useCartActions, AddToCartButton, QuickBuyButton } from "@/features/cart
 import { addToCheckout, clearCheckout } from "@/features/checkout-process";
 import { useHideOnScroll, useHaptics, useOnScreen, useMediaQuery, useIsNavActive } from "@/shared/lib/hooks";
 import { formatPrice, scrollToElement, REQUEST_SIZE_EVENT } from "@/shared/lib";
-import { useAppDispatch, useAppSelector } from "@/shared/model";
+import { useAppDispatch, useAppSelector, useIsRehydrated } from "@/shared/model";
 
 type DockLayer = 'nav' | 'search' | 'purchase';
 
@@ -33,6 +33,7 @@ export const MobileBar = () => {
     const pathname = usePathname();
 
     const isAuth = useAppSelector(selectIsAuth);
+    const isRehydrated = useIsRehydrated();
     const { totalQuantity: cartTotals, cartItems } = useCartDetails();
     const { totalQuantity: wishlistTotals } = useWishlistDetails();
     const { data: unreadCount } = useGetUnreadNotificationsCountQuery(undefined, { skip: !isAuth });
@@ -75,8 +76,10 @@ export const MobileBar = () => {
         ? 'search'
         : (productId && !isPurchaseBoxOnScreen && !isNavPinned ? 'purchase' : 'nav');
 
-    const isCartLoaded = (cartTotals ?? 0) >= 1;
-    const isWishlistLoaded = (wishlistTotals ?? 0) >= 1;
+    // Guest cart/wishlist counts come from persisted state, empty until
+    // redux-persist restores it — gate the badge on that explicitly.
+    const isCartLoaded = isRehydrated && (cartTotals ?? 0) >= 1;
+    const isWishlistLoaded = isRehydrated && (wishlistTotals ?? 0) >= 1;
     const hasUnread = (unreadCount ?? 0) >= 1;
 
     const closeSearch = () => setIsSearchOpen(false);

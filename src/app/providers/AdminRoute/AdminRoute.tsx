@@ -3,17 +3,24 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { selectIsAuth, selectUserRole } from '@/entities/session';
-import { useAppSelector } from '@/shared/model';
+import { useAppSelector, useIsRehydrated } from '@/shared/model';
 import { Loader } from '@/shared/ui';
 
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuth = useAppSelector(selectIsAuth);
   const role = useAppSelector(selectUserRole);
+  const isRehydrated = useIsRehydrated();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
+    // Without PersistGate, auth.user starts null until redux-persist
+    // restores it — app/admin/layout.tsx already gated this server-side, but
+    // redirecting client-side before rehydration would still wrongly bounce
+    // an actually-authenticated admin for one frame.
+    if (!isRehydrated) return;
+
     if (!isAuth) {
       const search = searchParams.toString();
       const from = search ? `${pathname}?${search}` : pathname;
@@ -26,8 +33,9 @@ export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
     if (role !== null && role !== 'admin') {
       router.replace('/');
     }
-  }, [isAuth, role, pathname, searchParams, router]);
+  }, [isRehydrated, isAuth, role, pathname, searchParams, router]);
 
+  if (!isRehydrated) return null;
   if (!isAuth) return null;
 
   // `role` is null until useSessionSync's profiles fetch lands -- setSession

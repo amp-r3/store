@@ -2,9 +2,8 @@
 
 import type { ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 import { SkeletonTheme } from 'react-loading-skeleton';
-import { persistor, store } from '@/app/store';
+import { store } from '@/app/store';
 import { useAuthSync } from './auth/useAuthSync';
 import { useNotificationsSync } from './notifications/useNotificationsSync';
 
@@ -16,14 +15,18 @@ function AppEffects({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+// No <PersistGate> here on purpose: it blocks all rendering until
+// redux-persist's rehydration resolves, which never happens on the server —
+// that's exactly what kept every page from producing any SSR HTML. The tree
+// now renders immediately with each persisted slice's initial state, and
+// individual components that show persisted data (cart/wishlist badges) use
+// useIsRehydrated() to avoid a flash of stale/empty state instead.
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <SkeletonTheme baseColor="var(--skeleton-base)" highlightColor="var(--skeleton-highlight)">
-          <AppEffects>{children}</AppEffects>
-        </SkeletonTheme>
-      </PersistGate>
+      <SkeletonTheme baseColor="var(--skeleton-base)" highlightColor="var(--skeleton-highlight)">
+        <AppEffects>{children}</AppEffects>
+      </SkeletonTheme>
     </Provider>
   );
 }

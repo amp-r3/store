@@ -8,19 +8,24 @@ import { useWishlistDetails } from '@/entities/wishlist';
 import { selectIsAuth } from '@/entities/session';
 import { useGetUnreadNotificationsCountQuery } from '@/entities/notification';
 import { useHaptics } from '@/shared/lib/hooks';
-import { useAppDispatch, useAppSelector } from '@/shared/model';
+import { useAppDispatch, useAppSelector, useIsRehydrated } from '@/shared/model';
 import style from './nav-actions.module.scss';
 
 export const NavActions = () => {
     const { soft } = useHaptics();
     const dispatch = useAppDispatch();
     const isAuth = useAppSelector(selectIsAuth);
+    const isRehydrated = useIsRehydrated();
     const { totalQuantity: cartTotals } = useCartDetails();
     const { totalQuantity: wishlistTotals } = useWishlistDetails();
     const { data: unreadCount } = useGetUnreadNotificationsCountQuery(undefined, { skip: !isAuth });
 
-    const isCartLoaded = (cartTotals ?? 0) >= 1;
-    const isWishlistLoaded = (wishlistTotals ?? 0) >= 1;
+    // Guest cart/wishlist counts come from persisted state, empty until
+    // redux-persist restores it (always the case on the server) — gate the
+    // badge on that explicitly rather than relying on the count incidentally
+    // being 0 pre-rehydration.
+    const isCartLoaded = isRehydrated && (cartTotals ?? 0) >= 1;
+    const isWishlistLoaded = isRehydrated && (wishlistTotals ?? 0) >= 1;
     const hasUnread = (unreadCount ?? 0) >= 1;
 
     const btnClass = style['nav-actions__btn'];
