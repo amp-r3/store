@@ -1,14 +1,22 @@
-import { Navigate, Outlet, useLocation } from 'react-router'
-import { selectIsAuth } from '@/entities/session'
+'use client';
+
+import { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { selectIsAuth } from '@/entities/session';
 import { useAppSelector } from "@/shared/model";
 
-export const ProtectedRoute = () => {
-  const isAuth = useAppSelector(selectIsAuth)
-  const location = useLocation()
+export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuth = useAppSelector(selectIsAuth);
+  const pathname = usePathname();
+  const router = useRouter();
 
-  if (!isAuth) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />
-  }
+  useEffect(() => {
+    if (!isAuth) {
+      router.replace(`/login?from=${encodeURIComponent(pathname)}`);
+    }
+  }, [isAuth, pathname, router]);
 
-  return <Outlet />
-}
+  if (!isAuth) return null;
+
+  return <>{children}</>;
+};

@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams, useLocation, useNavigate } from 'react-router';
+import { useUrlState } from '@/shared/lib/hooks';
 import { AUTH_STORAGE_KEYS, type AuthProviderId } from '@/shared/config';
 
 export const useAuthUrlError = () => {
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useUrlState();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [failedProviders, setFailedProviders] = useState<AuthProviderId[]>([]);
   const handledRef = useRef(false);
@@ -20,8 +18,11 @@ export const useAuthUrlError = () => {
     const errorFromSearch = searchParams.get('error');
     const errorDescFromSearch = searchParams.get('error_description');
 
-    // 3. Parse hash params
-    const hashParams = new URLSearchParams(location.hash.replace(/^#/, ''));
+    // 3. Parse hash params (read once on mount, not tracked reactively —
+    // next/navigation has no hash-aware equivalent of react-router's
+    // useLocation, but this only ever needs to catch an error already
+    // present in the URL when the page loads)
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const errorFromHash = hashParams.get('error');
     const errorDescFromHash = hashParams.get('error_description');
 
@@ -49,13 +50,19 @@ export const useAuthUrlError = () => {
         sessionStorage.removeItem(AUTH_STORAGE_KEYS.oauthProvider);
       }
 
-      // 5. Clean up the URL through the router so useSearchParams doesn't
-      // keep returning the stale error on the next render. Preserve
-      // location.state (e.g. ProtectedRoute's `from`) — dropping it here
-      // would destroy the post-login destination on an OAuth error.
-      navigate(location.pathname, { replace: true, state: location.state });
+      // 5. Clean the error out of the URL so useSearchParams doesn't keep
+      // returning the stale error on the next render. Every other param is
+      // preserved — in particular `?from=`, which now carries the post-login
+      // destination that used to live in react-router's location.state.
+      // Replacing the URL (no hash in the new string) also drops the hash.
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete('error');
+        next.delete('error_description');
+        return next;
+      }, { replace: true });
     }
-  }, [searchParams, location.hash, location.pathname, location.state, navigate]);
+  }, [searchParams, setSearchParams]);
 
   return { errorMsg, failedProviders };
 };

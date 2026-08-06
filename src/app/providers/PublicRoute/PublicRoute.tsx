@@ -1,27 +1,38 @@
-import { Navigate, Outlet, useLocation } from 'react-router'
-import { selectIsAuth } from '@/entities/session'
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { selectIsAuth } from '@/entities/session';
 import { useAppSelector } from "@/shared/model";
-import { LocationState } from "@/shared/types";
 import { safeRedirectPath } from "@/shared/lib";
 import { AUTH_STORAGE_KEYS } from "@/shared/config";
 
 /** Sole owner of the post-login redirect: reacts to `isAuth` becoming true
  * (from either a password login or an OAuth round-trip) and redirects to
- * wherever the user was headed before being sent to /login or /register. */
-export const PublicRoute = () => {
-  const isAuth = useAppSelector(selectIsAuth)
-  const location = useLocation()
+ * wherever the user was headed before being sent to /login or /register.
+ * `from` comes from sessionStorage (round-tripped through an OAuth provider)
+ * or, failing that, the `?from=` query param the guards attach when they
+ * redirect here. Read inside an effect, not render, so the sessionStorage
+ * read+clear can't run twice against a StrictMode double-render. */
+export const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuth = useAppSelector(selectIsAuth);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  if (isAuth) {
-    const storedFrom = sessionStorage.getItem(AUTH_STORAGE_KEYS.redirectFrom)
-    const from = safeRedirectPath(storedFrom || (location.state as LocationState | null)?.from)
+  useEffect(() => {
+    if (!isAuth) return;
+
+    const storedFrom = sessionStorage.getItem(AUTH_STORAGE_KEYS.redirectFrom);
+    const from = safeRedirectPath(storedFrom || searchParams.get('from'));
 
     if (storedFrom) {
-      sessionStorage.removeItem(AUTH_STORAGE_KEYS.redirectFrom)
+      sessionStorage.removeItem(AUTH_STORAGE_KEYS.redirectFrom);
     }
 
-    return <Navigate to={from} replace />
-  }
+    router.replace(from);
+  }, [isAuth, router, searchParams]);
 
-  return <Outlet />
-}
+  if (isAuth) return null;
+
+  return <>{children}</>;
+};

@@ -1,8 +1,7 @@
-import { useLocation } from 'react-router';
+import { useSearchParams } from 'next/navigation';
 import { useSignInWithOAuthMutation } from '@/entities/session';
 import { getErrorMessage, safeRedirectPath } from '@/shared/lib';
 import { AUTH_STORAGE_KEYS, type OAuthProviderId } from '@/shared/config';
-import type { LocationState } from '@/shared/types';
 
 /** One sign-in function for every OAuth provider, replacing the four
  * near-identical Google/Telegram handlers login and register used to carry.
@@ -10,11 +9,11 @@ import type { LocationState } from '@/shared/types';
  * before handing off to Supabase's OAuth redirect, and rolls both back if
  * the redirect never completes (e.g. the provider call itself fails). */
 export const useOAuthSignIn = (onError: (message: string) => void) => {
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const [signInWithOAuth] = useSignInWithOAuthMutation();
 
   return async (provider: OAuthProviderId) => {
-    const from = safeRedirectPath((location.state as LocationState | null)?.from);
+    const from = safeRedirectPath(searchParams.get('from'));
 
     try {
       sessionStorage.setItem(AUTH_STORAGE_KEYS.oauthProvider, provider);
