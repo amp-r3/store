@@ -1,3 +1,5 @@
+'use client';
+
 import { ProductCardSkeleton } from "@/entities/product"
 import { ErrorView, PageLayout } from "@/shared/ui";
 import { useWishlistDetails } from "@/entities/wishlist";
