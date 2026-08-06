@@ -8,7 +8,7 @@ import style from './product-reviews.module.scss';
 import ProductReviewsSkeleton from './ProductReviewsSkeleton';
 import { ReviewCard, ReviewCardSkeleton } from '@/entities/review';
 import { useGetReviewsQuery, useGetReviewStatsQuery } from "@/entities/review";
-import type { ReviewSort } from '@/entities/review';
+import type { ReviewSort, ReviewRatingStats, PaginatedReviews } from '@/entities/review';
 import { REVIEWS_PAGE_SIZE } from '@/entities/review';
 import { openReviewModal } from '@/features/order-review';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
@@ -17,6 +17,12 @@ import { scrollToElement, getErrorMessage } from '@/shared/lib';
 
 interface ProductReviewsProps {
     productId: number;
+    // Server-fetched (default sort, unfiltered, page 1) — used as a fallback
+    // for the first paint only, so crawlers and pre-hydration users see real
+    // review content instead of a skeleton. Ignored once the RTK Query cache
+    // has its own data, or once the user changes sort/filter/page.
+    initialStats?: ReviewRatingStats;
+    initialReviews?: PaginatedReviews;
 }
 
 const VALID_SORTS: ReviewSort[] = ['newest', 'oldest', 'most_helpful'];
@@ -34,28 +40,31 @@ const parsePage = (value: string | null): number => {
     return value && Number.isInteger(parsed) && parsed >= 1 ? parsed : 1;
 };
 
-export const ProductReviews = ({ productId }: ProductReviewsProps) => {
+export const ProductReviews = ({ productId, initialStats, initialReviews }: ProductReviewsProps) => {
     const [searchParams, setSearchParams] = useUrlState();
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
     const sort = parseSort(searchParams.get('reviewSort'));
     const activeRating = parseRating(searchParams.get('stars'));
     const page = parsePage(searchParams.get('reviewPage'));
+    const isDefaultView = sort === 'newest' && activeRating === null && page === 1;
 
     const {
-        data: stats,
+        data: statsQueryData,
         isError: isStatsError,
         error: statsError,
         refetch: refetchStats,
     } = useGetReviewStatsQuery(productId);
+    const stats = statsQueryData ?? (isDefaultView ? initialStats : undefined);
 
     const {
-        data: reviewsData,
+        data: reviewsQueryData,
         isFetching,
         isError: isReviewsError,
         error: reviewsError,
         refetch: refetchReviews,
     } = useGetReviewsQuery({ productId, page: 1, limit: page * REVIEWS_PAGE_SIZE, sort, rating: activeRating });
+    const reviewsData = reviewsQueryData ?? (isDefaultView ? initialReviews : undefined);
 
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const sectionRef = useRef<HTMLElement | null>(null);

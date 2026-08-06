@@ -1,4 +1,5 @@
 export * from './api/productsApi';
+export * from './api/queries';
 export * from './ui/product-card/ProductCard';
 export * from './ui/product-card/ProductCardSkeleton';
 export * from './model/types';

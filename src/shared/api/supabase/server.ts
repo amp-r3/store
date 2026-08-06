@@ -1,6 +1,7 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../database.types';
 
 /** A fresh client per request/render — never share this across requests.
@@ -34,5 +35,16 @@ export async function createServerSupabaseClient() {
         },
       },
     }
+  );
+}
+
+/** For `generateStaticParams` and other build-time calls that run outside a
+ * request scope — `next/headers`' `cookies()` throws there, so this can't
+ * use createServerSupabaseClient. Anonymous, RLS treats it like a
+ * logged-out visitor; only fetch genuinely public data with it. */
+export function createStaticSupabaseClient() {
+  return createClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 }

@@ -1,4 +1,5 @@
 export * from './api/reviewApi';
+export { fetchReviews, fetchReviewStats } from './api/queries';
 export * from './lib/reviewsHelper';
 export * from './ui/review-card/ReviewCard';
 export * from "./ui/review-card/ReviewCardSkeleton";

@@ -4,7 +4,7 @@ import { useFilters } from "@/features/product-filter";
 import { usePaginationBounds } from "@/shared/lib/hooks";
 import { getItemsToRender } from "../lib/formatters";
 import { useGetCategoriesQuery, useGetProductsQuery } from "../api/productsApi";
-import { ProductParams } from "../api/productsApi";
+import { ProductParams } from "../api/queries";
 
 const ITEMS_PER_PAGE = 12;
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { ProductSpecs, ProductImageModal } from "./components";
 import { ProductSummary } from "@/widgets/product-summary";
 // React
@@ -10,14 +12,15 @@ import { useUrlState } from '@/shared/lib/hooks';
 // Components
 import { ErrorView, ExpandableContent, PageLayout, ShareCopyBtn, HOME_CRUMB, CATALOG_CRUMB, categoryCrumb } from '@/shared/ui';
 import { ProductGallery } from '@/widgets/product-gallery';
-import { ProductPageSkeleton } from './ProductPageSkeleton';
 
 // Utils
 // Custom Hooks
 // Styles
 import style from './productPage.module.scss';
 import { useGetSizesQuery, useCheckPurchaseStatusQuery, useSelectedSize, useGetCategoriesQuery } from '@/entities/product';
+import type { Product, ProductSize, Categories } from '@/entities/product';
 import { ProductReviews } from '@/widgets/product-reviews';
+import type { ReviewRatingStats, PaginatedReviews } from '@/entities/review';
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
 import { useCartActions } from "@/features/cart-actions";
 import { useCartDetails } from "@/entities/cart";
@@ -27,7 +30,24 @@ import { useWishlistDetails } from "@/entities/wishlist";
 import { useAppSelector } from "@/shared/model";
 import { selectIsAuth } from "@/entities/session";
 
-export const ProductPage = () => {
+interface ProductPageProps {
+    product: Product;
+    sizes: ProductSize[];
+    categories: Categories;
+    initialReviewStats: ReviewRatingStats;
+    initialReviews: PaginatedReviews;
+}
+
+// Server-fetched props seed the first paint with real content (SEO + no
+// loading flash); the RTK Query hooks below still run so the page stays in
+// sync with cache invalidation (e.g. rating/reviewsCount after a new review).
+export const ProductPage = ({
+    product: initialProduct,
+    sizes: initialSizes,
+    categories: initialCategories,
+    initialReviewStats,
+    initialReviews,
+}: ProductPageProps) => {
     const [searchParams, setSearchParams] = useUrlState()
     const { id } = useParams<{ id?: string }>();
     const { onIncrease, onDecrease } = useCartActions()
@@ -35,8 +55,10 @@ export const ProductPage = () => {
     const { wishlistItems } = useWishlistDetails()
     const isFavorite = wishlistItems.some(item => item?.id === +(id || 0))
     const openedImage = searchParams.get('view') === 'true';
-    const { product, isLoading, error, isNotFound } = useProduct(id);
-    const { data: sizes, isLoading: isSizesLoading } = useGetSizesQuery(+(id || 0))
+    const { product: liveProduct, error, isNotFound } = useProduct(id);
+    const product = liveProduct ?? initialProduct;
+    const { data: liveSizes } = useGetSizesQuery(+(id || 0))
+    const sizes = liveSizes ?? initialSizes;
     const { selectedSizeId, setSelectedSizeId } = useSelectedSize(sizes);
     const { cartItems } = useCartDetails()
     const hasSizes = !!(sizes && sizes.length > 0);
@@ -44,7 +66,8 @@ export const ProductPage = () => {
     const { data: lastPurchaseDate } = useCheckPurchaseStatusQuery(+(id || 0), {
         skip: !isAuth || !id
     });
-    const { data: categories } = useGetCategoriesQuery();
+    const { data: liveCategories } = useGetCategoriesQuery();
+    const categories = liveCategories ?? initialCategories;
 
 
 
@@ -83,7 +106,6 @@ export const ProductPage = () => {
         }
     }
 
-    if (isLoading || !product) return <ProductPageSkeleton />;
     if (error) return <ErrorView error={getErrorMessage(error)} />;
     if (isNotFound) notFound();
 
@@ -129,7 +151,6 @@ export const ProductPage = () => {
                             hasSizes={hasSizes}
                             selectedSizeId={selectedSizeId}
                             setSelectedSizeId={setSelectedSizeId}
-                            isSizesLoading={isSizesLoading}
                         />
                     </div>
                 </div>
@@ -147,7 +168,11 @@ export const ProductPage = () => {
                     returnPolicy={returnPolicy}
                 />
 
-                <ProductReviews productId={productId} />
+                <ProductReviews
+                    productId={productId}
+                    initialStats={initialReviewStats}
+                    initialReviews={initialReviews}
+                />
             </div>
         </PageLayout>
     );

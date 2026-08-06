@@ -8,13 +8,10 @@ import {
     fetchProductArrayById,
     fetchSizes,
     fetchDealsProducts,
-    Category,
-    Categories,
-    ProductParams,
-    ProductsResponse,
+    type Categories,
+    type ProductParams,
+    type ProductsResponse,
 } from './queries';
-
-export type { Category, Categories, ProductParams, ProductsResponse };
 
 // fetch* (queries.ts) throw the raw PostgrestError/Error on failure — this
 // maps that back into RTK Query's `{ error: { status, data } }` shape, same
