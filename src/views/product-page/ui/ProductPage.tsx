@@ -3,11 +3,10 @@
 import { ProductSpecs, ProductImageModal } from "./components";
 import { ProductSummary } from "@/widgets/product-summary";
 // React
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // Router
 import { useParams, notFound } from 'next/navigation';
-import { useUrlState } from '@/shared/lib/hooks';
 
 // Components
 import { ErrorView, ExpandableContent, PageLayout, ShareCopyBtn, HOME_CRUMB, CATALOG_CRUMB, categoryCrumb } from '@/shared/ui';
@@ -48,13 +47,19 @@ export const ProductPage = ({
     initialReviewStats,
     initialReviews,
 }: ProductPageProps) => {
-    const [searchParams, setSearchParams] = useUrlState()
+    // Local rather than URL-synced (?view=true): the latter needs
+    // useSearchParams, which forces this whole route to bail out to
+    // client-side-only rendering during static generation for a
+    // generateStaticParams route (Next throws BailoutToCSRError for
+    // useSearchParams() used outside a Suspense boundary while
+    // prerendering) — not worth losing SSR/ISR for the product page over a
+    // deep-linkable zoom state.
+    const [isImageOpen, setIsImageOpen] = useState(false);
     const { id } = useParams<{ id?: string }>();
     const { onIncrease, onDecrease } = useCartActions()
     const { onWishlist } = useWishlistActions()
     const { wishlistItems } = useWishlistDetails()
     const isFavorite = wishlistItems.some(item => item?.id === +(id || 0))
-    const openedImage = searchParams.get('view') === 'true';
     const { product: liveProduct, error, isNotFound } = useProduct(id);
     const product = liveProduct ?? initialProduct;
     const { data: liveSizes } = useGetSizesQuery(+(id || 0))
@@ -72,19 +77,11 @@ export const ProductPage = ({
 
 
     const onImageClick = (): void => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            next.set('view', 'true');
-            return next;
-        }, { replace: true })
+        setIsImageOpen(true);
     }
 
     const onCloseModal = (): void => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            next.delete('view');
-            return next;
-        }, { replace: true })
+        setIsImageOpen(false);
     }
 
     const handleAddToWishlist = () => {
@@ -120,7 +117,7 @@ export const ProductPage = ({
 
     return (
         <PageLayout breadcrumbs={crumbs} actions={<ShareCopyBtn />}>
-            <ProductImageModal imageSrc={images[0]} imageAlt={title} onClose={onCloseModal} isOpen={openedImage} />
+            <ProductImageModal imageSrc={images[0]} imageAlt={title} onClose={onCloseModal} isOpen={isImageOpen} />
             <div key={productId}>
                 <div className={style['layout']}>
                     <div className={style['gallery-column']}>

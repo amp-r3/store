@@ -1,24 +1,13 @@
-import { useUrlState } from '@/shared/lib/hooks';
+import { useState } from 'react';
 import { ProductSize } from '../model/types';
 
+// Local rather than URL-synced (?size=): useSearchParams() forces the
+// product page to bail out to client-side-only rendering during static
+// generation for a generateStaticParams route — see ProductPage.tsx's
+// isImageOpen for the same reasoning.
 export const useSelectedSize = (sizes?: ProductSize[]) => {
-    const [searchParams, setSearchParams] = useUrlState();
-
-    const rawSizeId = searchParams.get('size');
-    const parsedSizeId = rawSizeId ? Number(rawSizeId) : undefined;
-    const selectedSizeId = sizes?.some(size => size.id === parsedSizeId) ? parsedSizeId : undefined;
-
-    const setSelectedSizeId = (id: number | undefined) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            if (id === undefined) {
-                next.delete('size');
-            } else {
-                next.set('size', String(id));
-            }
-            return next;
-        }, { replace: true });
-    };
+    const [rawSelectedSizeId, setSelectedSizeId] = useState<number | undefined>(undefined);
+    const selectedSizeId = sizes?.some(size => size.id === rawSelectedSizeId) ? rawSelectedSizeId : undefined;
 
     return { selectedSizeId, setSelectedSizeId };
 };

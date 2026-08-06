@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { useUrlState } from '@/shared/lib/hooks';
+import { useEffect, useRef, useState } from 'react';
 import { FaComments, FaArrowUp } from 'react-icons/fa';
 
 import { ReviewsStats, ReviewsStatsSkeleton, ReviewsControls } from '@/entities/review';
@@ -25,28 +24,16 @@ interface ProductReviewsProps {
     initialReviews?: PaginatedReviews;
 }
 
-const VALID_SORTS: ReviewSort[] = ['newest', 'oldest', 'most_helpful'];
-
-const parseSort = (value: string | null): ReviewSort =>
-    VALID_SORTS.includes(value as ReviewSort) ? (value as ReviewSort) : 'newest';
-
-const parseRating = (value: string | null): number | null => {
-    const parsed = Number(value);
-    return value && Number.isInteger(parsed) && parsed >= 1 && parsed <= 5 ? parsed : null;
-};
-
-const parsePage = (value: string | null): number => {
-    const parsed = Number(value);
-    return value && Number.isInteger(parsed) && parsed >= 1 ? parsed : 1;
-};
-
 export const ProductReviews = ({ productId, initialStats, initialReviews }: ProductReviewsProps) => {
-    const [searchParams, setSearchParams] = useUrlState();
+    // Local rather than URL-synced: useSearchParams() forces this route to
+    // bail out to client-side-only rendering during static generation for a
+    // generateStaticParams route (see ProductPage.tsx's isImageOpen for the
+    // same reasoning) — not worth losing SSR/ISR for shareable filter URLs.
+    const [sort, setSort] = useState<ReviewSort>('newest');
+    const [activeRating, setActiveRating] = useState<number | null>(null);
+    const [page, setPage] = useState(1);
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
-    const sort = parseSort(searchParams.get('reviewSort'));
-    const activeRating = parseRating(searchParams.get('stars'));
-    const page = parsePage(searchParams.get('reviewPage'));
     const isDefaultView = sort === 'newest' && activeRating === null && page === 1;
 
     const {
@@ -59,12 +46,18 @@ export const ProductReviews = ({ productId, initialStats, initialReviews }: Prod
 
     const {
         data: reviewsQueryData,
+        isLoading: isReviewsLoading,
         isFetching,
         isError: isReviewsError,
         error: reviewsError,
         refetch: refetchReviews,
     } = useGetReviewsQuery({ productId, page: 1, limit: page * REVIEWS_PAGE_SIZE, sort, rating: activeRating });
-    const reviewsData = reviewsQueryData ?? (isDefaultView ? initialReviews : undefined);
+    // getReviews has a custom `merge` (cumulative pagination), which makes
+    // RTK Query populate `data` with an empty placeholder before the query
+    // actually resolves — checking isLoading (true until the first real
+    // resolution) rather than just `data`'s truthiness avoids that placeholder
+    // shadowing the real server-fetched fallback on first paint.
+    const reviewsData = (!isReviewsLoading && reviewsQueryData) ? reviewsQueryData : (isDefaultView ? initialReviews : undefined);
 
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const sectionRef = useRef<HTMLElement | null>(null);
@@ -79,35 +72,19 @@ export const ProductReviews = ({ productId, initialStats, initialReviews }: Prod
     }, [isFetching]);
 
     const handleSortChange = (nextSort: ReviewSort) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            next.set('reviewSort', nextSort);
-            next.delete('reviewPage');
-            return next;
-        }, { replace: true });
+        setSort(nextSort);
+        setPage(1);
     };
 
     const handleRatingChange = (nextRating: number | null) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            if (nextRating) {
-                next.set('stars', String(nextRating));
-            } else {
-                next.delete('stars');
-            }
-            next.delete('reviewPage');
-            return next;
-        }, { replace: true });
+        setActiveRating(nextRating);
+        setPage(1);
     };
 
     const handleLoadMore = () => {
         prevItemsLengthRef.current = reviewsData?.items.length ?? 0;
         loadMoreRequestedRef.current = true;
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            next.set('reviewPage', String(page + 1));
-            return next;
-        }, { replace: true });
+        setPage((p) => p + 1);
     };
 
     const handleBackToTop = () => {
@@ -203,7 +180,14 @@ export const ProductReviews = ({ productId, initialStats, initialReviews }: Prod
                                         />
                                     </div>
                                 ))}
-                                {isFetching && items.length < totalCount && Array.from({
+                                {/* reviewsQueryData: isFetching is always true
+                                    server-side (the query never actually
+                                    resolves during SSR/build) — gating on it
+                                    too keeps this trailing skeleton from
+                                    baking into the static/ISR snapshot while
+                                    the real fallback content is already shown
+                                    above. */}
+                                {reviewsQueryData && isFetching && items.length < totalCount && Array.from({
                                     length: Math.min(REVIEWS_PAGE_SIZE, totalCount - items.length)
                                 }).map((_, i) => (
                                     <ReviewCardSkeleton key={`load-more-skeleton-${i}`} />
