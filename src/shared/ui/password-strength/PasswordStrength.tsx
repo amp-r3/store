@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { getPasswordScore, PASSWORD_STRENGTH_LABELS } from '@/shared/lib';
+import { PASSWORD_STRENGTH_LABELS } from '@/shared/lib';
+import { usePasswordScore } from '@/shared/lib/hooks';
 import style from './password-strength.module.scss';
 
 interface PasswordStrengthProps {
@@ -9,7 +9,7 @@ interface PasswordStrengthProps {
 const SEGMENT_COUNT = PASSWORD_STRENGTH_LABELS.length - 1;
 
 export const PasswordStrength = ({ password }: PasswordStrengthProps) => {
-  const score = useMemo(() => getPasswordScore(password), [password]);
+  const score = usePasswordScore(password);
 
   if (!password) return null;
 

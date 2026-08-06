@@ -10,4 +10,5 @@ export * from './useOnScreen';
 export * from './useIsNavActive';
 export * from './usePagination';
 export * from './usePaginationBounds';
+export * from './usePasswordScore';
 export * from './useUrlState';
