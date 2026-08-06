@@ -10,7 +10,7 @@ export const WishlistEmpty = () => {
         </div>
 
         <h2 className={style['wishlist__title']}>
-          We'll save your favorite products here.
+          We&apos;ll save your favorite products here.
         </h2>
 
         <p className={style['wishlist__desc']}>

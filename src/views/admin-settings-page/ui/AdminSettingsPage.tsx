@@ -22,7 +22,7 @@ export const AdminSettingsPage = () => {
                 <div className={style['admin-settings-page__section-header']}>
                     <h2 className={style['admin-settings-page__section-title']}>Delivery methods</h2>
                     <p className={style['admin-settings-page__section-note']}>
-                        The set of methods is fixed — new ones can't be added and existing ones can't be removed,
+                        The set of methods is fixed — new ones can&apos;t be added and existing ones can&apos;t be removed,
                         only edited or turned off.
                     </p>
                 </div>

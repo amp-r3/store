@@ -42,7 +42,7 @@ export const EmptyCart: FC<EmptyCartProps> = ({ onStartShopping, onDiscoverClick
                     Your cart is empty
                 </h3>
                 <p className={styles.emptyCart__description}>
-                    Looks like you haven't made your choice yet.
+                    Looks like you haven&apos;t made your choice yet.
                     <br />
                     Ready to find something cool?
                 </p>

@@ -15,7 +15,7 @@ custom properties, React Hook Form + Zod, Vite 8 + LightningCSS.
   only. `pnpm lint` — ESLint (`eslint.config.ts`).
 - **No test runner** (no Vitest/Jest, no `test` script) — don't assume test infra
   exists; verify via `pnpm tsc`, `pnpm lint`, and manual exercise of the flow.
-- Needs `.env` with `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` for auth, cart, wishlist, orders.
+- Needs `.env` with `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` for auth, cart, wishlist, orders.
 
 ## Entry Points & Data Flow
 
