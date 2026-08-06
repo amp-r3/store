@@ -3,6 +3,8 @@ import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
 import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, OrderStatusEvent } from '@/entities/order/model/types';
 import { TERMINAL_ORDER_STATUSES } from '@/entities/order/config/order-management.config';
+import { fetchDeliveryMethods, fetchPaymentMethods } from './queries';
+import { getErrorMessage } from '@/shared/lib';
 
 const TERMINAL_STATUSES_LIST = `(${TERMINAL_ORDER_STATUSES.join(',')})`;
 
@@ -251,24 +253,11 @@ export const orderApi = baseApi.injectEndpoints({
 
     getDeliveryMethods: builder.query<DeliveryMethod[], void>({
       queryFn: async () => {
-        const { data, error } = await supabase
-          .from('delivery_methods')
-          .select('*')
-          .eq('is_active', true);
-        if (error) {
-          return { error: { status: 400, data: error.message } };
+        try {
+          return { data: await fetchDeliveryMethods(supabase) };
+        } catch (error) {
+          return { error: { status: 400, data: getErrorMessage(error) } };
         }
-
-        const methods: DeliveryMethod[] = (data ?? []).map((method) => ({
-          id: method.id,
-          code: method.code,
-          label: method.name,
-          price: method.price,
-          duration: method.estimated_time ?? '',
-          freeFromPrice: method.free_from_price,
-          isActive: method.is_active
-        }));
-        return { data: methods };
       },
       providesTags: ['DeliveryMethod'],
     }),
@@ -302,22 +291,11 @@ export const orderApi = baseApi.injectEndpoints({
 
     getPaymentMethods: builder.query<PaymentMethod[], void>({
       queryFn: async () => {
-        const { data, error } = await supabase
-          .from('payment_methods')
-          .select('id, code, fee_percentage, fee_fixed, name')
-          .eq('is_active', true);
-        if (error) {
-          return { error: { status: 400, data: error.message } };
+        try {
+          return { data: await fetchPaymentMethods(supabase) };
+        } catch (error) {
+          return { error: { status: 400, data: getErrorMessage(error) } };
         }
-
-        const methods: PaymentMethod[] = (data ?? []).map((method) => ({
-          id: method.id,
-          code: method.code,
-          name: method.name,
-          feePercentage: method.fee_percentage,
-          feeFixed: method.fee_fixed
-        }));
-        return { data: methods };
       },
       providesTags: ['PaymentMethod'],
     }),

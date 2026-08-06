@@ -1,5 +1,4 @@
 import { supabase, baseApi } from "@/shared/api";
-import type { Database } from "@/shared/api";
 import {
     ProductReview,
     UnreviewedPurchase,
@@ -7,47 +6,22 @@ import {
     ReviewsQueryArgs,
     PaginatedReviews,
     ReviewSort,
-    REVIEWS_PAGE_SIZE
 } from "@/entities/review/model/types";
-import { buildRatingStats } from "@/entities/review/lib/reviewsHelper";
 import { getErrorMessage } from "@/shared/lib";
+import { fetchReviews, fetchReviewStats, mapReview, REVIEW_SELECT } from './queries';
 
 const pendingLikes = new Set<number>();
 
-const REVIEW_SELECT = `
-    *,
-    public_profiles (
-        username
-    )
-`;
-
-type ProductReviewRow = Database['public']['Tables']['product_reviews']['Row'] & {
-    public_profiles: Pick<
-        Database['public']['Views']['public_profiles']['Row'],
-        'username'
-    > | null;
-};
-
-const mapReview = (
-    review: ProductReviewRow,
-    likedIds: Set<number>
-): ProductReview => {
-    const finalName = review.public_profiles?.username || 'Anonymous';
-
-    return {
-        id: review.id,
-        productId: review.product_id,
-        rating: review.rating,
-        comment: review.comment,
-        date: review.date,
-        userId: review.user_id,
-        helpfulCount: review.helpful_count,
-        reviewerName: finalName,
-        isLiked: likedIds.has(review.id),
-        isEdited: review.is_edited,
-        isVerified: review.is_verified,
-    };
-};
+// fetchReviewStats (queries.ts) throws the raw PostgrestError/Error on
+// failure — this maps that back into RTK Query's `{ error }` shape, same as
+// getReviewStats's inline try/catch used to have.
+function toQueryError(err: unknown) {
+    if (typeof err === 'object' && err !== null && 'code' in err && 'message' in err) {
+        const pgError = err as { code: string; message: string };
+        return { error: { status: pgError.code, data: pgError.message } };
+    }
+    return { error: { status: 'CUSTOM_ERROR' as const, data: getErrorMessage(err) } };
+}
 
 const insertBySort = (items: ProductReview[], review: ProductReview, sort: ReviewSort) => {
     if (sort === 'oldest' || sort === 'most_helpful') {
@@ -66,56 +40,9 @@ const recalculatePercentages = (distribution: ReviewRatingStats['distribution'],
 export const reviewApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getReviews: builder.query<PaginatedReviews, ReviewsQueryArgs>({
-            async queryFn({ productId, page = 1, limit = REVIEWS_PAGE_SIZE, sort = 'newest', rating = null }) {
+            async queryFn(args) {
                 try {
-                    const from = (page - 1) * limit;
-                    const to = page * limit - 1;
-
-                    let query = supabase
-                        .from('product_reviews')
-                        .select(REVIEW_SELECT, { count: 'exact' })
-                        .eq('product_id', productId);
-
-                    if (rating) {
-                        query = query.eq('rating', rating);
-                    }
-
-                    if (sort === 'most_helpful') {
-                        query = query.order('helpful_count', { ascending: false }).order('date', { ascending: false });
-                    } else {
-                        query = query.order('date', { ascending: sort === 'oldest' });
-                    }
-
-                    query = query.order('id', { ascending: sort === 'oldest' }).range(from, to);
-
-                    const [{ data: reviewsData, error: reviewsError, count }, { data: { user } }] = await Promise.all([
-                        query,
-                        supabase.auth.getUser()
-                    ]);
-
-                    if (reviewsError) throw reviewsError;
-                    if (!reviewsData) return { data: { items: [], totalCount: 0 } };
-
-                    const userLikes = new Set<number>();
-
-                    if (user && reviewsData.length > 0) {
-                        const reviewIds = reviewsData.map(r => r.id);
-
-                        const { data: likesData } = await supabase
-                            .from('review_likes')
-                            .select('review_id')
-                            .eq('user_id', user.id)
-                            .in('review_id', reviewIds);
-
-                        if (likesData) {
-                            likesData.forEach(like => userLikes.add(like.review_id));
-                        }
-                    }
-
-                    const items = reviewsData
-                        .map((review) => mapReview(review, userLikes));
-
-                    return { data: { items, totalCount: count ?? 0 } };
+                    return { data: await fetchReviews(supabase, args) };
                 } catch (error) {
                     return {
                         error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
@@ -143,21 +70,9 @@ export const reviewApi = baseApi.injectEndpoints({
         getReviewStats: builder.query<ReviewRatingStats, number>({
             async queryFn(productId) {
                 try {
-                    const { data, error } = await supabase.rpc('get_review_stats', {
-                        p_product_id: productId
-                    });
-
-                    if (error) {
-                        return {
-                            error: { status: error.code, data: error.message }
-                        };
-                    }
-
-                    return { data: buildRatingStats(data ?? []) };
+                    return { data: await fetchReviewStats(supabase, productId) };
                 } catch (error) {
-                    return {
-                        error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) }
-                    };
+                    return toQueryError(error);
                 }
             },
             providesTags: (_result, _error, productId) => [{ type: 'Review', id: productId }]
