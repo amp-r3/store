@@ -1,17 +1,26 @@
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
+
+function subscribe(query: string, callback: () => void) {
+    const media = window.matchMedia(query);
+    media.addEventListener('change', callback);
+    return () => media.removeEventListener('change', callback);
+}
+
+function getSnapshot(query: string) {
+    return window.matchMedia(query).matches;
+}
+
+// SSR has no viewport to match against — assume desktop-first (`false`) so the
+// server-rendered markup doesn't depend on a client-only API. Whatever branch
+// this drives will reconcile on the client's first paint.
+function getServerSnapshot() {
+    return false;
+}
 
 export function useMediaQuery(query: string): boolean {
-    const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
-
-    useEffect(() => {
-        const media = window.matchMedia(query);
-        setMatches(media.matches);
-
-        const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
-        media.addEventListener('change', listener);
-
-        return () => media.removeEventListener('change', listener)
-    }, [query])
-
-    return matches
+    return useSyncExternalStore(
+        useCallback((callback) => subscribe(query, callback), [query]),
+        useCallback(() => getSnapshot(query), [query]),
+        getServerSnapshot,
+    );
 }
