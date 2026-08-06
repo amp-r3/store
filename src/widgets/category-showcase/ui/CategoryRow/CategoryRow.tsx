@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { useGetProductsQuery, ProductCard, ProductCardSkeleton } from '@/entities/product';
 import type { Category } from '@/entities/product';
 import { WishlistToggleButton } from '@/features/wishlist-toggle';
@@ -33,7 +33,7 @@ export const CategoryRow = memo(({ category, priority = false }: CategoryRowProp
             <div className={style.categoryRow__header}>
                 <h2 id={headingId} className={style.categoryRow__title}>{category.name}</h2>
                 <Link
-                    to={`/catalog?category=${category.slug}`}
+                    href={`/catalog?category=${category.slug}`}
                     className={style.categoryRow__viewAll}
                     onClick={light}
                 >

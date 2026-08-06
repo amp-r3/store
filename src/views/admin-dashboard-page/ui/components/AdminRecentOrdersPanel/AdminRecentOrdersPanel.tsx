@@ -1,5 +1,5 @@
 import Skeleton from 'react-loading-skeleton';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { LuClipboardList } from 'react-icons/lu';
 
 import { useGetAllOrdersQuery } from '@/entities/admin';
@@ -41,7 +41,7 @@ export const AdminRecentOrdersPanel = () => {
                     {orders.map((order) => (
                         <Link
                             key={order.id}
-                            to={`/admin/orders?order=${order.id}`}
+                            href={`/admin/orders?order=${order.id}`}
                             className={style['admin-recent-orders-panel__row']}
                         >
                             <span className={style['admin-recent-orders-panel__main']}>

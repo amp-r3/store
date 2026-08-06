@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { FaCalendarDay, FaThumbsUp, FaPen, FaTrash } from 'react-icons/fa';
 
 import { Modal, RatingStars } from '@/shared/ui';
@@ -43,7 +43,7 @@ export const UserReviewCard = memo(({ review, product, onEdit }: UserReviewCardP
     return (
         <article className={style['user-review-card']}>
             <Link
-                to={`/product/${review.productId}`}
+                href={`/product/${review.productId}`}
                 className={style['user-review-card__product']}
                 onClick={soft}
             >

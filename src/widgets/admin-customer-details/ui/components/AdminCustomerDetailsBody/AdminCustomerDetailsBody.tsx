@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { LuShoppingBag, LuWallet, LuCalendarClock, LuCalendarCheck, LuPackageOpen, LuScrollText } from 'react-icons/lu';
 
 import { AdminCustomer, useGetAllOrdersQuery, useGetAdminAuditLogQuery, AuditLogList } from '@/entities/admin';
@@ -90,7 +90,7 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
                         {orders.map((order) => (
                             <Link
                                 key={order.id}
-                                to={`/admin/orders?order=${order.id}`}
+                                href={`/admin/orders?order=${order.id}`}
                                 className={style['body__order-row']}
                             >
                                 <span className={style['body__order-main']}>
@@ -126,7 +126,7 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
                     ) : (
                         <>
                             <AuditLogList entries={auditEntries} isLoading={false} limit={RECENT_ACTIVITY_LIMIT} compact />
-                            <Link to={`/admin/audit?actor=${customer.id}`} className={style['body__activity-link']}>
+                            <Link href={`/admin/audit?actor=${customer.id}`} className={style['body__activity-link']}>
                                 View all activity
                             </Link>
                         </>

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { IoClose } from 'react-icons/io5';
 import {
   selectNotification,
@@ -64,7 +64,7 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
         </p>
 
         {notification?.action && (
-          <Link to={notification.action.to} className={style.topbar__action}>
+          <Link href={notification.action.to} className={style.topbar__action}>
             {notification.action.label}
           </Link>
         )}

@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { FaStar, FaRegStar, FaCalendarDay } from 'react-icons/fa';
 
 import { useHaptics } from '@/shared/lib/hooks';
@@ -29,7 +29,7 @@ export const PendingReviewCard = memo(({ purchase, product, onRate }: PendingRev
     return (
         <article className={style['pending-card']}>
             <Link
-                to={`/product/${purchase.productId}`}
+                href={`/product/${purchase.productId}`}
                 className={style['pending-card__product']}
                 onClick={soft}
             >

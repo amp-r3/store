@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import Link from 'next/link';
 import style from './auth-switch-link.module.scss';
 
 interface AuthSwitchLinkProps {
@@ -9,6 +9,6 @@ interface AuthSwitchLinkProps {
 
 export const AuthSwitchLink = ({ prompt, to, label }: AuthSwitchLinkProps) => (
   <p className={style['auth-switch-link']}>
-    {prompt} <Link to={to} className={style['auth-switch-link__link']}>{label}</Link>
+    {prompt} <Link href={to} className={style['auth-switch-link__link']}>{label}</Link>
   </p>
 );

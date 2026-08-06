@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { useHaptics } from '@/shared/lib/hooks';
 import style from './promo-banner.module.scss';
 
@@ -13,7 +13,7 @@ export const PromoBanner = () => {
                     <p className={style.promoBanner__subtitle}>
                         Explore the full collection — new arrivals added every week.
                     </p>
-                    <Link to="/catalog" className={style.promoBanner__cta} onClick={soft}>
+                    <Link href="/catalog" className={style.promoBanner__cta} onClick={soft}>
                         Browse Catalog
                     </Link>
                 </div>

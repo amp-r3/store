@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { IoFlame } from 'react-icons/io5';
 import { useGetDealsProductsQuery, ProductCard, ProductCardSkeleton } from '@/entities/product';
 import { WishlistToggleButton } from '@/features/wishlist-toggle';
@@ -25,7 +25,7 @@ export const DealsShowcase = memo(() => {
                         <IoFlame className={style.dealsShowcase__titleIcon} aria-hidden="true" />
                         Hot Deals
                     </h2>
-                    <Link to="/catalog?deals=true" className={style.dealsShowcase__viewAll} onClick={soft}>
+                    <Link href="/catalog?deals=true" className={style.dealsShowcase__viewAll} onClick={soft}>
                         View All
                     </Link>
                 </div>

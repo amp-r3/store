@@ -3,7 +3,7 @@ import style from './order-item.module.scss';
 import { EnrichedOrderItem } from '@/entities/order/model/types';
 import { useGetSizesQuery } from '@/entities/product';
 import { formatPrice } from '@/shared/lib';
-import { Link } from 'react-router';
+import Link from 'next/link';
 
 interface OrderItemProps {
   item: EnrichedOrderItem;
@@ -23,7 +23,7 @@ export const OrderItem: React.FC<OrderItemProps> = React.memo(({ item, onClose, 
     <article className={style['order-item']}>
       {linkToProduct && (
         <Link
-          to={`/product/${item.product.id}`}
+          href={`/product/${item.product.id}`}
           className={style['order-item__link']}
           aria-label={`View details for ${product.title}`}
           onClick={onClose}

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { NavLink, useMatch, useNavigate } from 'react-router';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { IoSearchOutline, IoArrowBackOutline, IoHomeOutline, IoCartOutline } from 'react-icons/io5';
 import { FaRegHeart } from 'react-icons/fa';
@@ -13,13 +14,13 @@ import { useGetUnreadNotificationsCountQuery } from "@/entities/notification";
 import { useProduct, useGetSizesQuery, useSelectedSize, getPurchaseState } from "@/entities/product";
 import { useCartActions, AddToCartButton, QuickBuyButton } from "@/features/cart-actions";
 import { addToCheckout, clearCheckout } from "@/features/checkout-process";
-import { useHideOnScroll, useHaptics, useOnScreen, useMediaQuery } from "@/shared/lib/hooks";
+import { useHideOnScroll, useHaptics, useOnScreen, useMediaQuery, useIsNavActive } from "@/shared/lib/hooks";
 import { formatPrice, scrollToElement, REQUEST_SIZE_EVENT } from "@/shared/lib";
 import { useAppDispatch, useAppSelector } from "@/shared/model";
 
 type DockLayer = 'nav' | 'search' | 'purchase';
 
-const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+const navLinkClass = (isActive: boolean) =>
     `${style.navbar__tab} ${isActive ? style['navbar__tab--active'] : ''}`;
 
 export const MobileBar = () => {
@@ -28,16 +29,21 @@ export const MobileBar = () => {
     const [isNavPinned, setIsNavPinned] = useState(false);
     const { soft } = useHaptics();
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+    const router = useRouter();
+    const pathname = usePathname();
 
     const isAuth = useAppSelector(selectIsAuth);
     const { totalQuantity: cartTotals, cartItems } = useCartDetails();
     const { totalQuantity: wishlistTotals } = useWishlistDetails();
     const { data: unreadCount } = useGetUnreadNotificationsCountQuery(undefined, { skip: !isAuth });
-    const isInUserSection = !!useMatch({ path: '/user', end: false });
+    const isInUserSection = useIsNavActive('/user');
+    const isHomeActive = useIsNavActive('/', true);
+    const isWishlistActive = useIsNavActive('/wishlist');
+    const isUserActive = useIsNavActive('/user');
+    const isLoginActive = useIsNavActive('/login');
 
-    const productMatch = useMatch('/product/:id');
-    const productId = productMatch?.params.id;
+    const productMatch = pathname.match(/^\/product\/([^/]+)$/);
+    const productId = productMatch?.[1];
     const { product } = useProduct(productId);
     const { data: sizes } = useGetSizesQuery(productId ? +productId : skipToken);
     const { selectedSizeId } = useSelectedSize(sizes);
@@ -136,7 +142,7 @@ export const MobileBar = () => {
         const cartProduct: CartProduct[] = [{ sizeId: selectedSizeId as number, productId: displayProduct.id, quantity: 1 }];
         dispatch(clearCheckout());
         dispatch(addToCheckout(cartProduct));
-        navigate('/checkout');
+        router.push('/checkout');
     };
 
     const barRef = useHideOnScroll<HTMLElement>(style['navbar--hidden'], activeLayer !== 'nav');
@@ -147,13 +153,13 @@ export const MobileBar = () => {
             <nav ref={barRef} className={style.navbar}>
                 <div className={style.navbar__cluster} inert={activeLayer !== 'nav' || undefined}>
                     <div className={style.navbar__pill}>
-                        <NavLink to="/" end aria-label="Home" className={navLinkClass} onClick={() => soft()}>
+                        <Link href="/" aria-label="Home" className={navLinkClass(isHomeActive)} onClick={() => soft()}>
                             <IoHomeOutline />
-                        </NavLink>
-                        <NavLink to="/wishlist" aria-label="Open wishlist" className={navLinkClass} onClick={() => soft()}>
+                        </Link>
+                        <Link href="/wishlist" aria-label="Open wishlist" className={navLinkClass(isWishlistActive)} onClick={() => soft()}>
                             {isWishlistLoaded && <span className={style.navbar__badge}>{wishlistTotals}</span>}
                             <FaRegHeart />
-                        </NavLink>
+                        </Link>
                     </div>
 
                     <button
@@ -177,18 +183,18 @@ export const MobileBar = () => {
                             <IoCartOutline />
                         </button>
                         {isAuth ? (
-                            <NavLink to="/user" aria-label="Open profile" className={navLinkClass} onClick={() => soft()}>
+                            <Link href="/user" aria-label="Open profile" className={navLinkClass(isUserActive)} onClick={() => soft()}>
                                 {hasUnread && !isInUserSection && (
                                     <span className={style.navbar__badge}>
                                         {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
                                     </span>
                                 )}
                                 <FaUser />
-                            </NavLink>
+                            </Link>
                         ) : (
-                            <NavLink to="/login" aria-label="Sign in" className={navLinkClass} onClick={() => soft()}>
+                            <Link href="/login" aria-label="Sign in" className={navLinkClass(isLoginActive)} onClick={() => soft()}>
                                 <FaArrowRightToBracket />
-                            </NavLink>
+                            </Link>
                         )}
                     </div>
                 </div>

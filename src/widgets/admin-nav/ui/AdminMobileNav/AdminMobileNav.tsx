@@ -1,8 +1,10 @@
-import { Link, useLocation } from 'react-router';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { LuArrowLeft, LuCheck, LuChevronDown, LuUserRound } from 'react-icons/lu';
 import { DropdownMenu } from 'radix-ui';
 
 import { useHaptics } from '@/shared/lib/hooks';
+import { getModalRoot } from '@/shared/lib';
 
 import { ADMIN_NAV_ITEMS } from '../../config/navItems';
 import { resolveActiveNavItem } from '../../lib/resolveActiveNavItem';
@@ -11,7 +13,8 @@ import style from './admin-mobile-nav.module.scss';
 
 export const AdminMobileNav = () => {
     const { soft } = useHaptics();
-    const { pathname } = useLocation();
+    const pathname = usePathname();
+    const modalRoot = getModalRoot();
 
     const activeItem = resolveActiveNavItem(pathname);
     const ActiveIcon = activeItem.icon;
@@ -19,11 +22,11 @@ export const AdminMobileNav = () => {
     return (
         <div className={style['admin-mobile-nav']}>
             <div className={style['admin-mobile-nav__exit-links']}>
-                <Link to="/user" className={style['admin-mobile-nav__back']} onClick={() => soft()}>
+                <Link href="/user" className={style['admin-mobile-nav__back']} onClick={() => soft()}>
                     <LuUserRound className={style['admin-mobile-nav__back-icon']} />
                     <span className={style['admin-mobile-nav__back-label']}>My profile</span>
                 </Link>
-                <Link to="/" className={style['admin-mobile-nav__back']} onClick={() => soft()}>
+                <Link href="/" className={style['admin-mobile-nav__back']} onClick={() => soft()}>
                     <LuArrowLeft className={style['admin-mobile-nav__back-icon']} />
                     <span className={style['admin-mobile-nav__back-label']}>Back to store</span>
                 </Link>
@@ -38,7 +41,7 @@ export const AdminMobileNav = () => {
                     </button>
                 </DropdownMenu.Trigger>
 
-                <DropdownMenu.Portal container={document.getElementById('modal-root')!}>
+                <DropdownMenu.Portal container={modalRoot}>
                     <DropdownMenu.Content
                         className={style['admin-mobile-nav__content']}
                         sideOffset={8}
@@ -53,7 +56,7 @@ export const AdminMobileNav = () => {
                                     asChild
                                     className={`${style['admin-mobile-nav__item']} ${isActive ? style['admin-mobile-nav__item--active'] : ''}`}
                                 >
-                                    <Link to={to} replace onClick={() => soft()}>
+                                    <Link href={to} replace onClick={() => soft()}>
                                         <Icon className={style['admin-mobile-nav__item-icon']} aria-hidden="true" />
                                         <span className={style['admin-mobile-nav__item-label']}>{label}</span>
                                         {isActive && <LuCheck className={style['admin-mobile-nav__item-check']} aria-hidden="true" />}

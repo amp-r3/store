@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { CenterNotification } from '../../model/types';
 import style from './notification-card.module.scss';
 
@@ -34,7 +34,7 @@ export const NotificationCard = memo(({ notification, onRead }: NotificationCard
 
     if (actionPath) {
         return (
-            <Link to={actionPath} className={className} onClick={() => !isRead && onRead(id)}>
+            <Link href={actionPath} className={className} onClick={() => !isRead && onRead(id)}>
                 {content}
             </Link>
         );

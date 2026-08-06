@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { DropdownMenu } from 'radix-ui';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { LuEllipsisVertical } from 'react-icons/lu';
 
 import { useHaptics } from '@/shared/lib/hooks';
@@ -52,7 +52,7 @@ export const ActionMenu = ({ label, items, align = 'end', icon }: ActionMenuProp
                         if (item.to) {
                             return (
                                 <DropdownMenu.Item key={item.key} asChild disabled={item.disabled} className={itemClassName}>
-                                    <Link to={item.to}>
+                                    <Link href={item.to}>
                                         {item.icon && (
                                             <span className={style['action-menu__icon']} aria-hidden="true">
                                                 {item.icon}

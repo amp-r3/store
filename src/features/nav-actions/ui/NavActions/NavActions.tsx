@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { IoCartOutline } from 'react-icons/io5';
 import { FaRegHeart } from 'react-icons/fa';
 import { FaArrowRightToBracket, FaUser } from 'react-icons/fa6';
@@ -27,7 +27,7 @@ export const NavActions = () => {
 
     return (
         <div className={style['nav-actions']}>
-            <Link to={'/wishlist'} aria-label="open wishlist" className={btnClass}>
+            <Link href={'/wishlist'} aria-label="open wishlist" className={btnClass}>
                 {isWishlistLoaded && <span className={style['nav-actions__btn__count']}>{wishlistTotals}</span>}
                 <FaRegHeart />
             </Link>
@@ -43,7 +43,7 @@ export const NavActions = () => {
             </button>
 
             {isAuth ? (
-                <Link to={'/user'} aria-label="open profile" className={btnClass}>
+                <Link href={'/user'} aria-label="open profile" className={btnClass}>
                     {hasUnread && (
                         <span className={style['nav-actions__btn__count']}>
                             {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
@@ -52,7 +52,7 @@ export const NavActions = () => {
                     <FaUser />
                 </Link>
             ) : (
-                <Link to={'/login'} aria-label="sign in" className={btnClass}>
+                <Link href={'/login'} aria-label="sign in" className={btnClass}>
                     <FaArrowRightToBracket />
                 </Link>
             )}

@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { IoArrowDown, IoSparkles } from 'react-icons/io5';
 import { useHaptics } from '@/shared/lib/hooks';
 import { scrollToElement } from '@/shared/lib';
@@ -38,7 +38,7 @@ export const HeroSection = ({ scrollTargetId }: HeroSectionProps) => {
                 </p>
 
                 <div className={style.hero__actions}>
-                    <Link to="/catalog" className={style.hero__cta} onClick={soft}>
+                    <Link href="/catalog" className={style.hero__cta} onClick={soft}>
                         Shop Now
                     </Link>
                     <button

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import { LuPackage } from 'react-icons/lu';
 
@@ -62,7 +62,7 @@ export const AdminTopProductsPanel = () => {
                     {products.map((product) => (
                         <Link
                             key={product.productId}
-                            to={`/admin/products/${product.productId}/edit`}
+                            href={`/admin/products/${product.productId}/edit`}
                             className={style['admin-top-products-panel__row']}
                         >
                             <img

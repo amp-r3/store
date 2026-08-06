@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { FaChevronRight } from "react-icons/fa6";
 import style from './breadcrumbs.module.scss';
 
@@ -24,7 +24,7 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                     return (
                         <li key={index} className={style['breadcrumbs__item']}>
                             {item.path ? (
-                                <Link to={item.path} className={style['breadcrumbs__link']}>
+                                <Link href={item.path} className={style['breadcrumbs__link']}>
                                     {item.label}
                                 </Link>
                             ) : item.onClick ? (

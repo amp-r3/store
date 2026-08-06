@@ -1,6 +1,6 @@
 import { ProductCardImage, ProductCardBody, ProductCardFooter } from "./";
 import { FC } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import style from './product-card.module.scss';
 import { useGetSizesQuery } from '@/entities/product';
 import { useHaptics } from "@/shared/lib/hooks";
@@ -20,7 +20,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, priority = false, a
 
     return (
         <article className={style.card}>
-            <Link to={`/product/${id}`} className={style.card__link} aria-label={`View details for ${title}`} onClick={soft} />
+            <Link href={`/product/${id}`} className={style.card__link} aria-label={`View details for ${title}`} onClick={soft} />
 
             <ProductCardImage
                 title={title}

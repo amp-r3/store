@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { IoClose, IoSearchOutline } from 'react-icons/io5';
 import { LuTriangleAlert } from 'react-icons/lu';
 
@@ -67,7 +67,7 @@ export const AdminProductsToolbar = ({ search, includeArchived, activeFilterCoun
                 </form>
             )}
             actions={(
-                <Link to="/admin/products/low-stock" className={style['admin-products-toolbar__low-stock-link']}>
+                <Link href="/admin/products/low-stock" className={style['admin-products-toolbar__low-stock-link']}>
                     <LuTriangleAlert /> Low stock
                 </Link>
             )}

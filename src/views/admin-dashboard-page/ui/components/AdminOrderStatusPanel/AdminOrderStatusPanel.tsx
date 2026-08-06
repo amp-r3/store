@@ -1,5 +1,5 @@
 import Skeleton from 'react-loading-skeleton';
-import { Link } from 'react-router';
+import Link from 'next/link';
 
 import { useGetAdminOrdersByStatusQuery } from '@/entities/admin';
 import { ORDER_STATUS_MAP, ORDER_STATUS_OPTIONS } from '@/entities/order';
@@ -29,7 +29,7 @@ export const AdminOrderStatusPanel = () => {
                     counts.map(({ status, count }) => (
                         <Link
                             key={status}
-                            to={`/admin/orders?status=${status}`}
+                            href={`/admin/orders?status=${status}`}
                             className={style['admin-order-status-panel__row']}
                         >
                             <span className={style['admin-order-status-panel__label']}>

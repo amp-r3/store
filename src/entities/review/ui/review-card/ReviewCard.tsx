@@ -1,6 +1,6 @@
 import { ReviewMenu } from "./components";
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { FaCalendarDay, FaUserCheck, FaThumbsUp } from 'react-icons/fa';
 import { useDeleteReviewMutation, useToggleReviewLikeMutation } from '@/entities/review';
 import style from './review-card.module.scss';
@@ -165,7 +165,7 @@ export const ReviewCard = ({ review, isCurrentUser, onEdit }: ReviewCardProps) =
                             {!user && (
                                 <>
                                     {' '}
-                                    <Link to="/login" className={style['review-card__error-link']}>Sign in</Link>
+                                    <Link href="/login" className={style['review-card__error-link']}>Sign in</Link>
                                 </>
                             )}
                         </span>

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 
 import style from './panel-card.module.scss';
 
@@ -19,7 +19,7 @@ export const PanelCard = ({ title, action, to, children }: PanelCardProps) => (
             <div className={style['panel-card__controls']}>
                 {action}
                 {to && (
-                    <Link to={to} className={style['panel-card__view-all']}>
+                    <Link href={to} className={style['panel-card__view-all']}>
                         View all
                     </Link>
                 )}

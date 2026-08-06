@@ -1,6 +1,7 @@
-import { NavLink } from 'react-router';
+import Link from 'next/link';
 
 import { SessionUser } from '@/entities/session';
+import { useIsNavActive } from '@/shared/lib/hooks';
 
 import type { ProfileNavItem } from '../../config/navItems';
 import { getInitial, getDisplayName } from '../../lib/userDisplay';
@@ -13,14 +14,39 @@ interface ProfileSidebarProps {
     items: ProfileNavItem[];
 }
 
-export const ProfileSidebar = ({ user, unreadCount, items }: ProfileSidebarProps) => {
+interface ProfileSidebarLinkProps {
+    item: ProfileNavItem;
+    unreadCount: number;
+}
+
+const ProfileSidebarLink = ({ item: { id, to, end, icon: Icon, label }, unreadCount }: ProfileSidebarLinkProps) => {
+    const isActive = useIsNavActive(to, end);
+    const isNotifications = id === 'notifications';
     const hasUnread = unreadCount >= 1;
 
     return (
+        <Link
+            href={to}
+            replace
+            aria-label={isNotifications ? (hasUnread ? `${label}, ${unreadCount} unread` : label) : undefined}
+            className={`${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
+        >
+            <Icon className={style['profile-sidebar__icon']} />
+            <span aria-hidden={isNotifications ? 'true' : undefined}>{label}</span>
+            {isNotifications && hasUnread && (
+                <span className={style['profile-sidebar__badge']} aria-hidden="true">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+            )}
+        </Link>
+    );
+};
+
+export const ProfileSidebar = ({ user, unreadCount, items }: ProfileSidebarProps) => {
+    return (
         <aside className={style['profile-sidebar']}>
-            <NavLink
-                to="/user"
-                end
+            <Link
+                href="/user"
                 replace
                 aria-label="Go to profile"
                 className={style['profile-sidebar__user-info']}
@@ -32,31 +58,12 @@ export const ProfileSidebar = ({ user, unreadCount, items }: ProfileSidebarProps
                     <div className={style['profile-sidebar__name']}>{getDisplayName(user)}</div>
                     {user.email && <div className={style['profile-sidebar__email']}>{user.email}</div>}
                 </div>
-            </NavLink>
+            </Link>
 
             <nav className={style['profile-sidebar__nav']}>
-                {items.map(({ id, to, end, icon: Icon, label }) => {
-                    const isNotifications = id === 'notifications';
-
-                    return (
-                        <NavLink
-                            key={id}
-                            to={to}
-                            end={end}
-                            replace
-                            aria-label={isNotifications ? (hasUnread ? `${label}, ${unreadCount} unread` : label) : undefined}
-                            className={({ isActive }) => `${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
-                        >
-                            <Icon className={style['profile-sidebar__icon']} />
-                            <span aria-hidden={isNotifications ? 'true' : undefined}>{label}</span>
-                            {isNotifications && hasUnread && (
-                                <span className={style['profile-sidebar__badge']} aria-hidden="true">
-                                    {unreadCount > 9 ? '9+' : unreadCount}
-                                </span>
-                            )}
-                        </NavLink>
-                    );
-                })}
+                {items.map((item) => (
+                    <ProfileSidebarLink key={item.id} item={item} unreadCount={unreadCount} />
+                ))}
             </nav>
         </aside>
     );

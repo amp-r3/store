@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 
 import { AdminLowStockItem } from '@/entities/admin';
 import { AdminStockInput } from '@/features/admin-product-form';
@@ -22,7 +22,7 @@ export const AdminLowStockRow = memo(({ item }: AdminLowStockRowProps) => (
                 loading="lazy"
                 decoding="async"
             />
-            <Link to={`/admin/products/${item.productId}/edit`} className={style['admin-low-stock-row__title']}>
+            <Link href={`/admin/products/${item.productId}/edit`} className={style['admin-low-stock-row__title']}>
                 {item.title}
             </Link>
         </div>

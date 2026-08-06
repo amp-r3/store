@@ -1,5 +1,5 @@
 import Skeleton from 'react-loading-skeleton';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { LuPackageOpen } from 'react-icons/lu';
 
 import { useGetAdminLowStockQuery } from '@/entities/admin';
@@ -35,7 +35,7 @@ export const AdminLowStockPanel = () => {
                     {items.map((item) => (
                         <Link
                             key={item.sizeId}
-                            to={`/admin/products/${item.productId}/edit`}
+                            href={`/admin/products/${item.productId}/edit`}
                             className={style['admin-low-stock-panel__row']}
                         >
                             <img

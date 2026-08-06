@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Link } from 'react-router'
+import Link from 'next/link'
 import style from './auth-card.module.scss'
 import { Logo } from '../logo/Logo'
 import { FaRegUser } from 'react-icons/fa'
@@ -30,7 +30,7 @@ export const AuthCard = ({
         <div className={style.card__header}>
           <Logo />
           {backTo && (
-            <Link to={backTo} className={style.card__back} aria-label={backLabel}>
+            <Link href={backTo} className={style.card__back} aria-label={backLabel}>
               <LuArrowLeft aria-hidden="true" />
               <span className={style.card__backLabel}>{backLabel}</span>
             </Link>

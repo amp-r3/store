@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 
 import style from './stat-tile.module.scss';
 
@@ -44,7 +44,7 @@ export const StatTile = ({ icon, label, value, to, size = 'md', layout = 'row' }
     );
 
     if (to) {
-        return <Link to={to} className={className}>{content}</Link>;
+        return <Link href={to} className={className}>{content}</Link>;
     }
 
     return <article className={className}>{content}</article>;

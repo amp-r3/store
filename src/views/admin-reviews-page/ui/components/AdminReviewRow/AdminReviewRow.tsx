@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { LuTrash2 } from 'react-icons/lu';
 
 import { AdminReview } from '@/entities/admin';
@@ -18,7 +18,7 @@ export const AdminReviewRow = memo(({ review, onDelete }: AdminReviewRowProps) =
         <article role="listitem" className={style['admin-review-row']}>
             <div className={style['admin-review-row__cell']}>
                 <span className={style['admin-review-row__cell-label']}>Product</span>
-                <Link to={`/product/${review.productId}`} className={style['admin-review-row__product-link']}>
+                <Link href={`/product/${review.productId}`} className={style['admin-review-row__product-link']}>
                     {review.productTitle}
                 </Link>
             </div>

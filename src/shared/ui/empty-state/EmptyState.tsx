@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link } from 'react-router';
+import Link from 'next/link';
 
 import style from './empty-state.module.scss';
 
@@ -21,7 +21,7 @@ export const EmptyState = ({ icon, title, text, cta }: EmptyStateProps) => (
         <h3 className={style['empty-state__title']}>{title}</h3>
         <p className={style['empty-state__text']}>{text}</p>
         {cta && (
-            <Link to={cta.to} className={style['empty-state__cta']}>
+            <Link href={cta.to} className={style['empty-state__cta']}>
                 {cta.label}
             </Link>
         )}

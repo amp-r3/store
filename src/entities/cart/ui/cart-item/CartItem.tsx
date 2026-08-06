@@ -6,7 +6,7 @@ import styles from './cart-item.module.scss';
 // Types
 import { CartItemDetails as CartItemType } from '@/entities/cart/model/types';
 import { formatPrice } from '@/shared/lib';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { useGetSizesQuery } from "@/entities/product";
 import { useAppSelector } from "@/shared/model";
 import { selectIsMaxReached } from "@/entities/cart";
@@ -40,7 +40,7 @@ export const CartItem = memo<CartItemProps>(({
 
     return (
         <article className={`${styles['cart-item']} ${readonly ? styles['cart-item--readonly'] : ''}`.trim()}>
-            <Link to={`/product/${id}`} className={styles['cart-item__link']} aria-label={`View details for ${title}`} onClick={onClose} />
+            <Link href={`/product/${id}`} className={styles['cart-item__link']} aria-label={`View details for ${title}`} onClick={onClose} />
 
             {/* --- Media Section --- */}
 
