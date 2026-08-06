@@ -3,6 +3,7 @@ import { supabase, baseApi } from "@/shared/api";
 import type { Database } from "@/shared/api";
 import type { OAuthResponse } from "@supabase/supabase-js";
 import type { OAuthProviderId } from "@/shared/config";
+import { getSiteOrigin } from "@/shared/config";
 
 
 export const authApi = baseApi.injectEndpoints({
@@ -109,7 +110,7 @@ export const authApi = baseApi.injectEndpoints({
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: `${window.location.origin}/auth/callback`
+            redirectTo: `${getSiteOrigin()}/auth/callback`
           }
         });
 
