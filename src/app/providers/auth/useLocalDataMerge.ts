@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import { baseApi } from "@/shared/api";
-import { useAppDispatch } from "@/shared/model";
+import { useAppDispatch, useAppStore } from "@/shared/model";
 import { useSyncCartMutation, clearCart } from "@/entities/cart";
 import { useSyncWishlistMutation, clearFavorite } from "@/entities/wishlist";
 import { logout } from "@/entities/session";
-import { store } from "@/app/store";
-import { supabase } from "@/shared/api/supabase";
+import { supabase } from "@/shared/api/supabase/client";
 
 /** Owns the local (guest) ↔ server cart/wishlist lifecycle: merges
  * localStorage-backed items into the server on sign-in, and clears all local
@@ -14,6 +13,7 @@ export const useLocalDataMerge = () => {
   const [syncCart] = useSyncCartMutation();
   const [syncWishlist] = useSyncWishlistMutation();
   const dispatch = useAppDispatch();
+  const store = useAppStore();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -54,5 +54,5 @@ export const useLocalDataMerge = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [dispatch, syncCart, syncWishlist]);
+  }, [dispatch, store, syncCart, syncWishlist]);
 };
