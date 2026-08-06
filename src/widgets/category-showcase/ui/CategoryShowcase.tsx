@@ -1,4 +1,7 @@
+'use client';
+
 import { useGetCategoriesQuery } from '@/entities/product';
+import type { Categories, ProductsResponse } from '@/entities/product';
 import { ErrorView } from '@/shared/ui';
 import { getErrorMessage } from '@/shared/lib';
 import { CategoryRow } from './CategoryRow/CategoryRow';
@@ -9,10 +12,14 @@ const SKELETON_ROWS_COUNT = 3;
 
 interface CategoryShowcaseProps {
     id?: string;
+    initialCategories?: Categories;
+    initialCategoryProducts?: Record<string, ProductsResponse>;
 }
 
-export const CategoryShowcase = ({ id }: CategoryShowcaseProps) => {
-    const { data: categories, isLoading, error } = useGetCategoriesQuery();
+export const CategoryShowcase = ({ id, initialCategories, initialCategoryProducts }: CategoryShowcaseProps) => {
+    const { data: liveCategories, isLoading: isLiveLoading, error } = useGetCategoriesQuery();
+    const categories = liveCategories ?? initialCategories;
+    const isLoading = isLiveLoading && !categories;
 
     if (error) {
         const errorMessage = getErrorMessage(error);
@@ -38,6 +45,7 @@ export const CategoryShowcase = ({ id }: CategoryShowcaseProps) => {
                                 key={category.slug}
                                 category={category}
                                 priority={index === 0}
+                                initialProducts={initialCategoryProducts?.[category.slug]}
                             />
                         ))
                 }

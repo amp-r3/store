@@ -1,7 +1,10 @@
+'use client';
+
 import { memo } from 'react';
 import Link from 'next/link';
 import { IoFlame } from 'react-icons/io5';
 import { useGetDealsProductsQuery, ProductCard, ProductCardSkeleton } from '@/entities/product';
+import type { Product } from '@/entities/product';
 import { WishlistToggleButton } from '@/features/wishlist-toggle';
 import { HorizontalScroll } from '@/shared/ui';
 import { useHaptics } from '@/shared/lib/hooks';
@@ -10,8 +13,14 @@ import style from './deals-showcase.module.scss';
 const DEALS_LIMIT = 12;
 const SKELETON_CARDS_COUNT = 4;
 
-export const DealsShowcase = memo(() => {
-    const { data: products, isLoading, error } = useGetDealsProductsQuery({ limit: DEALS_LIMIT });
+interface DealsShowcaseProps {
+    initialProducts?: Product[];
+}
+
+export const DealsShowcase = memo(({ initialProducts }: DealsShowcaseProps = {}) => {
+    const { data: liveProducts, isLoading: isLiveLoading, error } = useGetDealsProductsQuery({ limit: DEALS_LIMIT });
+    const products = liveProducts ?? initialProducts;
+    const isLoading = isLiveLoading && !products;
     const { soft } = useHaptics();
 
     if (error) return null;

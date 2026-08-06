@@ -1,7 +1,9 @@
+'use client';
+
 import { memo } from 'react';
 import Link from 'next/link';
 import { useGetProductsQuery, ProductCard, ProductCardSkeleton } from '@/entities/product';
-import type { Category } from '@/entities/product';
+import type { Category, ProductsResponse } from '@/entities/product';
 import { WishlistToggleButton } from '@/features/wishlist-toggle';
 import { HorizontalScroll } from '@/shared/ui';
 import { useHaptics } from '@/shared/lib/hooks';
@@ -13,14 +15,17 @@ const PRIORITY_CARD_COUNT = 8;
 interface CategoryRowProps {
     category: Category;
     priority?: boolean;
+    initialProducts?: ProductsResponse;
 }
 
-export const CategoryRow = memo(({ category, priority = false }: CategoryRowProps) => {
-    const { data, isLoading, error } = useGetProductsQuery({
+export const CategoryRow = memo(({ category, priority = false, initialProducts }: CategoryRowProps) => {
+    const { data: liveData, isLoading: isLiveLoading, error } = useGetProductsQuery({
         category: category.name,
         page: 1,
         limit: ROW_LIMIT,
     });
+    const data = liveData ?? initialProducts;
+    const isLoading = isLiveLoading && !data;
     const { light } = useHaptics();
 
     if (error) return null;
