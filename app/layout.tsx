@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { inter, poppins } from '@/app/styles/fonts';
+import { AppProviders } from '@/app/providers/AppProviders';
 import '@/app/styles/main.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body>
-        {children}
+        <AppProviders>{children}</AppProviders>
         <div id="modal-root" />
       </body>
     </html>

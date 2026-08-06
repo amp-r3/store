@@ -1,10 +1,11 @@
-import { Suspense } from 'react';
-import { Outlet, useLocation } from 'react-router';
+'use client';
+
+import { usePathname } from 'next/navigation';
 
 import { selectUser } from '@/entities/session';
 import { useAppSelector } from '@/shared/model';
 import { useMediaQuery } from '@/shared/lib/hooks';
-import { Loader, PageLayout, HOME_CRUMB, PROFILE_CRUMB, type BreadcrumbItem } from '@/shared/ui';
+import { PageLayout, HOME_CRUMB, PROFILE_CRUMB, type BreadcrumbItem } from '@/shared/ui';
 import { ProfileNav } from '@/widgets/profile-nav';
 
 import style from './user-layout.module.scss';
@@ -16,9 +17,9 @@ const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
     '/user/notifications': [HOME_CRUMB, PROFILE_CRUMB, { label: 'Notifications' }],
 };
 
-export const UserLayout = () => {
+export const UserLayout = ({ children }: { children: React.ReactNode }) => {
     const user = useAppSelector(selectUser);
-    const { pathname } = useLocation();
+    const pathname = usePathname();
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     if (!user) return null;
@@ -34,15 +35,7 @@ export const UserLayout = () => {
                 <ProfileNav user={user} />
 
                 <section className={style['user-layout__content']}>
-                    <Suspense
-                        fallback={
-                            <div className={style['user-layout__fallback']}>
-                                <Loader size="md" />
-                            </div>
-                        }
-                    >
-                        <Outlet />
-                    </Suspense>
+                    {children}
                 </section>
             </div>
         </PageLayout>

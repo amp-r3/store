@@ -1,5 +1,6 @@
-import { useNavigation, useLocation, Outlet } from 'react-router';
-import { Suspense } from 'react';
+'use client';
+
+import { usePathname } from 'next/navigation';
 
 // Custom Components
 import { Navbar } from '@/widgets/navbar';
@@ -14,20 +15,17 @@ import { selectIsCartOpen } from '@/entities/cart';
 
 // Style
 import style from './main-layout.module.scss';
-import { Loader, TopBarLoader } from "@/shared/ui";
 import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
 import { useMediaQuery } from "@/shared/lib/hooks";
 import { CartDrawer } from "@/widgets/cart-drawer";
 import { ReviewModal } from "@/features/order-review";
 
-export const MainLayout = () => {
-    const navigation = useNavigation();
-    const location = useLocation();
+export const MainLayout = ({ children }: { children: React.ReactNode }) => {
+    const pathname = usePathname();
     const dispatch = useAppDispatch();
     const isOpen = useAppSelector(selectIsCartOpen);
-    const isLoading = navigation.state === 'loading';
-    const isHomePage = location.pathname === '/';
+    const isHomePage = pathname === '/';
     const isMobileBarWidth = useMediaQuery('(max-width: 525px)');
 
     const handleClose = () => {
@@ -40,20 +38,17 @@ export const MainLayout = () => {
             <TopBar isOverlay={isHomePage} />
             <div className={style.layout}>
                 <Navbar isOverlay={isHomePage} />
-                <TopBarLoader isLoading={isLoading} />
-                <Suspense fallback={<Loader />}>
-                    <Outlet />
-                    <CartDrawer
-                        isOpen={isOpen}
-                        onClose={handleClose}
-                    />
-                    <ReviewModal />
-                    {isMobileBarWidth && (
-                        <div className={style.mobileBar}>
-                            <MobileBar />
-                        </div>
-                    )}
-                </Suspense>
+                {children}
+                <CartDrawer
+                    isOpen={isOpen}
+                    onClose={handleClose}
+                />
+                <ReviewModal />
+                {isMobileBarWidth && (
+                    <div className={style.mobileBar}>
+                        <MobileBar />
+                    </div>
+                )}
             </div>
             <Footer />
         </>

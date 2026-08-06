@@ -1,10 +1,11 @@
-import { Suspense } from 'react';
-import { Outlet, useLocation } from 'react-router';
+'use client';
+
+import { usePathname } from 'next/navigation';
 
 import { selectUser } from '@/entities/session';
 import { useAppSelector } from '@/shared/model';
 import { useMediaQuery } from '@/shared/lib/hooks';
-import { Loader, PageLayout, HOME_CRUMB, ADMIN_CRUMB, type BreadcrumbItem } from '@/shared/ui';
+import { PageLayout, HOME_CRUMB, ADMIN_CRUMB, type BreadcrumbItem } from '@/shared/ui';
 import { TopBar } from '@/widgets/top-bar';
 import { AdminNav } from '@/widgets/admin-nav';
 
@@ -38,9 +39,9 @@ const resolveBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
     return BREADCRUMBS['/admin'];
 };
 
-export const AdminLayout = () => {
+export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     const user = useAppSelector(selectUser);
-    const { pathname } = useLocation();
+    const pathname = usePathname();
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     if (!user) return null;
@@ -56,15 +57,7 @@ export const AdminLayout = () => {
                     <AdminNav />
 
                     <section className={style['admin-layout__content']}>
-                        <Suspense
-                            fallback={
-                                <div className={style['admin-layout__fallback']}>
-                                    <Loader size="md" />
-                                </div>
-                            }
-                        >
-                            <Outlet />
-                        </Suspense>
+                        {children}
                     </section>
                 </div>
             </PageLayout>
