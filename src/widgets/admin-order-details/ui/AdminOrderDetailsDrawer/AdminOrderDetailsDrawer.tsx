@@ -4,12 +4,11 @@ import { VisuallyHidden } from 'radix-ui';
 import { IoClose } from 'react-icons/io5';
 import { AdminOrderDetailsHeader, AdminOrderDetailsBody, AdminOrderDetailsFooter } from "../components";
 import { OrderProgress, OrderStatusEvent } from '@/entities/order';
-import { formatDate } from '@/shared/lib';
+import { formatDate, getModalRoot } from '@/shared/lib';
 import style from './admin-order-details-drawer.module.scss';
 import { AdminOrderDetailsProps } from '../AdminOrderDetails';
 
 const ITEMS_PREVIEW_COUNT = 3;
-const MODAL_ROOT = document.getElementById('modal-root')!;
 
 type AdminOrderDetailsDrawerProps = AdminOrderDetailsProps & {
     direction: 'bottom' | 'right';
@@ -31,10 +30,11 @@ export const AdminOrderDetailsDrawer: FC<AdminOrderDetailsDrawerProps> = ({
     events,
     isEventsLoading,
 }) => {
+    const modalRoot = getModalRoot();
 
     return (
         <Drawer.Root open={open} onOpenChange={onOpenChange} direction={direction}>
-            <Drawer.Portal container={MODAL_ROOT}>
+            <Drawer.Portal container={modalRoot}>
                 <Drawer.Overlay className={style['admin-order-drawer__overlay']} />
 
                 <Drawer.Content

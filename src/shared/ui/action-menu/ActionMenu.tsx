@@ -4,10 +4,9 @@ import { Link } from 'react-router';
 import { LuEllipsisVertical } from 'react-icons/lu';
 
 import { useHaptics } from '@/shared/lib/hooks';
+import { getModalRoot } from '@/shared/lib';
 import { IconButton } from '../icon-button/IconButton';
 import style from './action-menu.module.scss';
-
-const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export interface ActionMenuItem {
     key: string;
@@ -29,6 +28,7 @@ export interface ActionMenuProps {
 export const ActionMenu = ({ label, items, align = 'end', icon }: ActionMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const { soft } = useHaptics();
+    const modalRoot = getModalRoot();
 
     const handleOpenChange = (openState: boolean) => {
         if (openState) soft();
@@ -42,7 +42,7 @@ export const ActionMenu = ({ label, items, align = 'end', icon }: ActionMenuProp
                     {icon ?? <LuEllipsisVertical aria-hidden="true" />}
                 </IconButton>
             </DropdownMenu.Trigger>
-            <DropdownMenu.Portal container={MODAL_ROOT}>
+            <DropdownMenu.Portal container={modalRoot}>
                 <DropdownMenu.Content className={style['action-menu__content']} sideOffset={8} align={align}>
                     {items.map((item) => {
                         const itemClassName = [style['action-menu__item'], item.danger ? style['action-menu__item--danger'] : '']

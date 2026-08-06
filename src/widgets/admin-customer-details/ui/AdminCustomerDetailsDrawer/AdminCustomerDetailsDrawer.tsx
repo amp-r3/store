@@ -5,9 +5,8 @@ import { IoClose } from 'react-icons/io5';
 
 import { AdminCustomerDetailsHeader, AdminCustomerDetailsBody } from '../components';
 import { AdminCustomerDetailsProps } from '../AdminCustomerDetails';
+import { getModalRoot } from '@/shared/lib';
 import style from './admin-customer-details-drawer.module.scss';
-
-const MODAL_ROOT = document.getElementById('modal-root')!;
 
 type AdminCustomerDetailsDrawerProps = AdminCustomerDetailsProps & {
     direction: 'bottom' | 'right';
@@ -20,9 +19,11 @@ export const AdminCustomerDetailsDrawer: FC<AdminCustomerDetailsDrawerProps> = (
     direction,
     onOpenChange,
 }) => {
+    const modalRoot = getModalRoot();
+
     return (
         <Drawer.Root open={open} onOpenChange={onOpenChange} direction={direction}>
-            <Drawer.Portal container={MODAL_ROOT}>
+            <Drawer.Portal container={modalRoot}>
                 <Drawer.Overlay className={style['admin-customer-drawer__overlay']} />
 
                 <Drawer.Content

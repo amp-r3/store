@@ -2,6 +2,7 @@ import { FC, ReactNode } from 'react';
 import { IoClose } from 'react-icons/io5';
 import style from './modal.module.scss';
 import { Dialog } from 'radix-ui';
+import { getModalRoot } from '@/shared/lib';
 
 interface ModalProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export const Modal: FC<ModalProps> = ({
 }) => {
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
-      <Dialog.Portal container={document.getElementById('modal-root')!}>
+      <Dialog.Portal container={getModalRoot()}>
         <Dialog.Overlay className={style.overlay} />
 
         <Dialog.Content className={`${style.content} ${style[actionVariant]}`}>

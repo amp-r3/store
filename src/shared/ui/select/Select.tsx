@@ -2,9 +2,8 @@ import { useId } from 'react';
 import { Select as SelectPrimitive } from 'radix-ui';
 import { LuCheck, LuChevronDown } from 'react-icons/lu';
 
+import { getModalRoot } from '@/shared/lib';
 import style from './select.module.scss';
-
-const MODAL_ROOT = document.getElementById('modal-root')!;
 
 export interface SelectOption {
     value: string;
@@ -52,6 +51,7 @@ export const Select = ({
     name,
 }: SelectProps) => {
     const generatedId = useId();
+    const modalRoot = getModalRoot();
     const selectId = id || generatedId;
     const errorId = `${selectId}-error`;
     const descriptionId = `${selectId}-description`;
@@ -93,7 +93,7 @@ export const Select = ({
                     </SelectPrimitive.Icon>
                 </SelectPrimitive.Trigger>
 
-                <SelectPrimitive.Portal container={MODAL_ROOT}>
+                <SelectPrimitive.Portal container={modalRoot}>
                     <SelectPrimitive.Content className={style.content} position="popper" sideOffset={6}>
                         <SelectPrimitive.ScrollUpButton className={style.scrollButton}>
                             <LuChevronDown className={style.scrollIconUp} aria-hidden="true" />

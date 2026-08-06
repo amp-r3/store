@@ -4,11 +4,11 @@ import { VisuallyHidden } from 'radix-ui';
 import { IoClose } from 'react-icons/io5';
 import { OrderDetailsHeader, OrderDetailsBody, OrderDetailsFooter } from "../components";
 import { OrderProgress, OrderStatusEvent } from '@/entities/order';
+import { getModalRoot } from '@/shared/lib';
 import style from './order-details-drawer.module.scss';
 import { OrderDetailsProps } from '../OrderDetails';
 
 const ITEMS_PREVIEW_COUNT = 3;
-const MODAL_ROOT = document.getElementById('modal-root')!;
 
 type OrderDetailsDrawerProps = OrderDetailsProps & {
     direction: 'bottom' | 'right';
@@ -32,10 +32,11 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
     events,
     isEventsLoading,
 }) => {
+    const modalRoot = getModalRoot();
 
     return (
         <Drawer.Root open={open} onOpenChange={onOpenChange} direction={direction}>
-            <Drawer.Portal container={MODAL_ROOT}>
+            <Drawer.Portal container={modalRoot}>
                 <Drawer.Overlay className={style['order-drawer__overlay']} />
 
                 <Drawer.Content

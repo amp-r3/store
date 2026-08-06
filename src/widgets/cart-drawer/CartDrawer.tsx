@@ -9,6 +9,7 @@ import { Modal } from '@/shared/ui';
 import { selectIsAuth } from '@/entities/session';
 import { addToCheckout } from '@/features/checkout-process';
 import { useHaptics } from "@/shared/lib/hooks";
+import { getModalRoot } from "@/shared/lib";
 import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
 import { useCartActions } from "@/features/cart-actions";
@@ -24,8 +25,6 @@ interface CartDrawerProps {
   onClose: () => void;
 }
 
-const MODAL_ROOT = document.getElementById('modal-root')!;
-
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { cartDetails, isEmpty, totals, isLoading, isFetching, cartItems, totalQuantity, refetchCart } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
@@ -33,6 +32,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { soft } = useHaptics();
   const dispatch = useAppDispatch()
+  const modalRoot = getModalRoot();
 
   const { onIncrease, onDecrease, onRemove, onClearCart, isUpdating } = useCartActions()
 
@@ -65,7 +65,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         onOpenChange={(open) => !open && onClose()}
         direction="right"
       >
-        <Drawer.Portal container={MODAL_ROOT}>
+        <Drawer.Portal container={modalRoot}>
           <Drawer.Overlay className={styles.cart__backdrop} />
 
           <Drawer.Content
