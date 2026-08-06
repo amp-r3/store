@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://amp-r3-store.netlify.app/sitemap.xml

@@ -1,0 +1,1 @@
+Store catalog page — glassmorphism e-commerce UI built with React and Redux Toolkit

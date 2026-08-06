@@ -10,8 +10,9 @@ import 'react-loading-skeleton/dist/skeleton.css';
 // NEXT_PUBLIC_SITE_URL must be set (see .env) since there's no request to
 // read window.location from here.
 
-// TODO(stage 5): og:url/og:image still point at the Netlify deployment —
-// update once the Vercel domain is live.
+// TODO(stage 5): update NEXT_PUBLIC_SITE_URL to the Vercel domain once live
+// — og:url/og:image (and every canonical/sitemap URL, all built from
+// getSiteOrigin()) follow it automatically.
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteOrigin() || 'http://localhost:3000'),
   title: 'Store',
@@ -23,8 +24,15 @@ export const metadata: Metadata = {
     type: 'website',
     title: 'Store | Modern E-commerce Portfolio',
     description: 'A fully responsive, dual-themed e-commerce storefront built with React 19, TypeScript, and Redux Toolkit.',
-    url: 'https://amp-r3-store.netlify.app/',
-    images: ['https://amp-r3-store.netlify.app/catalog.png'],
+    url: getSiteOrigin(),
+    // No `images` here — app/opengraph-image.png (+ .alt.txt) covers every
+    // route that doesn't set its own (product pages do, with the actual
+    // product photo, which takes priority over this default).
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Store | Modern E-commerce Portfolio',
+    description: 'A fully responsive, dual-themed e-commerce storefront built with React 19, TypeScript, and Redux Toolkit.',
   },
   icons: {
     icon: [
