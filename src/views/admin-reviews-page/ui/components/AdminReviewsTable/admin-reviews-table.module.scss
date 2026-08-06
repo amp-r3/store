@@ -1,5 +1,5 @@
-@use '@/app/styles/index' as *;
-@use '@/app/styles/admin-table' as table;
+@use 'app/styles/index' as *;
+@use 'app/styles/admin-table' as table;
 
 // Single source of truth for the column tracks, shared with AdminReviewRow
 // via a CSS custom property so the header and every row (including the

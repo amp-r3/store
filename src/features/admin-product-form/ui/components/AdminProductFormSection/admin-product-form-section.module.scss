@@ -1,5 +1,5 @@
-@use '@/app/styles/index' as *;
-@use '@/app/styles/surfaces' as *;
+@use 'app/styles/index' as *;
+@use 'app/styles/surfaces' as *;
 
 .section {
   @include panel;

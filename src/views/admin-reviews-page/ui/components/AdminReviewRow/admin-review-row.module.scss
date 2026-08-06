@@ -1,6 +1,6 @@
-@use '@/app/styles/index' as *;
-@use '@/app/styles/surfaces' as *;
-@use '@/app/styles/admin-table' as table;
+@use 'app/styles/index' as *;
+@use 'app/styles/surfaces' as *;
+@use 'app/styles/admin-table' as table;
 
 // Tracks come from --admin-table-grid, set once on the .admin-reviews-table
 // wrapper this row always renders inside of, so the header row and every

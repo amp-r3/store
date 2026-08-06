@@ -1,5 +1,5 @@
-@use '@/app/styles/index' as *;
-@use '@/app/styles/controls' as *;
+@use 'app/styles/index' as *;
+@use 'app/styles/controls' as *;
 
 .admin-orders-toolbar__filter {
   display: flex;

@@ -1,5 +1,5 @@
-@use '@/app/styles/index' as *;
-@use '@/app/styles/admin-table' as table;
+@use 'app/styles/index' as *;
+@use 'app/styles/admin-table' as table;
 
 .admin-low-stock-row {
   @include table.row($collapse-at: 768px);

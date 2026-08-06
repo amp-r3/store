@@ -1,6 +1,6 @@
-@use '@/app/styles/index' as *;
-@use '@/app/styles/controls' as *;
-@use '@/app/styles/surfaces' as *;
+@use 'app/styles/index' as *;
+@use 'app/styles/controls' as *;
+@use 'app/styles/surfaces' as *;
 
 // > 600px: every child renders as one flat flex-wrap row (search, then the
 // filter controls, then actions) — visually identical to the old per-toolbar
