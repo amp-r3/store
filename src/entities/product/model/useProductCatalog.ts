@@ -1,26 +1,41 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useFilters } from "@/features/product-filter";
 import { usePaginationBounds } from "@/shared/lib/hooks";
 import { getItemsToRender } from "../lib/formatters";
 import { useGetCategoriesQuery, useGetProductsQuery } from "../api/productsApi";
-import { ProductParams } from "../api/queries";
+import { ProductParams, ProductsResponse, Categories } from "../api/queries";
 
 const ITEMS_PER_PAGE = 12;
 
-export function useProductCatalog() {
+// initialProducts/initialCategories come from app/(shop)/catalog/page.tsx's
+// server-side fetch for the current URL — used as a fallback so the first
+// paint (and every server-rendered navigation, since that route is
+// force-dynamic and re-fetches per request) shows real content immediately
+// instead of a skeleton, matching the pattern used for /product/[id].
+export function useProductCatalog(initialProducts?: ProductsResponse, initialCategories?: Categories) {
     const searchParams = useSearchParams();
-    const categories = useGetCategoriesQuery();
-    const filters = useFilters(1, categories);
+    const categoriesQuery = useGetCategoriesQuery();
+    const filters = useFilters(1, {
+        data: categoriesQuery.data ?? initialCategories,
+        isLoading: categoriesQuery.isLoading && !initialCategories?.length,
+        isFetching: categoriesQuery.isFetching,
+        error: categoriesQuery.error,
+    });
 
     const query = searchParams.get('q');
     const categoryId = filters.activeCategoryOption?.slug;
     const categoryName = filters.activeCategoryOption?.name;
 
     const filterKey = `${query || ''}-${categoryId || 'all'}-${filters.activeSortOption?.id || 'default'}-${filters.isDealsActive ? 'deals' : 'all'}`;
-    const [lastKnownTotal, setLastKnownTotal] = useState<number | null>(null);
+    const [lastKnownTotal, setLastKnownTotal] = useState<number | null>(initialProducts?.total ?? null);
+    const isFirstRender = useRef(true);
 
     useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
         setLastKnownTotal(null);
     }, [filterKey]);
 
@@ -41,11 +56,13 @@ export function useProductCatalog() {
     const shouldSkip = lastKnownTotal !== null && totalPages !== null && totalPages > 0 && filters.page > totalPages;
 
     const {
-        data: productsResponse,
+        data: productsQueryData,
         isFetching: productsFetching,
-        isLoading: productsLoading,
+        isLoading: productsQueryLoading,
         error: productsError
     } = useGetProductsQuery(params, { skip: shouldSkip });
+
+    const productsResponse = productsQueryData ?? initialProducts;
 
     useEffect(() => {
         if (productsResponse?.total !== undefined) {
@@ -69,7 +86,7 @@ export function useProductCatalog() {
         'status' in productsError &&
         (productsError.status === 416 || productsError.status === 'PGRST103');
 
-    const displayLoading = productsLoading || isOutOfBoundsError || shouldSkip;
+    const displayLoading = (productsQueryLoading && !productsResponse) || isOutOfBoundsError || shouldSkip;
     const displayFetching = productsFetching || isOutOfBoundsError || shouldSkip;
     const displayError = isOutOfBoundsError ? null : productsError;
 

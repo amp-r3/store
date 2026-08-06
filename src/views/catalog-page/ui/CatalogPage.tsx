@@ -1,3 +1,5 @@
+'use client';
+
 import { ControlPanel } from "@/widgets/control-panel";
 import { useEffect } from 'react'
 // Common components
@@ -9,14 +11,19 @@ import { ErrorView, NoResults, PageLayout, HOME_CRUMB } from '@/shared/ui'
 import { ProductCardSkeleton } from '@/entities/product'
 import { ControlPanelSkeleton } from '@/widgets/control-panel'
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
-import { Product } from "@/entities/product";
+import { Product, ProductsResponse, Categories } from "@/entities/product";
 import { useProductCatalog } from "@/entities/product";
 import { Pagination } from "@/shared/ui";
 import { ProductCard } from "@/entities/product";
 import { WishlistToggleButton } from "@/features/wishlist-toggle";
 
-export const CatalogPage = () => {
-  const { products, status, filters } = useProductCatalog();
+interface CatalogPageProps {
+  initialProducts?: ProductsResponse;
+  initialCategories?: Categories;
+}
+
+export const CatalogPage = ({ initialProducts, initialCategories }: CatalogPageProps = {}) => {
+  const { products, status, filters } = useProductCatalog(initialProducts, initialCategories);
 
   const onPageChange = (newPage: number) => {
     filters.setPage(newPage)
