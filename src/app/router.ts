@@ -7,7 +7,7 @@ import { AdminLayout } from "@/app/layouts/AdminLayout/AdminLayout";
 import { ProtectedRoute } from "@/app/providers/ProtectedRoute/ProtectedRoute";
 import { PublicRoute } from "@/app/providers/PublicRoute/PublicRoute";
 import { AdminRoute } from "@/app/providers/AdminRoute/AdminRoute";
-import CatalogPage from "@/pages/catalog-page";
+import CatalogPage from "@/views/catalog-page";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
           {
             index: true,
             lazy: async () => {
-              const module = await import("@/pages/home-page");
+              const module = await import("@/views/home-page");
               return { Component: module.default }
             },
           },
@@ -34,14 +34,14 @@ export const router = createBrowserRouter([
           {
             path: 'product/:id',
             lazy: async () => {
-              const module = await import("@/pages/product-page");
+              const module = await import("@/views/product-page");
               return { Component: module.default }
             },
           },
           {
             path: 'wishlist',
             lazy: async () => {
-              const module = await import("@/pages/wishlist-page")
+              const module = await import("@/views/wishlist-page")
               return { Component: module.default }
             }
           },
@@ -55,28 +55,28 @@ export const router = createBrowserRouter([
                   {
                     index: true,
                     lazy: async () => {
-                      const module = await import("@/pages/user-page")
+                      const module = await import("@/views/user-page")
                       return { Component: module.default }
                     }
                   },
                   {
                     path: 'reviews',
                     lazy: async () => {
-                      const module = await import("@/pages/user-reviews-page")
+                      const module = await import("@/views/user-reviews-page")
                       return { Component: module.default }
                     }
                   },
                   {
                     path: 'orders',
                     lazy: async () => {
-                      const module = await import("@/pages/user-orders-page")
+                      const module = await import("@/views/user-orders-page")
                       return { Component: module.default }
                     }
                   },
                   {
                     path: 'notifications',
                     lazy: async () => {
-                      const module = await import("@/pages/user-notifications-page")
+                      const module = await import("@/views/user-notifications-page")
                       return { Component: module.default }
                     }
                   }
@@ -87,7 +87,7 @@ export const router = createBrowserRouter([
           {
             path: '*',
             lazy: async () => {
-              const module = await import("@/pages/not-found-page");
+              const module = await import("@/views/not-found-page");
               return { Component: module.default }
             }
           },
@@ -101,7 +101,7 @@ export const router = createBrowserRouter([
         path: 'auth/callback',
         ErrorBoundary: ErrorView,
         lazy: async () => {
-          const module = await import("@/pages/auth-callback-page")
+          const module = await import("@/views/auth-callback-page")
           return { Component: module.default }
         }
       },
@@ -112,14 +112,14 @@ export const router = createBrowserRouter([
           {
             path: 'login',
             lazy: async () => {
-              const module = await import("@/pages/login-page")
+              const module = await import("@/views/login-page")
               return { Component: module.default }
             }
           },
           {
             path: 'register',
             lazy: async () => {
-              const module = await import("@/pages/register-page")
+              const module = await import("@/views/register-page")
               return { Component: module.default }
             }
           }
@@ -132,14 +132,14 @@ export const router = createBrowserRouter([
           {
             index: true,
             lazy: async () => {
-              const module = await import("@/pages/checkout-page")
+              const module = await import("@/views/checkout-page")
               return { Component: module.default }
             }
           },
           {
             path: 'success',
             lazy: async () => {
-              const module = await import("@/pages/checkout-success-page")
+              const module = await import("@/views/checkout-success-page")
               return { Component: module.default }
             }
           },
@@ -157,91 +157,91 @@ export const router = createBrowserRouter([
               {
                 index: true,
                 lazy: async () => {
-                  const module = await import("@/pages/admin-dashboard-page")
+                  const module = await import("@/views/admin-dashboard-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'orders',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-orders-page")
+                  const module = await import("@/views/admin-orders-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'products',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-products-page")
+                  const module = await import("@/views/admin-products-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'products/new',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-product-form-page")
+                  const module = await import("@/views/admin-product-form-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'products/:id/edit',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-product-form-page")
+                  const module = await import("@/views/admin-product-form-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'products/low-stock',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-low-stock-page")
+                  const module = await import("@/views/admin-low-stock-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'categories',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-categories-page")
+                  const module = await import("@/views/admin-categories-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'customers',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-customers-page")
+                  const module = await import("@/views/admin-customers-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'reviews',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-reviews-page")
+                  const module = await import("@/views/admin-reviews-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'settings',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-settings-page")
+                  const module = await import("@/views/admin-settings-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'audit',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-audit-page")
+                  const module = await import("@/views/admin-audit-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: 'finance',
                 lazy: async () => {
-                  const module = await import("@/pages/admin-finance-page")
+                  const module = await import("@/views/admin-finance-page")
                   return { Component: module.default }
                 }
               },
               {
                 path: '*',
                 lazy: async () => {
-                  const module = await import("@/pages/not-found-page")
+                  const module = await import("@/views/not-found-page")
                   return { Component: module.default }
                 }
               },
