@@ -1,5 +1,5 @@
 import { selectIsAuth } from '@/entities/session';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router';
 import { useAppSelector } from "@/shared/model";
 import { selectCheckoutItemsMap } from "@/features/checkout-process";
 

@@ -1,6 +1,6 @@
 import { ProductCardImage, ProductCardBody, ProductCardFooter } from "./";
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import style from './product-card.module.scss';
 import { useGetSizesQuery } from '@/entities/product';
 import { useHaptics } from "@/shared/lib/hooks";

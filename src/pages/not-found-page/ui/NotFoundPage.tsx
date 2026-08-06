@@ -1,5 +1,5 @@
 import style from './page404.module.scss'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { TbHome } from 'react-icons/tb';
 import { useHaptics } from "@/shared/lib/hooks";
 import { PageLayout, HOME_CRUMB } from '@/shared/ui';

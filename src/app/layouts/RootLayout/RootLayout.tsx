@@ -1,5 +1,4 @@
-import { Outlet } from 'react-router-dom';
-import { ScrollRestoration } from 'react-router';
+import { Outlet, ScrollRestoration } from 'react-router';
 import { useAuthSync } from "@/app/providers/auth/useAuthSync";
 import { useNotificationsSync } from "@/app/providers/notifications/useNotificationsSync";
 
