@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { SortingOption } from '@/features/product-sort';
+import { SortingOption } from '@/entities/product';
 import { SortBottomSheet } from './SortBottomSheet/SortBottomSheet';
 import { SortDropdown } from './SortDropdown/SortDropdown';
 import { useMediaQuery } from "@/shared/lib/hooks";

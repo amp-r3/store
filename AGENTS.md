@@ -121,8 +121,8 @@ your summary. When in doubt, leave it in place.
 ### 6. `'use client'` boundaries and the two Supabase clients
 
 Public-data slices (`entities/product`, `entities/review`, and the pieces of
-`features/product-filter`/`features/product-sort` a Server Component needs)
-each have **two** public entry points: the usual `index.ts` (client hooks, UI,
+`features/product-filter` a Server Component needs) each have **two** public
+entry points: the usual `index.ts` (client hooks, UI,
 RTK Query — `export *`, so it transitively pulls in everything that uses
 `useState`/`useSyncExternalStore`/etc.) and a sibling `server.ts` (only the
 plain `fetch*` functions from `api/queries.ts` and their types — no hooks, no
@@ -134,8 +134,7 @@ actually used. Import from `@/entities/product/server` (etc.) instead. When a
 slice gains a new server-callable query function, export it from **both**
 `index.ts` (for the RTK Query wrapper) and `server.ts` (for RSC callers) in
 the same task — see `entities/product/server.ts`, `entities/review/server.ts`,
-`features/product-filter/server.ts`, `features/product-sort/server.ts` for
-the existing pattern.
+`features/product-filter/server.ts` for the existing pattern.
 
 Put `'use client'` on the outermost component that actually needs
 interactivity — the top of a `views/*/ui/*Page.tsx`, not on every file it

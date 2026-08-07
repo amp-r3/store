@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createStaticSupabaseClient } from '@/shared/api/supabase/server';
-import { fetchProducts, fetchCategories } from '@/entities/product/server';
+import { fetchProducts, fetchCategories, sortingOptions } from '@/entities/product/server';
 import type { ProductParams, ProductsResponse, Categories } from '@/entities/product/server';
 import { catalogParamsSchema } from '@/features/product-filter/server';
-import { sortingOptions } from '@/features/product-sort/server';
 import { CatalogPage } from '@/views/catalog-page';
 import { getSiteOrigin } from '@/shared/config';
 
@@ -26,7 +25,7 @@ function readParam(searchParams: CatalogSearchParams, key: string): string | nul
   return (Array.isArray(value) ? value[0] : value) ?? null;
 }
 
-// Mirrors entities/product/model/useProductCatalog.ts + features/product-filter's
+// Mirrors views/catalog-page/model/useProductCatalog.ts + features/product-filter's
 // useFilters param resolution (schema parse -> sort-pair match -> category-slug
 // validation), kept as a separate small function rather than a shared import so
 // this Server Component doesn't reach into those hooks' client-only module graph

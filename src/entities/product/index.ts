@@ -6,7 +6,7 @@ export * from './model/types';
 
 export * from './model/useProduct';
 export * from './model/useProductByIds';
-export * from './model/useProductCatalog';
+export * from './config/sortingOptions';
 export * from './lib/formatters';
 export * from './lib/useSelectedSize';
 export * from './lib/getPurchaseState';

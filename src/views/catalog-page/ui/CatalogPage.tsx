@@ -12,7 +12,7 @@ import { ProductCardSkeleton } from '@/entities/product'
 import { ControlPanelSkeleton } from '@/widgets/control-panel'
 import { getErrorMessage, scrollToTop } from "@/shared/lib";
 import { Product, ProductsResponse, Categories } from "@/entities/product";
-import { useProductCatalog } from "@/entities/product";
+import { useProductCatalog } from "../model/useProductCatalog";
 import { Pagination } from "@/shared/ui";
 import { ProductCard } from "@/entities/product";
 import { WishlistToggleButton } from "@/features/wishlist-toggle";

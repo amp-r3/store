@@ -2,9 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useFilters } from "@/features/product-filter";
 import { usePaginationBounds } from "@/shared/lib/hooks";
-import { getItemsToRender } from "../lib/formatters";
-import { useGetCategoriesQuery, useGetProductsQuery } from "../api/productsApi";
-import { ProductParams, ProductsResponse, Categories } from "../api/queries";
+import {
+    getItemsToRender,
+    useGetCategoriesQuery,
+    useGetProductsQuery,
+    type ProductParams,
+    type ProductsResponse,
+    type Categories,
+} from "@/entities/product";
 
 const ITEMS_PER_PAGE = 12;
 

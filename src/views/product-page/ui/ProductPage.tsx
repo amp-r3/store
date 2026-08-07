@@ -26,7 +26,7 @@ import { useCartDetails } from "@/entities/cart";
 import { useProduct } from "@/entities/product";
 import { useWishlistActions } from "@/features/wishlist-toggle";
 import { useWishlistDetails } from "@/entities/wishlist";
-import { useAppSelector } from "@/shared/model";
+import { useAppSelector, useIsRehydrated } from "@/shared/model";
 import { selectIsAuth } from "@/entities/session";
 
 interface ProductPageProps {
@@ -59,7 +59,12 @@ export const ProductPage = ({
     const { onIncrease, onDecrease } = useCartActions()
     const { onWishlist } = useWishlistActions()
     const { wishlistItems } = useWishlistDetails()
-    const isFavorite = wishlistItems.some(item => item?.id === +(id || 0))
+    const isRehydrated = useIsRehydrated();
+    // Persisted cart/wishlist state is empty on the server and until
+    // redux-persist restores it — gate both on rehydration so SSR/ISR markup
+    // can't mismatch the client's first render (server always renders
+    // "not favorited" / no quantity).
+    const isFavorite = isRehydrated && wishlistItems.some(item => item?.id === +(id || 0))
     const { product: liveProduct, error, isNotFound } = useProduct(id);
     const product = liveProduct ?? initialProduct;
     const { data: liveSizes } = useGetSizesQuery(+(id || 0))
@@ -103,13 +108,16 @@ export const ProductPage = ({
         }
     }
 
-    if (error) return <ErrorView error={getErrorMessage(error)} />;
+    // Only bail out to the error view when there's nothing to show at all —
+    // a transient refetch failure after hydration shouldn't discard a
+    // perfectly valid ISR-rendered product.
+    if (error && !product) return <ErrorView error={getErrorMessage(error)} />;
     if (isNotFound) notFound();
 
     const { id: productId, title, basePrice, price, description, category, brand, images,
         rating, reviewsCount, discountPercentage, sku, dimensions, weight, warrantyInformation, shippingInformation, returnPolicy } = product;
     const hasDiscount = discountPercentage > 0;
-    const itemInCart = cartItems.find(item => item?.productId === product.id && item?.sizeId === selectedSizeId)
+    const itemInCart = isRehydrated ? cartItems.find(item => item?.productId === product.id && item?.sizeId === selectedSizeId) : undefined
     const quantity = itemInCart?.quantity || 0
     const categorySlug = categories?.find((c) => c.name === category)?.slug;
     const crumbs = [HOME_CRUMB, CATALOG_CRUMB, categoryCrumb(category, categorySlug), { label: title }];

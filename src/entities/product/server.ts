@@ -5,3 +5,5 @@
 // Components (app/**/page.tsx) import from here instead of '@/entities/product'.
 export * from './api/queries';
 export type { Product, ProductSize } from './model/types';
+export { sortingOptions } from './config/sortingOptions';
+export type { SortingOption, SortField, SortOrder } from './config/sortingOptions';

@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useRef } from 'react';
 import { IoCheckmark } from 'react-icons/io5';
-import { SortingOption } from '@/features/product-sort';
+import { SortingOption } from '@/entities/product';
 import style from './sort-options-list.module.scss';
 
 interface SortOptionsListProps {

@@ -1,9 +1,9 @@
 import { FC, useState, useRef, useEffect, useCallback } from 'react';
 import { IoSwapVertical, IoGrid, IoFlame } from 'react-icons/io5';
 import style from './control-panel.module.scss';
-import { SortingOption, SortControl } from '@/features/product-sort';
+import { SortControl } from '@/features/product-sort';
 import { CategoryControl } from '@/features/product-filter';
-import { Categories, Category } from '@/entities/product';
+import { Categories, Category, SortingOption } from '@/entities/product';
 import { DropdownMenu } from 'radix-ui'
 import { useHaptics } from "@/shared/lib/hooks";
 

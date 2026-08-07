@@ -28,7 +28,7 @@ export const CategoryRow = memo(({ category, priority = false, initialProducts }
     const isLoading = isLiveLoading && !data;
     const { light } = useHaptics();
 
-    if (error) return null;
+    if (error && !data?.ids.length) return null;
     if (!isLoading && (!data || data.ids.length === 0)) return null;
 
     const headingId = `category-row-heading-${category.slug}`;

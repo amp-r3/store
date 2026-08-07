@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { supabase } from "@/shared/api/supabase/client";
 import { useAppDispatch } from "@/shared/model";
-import { setSession, setRole } from "@/entities/session";
+import { setSession, setRole, logout } from "@/entities/session";
 import { AUTH_STORAGE_KEYS } from "@/shared/config";
 
 /** Mirrors the Supabase auth session into Redux. Dispatches `setSession` twice
@@ -85,6 +85,13 @@ export const useSessionSync = () => {
           };
 
           fetchProfile();
+        } else {
+          // No session (e.g. INITIAL_SESSION firing with a null session
+          // because the httpOnly cookie expired, or an explicit sign-out) —
+          // clear any user redux-persist restored from localStorage. Without
+          // this, a stale persisted `auth.user` keeps `selectIsAuth` true
+          // forever, and PublicRoute/proxy.ts fight over the redirect.
+          dispatch(logout());
         }
       });
 

@@ -9,6 +9,14 @@ function isUnderAnyPrefix(pathname: string, prefixes: string[]): boolean {
   return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
 }
 
+// A NextResponse.redirect() is a brand-new response object — cookies the
+// Supabase client's setAll already wrote onto `from` (a rotated refresh
+// token) never reach the browser unless copied onto it explicitly.
+function copyCookies(from: NextResponse, to: NextResponse): NextResponse {
+  from.cookies.getAll().forEach((cookie) => to.cookies.set(cookie));
+  return to;
+}
+
 export async function proxy(request: NextRequest) {
   // Mutable response the Supabase client's setAll rewrites into as it
   // refreshes cookies — start from a pass-through so unmatched cases still
@@ -44,12 +52,12 @@ export async function proxy(request: NextRequest) {
   if (isUnderAnyPrefix(pathname, PROTECTED_PREFIXES) && !isAuthenticated) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('from', pathname + search);
-    return NextResponse.redirect(loginUrl);
+    return copyCookies(response, NextResponse.redirect(loginUrl));
   }
 
   if (PUBLIC_ONLY_PATHS.includes(pathname) && isAuthenticated) {
     const from = safeRedirectPath(request.nextUrl.searchParams.get('from'));
-    return NextResponse.redirect(new URL(from, request.url));
+    return copyCookies(response, NextResponse.redirect(new URL(from, request.url)));
   }
 
   return response;

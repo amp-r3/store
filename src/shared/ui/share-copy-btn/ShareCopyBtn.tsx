@@ -1,16 +1,24 @@
 import { useState, useRef, useEffect } from 'react';
 import style from './share-copy-btn.module.scss';
 import { FaShare, FaCopy, FaRegSquareCheck } from "react-icons/fa6";
+import { useMediaQuery } from '@/shared/lib/hooks';
 
 export const ShareCopyBtn = () => {
-  const hasShareAPI = !!navigator.share;
+  const isMobile = useMediaQuery("(pointer: coarse)");
 
-  const isMobile = typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches;
+  // navigator.share isn't queried during render (it would run at prerender
+  // time for /product/[id]'s ISR build and always disagree with the client's
+  // first paint) — resolved once after mount instead.
+  const [hasShareAPI, setHasShareAPI] = useState(false);
 
   const isSharePossible = hasShareAPI && isMobile;
 
   const [success, setSuccess] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setHasShareAPI(typeof navigator !== 'undefined' && !!navigator.share);
+  }, []);
 
   useEffect(() => {
     return () => {

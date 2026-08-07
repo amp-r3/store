@@ -1,6 +1,5 @@
 import { useUrlState } from "@/shared/lib/hooks";
-import { sortingOptions, SortingOption } from "@/features/product-sort";
-import { Categories, Category } from "@/entities/product";
+import { sortingOptions, SortingOption, Categories, Category } from "@/entities/product";
 import { useCallback, useMemo } from "react";
 import { catalogParamsSchema } from "@/features/product-filter/model/catalogParamsSchema";
 

@@ -23,7 +23,7 @@ export const DealsShowcase = memo(({ initialProducts }: DealsShowcaseProps = {})
     const isLoading = isLiveLoading && !products;
     const { soft } = useHaptics();
 
-    if (error) return null;
+    if (error && !products?.length) return null;
     if (!isLoading && (!products || products.length === 0)) return null;
 
     return (

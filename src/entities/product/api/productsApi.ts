@@ -73,7 +73,11 @@ export const productsApi = baseApi.injectEndpoints({
                 } catch (err) {
                     return toQueryError(err);
                 }
-            }
+            },
+            providesTags: (result, _error, ids) =>
+                result
+                    ? result.map((product) => ({ type: 'Product' as const, id: product.id }))
+                    : ids.map((id) => ({ type: 'Product' as const, id })),
         }),
 
         getSizes: builder.query<ProductSize[], number>({
