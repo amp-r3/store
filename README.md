@@ -6,7 +6,7 @@
 
 _A modern, premium, high-tech online store — portfolio project._
 
-**Live demo:** [amp-r3-store.netlify.app](https://amp-r3-store.netlify.app/)
+**Live demo:** [store-mauve-nine.vercel.app](https://store-mauve-nine.vercel.app/)
 
 **Store** is a single-page e-commerce application built with **React 19**,
 **TypeScript 5.9**, and **Redux Toolkit 2.9**. It features a premium

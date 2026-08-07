@@ -13,13 +13,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteOrigin() || 'http://localhost:3000'),
   title: 'Store',
   description:
-    'A fully responsive, dual-themed e-commerce storefront built with React 19, TypeScript, and Redux Toolkit. Features glassmorphism UI, real-time search, and a persistent cart.',
-  keywords: ['react', 'typescript', 'redux toolkit', 'e-commerce', 'portfolio', 'vite', 'glassmorphism', 'frontend'],
+    'A fully responsive, dual-themed e-commerce storefront built with Next.js, React 19, TypeScript, and Redux Toolkit. Features glassmorphism UI, real-time search, and a persistent cart.',
+  keywords: ['nextjs', 'react', 'typescript', 'redux toolkit', 'e-commerce', 'portfolio', 'glassmorphism', 'frontend'],
   authors: [{ name: 'Amir (amp3re)' }],
   openGraph: {
     type: 'website',
     title: 'Store | Modern E-commerce Portfolio',
-    description: 'A fully responsive, dual-themed e-commerce storefront built with React 19, TypeScript, and Redux Toolkit.',
+    description: 'A fully responsive, dual-themed e-commerce storefront built with Next.js, React 19, TypeScript, and Redux Toolkit.',
     url: getSiteOrigin(),
     // No `images` here — app/opengraph-image.png (+ .alt.txt) covers every
     // route that doesn't set its own (product pages do, with the actual
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Store | Modern E-commerce Portfolio',
-    description: 'A fully responsive, dual-themed e-commerce storefront built with React 19, TypeScript, and Redux Toolkit.',
+    description: 'A fully responsive, dual-themed e-commerce storefront built with Next.js, React 19, TypeScript, and Redux Toolkit.',
   },
   icons: {
     icon: [

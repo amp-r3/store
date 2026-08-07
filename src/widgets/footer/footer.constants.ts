@@ -30,12 +30,11 @@ export const FEATURES: Feature[] = [
 ];
 
 export const TECH_STACK: TechItem[] = [
+    { name: 'Next.js', version: '16' },
     { name: 'React', version: '19' },
     { name: 'TypeScript', version: '5.9' },
     { name: 'Redux Toolkit', version: '2.9' },
     { name: 'RTK Query', version: '' },
-    { name: 'React Router', version: 'v7' },
-    { name: 'Vite', version: '8' },
     { name: 'Supabase', version: 'v2' },
-    { name: 'LightningCSS', version: '1.32' },
+    { name: 'Sass', version: '' },
 ];

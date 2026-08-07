@@ -6,7 +6,7 @@
 
 _Современный, премиальный и высокотехнологичный интернет-магазин — портфолио-проект._
 
-**Демо:** [amp-r3-store.netlify.app](https://amp-r3-store.netlify.app/)
+**Демо:** [store-mauve-nine.vercel.app](https://store-mauve-nine.vercel.app/)
 
 **Store** — одностраничное веб-приложение (SPA) для электронной коммерции,
 построенное на **React 19**, **TypeScript 5.9** и **Redux Toolkit 2.9**.

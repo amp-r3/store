@@ -13,7 +13,7 @@ export const FooterProject: React.FC = () => (
 
         <div className={styles.footer__projectLinks}>
             <a
-                href="https://amp-r3-store.netlify.app/"
+                href="https://store-mauve-nine.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.footer__projectLink}
