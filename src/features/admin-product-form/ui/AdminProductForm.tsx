@@ -7,6 +7,9 @@ import { LuTriangleAlert } from 'react-icons/lu';
 
 import { FormField, Textarea, Select, Button, Alert } from '@/shared/ui';
 import { getErrorMessage } from '@/shared/lib';
+import { useHaptics } from '@/shared/lib/hooks';
+import { useAppDispatch } from '@/shared/model';
+import { notify } from '@/entities/notification';
 import {
     AdminProductDetail,
     useGetAdminCategoriesQuery,
@@ -17,6 +20,7 @@ import {
 import { productSchema, ProductFormValues } from '../model/productSchema';
 import { DEFAULT_PRODUCT_FORM_VALUES, productDetailToFormValues, formValuesToPayload, formValuesToCreatePayload } from '../model/productFormMapping';
 import { calculatePrice } from '../model/calculatePrice';
+import { buildProductChanges, hasProductChanges, ProductChanges } from '../model/buildProductChanges';
 import { AVAILABILITY_STATUS_OPTIONS } from '../config/availabilityStatusOptions';
 import { useProductMediaDraft } from '../lib/useProductMediaDraft';
 import {
@@ -25,6 +29,7 @@ import {
     AdminProductSizesEditor,
     AdminProductTagsField,
     AdminProductMediaFields,
+    AdminProductChangesModal,
 } from './components';
 
 import style from './admin-product-form.module.scss';
@@ -35,6 +40,8 @@ interface AdminProductFormProps {
 
 export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const router = useRouter();
+    const dispatch = useAppDispatch();
+    const { success } = useHaptics();
     const isEditMode = !!product;
 
     const { data: categories } = useGetAdminCategoriesQuery();
@@ -43,6 +50,9 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const mediaDraft = useProductMediaDraft(product);
     const [isUploadingMedia, setIsUploadingMedia] = useState(false);
     const isSaving = isCreating || isUpdating || isUploadingMedia;
+
+    const [pending, setPending] = useState<{ values: ProductFormValues; changes: ProductChanges } | null>(null);
+    const [confirmError, setConfirmError] = useState<string | null>(null);
 
     const {
         register,
@@ -81,27 +91,47 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const { field: availabilityField } = useController({ control, name: 'availabilityStatus' });
 
     const onSubmit = async (values: ProductFormValues) => {
-        try {
-            if (isEditMode) {
-                setIsUploadingMedia(true);
-                let mediaPayload;
-                try {
-                    mediaPayload = await mediaDraft.commit();
-                } finally {
-                    setIsUploadingMedia(false);
-                }
-                await updateProduct({ id: product.id, payload: { ...formValuesToPayload(values), ...mediaPayload } }).unwrap();
-            } else {
+        if (!isEditMode) {
+            try {
                 const newId = await createProduct(formValuesToCreatePayload(values)).unwrap();
                 router.push(`/admin/products/${newId}/edit`);
-                return;
+            } catch (err) {
+                setError('root', { type: 'server', message: getErrorMessage(err) });
             }
+            return;
+        }
+
+        const changes = buildProductChanges(productDetailToFormValues(product), values, categories ?? [], mediaDraft);
+        if (!hasProductChanges(changes)) {
+            dispatch(notify({ type: 'info', text: 'No changes to save', key: 'admin-product' }));
+            return;
+        }
+
+        setConfirmError(null);
+        setPending({ values, changes });
+    };
+
+    const handleConfirm = async () => {
+        if (!pending || !product) return;
+
+        try {
+            setIsUploadingMedia(true);
+            let mediaPayload;
+            try {
+                mediaPayload = await mediaDraft.commit();
+            } finally {
+                setIsUploadingMedia(false);
+            }
+            await updateProduct({ id: product.id, payload: { ...formValuesToPayload(pending.values), ...mediaPayload } }).unwrap();
+            success();
+            setPending(null);
         } catch (err) {
             const message = getErrorMessage(err);
             if (message.includes('products_base_price_nonneg')) {
                 setError('basePrice', { type: 'server', message: 'Price must be 0 or more' });
+                setPending(null);
             } else {
-                setError('root', { type: 'server', message });
+                setConfirmError(message);
             }
         }
     };
@@ -303,6 +333,18 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     {isEditMode ? 'Save changes' : 'Create product'}
                 </Button>
             </div>
+
+            {isEditMode && (
+                <AdminProductChangesModal
+                    isOpen={!!pending}
+                    onOpenChange={(open) => { if (!open) setPending(null); }}
+                    productTitle={product.title}
+                    changes={pending?.changes ?? null}
+                    error={confirmError}
+                    isLoading={isSaving}
+                    onConfirm={handleConfirm}
+                />
+            )}
         </form>
     );
 };

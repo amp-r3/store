@@ -1,0 +1,7 @@
+@use 'app/styles/index' as *;
+
+.diffScroll {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: $spacing-xs;
+}
