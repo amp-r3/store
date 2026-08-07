@@ -1,9 +1,9 @@
-import { RootState } from "@/app/store";
 import { createSelector } from "@reduxjs/toolkit";
 import { CartProduct } from "@/entities/cart";
+import { CheckoutState } from "./checkoutSlice";
 
-export const selectCheckoutItemsMap = (state: RootState) => state.checkout.items;
-export const selectCheckoutDraft = (state: RootState) => state.checkout.draft;
+export const selectCheckoutItemsMap = (state: { checkout: CheckoutState }) => state.checkout.items;
+export const selectCheckoutDraft = (state: { checkout: CheckoutState }) => state.checkout.draft;
 
 export const selectCheckoutItemsArray = createSelector(
     [selectCheckoutItemsMap],
