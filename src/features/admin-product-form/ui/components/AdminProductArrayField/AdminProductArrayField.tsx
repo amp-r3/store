@@ -20,9 +20,10 @@ interface AdminProductArrayFieldProps {
     errors?: any;
     placeholder: string;
     addLabel: string;
+    inputType?: 'text' | 'url';
 }
 
-export const AdminProductArrayField = ({ label, name, control, register, errors, placeholder, addLabel }: AdminProductArrayFieldProps) => {
+export const AdminProductArrayField = ({ label, name, control, register, errors, placeholder, addLabel, inputType = 'text' }: AdminProductArrayFieldProps) => {
     const { fields, append, remove } = useFieldArray({ control, name });
 
     return (
@@ -35,6 +36,7 @@ export const AdminProductArrayField = ({ label, name, control, register, errors,
                         <li key={field.id} className={style.item}>
                             <input
                                 className={style.input}
+                                type={inputType}
                                 placeholder={placeholder}
                                 aria-invalid={!!errors?.[index]?.value}
                                 {...register(`${name}.${index}.value` as const)}

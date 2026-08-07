@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import path from 'node:path';
+import { SUPABASE_IMAGE_HOST } from './src/shared/config/images';
 
 const nextConfig: NextConfig = {
   sassOptions: {
@@ -12,7 +13,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'ymerxlukxkwcjvlbxoda.supabase.co',
+        hostname: SUPABASE_IMAGE_HOST,
         pathname: '/storage/v1/object/public/**',
       },
       // profiles.avatar_url is seeded from raw_user_meta_data on signup

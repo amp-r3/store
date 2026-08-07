@@ -148,7 +148,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
             </AdminProductFormSection>
 
             <AdminProductFormSection title="Media">
-                <FormField label="Thumbnail URL" optional error={errors.thumbnail?.message} {...register('thumbnail')} />
+                <FormField label="Thumbnail URL" type="url" optional error={errors.thumbnail?.message} {...register('thumbnail')} />
                 <AdminProductArrayField
                     label="Images"
                     name="images"
@@ -157,6 +157,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     errors={errors.images}
                     placeholder="https://…"
                     addLabel="Add image"
+                    inputType="url"
                 />
             </AdminProductFormSection>
 
