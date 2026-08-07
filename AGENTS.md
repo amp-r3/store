@@ -32,6 +32,11 @@ Zod.
   (login/register, `PublicRoute`), `app/checkout/` (`CheckoutGuard`),
   `app/admin/` (`AdminRoute` + a server-side role check in its own
   `layout.tsx`). Guards live in `src/app/providers/`.
+- `src/app/store.ts` exports `makeStore()`, not a module-level store: this
+  module also evaluates in the Node server process (`AppProviders` renders
+  there too), so a shared singleton would leak across concurrent SSR
+  requests. `AppProviders` creates one store per component instance via
+  `useRef` and only starts `persistStore()` when `typeof window !== 'undefined'`.
 - `proxy.ts` (repo root; Next 16 renamed `middleware.ts` → `proxy.ts`) refreshes
   the Supabase session cookie every request and redirects unauthenticated
   visitors away from `/user`, `/checkout`, `/admin` before any page renders.
@@ -161,15 +166,29 @@ everywhere else (client-only routes, or any component already behind a
 
 Grep repo-wide — not just the file you were pointed at. Expect zero results
 (same-slice self-imports, and the deliberate `*/server.ts` deep imports from
-§6, excluded):
+§6, excluded). Quote-agnostic (`["']`, not `'`): the codebase mixes single-
+and double-quoted imports, and a single-quote-only pattern silently misses
+every double-quoted violation. The `@/views`/`@/widgets` lines match the bare
+specifier and any subpath (no closing-quote anchor) — every real import is
+`@/views/<slice>`, never the bare `@/views` an anchored pattern would require:
 
 ```bash
-grep -rn "from '@/features" src/entities/
-grep -rn "from '@/widgets\|from '@/views'" src/features/
-grep -rn "from '@/entities\|from '@/features\|from '@/widgets\|from '@/views'" src/shared/
-grep -rEn "from '(\.\./)+(entities|features|widgets|views)" src/
-grep -rEn "from '@/(entities|features|widgets|views)/[a-zA-Z0-9_-]+/(model|ui|api|lib|config)" src/ app/
+grep -rn "from [\"']@/features" src/entities/
+grep -rEn "from [\"']@/(widgets|views)" src/features/
+grep -rEn "from [\"']@/(entities|features|widgets|views)" src/shared/
+grep -rEn "from [\"'](\.\./)+(entities|features|widgets|views)" src/
+grep -rEn "from [\"']@/(entities|features|widgets|views)/[a-zA-Z0-9_-]+/(model|ui|api|lib|config)" src/ app/
+# Upward imports into @/app — not covered by the four checks above, which
+# only look at features/entities/widgets/shared and never mention @/app:
+grep -rEn "from [\"']@/app/" src/entities/ src/features/ src/widgets/ src/views/ src/shared/
 ```
+
+`eslint.config.ts`'s `no-restricted-imports` blocks now cover the same
+layer-direction violations mechanically (any quote style), one block per
+layer (`shared`, `entities`, `features`, `widgets`, `views`) restricting
+every layer at or above it, including `@/app`. They do **not** catch
+same-slice deep-import or cross-feature-runtime-import cases — those stay
+grep-only.
 
 ## Forbidden → Use Instead
 
@@ -239,8 +258,18 @@ grep -rEn "from '@/(entities|features|widgets|views)/[a-zA-Z0-9_-]+/(model|ui|ap
 - Slices/selectors in the slice's `model` segment (`entities/cart/model/slice.ts`);
   endpoints in `api` (`features/auth/api/authApi.ts`), injected into the base API
   in `shared/api`.
-- redux-persist whitelist: `cart.items`, `theme.theme`, `auth.{user,token}`,
-  `wishlist.favoriteItems`. RTK Query cache and transient UI state are not persisted.
+- redux-persist is per-slice, not a single root `persistReducer` — there's no
+  slice-wide `theme` (this app has no theme slice at all; dual-theming is
+  pure CSS via `prefers-color-scheme`). Each persisted slice wraps itself:
+  `auth` → `whitelist: ['user']` + a `stripAccessToken` transform that nulls
+  the token on the way into storage (`entities/session/model/authSlice.ts`);
+  `cart` → `['items']` (excludes the drawer's `isOpen`); `wishlist` →
+  `['favoriteItems']`; `checkout` → `['items', 'draft']`
+  (`src/app/store.ts`). `checkout.draft` is `Partial<CheckoutFormValues>` —
+  name, email, phone, and shipping address sit in plaintext localStorage
+  until `clearCheckoutDraft()` runs; `clearCheckout()` only clears `items`.
+  This is a known, accepted gap, not an oversight — don't "fix" it
+  unprompted. RTK Query cache and transient UI state are not persisted.
 - Optimistic updates: `onQueryStarted` + `updateQueryData`, rollback via
   `patchResult.undo()` on error. Derived state: `createSelector` (Reselect) only.
 - Selectors reading only their own slice: type `state` against that slice's own
@@ -311,8 +340,45 @@ grep -rEn "from '@/(entities|features|widgets|views)/[a-zA-Z0-9_-]+/(model|ui|ap
   `next/image`'s own lazy-loading-by-default supersedes. Add any new remote
   image host to `next.config.ts`'s `images.remotePatterns` (Supabase Storage
   and `*.googleusercontent.com` — Google OAuth avatars — are already there).
+  The Supabase host itself is derived from `NEXT_PUBLIC_SUPABASE_URL` via
+  `src/shared/config/images.ts`'s `SUPABASE_IMAGE_HOST` — never hardcode the
+  project ref again. That same module's `isAllowedImageUrl()` backs the
+  thumbnail/images URL validation in `admin-product-form`'s `productSchema.ts`
+  — keep both in sync with any `remotePatterns` change.
 - `useMemo` for expensive computation, `useCallback` for child callbacks,
   `React.memo` for list items.
+
+## Server Cache & Revalidation
+
+`/` and `/product/[id]` are ISR (`revalidate = 3600`); `app/sitemap.ts` also
+carries `revalidate = 3600`. RTK Query's `invalidatesTags` only flushes the
+browser tab's own cache — it never touches Next's Full Route Cache, so a
+mutation from the admin (or a review, or an order that consumes stock) stays
+invisible in the server-rendered HTML — and to crawlers — for up to an hour
+without an explicit on-demand revalidation alongside it.
+
+- `src/shared/api/revalidate.ts` (`'use server'`) is the on-demand path:
+  `revalidateProduct(id)` / `revalidateProducts(ids)` (any signed-in user —
+  reviews, orders) and `revalidateStorefront()` (admin-only fan-out: `/`,
+  every `/product/[id]`, `/sitemap.xml`). Call one of these from
+  `onQueryStarted`, after `queryFulfilled` resolves, in whichever RTK Query
+  mutation changed the underlying row — see `adminProductsApi.ts`,
+  `adminReviewsApi.ts`, `reviewApi.ts`'s `addOrUpdateReview`/`deleteReview`,
+  `orderApi.ts`'s `createOrder`. If an optimistic patch is also in play,
+  revalidate in its own nested `try/catch` **after** the rollback branch, not
+  inside the same `catch` as the mutation — a revalidation failure must never
+  roll back a mutation that already succeeded.
+- Each Server Action re-checks auth itself
+  (`src/shared/api/supabase/authz.ts`'s `getServerSession()`) — a Server
+  Action is a public POST endpoint regardless of which UI calls it, and
+  framework CSRF/body-size protections aren't a substitute for that check.
+- `@/shared/api/revalidate` and `@/shared/api/supabase/authz` are legal deep
+  imports past `shared/api`'s `index.ts`, same reasoning as `*/server.ts` in
+  §6: they pull in `server-only`/`next/headers`, so a client-bundle-safe
+  barrel can't re-export them.
+- Not every mutation gets a revalidation call — `toggleReviewLike` is
+  deliberately excluded (high-frequency, only moves a like count, not worth
+  fanning out an ISR revalidation per click).
 
 ## Auth (Supabase)
 
