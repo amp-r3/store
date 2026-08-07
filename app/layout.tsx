@@ -51,7 +51,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
-      <body>
+      {/* Browser extensions (ColorZilla's cz-shortcut-listen, Grammarly, etc.)
+          inject attributes onto <body> before React hydrates — suppressHydrationWarning
+          only silences the mismatch warning for this element's own attributes,
+          it does not hide real hydration errors in the subtree below. */}
+      <body suppressHydrationWarning>
         <AppProviders>{children}</AppProviders>
         <div id="modal-root" />
       </body>

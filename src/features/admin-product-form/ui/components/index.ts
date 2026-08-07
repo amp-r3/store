@@ -1,4 +1,6 @@
 export * from './AdminProductFormSection/AdminProductFormSection';
-export * from './AdminProductArrayField/AdminProductArrayField';
+export * from './AdminProductFormCol/AdminProductFormCol';
 export * from './AdminProductSizesEditor/AdminProductSizesEditor';
 export * from './AdminStockInput/AdminStockInput';
+export * from './AdminProductTagsField/AdminProductTagsField';
+export * from './AdminProductMediaFields/AdminProductMediaFields';

@@ -3,3 +3,4 @@ export * from './masks';
 export * from './auth';
 export * from './site';
 export * from './images';
+export * from './productImages';

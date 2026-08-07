@@ -202,9 +202,13 @@ Images: `next/image`, not manual `<img loading/decoding/fetchPriority>`.
 candidate per page. New remote hosts → `next.config.ts`'s
 `images.remotePatterns`. Supabase host derives from
 `NEXT_PUBLIC_SUPABASE_URL` via `shared/config/images.ts`'s
-`SUPABASE_IMAGE_HOST` — never hardcode the project ref; its
-`isAllowedImageUrl()` backs `admin-product-form`'s `productSchema.ts` — keep
-both in sync. `useMemo`/`useCallback`/`React.memo` as usual.
+`SUPABASE_IMAGE_HOST` — never hardcode the project ref. Product images are
+named, not pasted as URLs: `shared/config/productImages.ts`'s
+`buildProductImageName`/`buildProductImageUrl` derive
+`product-<id>-thumb.webp` / `product-<id>-<n>.webp` from `product.id`, and
+`PRODUCT_IMAGE_RULES` holds the format/size/dimension limits the admin
+product form's Media section validates against.
+`useMemo`/`useCallback`/`React.memo` as usual.
 
 ## Server Cache & Revalidation
 

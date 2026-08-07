@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { KeyboardEvent, useState } from 'react';
 import { LuTrash2, LuPlus } from 'react-icons/lu';
 
 import { FormField, Button, Modal, Alert } from '@/shared/ui';
@@ -29,8 +29,7 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
     const [deletingSize, setDeletingSize] = useState<AdminProductSize | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
 
-    const handleAdd = async (event: FormEvent) => {
-        event.preventDefault();
+    const handleAdd = async () => {
         if (!newValue.trim()) return;
 
         setAddError(null);
@@ -40,6 +39,16 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
             setNewStock('0');
         } catch (err) {
             setAddError(getErrorMessage(err));
+        }
+    };
+
+    // The product form this editor lives inside is already a <form> — a second,
+    // nested <form> here is invalid HTML and triggers a hydration mismatch, so
+    // "Enter submits" is wired manually instead of relying on native form submit.
+    const handleSizeInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleAdd();
         }
     };
 
@@ -92,11 +101,12 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
 
             {addError && <Alert variant="error">{addError}</Alert>}
 
-            <form className={style.addForm} onSubmit={handleAdd}>
+            <div className={style.addForm}>
                 <FormField
                     label="Size"
                     value={newValue}
                     onChange={(event) => setNewValue(event.target.value)}
+                    onKeyDown={handleSizeInputKeyDown}
                 />
                 <FormField
                     label="Stock"
@@ -106,11 +116,12 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
                     step="1"
                     value={newStock}
                     onChange={(event) => setNewStock(event.target.value)}
+                    onKeyDown={handleSizeInputKeyDown}
                 />
-                <Button type="submit" variant="ghost" isLoading={isAdding}>
+                <Button type="button" variant="ghost" isLoading={isAdding} onClick={handleAdd}>
                     <LuPlus /> Add size
                 </Button>
-            </form>
+            </div>
 
             <Modal
                 isOpen={!!deletingSize}

@@ -85,8 +85,14 @@ export const Select = ({
                     aria-describedby={describedBy}
                     title={title}
                 >
+                    {/* Radix's SelectValue treats `children === undefined` as "no
+                        content of my own" and portals the matching Item's text into
+                        this node instead — which collides with our own ref/children
+                        here and crashes. `value` can transiently not match any
+                        `options` entry (e.g. options still loading async), so this
+                        must never render `undefined` — fall back to '' instead. */}
                     <SelectPrimitive.Value className={isBadge ? style.valueBadge : style.value} placeholder={placeholder}>
-                        {selectedOption?.label}
+                        {selectedOption?.label ?? ''}
                     </SelectPrimitive.Value>
                     <SelectPrimitive.Icon className={isBadge ? style.chevronBadge : style.chevron}>
                         <LuChevronDown aria-hidden="true" />

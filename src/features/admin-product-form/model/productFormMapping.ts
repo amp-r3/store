@@ -10,8 +10,6 @@ export const DEFAULT_PRODUCT_FORM_VALUES: ProductFormValues = {
     sku: '',
     basePrice: 0,
     discountPercentage: 0,
-    thumbnail: '',
-    images: [],
     weight: null,
     dimensions: { width: 0, height: 0, depth: 0 },
     shippingInformation: '',
@@ -32,8 +30,6 @@ export const productDetailToFormValues = (product: AdminProductDetail): ProductF
     sku: product.sku ?? '',
     basePrice: product.basePrice,
     discountPercentage: product.discountPercentage,
-    thumbnail: product.thumbnail ?? '',
-    images: product.images.map((value) => ({ value })),
     weight: product.weight,
     dimensions: product.dimensions,
     shippingInformation: product.shippingInformation ?? '',
@@ -41,25 +37,25 @@ export const productDetailToFormValues = (product: AdminProductDetail): ProductF
     warrantyInformation: product.warrantyInformation ?? '',
     returnPolicy: product.returnPolicy ?? '',
     availabilityStatus: product.availabilityStatus ?? AVAILABILITY_STATUS_OPTIONS[0].value,
-    tags: product.tags.map((value) => ({ value })),
+    tags: product.tags,
     barcode: product.meta.barcode,
     qrCode: product.meta.qrCode,
 });
 
 // Text fields clear with an empty string, not `undefined` — admin_update_product
-// only treats `categoryId`/`images`/`tags`/`weight` as presence-checked
-// (`p_payload ? 'key'`), everything else falls back via `coalesce(payload->>'x', x)`
-// when the key is missing, so omitting a cleared field would silently keep
-// the old value instead of clearing it.
+// only treats `categoryId`/`tags`/`weight` as presence-checked (`p_payload ?
+// 'key'`), everything else falls back via `coalesce(payload->>'x', x)` when
+// the key is missing, so omitting a cleared field would silently keep the
+// old value instead of clearing it. `thumbnail`/`images` are intentionally
+// absent here — the Media section no longer edits them; see
+// useProductMediaDraft for the upload flow that will set them directly.
 export const formValuesToPayload = (values: ProductFormValues): AdminProductPayload => ({
     title: values.title,
     description: values.description ?? '',
     categoryId: values.categoryId,
     basePrice: values.basePrice,
     discountPercentage: values.discountPercentage,
-    thumbnail: values.thumbnail ?? '',
-    images: values.images.map((item) => item.value),
-    tags: values.tags.map((item) => item.value),
+    tags: values.tags,
     brand: values.brand ?? '',
     sku: values.sku ?? '',
     weight: values.weight,

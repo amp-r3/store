@@ -1,0 +1,179 @@
+@use 'app/styles/index' as *;
+
+$tile-size: 180px;
+
+.slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 $tile-size;
+  gap: $spacing-xxs;
+  width: $tile-size;
+}
+
+// The trailing "add" tile: fixed-size siblings keep `flex: 0 0 $tile-size`,
+// this one grows to soak up whatever width is left in the row instead of
+// matching them — a bigger, more obvious drop zone rather than one more
+// same-size square.
+.slotGrow {
+  flex: 1 1 $tile-size;
+  width: auto;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  width: 100%;
+  overflow: hidden;
+  background: var(--background-glass-base);
+  border: 1px dashed var(--border-color);
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: border-color $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    border-color: var(--primary-accent);
+  }
+
+  &:focus-within {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+// Only ever applied to an empty (non-filled) tile — see the component's
+// hasPreview guard — so this is always the "drop a file here" affordance,
+// never a stray highlight over an existing image.
+.tileDragActive {
+  border-style: solid;
+  border-color: var(--primary-accent);
+  background: rgba(var(--primary-accent-rgb), 0.1);
+  transform: scale(1.03);
+  animation: tile-drag-pulse 1.2s $ease-in-out-smooth infinite;
+
+  .empty {
+    color: var(--primary-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    animation: none;
+  }
+}
+
+@keyframes tile-drag-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary-accent-rgb), 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(var(--primary-accent-rgb), 0);
+  }
+}
+
+// Grown tiles stay at the fixed tile height but stretch horizontally, so
+// they read as a wide rectangle rather than a giant square.
+.tileGrow {
+  aspect-ratio: auto;
+  height: $tile-size;
+  width: 100%;
+}
+
+.tileFilled {
+  border-style: solid;
+  border-color: var(--border-color-light);
+}
+
+.tileError {
+  border-color: rgba(var(--error-color-rgb), 0.6);
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xxs;
+  color: var(--text-muted);
+  font-size: $fs-xs;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.remove {
+  position: absolute;
+  top: $spacing-xxs;
+  right: $spacing-xxs;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-primary);
+  background: rgba(var(--background-component-rgb), 0.72);
+  border: none;
+  border-radius: $radius-circle;
+  cursor: pointer;
+  transition: background $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    background: var(--error-color);
+  }
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+  }
+}
+
+.name {
+  font-size: $fs-xs;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.error,
+.warning {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  font-size: $fs-xs;
+
+  svg {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.error {
+  color: var(--error-color);
+}
+
+.warning {
+  color: var(--status-warning-text);
+}

@@ -1,6 +1,7 @@
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
 import { revalidateProduct, revalidateStorefront } from '@/shared/api/revalidate';
+import { PRODUCT_IMAGE_BUCKET, PRODUCT_IMAGE_MIME } from '@/shared/config';
 
 export interface AdminCategory {
   id: number;
@@ -492,6 +493,36 @@ export const adminProductsApi = baseApi.injectEndpoints({
       },
       invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
     }),
+
+    // Low-level Storage write, deliberately without its own invalidatesTags/
+    // revalidate — useProductMediaDraft.commit() always runs this ahead of
+    // updateAdminProduct in the same submit, and that mutation already owns
+    // cache invalidation + revalidateProduct once the new URL is saved.
+    uploadProductImage: builder.mutation<null, { fileName: string; file: File }>({
+      queryFn: async ({ fileName, file }) => {
+        const { error } = await supabase.storage
+          .from(PRODUCT_IMAGE_BUCKET)
+          .upload(fileName, file, { upsert: true, contentType: PRODUCT_IMAGE_MIME, cacheControl: '3600' });
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: null };
+      },
+    }),
+
+    removeProductImage: builder.mutation<null, { fileName: string }>({
+      queryFn: async ({ fileName }) => {
+        const { error } = await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([fileName]);
+
+        if (error) {
+          return { error: { status: 400, data: error.message } };
+        }
+
+        return { data: null };
+      },
+    }),
   }),
 });
 
@@ -508,4 +539,6 @@ export const {
   useUpsertAdminProductSizeMutation,
   useDeleteAdminProductSizeMutation,
   useSetAdminStockMutation,
+  useUploadProductImageMutation,
+  useRemoveProductImageMutation,
 } = adminProductsApi;

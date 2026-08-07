@@ -10,6 +10,9 @@ if (!supabaseUrl) {
  * never tracked NEXT_PUBLIC_SUPABASE_URL. */
 export const SUPABASE_IMAGE_HOST = new URL(supabaseUrl).hostname;
 
+/** Base for public Storage object URLs — `${this}/<bucket>/<name>`. */
+export const SUPABASE_STORAGE_PUBLIC_URL = `https://${SUPABASE_IMAGE_HOST}/storage/v1/object/public`;
+
 // profiles.avatar_url is seeded from raw_user_meta_data on signup (see
 // supabase/schema.sql's handle_new_user trigger) — for a Google OAuth
 // signup that's a googleusercontent.com URL, not Storage.

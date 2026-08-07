@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useController, Control, UseFormRegister } from 'react-hook-form';
+import { useForm, useController } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { LuTriangleAlert } from 'react-icons/lu';
@@ -18,7 +18,14 @@ import { productSchema, ProductFormValues } from '../model/productSchema';
 import { DEFAULT_PRODUCT_FORM_VALUES, productDetailToFormValues, formValuesToPayload, formValuesToCreatePayload } from '../model/productFormMapping';
 import { calculatePrice } from '../model/calculatePrice';
 import { AVAILABILITY_STATUS_OPTIONS } from '../config/availabilityStatusOptions';
-import { AdminProductFormSection, AdminProductArrayField, AdminProductSizesEditor } from './components';
+import { useProductMediaDraft } from '../lib/useProductMediaDraft';
+import {
+    AdminProductFormSection,
+    AdminProductFormCol,
+    AdminProductSizesEditor,
+    AdminProductTagsField,
+    AdminProductMediaFields,
+} from './components';
 
 import style from './admin-product-form.module.scss';
 
@@ -33,7 +40,9 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const { data: categories } = useGetAdminCategoriesQuery();
     const [createProduct, { isLoading: isCreating }] = useCreateAdminProductMutation();
     const [updateProduct, { isLoading: isUpdating }] = useUpdateAdminProductMutation();
-    const isSaving = isCreating || isUpdating;
+    const mediaDraft = useProductMediaDraft(product);
+    const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+    const isSaving = isCreating || isUpdating || isUploadingMedia;
 
     const {
         register,
@@ -60,13 +69,6 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const previewPrice = calculatePrice(basePrice, discountPercentage);
     const isPriceDrop = isEditMode && previewPrice < product.price;
 
-    // AdminProductArrayField is shared between images[] and tags[], so its
-    // control/register props are widened to `any` — see the component for why.
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const arrayFieldControl = control as unknown as Control<any>;
-    const arrayFieldRegister = register as unknown as UseFormRegister<any>;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
-
     // Radix Select reserves an empty string value to mean "no selection" —
     // 'none' is the sentinel mapped back to '' (→ null via the schema's
     // emptyToNull preprocessor) at the onValueChange boundary below.
@@ -81,7 +83,14 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const onSubmit = async (values: ProductFormValues) => {
         try {
             if (isEditMode) {
-                await updateProduct({ id: product.id, payload: formValuesToPayload(values) }).unwrap();
+                setIsUploadingMedia(true);
+                let mediaPayload;
+                try {
+                    mediaPayload = await mediaDraft.commit();
+                } finally {
+                    setIsUploadingMedia(false);
+                }
+                await updateProduct({ id: product.id, payload: { ...formValuesToPayload(values), ...mediaPayload } }).unwrap();
             } else {
                 const newId = await createProduct(formValuesToCreatePayload(values)).unwrap();
                 router.push(`/admin/products/${newId}/edit`);
@@ -102,161 +111,188 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
             {errors.root && <Alert variant="error">{errors.root.message}</Alert>}
 
             <AdminProductFormSection title="Basics">
-                <FormField label="Title" error={errors.title?.message} {...register('title')} />
-                <Select
-                    label="Category"
-                    options={categoryOptions}
-                    value={(categoryField.value as string) || 'none'}
-                    onValueChange={(value) => categoryField.onChange(value === 'none' ? '' : value)}
-                    error={errors.categoryId?.message}
-                />
-                <FormField label="Brand" optional error={errors.brand?.message} {...register('brand')} />
-                <FormField label="SKU" optional error={errors.sku?.message} {...register('sku')} />
-                <Textarea label="Description" optional error={errors.description?.message} {...register('description')} />
+                <AdminProductFormCol span={6} align="center">
+                    <FormField label="Title" error={errors.title?.message} {...register('title')} />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={6}>
+                    <Select
+                        label="Category"
+                        options={categoryOptions}
+                        value={(categoryField.value as string) || 'none'}
+                        onValueChange={(value) => categoryField.onChange(value === 'none' ? '' : value)}
+                        error={errors.categoryId?.message}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={6}>
+                    <FormField label="Brand" optional error={errors.brand?.message} {...register('brand')} />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={6}>
+                    <FormField label="SKU" optional error={errors.sku?.message} {...register('sku')} />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={12}>
+                    <Textarea label="Description" optional rows={6} error={errors.description?.message} {...register('description')} />
+                </AdminProductFormCol>
             </AdminProductFormSection>
 
             <AdminProductFormSection title="Price">
-                <FormField
-                    label="Base price"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    error={errors.basePrice?.message}
-                    {...register('basePrice')}
-                />
-                <FormField
-                    label="Discount"
-                    suffix="%"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    max={100}
-                    optional
-                    error={errors.discountPercentage?.message}
-                    {...register('discountPercentage')}
-                />
-                <div className={style.pricePreview}>
-                    <span className={style.pricePreviewLabel}>Final price</span>
-                    <span className={style.pricePreviewValue}>${previewPrice.toFixed(2)}</span>
-                </div>
+                <AdminProductFormCol span={4} spanMd={6}>
+                    <FormField
+                        label="Base price"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        error={errors.basePrice?.message}
+                        {...register('basePrice')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={4} spanMd={6}>
+                    <FormField
+                        label="Discount"
+                        suffix="%"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        max={100}
+                        optional
+                        error={errors.discountPercentage?.message}
+                        {...register('discountPercentage')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={4} spanMd={12} align="center">
+                    <div className={style.pricePreview}>
+                        <span className={style.pricePreviewLabel}>Final price</span>
+                        <span className={style.pricePreviewValue}>${previewPrice.toFixed(2)}</span>
+                    </div>
+                </AdminProductFormCol>
                 {isPriceDrop && (
-                    <Alert variant="warning" icon={<LuTriangleAlert />}>
-                        Lowering the price below ${product.price.toFixed(2)} will notify every customer who has this
-                        product in their wishlist.
-                    </Alert>
+                    <AdminProductFormCol span={12}>
+                        <Alert variant="warning" icon={<LuTriangleAlert />}>
+                            Lowering the price below ${product.price.toFixed(2)} will notify every customer who has
+                            this product in their wishlist.
+                        </Alert>
+                    </AdminProductFormCol>
                 )}
             </AdminProductFormSection>
 
             <AdminProductFormSection title="Media">
-                <FormField label="Thumbnail URL" type="url" optional error={errors.thumbnail?.message} {...register('thumbnail')} />
-                <AdminProductArrayField
-                    label="Images"
-                    name="images"
-                    control={arrayFieldControl}
-                    register={arrayFieldRegister}
-                    errors={errors.images}
-                    placeholder="https://…"
-                    addLabel="Add image"
-                    inputType="url"
-                />
+                <AdminProductFormCol span={12}>
+                    <AdminProductMediaFields product={product} draft={mediaDraft} />
+                </AdminProductFormCol>
             </AdminProductFormSection>
 
             <AdminProductFormSection title="Logistics">
-                <FormField
-                    label="Weight"
-                    suffix="kg"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    optional
-                    error={errors.weight?.message}
-                    {...register('weight')}
-                />
-                <FormField
-                    label="Min. order quantity"
-                    showStepper
-                    type="number"
-                    step="1"
-                    min={1}
-                    error={errors.minimumOrderQuantity?.message}
-                    {...register('minimumOrderQuantity')}
-                />
-                <FormField
-                    label="Width"
-                    suffix="cm"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    error={errors.dimensions?.width?.message}
-                    {...register('dimensions.width')}
-                />
-                <FormField
-                    label="Height"
-                    suffix="cm"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    error={errors.dimensions?.height?.message}
-                    {...register('dimensions.height')}
-                />
-                <FormField
-                    label="Depth"
-                    suffix="cm"
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    error={errors.dimensions?.depth?.message}
-                    {...register('dimensions.depth')}
-                />
-                <Textarea
-                    label="Shipping information"
-                    optional
-                    error={errors.shippingInformation?.message}
-                    {...register('shippingInformation')}
-                />
+                <AdminProductFormCol span={6}>
+                    <FormField
+                        label="Weight"
+                        suffix="kg"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        optional
+                        error={errors.weight?.message}
+                        {...register('weight')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={6}>
+                    <FormField
+                        label="Min. order quantity"
+                        showStepper
+                        type="number"
+                        step="1"
+                        min={1}
+                        error={errors.minimumOrderQuantity?.message}
+                        {...register('minimumOrderQuantity')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={4}>
+                    <FormField
+                        label="Width"
+                        suffix="cm"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        error={errors.dimensions?.width?.message}
+                        {...register('dimensions.width')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={4}>
+                    <FormField
+                        label="Height"
+                        suffix="cm"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        error={errors.dimensions?.height?.message}
+                        {...register('dimensions.height')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={4}>
+                    <FormField
+                        label="Depth"
+                        suffix="cm"
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        error={errors.dimensions?.depth?.message}
+                        {...register('dimensions.depth')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={12}>
+                    <Textarea
+                        label="Shipping information"
+                        optional
+                        rows={4}
+                        error={errors.shippingInformation?.message}
+                        {...register('shippingInformation')}
+                    />
+                </AdminProductFormCol>
             </AdminProductFormSection>
 
             <AdminProductFormSection title="Additional">
-                <Select
-                    label="Availability status"
-                    options={[...AVAILABILITY_STATUS_OPTIONS]}
-                    value={availabilityField.value}
-                    onValueChange={availabilityField.onChange}
-                    error={errors.availabilityStatus?.message}
-                />
-                <Textarea
-                    label="Warranty information"
-                    optional
-                    error={errors.warrantyInformation?.message}
-                    {...register('warrantyInformation')}
-                />
-                <Textarea
-                    label="Return policy"
-                    optional
-                    error={errors.returnPolicy?.message}
-                    {...register('returnPolicy')}
-                />
-                <FormField label="Barcode" optional error={errors.barcode?.message} {...register('barcode')} />
-                <FormField label="QR code" optional error={errors.qrCode?.message} {...register('qrCode')} />
-                <AdminProductArrayField
-                    label="Tags"
-                    name="tags"
-                    control={arrayFieldControl}
-                    register={arrayFieldRegister}
-                    errors={errors.tags}
-                    placeholder="e.g. summer"
-                    addLabel="Add tag"
-                />
+                <AdminProductFormCol span={6} spanMd={12}>
+                    <Select
+                        label="Availability status"
+                        options={[...AVAILABILITY_STATUS_OPTIONS]}
+                        value={availabilityField.value}
+                        onValueChange={availabilityField.onChange}
+                        error={errors.availabilityStatus?.message}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={3} spanMd={6} align="center">
+                    <FormField label="Barcode" optional error={errors.barcode?.message} {...register('barcode')} />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={3} spanMd={6} align="center">
+                    <FormField label="QR code" optional error={errors.qrCode?.message} {...register('qrCode')} />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={6}>
+                    <Textarea
+                        label="Warranty information"
+                        optional
+                        error={errors.warrantyInformation?.message}
+                        {...register('warrantyInformation')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={6}>
+                    <Textarea
+                        label="Return policy"
+                        optional
+                        error={errors.returnPolicy?.message}
+                        {...register('returnPolicy')}
+                    />
+                </AdminProductFormCol>
+                <AdminProductFormCol span={12}>
+                    <AdminProductTagsField control={control} error={errors.tags?.message} />
+                </AdminProductFormCol>
             </AdminProductFormSection>
 
             <AdminProductFormSection title="Sizes">
-                {isEditMode ? (
-                    <div className={style.sizesEditor}>
+                <AdminProductFormCol span={12}>
+                    {isEditMode ? (
                         <AdminProductSizesEditor productId={product.id} />
-                    </div>
-                ) : (
-                    <p className={style.sizesPlaceholder}>Save the product to add sizes.</p>
-                )}
+                    ) : (
+                        <p className={style.sizesPlaceholder}>Save the product to add sizes.</p>
+                    )}
+                </AdminProductFormCol>
             </AdminProductFormSection>
 
             <div className={style.actions}>

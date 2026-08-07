@@ -1,0 +1,52 @@
+@use 'app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  width: 100%;
+}
+
+.requirements {
+  margin: 0;
+  font-size: $fs-xs;
+  color: var(--text-muted);
+}
+
+.placeholder {
+  margin: 0;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+}
+
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xl;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+// The gallery group grows to fill the section — its "add" tile is the one
+// that actually stretches into the freed-up space (see .slotGrow).
+.groupGallery {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.groupLabel {
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-secondary);
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
