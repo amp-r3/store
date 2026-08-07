@@ -8,7 +8,6 @@ import {
   REGISTER,
   persistReducer
 } from 'redux-persist';
-import { persistStore } from 'redux-persist';
 import { baseApi } from '@/shared/api';
 import { persistStorage } from '@/shared/lib';
 import { authReducer } from '@/entities/session';
@@ -32,29 +31,33 @@ const checkoutPersistConfig = {
 
 const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutReducer);
 
-export const store = configureStore({
-  reducer: {
-    [baseApi.reducerPath]: baseApi.reducer,
-    auth: authReducer,
-    cart: cartReducer,
-    wishlist: wishlistReducer,
-    checkout: persistedCheckoutReducer,
-    reviewModal: reviewModalReducer,
-    notification: notificationReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    })
-      .concat(baseApi.middleware, notificationMiddleware)
-});
+// A factory rather than a module-level store: this module is evaluated in
+// the Node server process too (AppProviders renders there), and a single
+// shared store instance would be reused across every concurrent SSR
+// request. Each render gets its own store via AppProviders' useRef instead.
+export const makeStore = () =>
+  configureStore({
+    reducer: {
+      [baseApi.reducerPath]: baseApi.reducer,
+      auth: authReducer,
+      cart: cartReducer,
+      wishlist: wishlistReducer,
+      checkout: persistedCheckoutReducer,
+      reviewModal: reviewModalReducer,
+      notification: notificationReducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      })
+        .concat(baseApi.middleware, notificationMiddleware)
+  });
 
-export const persistor = persistStore(store);
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];
 
 declare global {
   type GlobalRootState = RootState;
