@@ -2,486 +2,283 @@
 
 Guidance for Claude Code in this repo. `CLAUDE.md` symlinks `AGENTS.md` — edit `AGENTS.md`.
 
-## Stack
+## Stack & Commands
 
 Next.js 16 (App Router, Turbopack), React 19, TypeScript 5.9, Redux Toolkit
 2.9 + RTK Query, redux-persist (localStorage), Supabase (PostgreSQL + Auth
 via `@supabase/ssr`), SCSS Modules + CSS custom properties, React Hook Form +
-Zod.
-
-## Commands
-
-- `pnpm dev` — Next dev server (`http://localhost:3000`). `pnpm build` —
-  production build (`next build`). `pnpm start` — serve that build. `pnpm tsc`
-  — type-check only (`tsc --noEmit`). `pnpm lint` — ESLint (`eslint.config.ts`,
-  built on `eslint-config-next`).
-- **No test runner** (no Vitest/Jest, no `test` script) — don't assume test infra
-  exists; verify via `pnpm tsc`, `pnpm lint`, and manual exercise of the flow
-  (curl for server-rendered content — see Routing & Performance — the user
-  checks interactive/browser behavior themselves).
-- Needs `.env` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-  for auth, cart, wishlist, orders, and `NEXT_PUBLIC_SITE_URL` (used to build
-  absolute canonical/OG/sitemap URLs server-side, where `window.location`
-  isn't available — see `shared/config/site.ts`).
+Zod. `pnpm dev`/`build`/`start`/`tsc`(`--noEmit`)/`lint`. **No test runner**
+— verify via `pnpm tsc`, `pnpm lint`, manual exercise (curl for
+server-rendered content; the user checks interactive behavior themselves).
+Needs `.env`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+`NEXT_PUBLIC_SITE_URL` (canonical/OG/sitemap URLs server-side, where
+`window.location` isn't available — `shared/config/site.ts`).
 
 ## Entry Points & Data Flow
 
-- `app/layout.tsx` (root) → `app/providers/AppProviders.tsx` (`'use client'`,
-  wraps `<Provider store>` — no `<PersistGate>`, see FSD §6) → route groups:
-  `app/(shop)/` (public storefront + wishlist, `MainLayout`), `app/(auth)/`
-  (login/register, `PublicRoute`), `app/checkout/` (`CheckoutGuard`),
-  `app/admin/` (`AdminRoute` + a server-side role check in its own
-  `layout.tsx`). Guards live in `src/app/providers/`.
-- `src/app/store.ts` exports `makeStore()`, not a module-level store: this
-  module also evaluates in the Node server process (`AppProviders` renders
-  there too), so a shared singleton would leak across concurrent SSR
-  requests. `AppProviders` creates one store per component instance via
-  `useRef` and only starts `persistStore()` when `typeof window !== 'undefined'`.
-- `proxy.ts` (repo root; Next 16 renamed `middleware.ts` → `proxy.ts`) refreshes
-  the Supabase session cookie every request and redirects unauthenticated
-  visitors away from `/user`, `/checkout`, `/admin` before any page renders.
-- All server data (catalog, auth, cart, wishlist, orders) comes from Supabase.
-  Public data (products, categories, reviews, delivery/payment methods) has a
-  dual path: plain async functions in each entity's `api/queries.ts` (`fetch*`,
-  taking a `SupabaseClient<Database>`), called with the anon client from
-  Server Components for SSR/ISR, and with the browser client from thin
-  `queryFn` wrappers in the same entity's RTK Query `api/*Api.ts` for
-  client-side fetching/caching/mutations. Private, user-scoped data
-  (cart, wishlist, orders, checkout) stays RTK-Query-only. No external product
-  API.
+`app/layout.tsx` → `AppProviders.tsx` (`'use client'`, wraps `<Provider
+store>` — no `<PersistGate>`, see FSD §6) → route groups: `app/(shop)/`
+(`MainLayout`), `app/(auth)/` (`PublicRoute`), `app/checkout/`
+(`CheckoutGuard`), `app/admin/` (`AdminRoute` + a server-side role check in
+its own `layout.tsx`); guards live in `src/app/providers/`. `store.ts`
+exports `makeStore()`, not a module singleton — it also evaluates in the
+Node server process, so a shared instance would leak across concurrent SSR
+requests; `AppProviders` creates one store per component via `useRef`,
+starts `persistStore()` only client-side. `proxy.ts` (Next 16 renamed
+`middleware.ts` → `proxy.ts`) refreshes the Supabase session cookie every
+request and redirects unauthenticated visitors from `/user`, `/checkout`,
+`/admin` pre-render.
+
+Public data (products, categories, reviews, delivery/payment methods): dual
+path — plain `fetch*` in each entity's `api/queries.ts`, called with the
+anon client from Server Components, and the browser client from RTK Query
+`queryFn` wrappers client-side. Private, user-scoped data (cart, wishlist,
+orders, checkout) is RTK-Query-only. No external product API.
 
 ## Architecture — Feature-Sliced Design (FSD)
 
-Strictly [FSD](https://feature-sliced.design/). Layers under `src/`, highest →
-lowest: `app/` (init, routing, store, global styles — the FSD app layer;
-**not** the Next.js `app/` router at the repo root, see below) · `views/`
-(composition of widgets/features/entities — named `views` rather than FSD's
-usual `pages`, since a root-level Next.js `app/` directory silently shadows
-any `src/pages`, see §6) · `widgets/` (complex standalone components — Header,
-ProductList, CartDrawer) · `features/` (user interactions — AddToCart, AuthForm,
-ThemeToggle) · `entities/` (business entities — User, Product, Cart, Order) ·
-`shared/` (reusable logic, UI kit, configs, API base, utils).
+Strictly [FSD](https://feature-sliced.design/). Layers under `src/`, highest
+→ lowest: `app/` (init, routing, store — **not** the Next.js `app/` router
+at repo root) · `views/` (composition of widgets/features/entities — named
+`views` not FSD's `pages`, since root-level Next.js `app/` would shadow
+`src/pages`) · `widgets/` (Header, CartDrawer) · `features/` (`auth`,
+`cart-actions`, `product-filter`) · `entities/` (User, Product, Cart, Order)
+· `shared/` (reusable logic, UI kit, configs, API base).
 
-### 1. Unidirectional dependencies
+1. **Unidirectional dependencies**: `views → widgets → features → entities →
+   shared`, importing only from layers strictly below. If a lower layer
+   "needs" a type from a higher one, **move the type down**, never the
+   import up — a circular dependency means something is misplaced, usually
+   one layer too high. Mechanically enforced by `eslint.config.ts`'s
+   `no-restricted-imports` (one block per layer) — cross-slice direction
+   only, not the same-slice/cross-feature cases below.
+2. **Same-layer cross-imports**: runtime cross-imports between **feature**
+   slices forbidden — compose at `widgets`/`views` instead. Exception:
+   explicit `import type` when a type genuinely belongs to one feature's
+   domain (write it literally so it stays greppable) — check first whether
+   it's really a business-entity concept (order status, size), which
+   belongs in `entities`. Entity↔entity cross-imports that aren't
+   read-only/one-directional/via public API: flag before adding.
+3. **Segments**: `ui/`, `model/` (state, selectors, types), `api/` (RTK
+   Query), `lib/` (utils, hooks), `config/`.
+4. **Public API (`index.ts`) — never bypass**: every slice MUST have a root
+   `index.ts`; other slices import only through it (most-violated rule).
+   Own-slice internal imports via absolute alias are a style choice, not a
+   violation. Adding something another slice needs → export from
+   `index.ts` **same task**. `@/entities/order/ui/order-card/OrderCard` ❌
+   past `index.ts`; `@/entities/order` ✅.
+5. **views vs widgets**: a `views/<page>/ui/components/` block moves to
+   `widgets/` only if **both** hold: (1) imports from **two+**
+   `entities`/`features` slices (real composition, not one entity for
+   props typing), and (2) plausibly reusable elsewhere even if unused
+   today. `dispatch`/RTK Query hooks/`useRouter` alone isn't a reason. When
+   in doubt, leave in place.
+6. **`'use client'` boundaries, two Supabase clients**: public-data slices
+   (`entities/product`, `entities/review`, `features/product-filter`) each
+   have two entry points — `index.ts` (client hooks/UI/RTK Query) and a
+   sibling `server.ts` (only `fetch*` + types). A Server Component importing
+   from a slice's main `index.ts` fails the build the moment its `export *`
+   reaches a hook — any named import pulls its whole module graph. Import
+   `@/entities/product/server` etc. instead; new server-callable query →
+   export from **both** files, same task. `'use client'` goes on the
+   outermost component needing interactivity, not every file it imports;
+   `app/**/page.tsx` stays a Server Component passing data as props, client
+   RTK Query hooks take over (`liveData ?? initialDataProp`) post-hydration.
+   Never call `useSearchParams()` (directly or via `useUrlState`) in a
+   component reachable from a page with `generateStaticParams` (currently
+   `/product/[id]`) — throws `BailoutToCSRError`, `<Suspense>` doesn't
+   reliably fix it here (verified empirically). Use local `useState`
+   instead (`ProductPage`, `ProductReviews`, `useSelectedSize`) — fine
+   elsewhere (client-only routes, or behind `<Suspense>` like `Navbar`).
 
-A layer imports only from layers strictly below:
-`views → widgets → features → entities → shared`. `shared` never imports from
-any layer above it — not even a type; `entities` never from
-`features`/`widgets`/`views`; `features` never from `widgets`/`views`. If a
-lower layer "needs" a type from a higher one (e.g. `CreateOrderPayload` in
-`entities/order/api`), **move the type down**, never the import up. Two slices
-importing each other in opposite directions (even indirectly) = circular
-dependency = something is misplaced, usually one layer too high.
-
-### 2. Same-layer cross-imports
-
-Runtime cross-imports between **feature** slices (components, hooks, actions,
-selectors) are forbidden — compose at `widgets`/`views` instead. **Exception:**
-explicit `import type` between features, when a type belongs to one feature's
-domain and another must reference it; write `import type` literally so the
-exception stays greppable. First ask whether the type is really a
-business-entity concept (order status, product size) — then it belongs in
-`entities`, not behind this exception.
-
-```ts
-import type { StepType } from '@/features/checkout-process';   // ✅
-import { useCheckoutTotals } from '@/features/checkout-process';   // ❌ runtime
-```
-
-Entity↔entity cross-imports that aren't read-only, one-directional and via
-public API: don't add without flagging for review.
-
-### 3. Segments
-
-Inside a slice: `ui/` (components), `model/` (state, slice, selectors, types),
-`api/` (RTK Query endpoints), `lib/` (utils, hooks), `config/` (static config on
-the slice's own domain types).
-
-### 4. Public API (`index.ts`) — never bypass
-
-Every slice MUST have a root `index.ts`; other slices import only through it.
-Most-violated rule — a hard constraint on every import you write or touch.
-Importing your **own** slice's internals via absolute alias is a style choice,
-not a violation — don't "fix" it unless asked. When you add a
-component/hook/type another slice needs, export it from that slice's `index.ts`
-**in the same task**.
-
-```ts
-import { X } from '../../../widgets/product-gallery/ProductGallery'; // ❌ relative, crosses slice
-import { OrderCard } from '@/entities/order/ui/order-card/OrderCard'; // ❌ past index.ts
-import { OrderCard } from '@/entities/order';                         // ✅ public API
-```
-
-### 5. views vs widgets
-
-A block in `views/<page>/ui/components/` moves to `widgets/` only if **both**
-hold: (1) it imports from **two or more** `entities`/`features` slices (real
-domain composition, not one entity for props typing), **and** (2) it's plausibly
-reusable outside this page (modal, quick-view, another page) even if unused
-today. `dispatch(...)`, RTK Query hooks or `useRouter` alone is **not** a
-reason to move — it only strengthens a case where (1) already holds. If (1)
-holds but the block is glued to this page's layout/copy, leave it and say so in
-your summary. When in doubt, leave it in place.
-
-### 6. `'use client'` boundaries and the two Supabase clients
-
-Public-data slices (`entities/product`, `entities/review`, and the pieces of
-`features/product-filter` a Server Component needs) each have **two** public
-entry points: the usual `index.ts` (client hooks, UI,
-RTK Query — `export *`, so it transitively pulls in everything that uses
-`useState`/`useSyncExternalStore`/etc.) and a sibling `server.ts` (only the
-plain `fetch*` functions from `api/queries.ts` and their types — no hooks, no
-UI). A Server Component (any `app/**/page.tsx` or `layout.tsx` without
-`'use client'`) that imports **anything** from a slice's main `index.ts`
-fails the build the moment that barrel's `export *` reaches a hook — Next
-analyzes the whole module graph behind a named import, not just the symbols
-actually used. Import from `@/entities/product/server` (etc.) instead. When a
-slice gains a new server-callable query function, export it from **both**
-`index.ts` (for the RTK Query wrapper) and `server.ts` (for RSC callers) in
-the same task — see `entities/product/server.ts`, `entities/review/server.ts`,
-`features/product-filter/server.ts` for the existing pattern.
-
-Put `'use client'` on the outermost component that actually needs
-interactivity — the top of a `views/*/ui/*Page.tsx`, not on every file it
-imports — matching AGENTS.md's general "mark the boundary, not every file"
-rule. `app/**/page.tsx` files stay Server Components (async, no directive)
-and pass server-fetched data into the client view as props; the client view's
-RTK Query hooks then take over (`liveData ?? initialDataProp`) after
-hydration, keyed to the same cache tags mutations already invalidate.
-
-Never call `useSearchParams()` (directly, or via `useUrlState`) in a
-component reachable from an `app/**/page.tsx` that also has
-`generateStaticParams` (currently `/product/[id]`) — it throws
-`BailoutToCSRError` during static generation in this Next version, and
-wrapping it in `<Suspense>` does not reliably fix it (this version's static
-generation does not consistently block on resolving that boundary — verified
-empirically, not merely undocumented). Use local `useState` for that kind of
-in-page UI state instead (see `ProductPage`'s image-zoom-modal flag,
-`ProductReviews`' sort/filter/page, `useSelectedSize`) — none of it is core
-enough to be worth losing SSR/ISR output over. `useSearchParams()` is fine
-everywhere else (client-only routes, or any component already behind a
-`<Suspense>` boundary like `Navbar`/`MobileBar` in `MainLayout.tsx`).
-
-### Self-check before finishing any task
-
-Grep repo-wide — not just the file you were pointed at. Expect zero results
-(same-slice self-imports, and the deliberate `*/server.ts` deep imports from
-§6, excluded). Quote-agnostic (`["']`, not `'`): the codebase mixes single-
-and double-quoted imports, and a single-quote-only pattern silently misses
-every double-quoted violation. The `@/views`/`@/widgets` lines match the bare
-specifier and any subpath (no closing-quote anchor) — every real import is
-`@/views/<slice>`, never the bare `@/views` an anchored pattern would require:
+**Self-check**: ESLint catches layer-direction violations. Grep for the two
+cases it can't (quote-agnostic — codebase mixes quote styles). Same-slice
+self-imports are expected noise in both — only flag hits where the imported
+slice differs from the importing file's own slice:
 
 ```bash
-grep -rn "from [\"']@/features" src/entities/
-grep -rEn "from [\"']@/(widgets|views)" src/features/
-grep -rEn "from [\"']@/(entities|features|widgets|views)" src/shared/
-grep -rEn "from [\"'](\.\./)+(entities|features|widgets|views)" src/
-grep -rEn "from [\"']@/(entities|features|widgets|views)/[a-zA-Z0-9_-]+/(model|ui|api|lib|config)" src/ app/
-# Upward imports into @/app — not covered by the four checks above, which
-# only look at features/entities/widgets/shared and never mention @/app:
-grep -rEn "from [\"']@/app/" src/entities/ src/features/ src/widgets/ src/views/ src/shared/
+grep -rEn "from [\"']@/(entities|features|widgets|views)/[a-zA-Z0-9_-]+/(model|ui|api|lib|config)" src/ app/  # deep import past index.ts (excl. */server.ts)
+grep -rn "from [\"']@/features/" src/features/  # cross-feature runtime import
 ```
-
-`eslint.config.ts`'s `no-restricted-imports` blocks now cover the same
-layer-direction violations mechanically (any quote style), one block per
-layer (`shared`, `entities`, `features`, `widgets`, `views`) restricting
-every layer at or above it, including `@/app`. They do **not** catch
-same-slice deep-import or cross-feature-runtime-import cases — those stay
-grep-only.
 
 ## Forbidden → Use Instead
 
-- Hardcoded colors → CSS custom properties. Hardcoded margins/sizes → SCSS tokens.
-- `any` → specific type or `unknown`. Raw string classNames → `style['...']`.
-- Direct `supabase.*` in client components → RTK Query endpoints in an `api/`
-  segment (browser client, `shared/api`'s `supabase`). Direct `supabase.*` in
-  a Server Component/Route Handler/Server Function → the entity's
-  `api/queries.ts` `fetch*` functions, called with `createServerSupabaseClient()`
-  (request-scoped, cookie-aware — `shared/api/supabase/server.ts`) or
-  `createStaticSupabaseClient()` (anon, no cookies — for `generateStaticParams`
-  and any RSC render whose output is a shared static/ISR page rather than a
-  genuinely per-request response). Never the browser `supabase` singleton
-  server-side — it has no cookie access and its module-scope instantiation
-  isn't request-isolated.
-- `useDispatch()`/`useSelector()` → `useAppDispatch()`/`useAppSelector()`.
-- Catalog filters in Redux → URL via `useSearchParams` (client) / the
-  `searchParams` prop (Server Component page).
-- `react-router`/`react-router-dom` (`Link`, `useNavigate`, `useLocation`,
-  `useParams`, `<Outlet/>`) → `next/link`, `useRouter`/`usePathname`/
-  `useSearchParams`/`useParams` from `next/navigation`, layout `children`
-  prop. Not installed — nothing should import them.
-- `import.meta.env.VITE_*` → `process.env.NEXT_PUBLIC_*` (client-readable) or
-  `process.env.*` (server-only, no `NEXT_PUBLIC_` prefix). Vite is gone;
-  nothing should reference `import.meta`.
-- `catch (err: any)` → `catch (err)` (already `unknown` under `strict`) +
-  `getErrorMessage(err)` from `shared/lib` for the display string. It handles
-  both RTK Query error shapes (`FetchBaseQueryError`/`SerializedError`) and raw
-  thrown exceptions — don't hand-roll `err?.message || err?.data` per call site.
+Hardcoded colors → CSS custom properties; hardcoded margins/sizes → SCSS
+tokens. `any` → specific type/`unknown`. Raw string classNames →
+`style['...']`. Direct `supabase.*` in client components → RTK Query
+endpoints in `api/` (browser client). Direct `supabase.*` server-side → the
+entity's `api/queries.ts` `fetch*`, called with `createServerSupabaseClient()`
+(request-scoped, cookie-aware) or `createStaticSupabaseClient()` (anon, no
+cookies — `generateStaticParams`, shared static/ISR renders) — never the
+browser `supabase` singleton server-side (no cookie access, not
+request-isolated). `useDispatch()`/`useSelector()` →
+`useAppDispatch()`/`useAppSelector()`. Catalog filters in Redux → URL via
+`useSearchParams`/`searchParams` prop. `react-router*` → `next/link`,
+`useRouter`/`usePathname`/`useSearchParams`/`useParams` from
+`next/navigation` — not installed. `import.meta.env.VITE_*` →
+`process.env.NEXT_PUBLIC_*` (client) / `process.env.*` (server) — Vite is
+gone. `catch (err: any)` → `catch (err)` + `getErrorMessage(err)` from
+`shared/lib` (handles RTK Query error shapes and raw exceptions — don't
+hand-roll per call site).
 
-## CSS / SCSS
+## CSS / SCSS, Components & Accessibility
 
-- Strict BEM: `block__element--modifier`; in TSX only
-  `style['block__element--modifier']`, never raw strings.
-- One module per component, kebab-case, colocated:
-  `Component/component-name.module.scss`.
-- Tokens via `@use '@/app/styles/index' as *;` only — never `@import`.
-- No magic values — use tokens (`$spacing-md`, `$radius-lg`, `$fs-base`,
-  `$transition-base`, `$ease-out-expo`…). No hardcoded colors — use CSS custom
-  properties (`--primary-accent`, `--text-primary`, `--background-body`,
-  `--glass-background`, `--skeleton-base`…).
-- Responsive: `@media` inline in the module, no separate files. Breakpoints: 480,
-  525, 549, 600, 640, 768, 1024, 1440px.
-- `@keyframes` in the module that uses them; timing via tokens. Every animation
-  needs `@media (prefers-reduced-motion: reduce)`.
-- Status badges: only `app/styles/_statuses.scss` mixins; modifier via
-  `data-status` or `--${status}` class.
+Strict BEM (`block__element--modifier`; in TSX only `style['...']`). One
+module per component, kebab-case, colocated:
+`ui/ComponentName/{ComponentName.tsx, ComponentNameSkeleton.tsx,
+component-name.module.scss}`; generic components in `shared/ui`. Tokens via
+`@use '@/app/styles/index' as *;` only, never `@import`; no magic values
+(`$spacing-md`, `$radius-lg`, `$fs-base`…) or hardcoded colors
+(`--primary-accent`, `--text-primary`, `--skeleton-base`…). Responsive
+`@media` inline; breakpoints 480/525/549/600/640/768/1024/1440px.
+`@keyframes` colocated, every animation needs
+`@media (prefers-reduced-motion: reduce)`. Status badges: only
+`app/styles/_statuses.scss` mixins, modifier via `data-status`/`--${status}`.
 
-## Components & UI
-
-- `ui/ComponentName/{ComponentName.tsx, ComponentNameSkeleton.tsx, component-name.module.scss}`;
-  generic components (buttons, skeletons) live in `shared/ui`.
-- Mandatory `*Skeleton` (react-loading-skeleton) for any API-data component;
-  `baseColor="var(--skeleton-base)"`, `highlightColor="var(--skeleton-highlight)"`.
-- List-rendered components: `React.memo` + `displayName`. Portals
-  (Drawer/Dialog/Dropdown) mount via `getModalRoot()` (`shared/lib`) — a lazy,
-  render-time lookup of `#modal-root`, never a module-scope
-  `document.getElementById` call, which would crash on the server (no `document`
-  during SSR).
-- Haptics via `useHaptics()` (`web-haptics`): cart open/close → `soft()`; nav
-  link/card → `soft()`; filter/sort → `light()`; submit/confirm → `success()`.
+Mandatory `*Skeleton` (react-loading-skeleton) for any API-data component.
+List-rendered components: `React.memo` + `displayName`. Portals mount via
+`getModalRoot()` (`shared/lib`) — lazy render-time lookup, never
+module-scope `document.getElementById` (no `document` during SSR). Haptics
+via `useHaptics()`: cart/nav → `soft()`; filter/sort → `light()`;
+submit/confirm → `success()`. Semantic tags (`<article>` for cards/order
+rows, proper landmark elements, `.sr-only`); `aria-label` on icon-only
+buttons, `aria-live="polite"` for dynamic regions; never remove
+`:focus-visible` without an alternative (`--focus-ring-color`); touch
+targets `$touch-target-min`/`$touch-target-comfortable` (44/48px).
 
 ## State & RTK Query
 
-- URL is the source of truth for catalog UI (`?q=`, `?sortBy=`, `?category=`) —
-  never Redux.
-- Slices/selectors in the slice's `model` segment (`entities/cart/model/slice.ts`);
-  endpoints in `api` (`features/auth/api/authApi.ts`), injected into the base API
-  in `shared/api`.
-- redux-persist is per-slice, not a single root `persistReducer` — there's no
-  slice-wide `theme` (this app has no theme slice at all; dual-theming is
-  pure CSS via `prefers-color-scheme`). Each persisted slice wraps itself:
-  `auth` → `whitelist: ['user']` + a `stripAccessToken` transform that nulls
-  the token on the way into storage (`entities/session/model/authSlice.ts`);
-  `cart` → `['items']` (excludes the drawer's `isOpen`); `wishlist` →
-  `['favoriteItems']`; `checkout` → `['items', 'draft']`
-  (`src/app/store.ts`). `checkout.draft` is `Partial<CheckoutFormValues>` —
-  name, email, phone, and shipping address sit in plaintext localStorage
-  until `clearCheckoutDraft()` runs; `clearCheckout()` only clears `items`.
-  This is a known, accepted gap, not an oversight — don't "fix" it
-  unprompted. RTK Query cache and transient UI state are not persisted.
-- Optimistic updates: `onQueryStarted` + `updateQueryData`, rollback via
-  `patchResult.undo()` on error. Derived state: `createSelector` (Reselect) only.
-- Selectors reading only their own slice: type `state` against that slice's own
-  state type via a same-slice import (e.g. `(state: { auth: AuthState }) => ...`
-  in `entities/session/model/authSelectors.ts`), not a hand-rolled `any`. Reserve
-  the ambient `GlobalRootState` (declared via `declare global` in `app/store.ts`)
-  for the genuine cross-entity case — e.g. `reviewApi`'s `onQueryStarted` needing
-  to read `auth.user` from inside the `review` entity, where `getState()`'s own
-  RTK Query type only knows about `reviewApi`'s own slice.
+URL is the source of truth for catalog UI (`?q=`, `?sortBy=`, `?category=`)
+— never Redux. Slices/selectors in `model`; endpoints in `api`, injected
+into the base API in `shared/api`. redux-persist is per-slice, not one root
+`persistReducer` — no theme slice exists (dual-theming is pure CSS). `auth`
+→ `whitelist: ['user']` + `stripAccessToken` transform; `cart` →
+`['items']`; `wishlist` → `['favoriteItems']`; `checkout` → `['items',
+'draft']`. `checkout.draft` sits in plaintext localStorage until
+`clearCheckoutDraft()` runs — **known, accepted gap, don't "fix"
+unprompted**. RTK Query cache and transient UI state aren't persisted.
+Optimistic updates: `onQueryStarted` + `updateQueryData`, rollback via
+`patchResult.undo()`. Derived state: `createSelector` only. Own-slice
+selectors: type `state` via same-slice import, not `any`; reserve ambient
+`GlobalRootState` (`app/store.ts`) for genuine cross-entity reads (e.g.
+`reviewApi` reading `auth.user`).
 
 ## Typing
 
-- `strict: true`, `noUnusedLocals`, `noUnusedParameters`. `any` only as a last
-  resort, with a comment. Forms: Zod + `react-hook-form` via `@hookform/resolvers/zod`.
-- Shared interfaces in `shared/types/`; local-only types stay in the
-  component/model file.
-- `shared/api/supabase/{client,server}.ts` create their respective clients
-  with the generated `Database` generic (`src/shared/api/database.types.ts`,
-  re-exported from `shared/api`), so `.from().select()`/`.rpc()` results are
-  typed automatically — never
-  hand-write a local `*Response`/`*Row` interface to mirror a table shape.
-  Prefer inference from the query itself (see `entities/wishlist/api`,
-  `entities/cart/api`); when a query embeds a relation or needs a named type
-  (e.g. for a mapper's parameter), compose it from
-  `Database['public']['Tables']['x']['Row']` (see `entities/review/api`,
-  `entities/order/api`) rather than redeclaring the columns.
-  - Two narrow, **documented** cast patterns remain legitimate, both at the
-    query boundary only:
-    - **Views**: Postgres can't express `NOT NULL` for a view column, so
-      every column of a view (e.g. `products_view`) generates as `| null`
-      even when the underlying table enforces it. A single
-      `data as unknown as Domain[]` at the query site, commented with why, is
-      correct — don't write a defensive mapper for a nullability that isn't
-      real.
-    - **`Json` columns/RPC args**: `jsonb` columns and `SECURITY DEFINER`
-      RPC params/returns generate as `Json` with no shape guarantee from the
-      DB. A single documented cast at the boundary (e.g.
-      `shipping_address as unknown as ShippingAddress`) is correct.
-  - Genuinely nullable columns (no `NOT NULL` in `supabase/schema.sql`, not a
-    view/Json artifact) are real gaps — handle with a fallback or a filter/type
-    guard at the mapper, not a cast that hides the null.
+`strict: true`, `noUnusedLocals`, `noUnusedParameters`. `any` only as a last
+resort with a comment. Forms: Zod + `react-hook-form` via
+`@hookform/resolvers/zod`. Shared interfaces in `shared/types/`; local-only
+types stay in the component/model file.
+
+Supabase clients use the generated `Database` generic, so query results are
+typed automatically — never hand-write a `*Response`/`*Row` interface to
+mirror a table shape; prefer inference from the query, or compose a named
+type from `Database['public']['Tables']['x']['Row']`. Two narrow,
+**documented** cast patterns remain legitimate at the query boundary:
+**views** (Postgres can't express view-column `NOT NULL`, so a single
+`data as unknown as Domain[]` commented with why is correct — no defensive
+mapper for a nullability that isn't real), and **`Json` columns/RPC args**
+(`jsonb`/`SECURITY DEFINER` params generate as `Json` with no shape
+guarantee — a single documented cast at the boundary is correct). Genuinely
+nullable columns (no `NOT NULL` in `schema.sql`, not a view/Json artifact)
+are real gaps — handle with a fallback/type guard, not a hiding cast.
 
 ## Routing & Performance
 
-- File-based routing under the root `app/`. Route groups: `(shop)` (public
-  storefront, `MainLayout`), `(auth)` (login/register, no chrome), `checkout`,
-  `admin`. Guards (`ProtectedRoute`, `PublicRoute`, `CheckoutGuard`,
-  `AdminRoute`, `src/app/providers/`) are client components rendered from each
-  group's `layout.tsx`; `admin/layout.tsx` additionally does a server-side
-  role check (`redirect()` before any admin HTML reaches the browser) as a
-  second, faster-failing line of defense ahead of `AdminRoute`. Code-splitting
-  per route is automatic — no manual `lazy()`.
-- Rendering mode per route (check before assuming a page is "just SSR" or
-  "just CSR" — it's deliberate per route, see FSD §6 for why):
-  `/product/[id]` — ISR (`generateStaticParams` + `revalidate`, anon Supabase
-  client, real content baked into the static HTML). `/catalog` and `/`
-  (home) — SSR with an anon client, seeding the client view's first paint via
-  props (`initialProducts`/`initialCategories`/etc.), RTK Query takes over
-  after hydration. `/wishlist`, `/user/*`, `/checkout/*`, `/admin/*` — plain
-  CSR behind guards, `force-dynamic`, `robots: { index: false }` metadata (no
-  SEO value, and `/user`/`/checkout`/`/admin` never even reach an
-  unauthenticated crawler — `proxy.ts` redirects first).
-- Images: `next/image`, not manual `<img loading/decoding/fetchPriority>`.
-  `fill` (inside a `position: relative` parent) for anything sized by its CSS
-  container (product cards, product gallery); explicit `width`/`height` for
-  fixed-size thumbnails/avatars. `priority` for the one clear LCP candidate
-  per page (product gallery hero) — not the old "first 8" rule, which
-  `next/image`'s own lazy-loading-by-default supersedes. Add any new remote
-  image host to `next.config.ts`'s `images.remotePatterns` (Supabase Storage
-  and `*.googleusercontent.com` — Google OAuth avatars — are already there).
-  The Supabase host itself is derived from `NEXT_PUBLIC_SUPABASE_URL` via
-  `src/shared/config/images.ts`'s `SUPABASE_IMAGE_HOST` — never hardcode the
-  project ref again. That same module's `isAllowedImageUrl()` backs the
-  thumbnail/images URL validation in `admin-product-form`'s `productSchema.ts`
-  — keep both in sync with any `remotePatterns` change.
-- `useMemo` for expensive computation, `useCallback` for child callbacks,
-  `React.memo` for list items.
+File-based routing under root `app/`. Route groups: `(shop)`, `(auth)`,
+`checkout`, `admin`. Guards (`ProtectedRoute`, `PublicRoute`,
+`CheckoutGuard`, `AdminRoute`) render from each group's `layout.tsx`;
+`admin/layout.tsx` also does a server-side role check ahead of `AdminRoute`.
+Code-splitting per route is automatic. Rendering mode per route is
+deliberate, not incidental (see FSD §6): `/product/[id]` — ISR
+(`generateStaticParams` + `revalidate`, anon client). `/catalog` and `/` —
+SSR with an anon client, seeding first paint via props, RTK Query takes over
+post-hydration. `/wishlist`, `/user/*`, `/checkout/*`, `/admin/*` — CSR
+behind guards, `force-dynamic`, `robots: { index: false }`.
+
+Images: `next/image`, not manual `<img loading/decoding/fetchPriority>`.
+`fill` (inside `position: relative`) for CSS-container-sized images; explicit
+`width`/`height` for fixed-size thumbnails. `priority` for the one clear LCP
+candidate per page. New remote hosts → `next.config.ts`'s
+`images.remotePatterns`. Supabase host derives from
+`NEXT_PUBLIC_SUPABASE_URL` via `shared/config/images.ts`'s
+`SUPABASE_IMAGE_HOST` — never hardcode the project ref; its
+`isAllowedImageUrl()` backs `admin-product-form`'s `productSchema.ts` — keep
+both in sync. `useMemo`/`useCallback`/`React.memo` as usual.
 
 ## Server Cache & Revalidation
 
-`/` and `/product/[id]` are ISR (`revalidate = 3600`); `app/sitemap.ts` also
-carries `revalidate = 3600`. RTK Query's `invalidatesTags` only flushes the
-browser tab's own cache — it never touches Next's Full Route Cache, so a
-mutation from the admin (or a review, or an order that consumes stock) stays
-invisible in the server-rendered HTML — and to crawlers — for up to an hour
-without an explicit on-demand revalidation alongside it.
+`/` and `/product/[id]` are ISR (`revalidate = 3600`, also `sitemap.ts`).
+RTK Query's `invalidatesTags` only flushes the browser tab's cache — never
+Next's Full Route Cache — so a mutation (admin edit, review, stock-consuming
+order) stays invisible server-side/to crawlers for up to an hour without
+explicit revalidation.
 
-- `src/shared/api/revalidate.ts` (`'use server'`) is the on-demand path:
-  `revalidateProduct(id)` / `revalidateProducts(ids)` (any signed-in user —
-  reviews, orders) and `revalidateStorefront()` (admin-only fan-out: `/`,
-  every `/product/[id]`, `/sitemap.xml`). Call one of these from
-  `onQueryStarted`, after `queryFulfilled` resolves, in whichever RTK Query
-  mutation changed the underlying row — see `adminProductsApi.ts`,
-  `adminReviewsApi.ts`, `reviewApi.ts`'s `addOrUpdateReview`/`deleteReview`,
-  `orderApi.ts`'s `createOrder`. If an optimistic patch is also in play,
-  revalidate in its own nested `try/catch` **after** the rollback branch, not
-  inside the same `catch` as the mutation — a revalidation failure must never
-  roll back a mutation that already succeeded.
-- Each Server Action re-checks auth itself
-  (`src/shared/api/supabase/authz.ts`'s `getServerSession()`) — a Server
-  Action is a public POST endpoint regardless of which UI calls it, and
-  framework CSRF/body-size protections aren't a substitute for that check.
-- `@/shared/api/revalidate` and `@/shared/api/supabase/authz` are legal deep
-  imports past `shared/api`'s `index.ts`, same reasoning as `*/server.ts` in
-  §6: they pull in `server-only`/`next/headers`, so a client-bundle-safe
-  barrel can't re-export them.
-- Not every mutation gets a revalidation call — `toggleReviewLike` is
-  deliberately excluded (high-frequency, only moves a like count, not worth
-  fanning out an ISR revalidation per click).
+`src/shared/api/revalidate.ts` (`'use server'`): `revalidateProduct(id)` /
+`revalidateProducts(ids)` (any signed-in user), `revalidateStorefront()`
+(admin-only fan-out). Call from `onQueryStarted` after `queryFulfilled`
+resolves (`adminProductsApi.ts`, `reviewApi.ts`, `orderApi.ts`'s
+`createOrder`). With an optimistic patch also in play, revalidate in its own
+nested `try/catch` **after** the rollback branch — a revalidation failure
+must never roll back an already-succeeded mutation. Each Server Action
+re-checks auth itself (`authz.ts`'s `getServerSession()`) — a public POST
+endpoint regardless of caller UI. `@/shared/api/revalidate` and `.../authz`
+are legal deep imports past `shared/api`'s `index.ts` (pull in
+`server-only`/`next/headers`). `toggleReviewLike` deliberately skips
+revalidation (high-frequency, low-stakes).
 
 ## Auth (Supabase)
 
-- Session lives in an httpOnly cookie via `@supabase/ssr`
-  (`createBrowserClient` in `shared/api/supabase/client.ts`,
-  `createServerClient` in `shared/api/supabase/server.ts`), not localStorage
-  — `authSlice.ts`'s persisted state strips the access token before it ever
-  reaches redux-persist. `proxy.ts` refreshes that cookie every request and
-  redirects unauthenticated visitors away from `/user`, `/checkout`, `/admin`
-  before any page renders; the client-side guards (`ProtectedRoute` etc.) and
-  `admin/layout.tsx`'s server-side role check are the second line of defense,
-  not the primary one — see [Forbidden](#forbidden--use-instead) for which
-  Supabase client to use where.
-- OAuth (Google) exchanges its code server-side in
-  `app/auth/callback/route.ts`, then redirects to
-  `app/auth/callback/complete/page.tsx`, which reads the pre-OAuth `from`
-  path out of `sessionStorage` (stashed by `useOAuthSignIn.ts` before the
-  provider redirect) — Supabase doesn't reliably round-trip custom query
-  params through the provider, so the query-string approach doesn't work here.
-- `useAuthSync` subscribes to `supabase.auth.onAuthStateChange` and syncs Redux.
-- `SIGNED_IN`: merge local cart/wishlist (localStorage) → server, then clear local.
-  `SIGNED_OUT`: reset RTK Query cache and cart/wishlist/auth slices.
-- Supabase access outside `api/` segments (client) or `api/queries.ts` (server)
-  is forbidden.
-- **No email confirmation, no email-based password recovery** (portfolio
-  project — a reviewer shouldn't need a real inbox to try any auth flow).
-  "Confirm email" (`mailer_autoconfirm`) and "Secure email change" are both
-  **off** in the Supabase dashboard — `signUp` returns a live session and an
-  email change applies immediately. There is deliberately no confirm/verify
-  page and no `emailRedirectTo` on `signUp`. The forgot/reset-password flow
-  (`resetPasswordForEmail`) was removed entirely rather than kept as a real
-  emailed link, since letting anyone reset a password without proving inbox
-  ownership would be a hole, not a shortcut — a signed-in user changes their
-  password from the profile page instead (`ChangePasswordForm`, re-auth with
-  the current password) — see above for what `auth/callback` does instead.
-  These are dashboard-only settings — `supabase/config.toml` has no
-  `[auth]` section, so **never run `supabase config push`**; it would
-  overwrite the remote `site_url`, `uri_allow_list` and Google provider config
-  with CLI defaults.
-- **Admin role**: `profiles.role` (`user_role` enum, default `'user'`) —
-  not a JWT custom claim, since that needs a dashboard Auth Hook and this
-  project never runs `supabase config push`. RLS reads it through
-  `public.is_admin()` (`SECURITY DEFINER`, so a policy on `profiles` calling it
-  doesn't recurse through the policy it's evaluating). Admin-only writes
-  (`admin_update_order_status`, and any future admin mutation) are
-  `SECURITY DEFINER` RPCs that check `is_admin()` themselves, never a
-  role-gated `UPDATE`/`INSERT` policy — RLS has no column granularity, and
-  `orders`/`order_items` keep zero write policies by design (see
-  `20260723071805_harden_order_write_paths.sql`). `profiles` also only grants
-  `UPDATE` on specific columns (`username`, `first_name`, `last_name`,
-  `avatar_url`, `updated_at`) to `anon`/`authenticated` — `role` is
-  deliberately excluded, since a blanket `grant all` would let any user
-  self-promote. The admin UI itself is a `/admin` branch (`AdminRoute` guard,
-  `AdminLayout`) sibling to `MainLayout`, entered via a `ProfileNav` item shown
-  only when `selectIsAdmin` is true. There's no signup path for admins — grant
-  the role manually per the README.
+Session lives in an httpOnly cookie via `@supabase/ssr`, not localStorage —
+`authSlice.ts` strips the access token before it reaches redux-persist.
+`proxy.ts` refreshes the cookie and redirects unauthenticated visitors from
+`/user`, `/checkout`, `/admin` pre-render; client guards and
+`admin/layout.tsx`'s server check are the second line of defense. OAuth
+(Google) exchanges its code server-side in `app/auth/callback/route.ts`,
+redirects to `.../complete/page.tsx`, which reads the pre-OAuth `from` path
+from `sessionStorage` (stashed by `useOAuthSignIn.ts`) — Supabase doesn't
+reliably round-trip custom query params through the provider. `useAuthSync`
+syncs Redux with `onAuthStateChange`: `SIGNED_IN` merges local cart/wishlist
+→ server then clears local; `SIGNED_OUT` resets RTK Query cache and
+cart/wishlist/auth slices. Supabase access outside `api/` (client) or
+`api/queries.ts` (server) is forbidden.
+
+No email confirmation, no email-based password recovery — **deliberate**
+(portfolio project, reviewer shouldn't need a real inbox). Both toggles are
+dashboard-only — `supabase/config.toml` has no `[auth]` section, so **never
+run `supabase config push`** (would overwrite remote `site_url`,
+`uri_allow_list`, Google config with CLI defaults). Password changes go
+through `ChangePasswordForm` (re-auth required).
+
+**Admin role**: `profiles.role` (`user_role` enum), not a JWT claim (needs a
+dashboard Auth Hook, incompatible with never running `config push`). RLS
+reads it via `public.is_admin()` (`SECURITY DEFINER`, avoids recursion).
+Admin-only writes are `SECURITY DEFINER` RPCs checking `is_admin()`
+themselves, never a role-gated policy — RLS has no column granularity,
+`orders`/`order_items` keep zero write policies by design. `profiles` grants
+`UPDATE` only on specific columns — `role` excluded. No admin signup path —
+grant manually per README.
 
 ## Database Schema & Migrations
 
-Project is linked via Supabase CLI (`supabase link`); `DATABASE_URL` (pooler,
-session mode) lives in `.env.local` — gitignored via `*.local`, never commit it.
+Linked via Supabase CLI; `DATABASE_URL` (pooler, session mode) in
+`.env.local` (gitignored) — **read-only inspection** only. Generated TS
+types: `database.types.ts` (`supabase gen types typescript --linked > ...`).
+Schema dump: `supabase/schema.sql` — source of truth for table
+shapes/constraints/RLS before writing any query (`supabase db dump --schema
+public > ...`). Both **generated**, never hand-edit; regenerate together
+after any schema change.
 
-- **Generated TS types:** `src/shared/api/database.types.ts` — the `Database`
-  type (tables, views, enums, RPC signatures). Regenerate with
-  `supabase gen types typescript --linked > src/shared/api/database.types.ts`.
-- **Schema dump:** `supabase/schema.sql` — full `public` schema (tables, enums,
-  RLS policies, functions, triggers). Read it as the source of truth for table
-  shapes, constraints and RLS before writing any query. Refresh with
-  `supabase db dump --schema public > supabase/schema.sql`.
-- Both files are **generated** — never hand-edit them. They are snapshots: after
-  any schema change, regenerate both in the same task so they stay in sync with
-  the remote database.
-
-**Hard rule — schema changes only through the CLI.** To alter the database
-structure (tables, columns, enums, RLS policies, functions, triggers):
-
-```bash
-supabase migration new <descriptive_name>   # writes supabase/migrations/<ts>_<name>.sql
-# edit that SQL file, then:
-supabase db push
-```
-
-Never change the structure via the Supabase dashboard SQL editor, via
-`psql`/`DATABASE_URL` DDL, or with ad-hoc SQL run outside a migration file —
-that desyncs the repo from the database and the change is lost to review and
-to other environments. `DATABASE_URL` is for **read-only inspection** only.
-
-## Accessibility
-
-- Semantic tags: `<article>` for cards/order rows; proper
-  `<header>/<footer>/<nav>/<main>/<section>`; `.sr-only` for SR-only content.
-- `aria-label` on icon-only buttons; `aria-live="polite"` for dynamic regions.
-- Never remove `:focus-visible` without an alternative indicator; use
-  `--focus-ring-color`, `--shadow-focus-button`. Touch targets:
-  `$touch-target-min` (44px), `$touch-target-comfortable` (48px).
+**Hard rule — schema changes only through the CLI**: `supabase migration new
+<name>` → edit the SQL file → `supabase db push`. Never the dashboard SQL
+editor, `psql`/`DATABASE_URL` DDL, or ad-hoc SQL outside a migration.
 
 ## Git Commits
 
 English only, Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`,
 `style:`, `test:`, `chore:`). One logical change per commit; keep dependent
-cross-layer changes (API+components) together so history stays functional at
-every point. Message describes the resulting change, no dev-process noise; body
-only for large/complex changes. Review `git status` + diff before writing it.
+cross-layer changes together. No dev-process noise, no `Co-Authored-By`
+trailer; body only for large/complex changes.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
