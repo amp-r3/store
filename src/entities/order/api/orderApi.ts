@@ -5,6 +5,7 @@ import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, OrderSt
 import { TERMINAL_ORDER_STATUSES } from '@/entities/order/config/order-management.config';
 import { fetchDeliveryMethods, fetchPaymentMethods } from './queries';
 import { getErrorMessage } from '@/shared/lib';
+import { revalidateProducts } from '@/shared/api/revalidate';
 
 const TERMINAL_STATUSES_LIST = `(${TERMINAL_ORDER_STATUSES.join(',')})`;
 
@@ -249,6 +250,15 @@ export const orderApi = baseApi.injectEndpoints({
         return { data: data as unknown as CreateOrderResponse };
       },
       invalidatesTags: ['Order', 'Cart', 'Product'],
+      async onQueryStarted({ p_items }, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const productIds = [...new Set(p_items.map((item) => item.product_id))];
+          await revalidateProducts(productIds);
+        } catch {
+          // No optimistic patch here to roll back either way.
+        }
+      },
     }),
 
     getDeliveryMethods: builder.query<DeliveryMethod[], void>({

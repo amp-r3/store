@@ -1,5 +1,6 @@
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
+import { revalidateProduct } from '@/shared/api/revalidate';
 
 // products!inner (not the default left-join embed): PostgREST only applies a
 // dot-path filter on an embedded resource (.ilike('products.title', ...)
@@ -132,6 +133,14 @@ export const adminReviewsApi = baseApi.injectEndpoints({
         { type: 'Review', id: productId },
         { type: 'Product', id: productId },
       ],
+      async onQueryStarted({ productId }, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          await revalidateProduct(productId);
+        } catch {
+          // No optimistic patch here to roll back either way.
+        }
+      },
     }),
   }),
 });

@@ -1,5 +1,6 @@
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
+import { revalidateProduct, revalidateStorefront } from '@/shared/api/revalidate';
 
 export interface AdminCategory {
   id: number;
@@ -239,6 +240,16 @@ export const adminProductsApi = baseApi.injectEndpoints({
         return { data: data as unknown as number };
       },
       invalidatesTags: [{ type: 'Product', id: 'ADMIN_LIST' }, { type: 'Product', id: 'LIST' }],
+      async onQueryStarted(_payload, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          await revalidateStorefront();
+        } catch {
+          // queryFulfilled already rejected on the RPC error, or the
+          // Server Action itself threw — either way there's nothing to
+          // roll back here (no optimistic patch), so just swallow it.
+        }
+      },
     }),
 
     updateAdminProduct: builder.mutation<null, { id: number; payload: AdminProductPayload }>({
@@ -259,6 +270,14 @@ export const adminProductsApi = baseApi.injectEndpoints({
         { type: 'Product', id: 'ADMIN_LIST' },
         { type: 'Product', id: 'LIST' },
       ],
+      async onQueryStarted({ id }, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          await revalidateProduct(id);
+        } catch {
+          // See createAdminProduct's onQueryStarted.
+        }
+      },
     }),
 
     archiveAdminProduct: builder.mutation<null, { id: number; archived: boolean }>({
@@ -276,6 +295,16 @@ export const adminProductsApi = baseApi.injectEndpoints({
         { type: 'Product', id: 'ADMIN_LIST' },
         { type: 'Product', id: 'LIST' },
       ],
+      async onQueryStarted({ id }, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          // An archive/restore both adds to and removes from the storefront
+          // listing, not just this one product page.
+          await Promise.all([revalidateProduct(id), revalidateStorefront()]);
+        } catch {
+          // See createAdminProduct's onQueryStarted.
+        }
+      },
     }),
 
     getAdminCategories: builder.query<AdminCategory[], void>({
@@ -323,6 +352,14 @@ export const adminProductsApi = baseApi.injectEndpoints({
         return { data: data as unknown as number };
       },
       invalidatesTags: [{ type: 'Category', id: 'ADMIN_LIST' }, { type: 'Category', id: 'LIST' }],
+      async onQueryStarted(_payload, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          await revalidateStorefront();
+        } catch {
+          // See createAdminProduct's onQueryStarted.
+        }
+      },
     }),
 
     deleteAdminCategory: builder.mutation<null, number>({
@@ -336,6 +373,14 @@ export const adminProductsApi = baseApi.injectEndpoints({
         return { data: null };
       },
       invalidatesTags: [{ type: 'Category', id: 'ADMIN_LIST' }, { type: 'Category', id: 'LIST' }, { type: 'Product', id: 'ADMIN_LIST' }],
+      async onQueryStarted(_id, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          await revalidateStorefront();
+        } catch {
+          // See createAdminProduct's onQueryStarted.
+        }
+      },
     }),
 
     // Raw table, not entities/product's getSizes: that one has no admin-owned
@@ -378,6 +423,14 @@ export const adminProductsApi = baseApi.injectEndpoints({
       // id-scoped invalidation doesn't reach — RTK Query only matches a bare
       // tag back from a more specific one, never the other way around.
       invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
+      async onQueryStarted({ productId }, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          await revalidateProduct(productId);
+        } catch {
+          // See createAdminProduct's onQueryStarted.
+        }
+      },
     }),
 
     deleteAdminProductSize: builder.mutation<null, { sizeId: number; productId: number }>({
@@ -391,6 +444,14 @@ export const adminProductsApi = baseApi.injectEndpoints({
         return { data: null };
       },
       invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
+      async onQueryStarted({ productId }, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          await revalidateProduct(productId);
+        } catch {
+          // See createAdminProduct's onQueryStarted.
+        }
+      },
     }),
 
     // Own getAdminProductSizes cache entry (keyed by productId) makes this
@@ -419,6 +480,14 @@ export const adminProductsApi = baseApi.injectEndpoints({
           await queryFulfilled;
         } catch {
           patchResult.undo();
+          return;
+        }
+
+        try {
+          await revalidateProduct(productId);
+        } catch {
+          // The stock update itself already succeeded — a failed
+          // revalidation shouldn't roll back the optimistic patch.
         }
       },
       invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],

@@ -8,6 +8,7 @@ import {
     ReviewSort,
 } from "@/entities/review/model/types";
 import { getErrorMessage } from "@/shared/lib";
+import { revalidateProduct } from "@/shared/api/revalidate";
 import { fetchReviews, fetchReviewStats, mapReview, REVIEW_SELECT } from './queries';
 
 const pendingLikes = new Set<number>();
@@ -259,6 +260,14 @@ export const reviewApi = baseApi.injectEndpoints({
                 } catch {
                     patches.forEach((patch) => patch.undo());
                     statsPatch.undo();
+                    return;
+                }
+
+                try {
+                    await revalidateProduct(productId);
+                } catch {
+                    // The review write itself already succeeded — a failed
+                    // revalidation shouldn't roll back the optimistic patch.
                 }
             }
         }),
@@ -415,6 +424,14 @@ export const reviewApi = baseApi.injectEndpoints({
                 } catch {
                     patches.forEach((patch) => patch.undo());
                     statsPatch?.undo();
+                    return;
+                }
+
+                try {
+                    await revalidateProduct(productId);
+                } catch {
+                    // The delete itself already succeeded — a failed
+                    // revalidation shouldn't roll back the optimistic patch.
                 }
             }
         })

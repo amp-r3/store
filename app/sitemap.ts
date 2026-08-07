@@ -3,6 +3,12 @@ import { createStaticSupabaseClient } from '@/shared/api/supabase/server';
 import { fetchProducts } from '@/entities/product/server';
 import { getSiteOrigin } from '@/shared/config';
 
+// Matches / and /product/[id]'s own revalidate window, and gets the same
+// on-demand top-up via revalidateStorefront() (src/shared/api/revalidate.ts)
+// on admin product/category mutations — without either, this stayed frozen
+// at build time forever (no revalidate export = static).
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = getSiteOrigin();
   const supabase = createStaticSupabaseClient();

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { createServerSupabaseClient } from '@/shared/api/supabase/server';
+import { getServerSession } from '@/shared/api/supabase/authz';
 import { AdminRoute } from '@/app/providers/AdminRoute/AdminRoute';
 import { AdminLayout } from '@/app/layouts/AdminLayout/AdminLayout';
 
@@ -21,20 +21,13 @@ export const metadata: Metadata = {
 // away entirely; the `!user` branch here is defense-in-depth, not the
 // primary check.
 export default async function AdminSegmentLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const session = await getServerSession();
 
-  if (!user) {
+  if (!session) {
     redirect('/login');
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  if (profile?.role !== 'admin') {
+  if (!session.isAdmin) {
     redirect('/');
   }
 
