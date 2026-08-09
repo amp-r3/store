@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import { Drawer } from 'vaul';
 import { VisuallyHidden } from 'radix-ui'
 import { IoWarningOutline } from "react-icons/io5";
@@ -18,6 +18,8 @@ import { CartItemSkeleton } from "@/entities/cart";
 import { CartFooter } from "@/entities/cart";
 import { CartHeader } from "@/entities/cart";
 import { EmptyCart } from "@/entities/cart";
+import { CartUndoStrip } from "@/entities/cart";
+import { CART_UNDO_DURATION_MS, RemovedEntry, useCartRemovalUndo } from "./useCartRemovalUndo";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -33,7 +35,25 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch()
   const modalRoot = getModalRoot();
 
-  const { onIncrease, onDecrease, onRemove, onClearCart, isUpdating } = useCartActions()
+  const removalUndo = useCartRemovalUndo({ cartItems, cartDetails, isOpen });
+  const { onIncrease, onDecrease, onRemove, onClearCart, onRestoreItem, onRestoreCart, isUpdating } = useCartActions({
+    onRemoved: removalUndo.handleRemoved,
+    onCleared: removalUndo.handleCleared,
+  });
+
+  const handleUndoItem = (entry: RemovedEntry) => {
+    soft();
+    removalUndo.dismissRemoval(entry.sizeId);
+    onRestoreItem(entry.sizeId, entry.productId, entry.quantity);
+  };
+
+  const handleUndoClear = () => {
+    if (!removalUndo.clearedEntry) return;
+    soft();
+    const { snapshot } = removalUndo.clearedEntry;
+    removalUndo.dismissCleared();
+    onRestoreCart(snapshot);
+  };
 
   const handleCheckout = async () => {
     try {
@@ -55,6 +75,62 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const showSkeleton = isLoading || isFetching;
+
+  // A removed sizeId can reappear in cartItems if the user re-adds it while
+  // its undo window is still open — drop the stale strip rather than
+  // showing two conflicting rows for the same line.
+  const pendingRemovals = removalUndo.removedEntries.filter(
+    (entry) => !cartItems.some((item) => item.sizeId === entry.sizeId)
+  );
+
+  const showEmptyState = isEmpty && !showSkeleton && pendingRemovals.length === 0;
+
+  let cartRows: ReactNode[];
+
+  if (showSkeleton && isEmpty) {
+    cartRows = Array.from({ length: 4 }).map((_, index) => (
+      <CartItemSkeleton key={`skeleton-mock-${index}`} />
+    ));
+  } else {
+    const liveRows: ReactNode[] = showSkeleton
+      ? cartItems.map((item) => <CartItemSkeleton key={`skeleton-${item.sizeId}`} />)
+      : cartItems.reduce<ReactNode[]>((acc, item, index) => {
+        const productDetails = cartDetails[index];
+        if (!productDetails) return acc;
+
+        acc.push(
+          <CartItem
+            key={item.sizeId}
+            product={productDetails}
+            onIncrease={onIncrease}
+            onDecrease={onDecrease}
+            onRemove={onRemove}
+            onClose={onClose}
+          />
+        );
+        return acc;
+      }, []);
+
+    // Splice each removed row's strip back into the position it occupied
+    // right before removal, so the list doesn't visually reshuffle.
+    cartRows = [...liveRows];
+    [...pendingRemovals]
+      .sort((a, b) => a.index - b.index)
+      .forEach((entry) => {
+        cartRows.splice(
+          Math.min(entry.index, cartRows.length),
+          0,
+          <CartUndoStrip
+            key={`removed-${entry.sizeId}`}
+            message={`"${entry.title}" removed`}
+            actionLabel="Undo"
+            durationMs={CART_UNDO_DURATION_MS}
+            onAction={() => handleUndoItem(entry)}
+          />
+        );
+      });
+  }
 
   return (
     <>
@@ -93,36 +169,19 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             <div className={styles.cart__scrollArea}>
               <div className={styles.cart__body}>
 
-                {isLoading || isFetching ? (
-                  isEmpty
-                    ?
-                    Array.from({ length: 4 }).map((_, index) => (
-                      <CartItemSkeleton key={`skeleton-mock-${index}`} />
-                    ))
-                    :
-                    cartItems.map((item) => (
-                      <CartItemSkeleton key={`skeleton-${item.sizeId}`} />
-                    ))
+                {removalUndo.clearedEntry && (
+                  <CartUndoStrip
+                    message={`Cart cleared · ${removalUndo.clearedEntry.count} item${removalUndo.clearedEntry.count === 1 ? '' : 's'}`}
+                    actionLabel="Restore"
+                    durationMs={CART_UNDO_DURATION_MS}
+                    onAction={handleUndoClear}
+                  />
+                )}
 
-                ) : isEmpty ? (
+                {showEmptyState ? (
                   <EmptyCart onStartShopping={onStartShopping} />
-
                 ) : (
-                  cartItems.map((item, index) => {
-                    const productDetails = cartDetails[index];
-                    if (!productDetails) return null;
-
-                    return (
-                      <CartItem
-                        key={item.sizeId}
-                        product={productDetails}
-                        onIncrease={onIncrease}
-                        onDecrease={onDecrease}
-                        onRemove={onRemove}
-                        onClose={onClose}
-                      />
-                    );
-                  })
+                  cartRows
                 )}
 
               </div>

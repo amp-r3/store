@@ -24,15 +24,25 @@ import { showToast } from "@/shared/ui";
 // left" at <= 10), applied here to the single size being added to the cart.
 const LOW_STOCK_THRESHOLD = 10;
 
+interface UseCartActionsOptions {
+  // When set, a removal reports here instead of raising a toast — the caller
+  // (the cart drawer) renders the undo affordance inline, in the removed
+  // row's place.
+  onRemoved?(sizeId: number, productId: number, quantity: number): void;
+  onCleared?(snapshot: Record<number, CartData>): void;
+}
+
 interface UseCartActionsReturn {
   onIncrease(sizeId: number, productId: number, stock?: number): void;
   onDecrease(sizeId: number, productId: number): void;
   onRemove(sizeId: number, productId: number, quantity: number): void;
   onClearCart(): void;
+  onRestoreItem(sizeId: number, productId: number, quantity: number): void;
+  onRestoreCart(snapshot: Record<number, CartData>): void;
   isUpdating: boolean;
 }
 
-export const useCartActions = (): UseCartActionsReturn => {
+export const useCartActions = ({ onRemoved, onCleared }: UseCartActionsOptions = {}): UseCartActionsReturn => {
   const dispatch = useAppDispatch();
   const isAuth = useAppSelector(selectIsAuth);
 
@@ -57,21 +67,43 @@ export const useCartActions = (): UseCartActionsReturn => {
 
   const isUpdating = isUpserting || isDeleting || isClearing || isRestoringItem || isRestoringCart;
 
-  const restoreItem = useCallback((sizeId: number, productId: number, quantity: number) => {
+  // Skip the confirmation toast when the caller (the cart drawer) already
+  // renders the undo affordance inline, next to the item it restores.
+  const onRestoreItem = useCallback((sizeId: number, productId: number, quantity: number) => {
     if (isAuth) {
       restoreServerItem({ sizeId, productId, quantity });
     } else {
       dispatch(restoreCartItem({ sizeId, productId, quantity }));
     }
-    showToast('added', 'Returned to cart', { key: 'cart-undo' });
-  }, [isAuth, restoreServerItem, dispatch]);
+    if (!onRemoved) {
+      showToast('added', 'Returned to cart', { key: 'cart-undo' });
+    }
+  }, [isAuth, restoreServerItem, dispatch, onRemoved]);
+
+  const onRestoreCart = useCallback((snapshot: Record<number, CartData>) => {
+    if (isAuth) {
+      restoreServerCart(snapshot);
+    } else {
+      dispatch(restoreCart(snapshot));
+    }
+    if (!onCleared) {
+      showToast('added', 'Cart restored', { key: 'cart-undo' });
+    }
+  }, [isAuth, restoreServerCart, dispatch, onCleared]);
 
   const onIncrease = useCallback((sizeId: number, productId: number, stock?: number) => {
+    const quantityBefore = cartMapRef.current[sizeId]?.quantity ?? 0;
+
     if (isAuth) {
       upsertItem({ sizeId, productId, action: 'inc' });
     } else {
       dispatch(changeQuantity({ sizeId, productId, type: 'inc' }));
     }
+
+    // Only the 0 -> 1 transition is a genuine "added" event — later
+    // increments (product page stepper, mobile bar, cart drawer "+") are
+    // already reflected by the visible quantity counter.
+    if (quantityBefore > 0) return;
 
     const viewCartAction = { label: 'View', onClick: () => dispatch(openCart()) };
 
@@ -92,16 +124,21 @@ export const useCartActions = (): UseCartActionsReturn => {
       dispatch(changeQuantity({ sizeId, productId, type: 'dec' }));
     }
 
-    // Only the line's last unit leaving is a "removal" worth a toast — a
+    // Only the line's last unit leaving is a "removal" worth feedback — a
     // plain quantity step (3 -> 2) is visible in the counter already.
-    if (isRemoval) {
-      showToast('removed', 'Removed from cart', {
-        key: 'cart',
-        showTimer: true,
-        action: { label: 'Undo', emphasis: 'ghost', onClick: () => restoreItem(sizeId, productId, 1) },
-      });
+    if (!isRemoval) return;
+
+    if (onRemoved) {
+      onRemoved(sizeId, productId, 1);
+      return;
     }
-  }, [isAuth, upsertItem, dispatch, restoreItem]);
+
+    showToast('removed', 'Removed from cart', {
+      key: 'cart',
+      showTimer: true,
+      action: { label: 'Undo', emphasis: 'ghost', onClick: () => onRestoreItem(sizeId, productId, 1) },
+    });
+  }, [isAuth, upsertItem, dispatch, onRemoved, onRestoreItem]);
 
   const onRemove = useCallback((sizeId: number, productId: number, quantity: number) => {
     if (isAuth) {
@@ -109,12 +146,18 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(removeFromCart(sizeId));
     }
+
+    if (onRemoved) {
+      onRemoved(sizeId, productId, quantity);
+      return;
+    }
+
     showToast('removed', 'Removed from cart', {
       key: 'cart',
       showTimer: true,
-      action: { label: 'Undo', emphasis: 'ghost', onClick: () => restoreItem(sizeId, productId, quantity) },
+      action: { label: 'Undo', emphasis: 'ghost', onClick: () => onRestoreItem(sizeId, productId, quantity) },
     });
-  }, [isAuth, deleteItem, dispatch, restoreItem]);
+  }, [isAuth, deleteItem, dispatch, onRemoved, onRestoreItem]);
 
   const onClearCart = useCallback(() => {
     const snapshot = { ...cartMapRef.current };
@@ -126,25 +169,20 @@ export const useCartActions = (): UseCartActionsReturn => {
     }
 
     const hasItems = Object.keys(snapshot).length > 0;
+
+    if (onCleared) {
+      if (hasItems) onCleared(snapshot);
+      return;
+    }
+
     showToast('removed', 'Cart cleared', {
       key: 'cart',
       showTimer: hasItems,
       action: hasItems
-        ? {
-          label: 'Undo',
-          emphasis: 'ghost',
-          onClick: () => {
-            if (isAuth) {
-              restoreServerCart(snapshot);
-            } else {
-              dispatch(restoreCart(snapshot));
-            }
-            showToast('added', 'Cart restored', { key: 'cart-undo' });
-          },
-        }
+        ? { label: 'Undo', emphasis: 'ghost', onClick: () => onRestoreCart(snapshot) }
         : undefined,
     });
-  }, [isAuth, clearServerCart, dispatch, restoreServerCart]);
+  }, [isAuth, clearServerCart, dispatch, onCleared, onRestoreCart]);
 
-  return { onIncrease, onDecrease, onRemove, onClearCart, isUpdating };
+  return { onIncrease, onDecrease, onRemove, onClearCart, onRestoreItem, onRestoreCart, isUpdating };
 };

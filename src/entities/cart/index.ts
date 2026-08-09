@@ -10,3 +10,4 @@ export * from './ui/cart-item/CartItemSkeleton';
 export * from './ui/cart-header/CartHeader';
 export * from './ui/cart-footer/CartFooter';
 export * from './ui/empty-cart/EmptyCart';
+export * from './ui/cart-undo-strip/CartUndoStrip';
