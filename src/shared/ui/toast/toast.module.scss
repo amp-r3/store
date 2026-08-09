@@ -1,48 +1,77 @@
 @use 'app/styles/index' as *;
 
-// sonner ships its own stacking/swipe/motion mechanics (data-mounted,
-// data-removed, data-swiping, data-expanded transforms) — reimplementing
-// that against `unstyled: true` isn't worth it. Instead we repaint its own
-// CSS custom properties with project tokens. `richColors` makes sonner apply
-// --success-bg/-border/-text (etc.) per `data-type`, which is what these
-// selectors below feed. The extra `[data-sonner-theme='dark']` attribute is
-// only there to out-specificity sonner's own same-attribute rule regardless
-// of stylesheet insertion order.
-[data-sonner-toaster][data-sonner-theme='dark'].toaster {
-  --normal-bg: var(--glass-background-strong);
-  --normal-border: var(--border-color-light);
-  --normal-text: var(--text-primary);
-
-  --success-bg: var(--success-background);
-  --success-border: rgba(var(--success-color-rgb), 0.12);
-  --success-text: var(--success-color-dark);
-
-  --info-bg: var(--status-info-bg);
-  --info-border: var(--status-info-border);
-  --info-text: var(--status-info-text);
-
-  --warning-bg: var(--status-warning-bg);
-  --warning-border: var(--status-warning-border);
-  --warning-text: var(--status-warning-text);
-
-  --error-bg: var(--status-danger-bg);
-  --error-border: var(--status-danger-border);
-  --error-text: var(--status-danger-text);
-
-  --border-radius: #{$radius-lg};
-  --width: min(22rem, calc(100vw - #{$spacing-xl} * 2));
+// Toasts render through sonner's `toast.custom()` — sonner keeps owning
+// stacking/swipe/mount/removal transforms (data-mounted, data-removed,
+// data-swiping, data-expanded), we own every pixel of the card itself
+// (`.card` below) instead of reusing sonner's built-in styled toast.
+//
+// Width can't go through sonner's own `--width` var: it's written as an
+// inline style on the <ol> (always wins over a stylesheet rule on the same
+// custom property), so `width` is set directly instead — one extra class
+// selector out-specifies sonner's unconditional `[data-sonner-toaster]{width:
+// var(--width)}`. Its own <=600px block resets width the same way, at the
+// same specificity, so it has to be restated here too or our rule would leak
+// into the mobile layout sonner otherwise handles correctly.
+[data-sonner-toaster].toaster {
   z-index: $z-index-toast-viewport;
+  width: min(25rem, calc(100vw - #{$spacing-xl} * 2));
+
+  @media (min-width: 1440px) {
+    width: 27rem;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 }
 
-.toast {
-  font-family: $font-primary !important;
-  font-size: $fs-sm !important;
-  font-weight: $fw-normal;
-  box-shadow: var(--shadow-lg) !important;
-  backdrop-filter: $backdrop-blur-sm;
+// Sonner only sizes the <li> itself (`width: var(--width)`) when the toast is
+// its own styled kind (`data-styled=true`); `toast.custom()` renders
+// data-styled="false", so without this the li has no width on desktop and
+// just hugs the card's content. Below 600px sonner's own
+// `[data-sonner-toaster] [data-sonner-toast]` rule (two attribute selectors)
+// outweighs this single class and takes back over, which is what we want.
+.toast-li {
+  width: min(25rem, calc(100vw - #{$spacing-xl} * 2));
 
-  &:focus-visible {
-    box-shadow: var(--shadow-lg), 0 0 0 $focus-ring-width var(--focus-ring-color) !important;
+  @media (min-width: 1440px) {
+    width: 27rem;
+  }
+}
+
+// sonner only fades stacked toasts behind the front one when
+// data-styled='true'; toast.custom() renders data-styled='false', so the
+// fade has to be restated against our own card.
+[data-sonner-toast][data-expanded='false'][data-front='false'] .card {
+  opacity: 0;
+}
+
+[data-sonner-toast]:focus-visible .card {
+  box-shadow: var(--shadow-lg), 0 0 0 $focus-ring-width var(--focus-ring-color);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  overflow: hidden;
+  background: var(--glass-background-strong);
+  backdrop-filter: $backdrop-blur;
+  border: 1px solid var(--glass-border);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  font-family: $font-primary;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--toast-accent);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -50,23 +79,145 @@
     animation: none !important;
   }
 
-  [data-title] {
-    font-family: $font-display;
+  @media (min-width: 768px) {
+    gap: $spacing-md;
+    padding: $spacing-md $spacing-lg;
+  }
+}
+
+.card--brand {
+  --toast-accent: var(--primary-accent);
+  --toast-accent-soft: rgba(var(--primary-accent-rgb), 0.14);
+}
+
+.card--success {
+  --toast-accent: var(--success-color);
+  --toast-accent-soft: var(--status-success-bg);
+}
+
+.card--warning {
+  --toast-accent: var(--status-warning-text);
+  --toast-accent-soft: var(--status-warning-bg);
+}
+
+.card--error {
+  --toast-accent: var(--status-danger-text);
+  --toast-accent-soft: var(--status-danger-bg);
+}
+
+.card__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: $radius-circle;
+  background: var(--toast-accent-soft);
+  color: var(--toast-accent);
+  font-size: $fs-icon-sm;
+
+  @media (min-width: 768px) {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: $fs-icon-md;
+  }
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
+  min-width: 0;
+  flex: 1;
+}
+
+.card__title {
+  font-family: $font-display;
+  font-size: $fs-sm;
+  font-weight: $fw-normal;
+  line-height: $lh-tight;
+  overflow-wrap: anywhere;
+
+  @media (min-width: 768px) {
+    font-size: $fs-base;
+  }
+}
+
+.card__description {
+  font-size: $fs-xs;
+  color: var(--text-secondary);
+  line-height: $lh-normal;
+}
+
+.card__action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: $touch-target-min;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  background-color: var(--primary-accent);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-accent-sm);
+  transition:
+    background-color $transition-fast $ease-in-out-smooth,
+    box-shadow $transition-fast $ease-in-out-smooth,
+    transform $transition-fast $ease-in-out-smooth;
+
+  &:hover {
+    background-color: var(--primary-accent-dark);
+    box-shadow: var(--shadow-accent-hover);
   }
 
-  [data-close-button] {
-    width: $touch-target-min !important;
-    height: $touch-target-min !important;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: -$spacing-xxs;
-    }
+  &:active {
+    transform: scale($scale-down-sm);
   }
 
-  [data-button] {
-    min-height: $touch-target-min !important;
-    border-radius: $radius-sm !important;
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+.card__action--ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+
+  &:hover {
+    background-color: var(--border-color-subtle);
+    color: var(--text-primary);
+  }
+}
+
+.card__close {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: $fs-icon-sm;
+  height: $fs-icon-sm;
+  color: var(--text-muted);
+  font-size: $fs-icon-sm;
+  transition: color $transition-fast $ease-in-out-smooth;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -$spacing-sm;
+  }
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 }

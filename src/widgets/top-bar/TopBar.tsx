@@ -1,6 +1,12 @@
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import Link from 'next/link';
-import { IoClose } from 'react-icons/io5';
+import {
+  IoClose,
+  IoInformationCircleOutline,
+  IoCheckmarkCircleOutline,
+  IoWarningOutline,
+  IoAlertCircleOutline,
+} from 'react-icons/io5';
 import {
   selectNotification,
   selectPendingCount,
@@ -10,6 +16,7 @@ import {
   NotificationType,
 } from '@/entities/notification';
 import { useAppDispatch, useAppSelector } from '@/shared/model';
+import { useSwipeDismiss } from '@/shared/lib/hooks';
 import style from './top-bar.module.scss';
 
 const TYPE_CLASS: Record<NotificationType, string> = {
@@ -17,6 +24,13 @@ const TYPE_CLASS: Record<NotificationType, string> = {
   success: style['topbar--success'],
   warning: style['topbar--warning'],
   error: style['topbar--error'],
+};
+
+const TYPE_ICON: Record<NotificationType, ReactNode> = {
+  info: <IoInformationCircleOutline aria-hidden="true" />,
+  success: <IoCheckmarkCircleOutline aria-hidden="true" />,
+  warning: <IoWarningOutline aria-hidden="true" />,
+  error: <IoAlertCircleOutline aria-hidden="true" />,
 };
 
 interface TopBarProps {
@@ -53,10 +67,28 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
     };
   }, [notification]);
 
+  // The offline sticky notification (id -1) has no dismiss button either —
+  // it shouldn't disappear on a swipe by accident.
+  const isDismissible = !!notification && notification.id !== -1;
+
+  const { ref: swipeRef, bind: bindSwipe } = useSwipeDismiss({
+    direction: 'up',
+    onDismiss: () => notification && dispatch(dismissNotification(notification.id)),
+    disabled: !isDismissible,
+  });
+
   if (!notification) return null;
 
   return (
-    <header className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''} ${TYPE_CLASS[notification.type]}`}>
+    <header
+      // Forces a fresh DOM node per notification — otherwise a swiped-away
+      // (translated, faded) bar would carry that inline style straight into
+      // the next notification that reuses the same <header>.
+      key={notification.id}
+      ref={swipeRef}
+      {...bindSwipe()}
+      className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''} ${TYPE_CLASS[notification.type]}`}
+    >
       <div className={`${style.topbar__container} container`}>
         {pendingCount > 0 && (
           <button
@@ -69,6 +101,8 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
           </button>
         )}
 
+        <span className={style.topbar__icon}>{TYPE_ICON[notification.type]}</span>
+
         <p className={style.topbar__text} aria-live="polite">
           {notification.text}
         </p>
@@ -79,14 +113,14 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
           </Link>
         )}
 
-        {notification.id !== -1 && (
+        {isDismissible && (
           <button
             type="button"
             className={style.topbar__dismiss}
             aria-label="Dismiss notification"
             onClick={() => dispatch(dismissNotification(notification.id))}
           >
-            <IoClose />
+            <IoClose aria-hidden="true" />
           </button>
         )}
       </div>

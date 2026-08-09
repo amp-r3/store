@@ -28,9 +28,13 @@ export const useWishlistActions = (): useWishlistActionsProps => {
     }
 
     if (isInWishlist) {
-      showToast('info', 'Removed from wishlist', { key: 'wishlist' });
+      // Undo is UI only for now — it dismisses the toast, it does not restore the item.
+      showToast('removed', 'Removed from wishlist', {
+        key: 'wishlist',
+        action: { label: 'Undo', emphasis: 'ghost' },
+      });
     } else {
-      showToast('success', 'Added to wishlist', {
+      showToast('added', 'Added to wishlist', {
         key: 'wishlist',
         action: { label: 'View', to: '/wishlist' },
       });

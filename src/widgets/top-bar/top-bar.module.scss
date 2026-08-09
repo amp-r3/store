@@ -11,18 +11,25 @@
 }
 
 .topbar {
+  // Status reads only through the icon chip and this hairline accent — the
+  // bar itself stays the same graphite glass as the toasts, never a full
+  // status-colored wash.
+  --topbar-accent: var(--primary-accent);
+  --topbar-accent-rgb: var(--primary-accent-rgb);
+
   position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   z-index: $z-index-sticky;
-  background: var(--glass-background-subtle);
-  backdrop-filter: $backdrop-blur-sm;
-  border-bottom: 1px solid var(--border-color-subtle);
+  background: var(--glass-background-strong);
+  backdrop-filter: $backdrop-blur;
+  border-bottom: 1px solid var(--glass-border);
   font-family: $font-primary;
   font-size: $fs-sm;
-  color: var(--text-secondary);
-  transition: background-color $transition-base, color $transition-base, border-color $transition-base;
+  color: var(--text-primary);
+  touch-action: pan-x;
+  transition: border-color $transition-base;
 
   @media (prefers-reduced-motion: no-preference) {
     animation: topbar-slide-down $transition-fast $ease-out-expo;
@@ -34,27 +41,23 @@
   }
 
   &--info {
-    background: var(--status-info-bg);
-    color: var(--status-info-text);
-    border-bottom-color: var(--status-info-border);
+    --topbar-accent: var(--primary-accent-light);
+    --topbar-accent-rgb: var(--primary-accent-light-rgb);
   }
 
   &--success {
-    background: var(--success-background);
-    color: var(--success-color-dark);
-    border-bottom-color: rgba(var(--success-color-rgb), 0.2);
+    --topbar-accent: var(--status-success-text);
+    --topbar-accent-rgb: var(--status-success-rgb);
   }
 
   &--warning {
-    background: var(--status-warning-bg);
-    color: var(--status-warning-text);
-    border-bottom-color: var(--status-warning-border);
+    --topbar-accent: var(--status-warning-text);
+    --topbar-accent-rgb: var(--status-warning-rgb);
   }
 
   &--error {
-    background: var(--status-danger-bg);
-    color: var(--status-danger-text);
-    border-bottom-color: var(--status-danger-border);
+    --topbar-accent: var(--status-danger-text);
+    --topbar-accent-rgb: var(--status-danger-rgb);
   }
 
   &__container {
@@ -64,6 +67,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: $spacing-xs;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    padding: $spacing-xxs;
+    border-radius: $radius-sm;
+    color: var(--topbar-accent);
+    background: rgba(var(--topbar-accent-rgb), 0.14);
+    font-size: $fs-icon-sm;
   }
 
   &__text {
@@ -74,26 +89,39 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    @media (prefers-reduced-motion: no-preference) {
-      transition: color $transition-base;
-    }
   }
 
   &__action {
+    position: relative;
     flex-shrink: 0;
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    // Visually compact (the bar's fixed $topbar-height/--topbar-offset can't
+    // grow to fit a full 44px pill) — the hit area is still expanded to the
+    // touch-target minimum via ::before, same trick as __dismiss/__count.
+    padding: $spacing-xxs $spacing-md;
+    border-radius: $radius-pill;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-weight: $fw-semibold;
     white-space: nowrap;
+    transition: background-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
 
-    @media (prefers-reduced-motion: no-preference) {
-      transition: opacity $transition-base;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -$spacing-xs;
     }
 
     &:hover {
-      opacity: 0.7;
+      background: var(--border-color-subtle);
+      color: var(--text-primary);
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
     }
   }
 
@@ -106,13 +134,14 @@
     place-items: center;
     padding: $spacing-xxs $spacing-sm;
     border-radius: $radius-lg;
-    color: inherit;
+    color: var(--text-secondary);
     background: var(--glass-background);
     border: 1px solid var(--border-color-subtle);
     font-size: $fs-xs;
     font-weight: 600;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    transition: color $transition-fast $ease-in-out-smooth, background-color $transition-fast $ease-in-out-smooth;
 
     &::before {
       content: '';
@@ -121,7 +150,13 @@
     }
 
     &:hover {
-      opacity: 0.7;
+      color: var(--text-primary);
+      background: var(--glass-highlight);
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
     }
   }
 
@@ -133,12 +168,14 @@
     display: grid;
     place-items: center;
     padding: $spacing-xxs;
-    color: inherit;
+    color: var(--text-muted);
     background: transparent;
     border: none;
+    border-radius: $radius-circle;
     font-size: $fs-icon-sm;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    transition: color $transition-fast $ease-in-out-smooth, background-color $transition-fast $ease-in-out-smooth;
 
     &::before {
       content: '';
@@ -147,7 +184,13 @@
     }
 
     &:hover {
-      opacity: 0.7;
+      color: var(--text-primary);
+      background: var(--glass-highlight);
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
     }
   }
 }

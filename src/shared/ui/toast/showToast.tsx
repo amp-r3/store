@@ -1,13 +1,17 @@
-import Link from 'next/link';
+import { ReactNode } from 'react';
 import { toast as sonnerToast } from 'sonner';
+import { ToastCard } from './ToastCard';
 
-export type ToastType = 'info' | 'success' | 'warning' | 'error';
+export type ToastVariant = 'added' | 'removed' | 'info' | 'success' | 'warning' | 'error';
 
 export const TOAST_DURATION_MS = 4000;
 
 export interface ToastAction {
     label: string;
-    to: string;
+    /** next/link when set; otherwise a plain button. Omit both for a dismiss-only action. */
+    to?: string;
+    onClick?: () => void;
+    emphasis?: 'primary' | 'ghost';
 }
 
 interface ToastOptions {
@@ -15,25 +19,29 @@ interface ToastOptions {
      *  the existing toast in place instead of stacking a new one. */
     key?: string;
     action?: ToastAction;
+    icon?: ReactNode;
+    description?: string;
     durationMs?: number;
 }
 
 let anonymousToastId = 0;
 
-export const showToast = (type: ToastType, text: string, options?: ToastOptions) => {
+export const showToast = (variant: ToastVariant, text: string, options?: ToastOptions) => {
     const id = options?.key ?? `toast-${++anonymousToastId}`;
 
-    sonnerToast[type](text, {
-        id,
-        duration: options?.durationMs ?? TOAST_DURATION_MS,
-        action: options?.action
-            ? (
-                <Link href={options.action.to} onClick={() => sonnerToast.dismiss(id)}>
-                    {options.action.label}
-                </Link>
-            )
-            : undefined,
-    });
+    sonnerToast.custom(
+        () => (
+            <ToastCard
+                variant={variant}
+                text={text}
+                description={options?.description}
+                action={options?.action}
+                icon={options?.icon}
+                onDismiss={() => sonnerToast.dismiss(id)}
+            />
+        ),
+        { id, duration: options?.durationMs ?? TOAST_DURATION_MS }
+    );
 };
 
 export const dismissToasts = () => sonnerToast.dismiss();
