@@ -14,6 +14,7 @@ supabase/.temp/
 
 # Next.js
 .next
+.next-second
 out
 next-env.d.ts
 *.tsbuildinfo
