@@ -31,12 +31,17 @@ export const wishlistSlice = createSlice({
     },
     clearFavorite(state) {
       state.favoriteItems = {}
+    },
+    // Unlike toogleFavorite, unconditionally adds — used to undo a removal,
+    // whose click can land after the favorite state has already changed.
+    addFavorite(state, action: PayloadAction<number>) {
+      state.favoriteItems[action.payload] = true
     }
   }
 })
 
 const persistedWishlistReducer = persistReducer(wishlistPersistConfig, wishlistSlice.reducer)
 
-export const { toogleFavorite, clearFavorite } = wishlistSlice.actions
+export const { toogleFavorite, clearFavorite, addFavorite } = wishlistSlice.actions
 export const wishlistReducer = persistedWishlistReducer;
 export default persistedWishlistReducer;

@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Drawer } from 'vaul';
 import { SortControlProps } from '../SortControl';
 import { SortOptionsList } from '../SortOptionsList/SortOptionsList';
+import { ignoreToastInteraction } from '@/shared/lib';
 import style from './sort-bottom-sheet.module.scss';
 
 export interface SortBottomSheetProps extends SortControlProps {
@@ -28,6 +29,7 @@ export const SortBottomSheet: FC<SortBottomSheetProps> = ({
                             document.activeElement.blur();
                         }
                     }}
+                    onPointerDownOutside={ignoreToastInteraction}
                 >
                     <div className={style['sort-bottom-sheet__drag-handle']} />
 

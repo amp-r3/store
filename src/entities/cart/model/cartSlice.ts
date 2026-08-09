@@ -50,6 +50,13 @@ export const cartSlice = createSlice({
         clearCart: (state) => {
             state.items = {};
         },
+        restoreCartItem: (state, action: PayloadAction<{ sizeId: number; productId: number; quantity: number }>) => {
+            const { sizeId, productId, quantity } = action.payload;
+            state.items[sizeId] = { productId, quantity };
+        },
+        restoreCart: (state, action: PayloadAction<Record<number, CartData>>) => {
+            state.items = { ...state.items, ...action.payload };
+        },
         openCart: (state) => {
             state.isOpen = true;
         },
@@ -62,6 +69,6 @@ export const cartSlice = createSlice({
 
 const persistedCartReducer = persistReducer(cartPersistConfig, cartSlice.reducer)
 
-export const { removeFromCart, changeQuantity, clearCart, openCart, closeCart } = cartSlice.actions
+export const { removeFromCart, changeQuantity, clearCart, restoreCartItem, restoreCart, openCart, closeCart } = cartSlice.actions
 export const cartReducer = persistedCartReducer;
 export default persistedCartReducer;

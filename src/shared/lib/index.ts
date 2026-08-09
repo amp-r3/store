@@ -9,6 +9,7 @@ export * from './hapticPresets';
 export * from './safeRedirectPath';
 export * from './slugify';
 export * from './domEvents';
+export * from './overlayDismiss';
 export * from './hooks';
 export * from './storage';
 export * from './getModalRoot';

@@ -8,7 +8,7 @@ import { Modal } from '@/shared/ui';
 import { selectIsAuth } from '@/entities/session';
 import { addToCheckout } from '@/features/checkout-process';
 import { useHaptics, useTransitionRouter } from "@/shared/lib/hooks";
-import { getModalRoot } from "@/shared/lib";
+import { getModalRoot, ignoreToastInteraction } from "@/shared/lib";
 import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
 import { useCartActions } from "@/features/cart-actions";
@@ -76,6 +76,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 document.activeElement.blur();
               }
             }}
+            onPointerDownOutside={ignoreToastInteraction}
           >
             <VisuallyHidden.Root>
               <Drawer.Title>Shopping Cart</Drawer.Title>

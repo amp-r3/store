@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import Link from 'next/link';
 import {
     IoBagCheckOutline,
@@ -36,10 +36,12 @@ interface ToastCardProps {
     description?: string;
     action?: ToastAction;
     icon?: ReactNode;
+    durationMs: number;
+    showTimer?: boolean;
     onDismiss(): void;
 }
 
-export const ToastCard = ({ variant, text, description, action, icon, onDismiss }: ToastCardProps) => {
+export const ToastCard = ({ variant, text, description, action, icon, durationMs, showTimer, onDismiss }: ToastCardProps) => {
     const handleActionClick = () => {
         action?.onClick?.();
         onDismiss();
@@ -86,6 +88,14 @@ export const ToastCard = ({ variant, text, description, action, icon, onDismiss 
             >
                 <IoClose aria-hidden="true" />
             </button>
+
+            {showTimer && (
+                <div
+                    className={style.card__timer}
+                    style={{ '--toast-duration': `${durationMs}ms` } as CSSProperties}
+                    aria-hidden="true"
+                />
+            )}
         </div>
     );
 };

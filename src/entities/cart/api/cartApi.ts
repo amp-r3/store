@@ -7,6 +7,16 @@ type QuantityAction = 'inc' | 'dec';
 const calcQty = (current: number, action: QuantityAction) =>
   action === 'inc' ? current + 1 : Math.max(0, current - 1);
 
+const upsertCartRows = (userId: string, cart: Record<number, CartData>) => {
+  const rows = Object.entries(cart).map(([sizeId, data]) => ({
+    user_id: userId,
+    size_id: Number(sizeId),
+    quantity: data.quantity,
+  }));
+
+  return supabase.from('cart_items').upsert(rows, { onConflict: 'user_id, size_id' });
+};
+
 export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
@@ -186,19 +196,11 @@ export const cartApi = baseApi.injectEndpoints({
             return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
           }
 
-          const itemsToSync = Object.entries(localCart).map(([sizeId, data]) => ({
-            user_id: user.id,
-            size_id: Number(sizeId),
-            quantity: data.quantity
-          }));
-
-          if (itemsToSync.length === 0) {
+          if (Object.keys(localCart).length === 0) {
             return { data: null };
           }
 
-          const { error } = await supabase
-            .from('cart_items')
-            .upsert(itemsToSync, { onConflict: 'user_id, size_id' });
+          const { error } = await upsertCartRows(user.id, localCart);
 
           if (error) {
             return { error: { status: error.code, data: error.message } };
@@ -210,6 +212,88 @@ export const cartApi = baseApi.injectEndpoints({
         }
       },
       invalidatesTags: ['Cart']
+    }),
+
+    // Restores an exact quantity for a single line (unlike upsertCartItem,
+    // which only steps by ±1) — used to undo a removal/decrease-to-zero.
+    restoreCartItem: builder.mutation<null, { sizeId: number; productId: number; quantity: number }>({
+      queryFn: async ({ sizeId, quantity }) => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const user = session?.user;
+          if (!user) {
+            return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
+          }
+
+          const { error } = await supabase
+            .from('cart_items')
+            .upsert(
+              { user_id: user.id, size_id: sizeId, quantity },
+              { onConflict: 'user_id, size_id' }
+            );
+
+          if (error) {
+            return { error: { status: error.code, data: error.message } };
+          }
+
+          return { data: null };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
+        }
+      },
+
+      async onQueryStarted({ sizeId, productId, quantity }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          cartApi.util.updateQueryData('getCart', undefined as never, (draft) => {
+            draft[sizeId] = { quantity, productId };
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      }
+    }),
+
+    // Bulk re-upsert of a whole cart snapshot — used to undo "Clear cart".
+    restoreCart: builder.mutation<null, Record<number, CartData>>({
+      queryFn: async (snapshot) => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const user = session?.user;
+          if (!user) {
+            return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
+          }
+
+          if (Object.keys(snapshot).length === 0) {
+            return { data: null };
+          }
+
+          const { error } = await upsertCartRows(user.id, snapshot);
+
+          if (error) {
+            return { error: { status: error.code, data: error.message } };
+          }
+
+          return { data: null };
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
+        }
+      },
+
+      async onQueryStarted(snapshot, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          cartApi.util.updateQueryData('getCart', undefined as never, (draft) => {
+            Object.assign(draft, snapshot);
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      }
     }),
 
     clearCart: builder.mutation<null, void>({
@@ -259,4 +343,6 @@ export const {
   useDeleteCartItemMutation,
   useClearCartMutation,
   useSyncCartMutation,
+  useRestoreCartItemMutation,
+  useRestoreCartMutation,
 } = cartApi;

@@ -5,7 +5,7 @@ import { IoChevronDown, IoCheckmark, IoClose } from 'react-icons/io5';
 import { FaSortAmountDown } from 'react-icons/fa';
 import style from './reviews-sort.module.scss';
 import { useHaptics, useMediaQuery } from "@/shared/lib/hooks";
-import { getModalRoot } from "@/shared/lib";
+import { getModalRoot, ignoreToastInteraction } from "@/shared/lib";
 import type { ReviewSort } from '@/entities/review';
 
 export interface SortOption {
@@ -68,7 +68,10 @@ export const ReviewsSort = ({ value, onChange }: ReviewsSortProps) => {
                     </Drawer.Trigger>
                     <Drawer.Portal>
                         <Drawer.Overlay className={style['reviews-sort__backdrop']} />
-                        <Drawer.Content className={style['reviews-sort__bottom-sheet']}>
+                        <Drawer.Content
+                            className={style['reviews-sort__bottom-sheet']}
+                            onPointerDownOutside={ignoreToastInteraction}
+                        >
                             <div className={style['reviews-sort__drag-handle']} />
                             <div className={style['reviews-sort__sheet-header']}>
                                 <Drawer.Title className={style['reviews-sort__sheet-title']}>

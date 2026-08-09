@@ -4,7 +4,7 @@ import { VisuallyHidden } from 'radix-ui';
 import { IoClose } from 'react-icons/io5';
 import { OrderDetailsHeader, OrderDetailsBody, OrderDetailsFooter } from "../components";
 import { OrderProgress, OrderStatusEvent } from '@/entities/order';
-import { getModalRoot } from '@/shared/lib';
+import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 import style from './order-details-drawer.module.scss';
 import { OrderDetailsProps } from '../OrderDetails';
 
@@ -48,6 +48,7 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
                             document.activeElement.blur();
                         }
                     }}
+                    onPointerDownOutside={ignoreToastInteraction}
                 >
                     <VisuallyHidden.Root>
                         <Drawer.Title>Order details</Drawer.Title>

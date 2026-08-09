@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Dialog, VisuallyHidden } from 'radix-ui';
 import style from './product-image-modal.module.scss';
 import { useImageView } from "@/shared/lib/hooks";
-import { getModalRoot } from "@/shared/lib";
+import { getModalRoot, ignoreToastInteraction } from "@/shared/lib";
 
 interface ProductImageModalProps {
   imageSrc: string;
@@ -30,6 +30,7 @@ export const ProductImageModal = ({ imageSrc, imageAlt, onClose, isOpen }: Produ
           ref={contentRef}
           className={style['image-wrapper']}
           aria-describedby={undefined}
+          onPointerDownOutside={ignoreToastInteraction}
         >
           <VisuallyHidden.Root>
             <Dialog.Title>

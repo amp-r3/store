@@ -31,8 +31,21 @@
 // just hugs the card's content. Below 600px sonner's own
 // `[data-sonner-toaster] [data-sonner-toast]` rule (two attribute selectors)
 // outweighs this single class and takes back over, which is what we want.
+//
+// `pointer-events: auto` counters a separate issue: Radix's DismissableLayer
+// (every Dialog/Drawer in this app is modal) sets
+// `document.body.style.pointerEvents = 'none'` while mounted, and only
+// re-enables it on its own layer's DOM subtree. Sonner's <ol> mounts as a
+// direct child of <body> (AppProviders.tsx), outside #modal-root's own
+// `> * { pointer-events: auto }` escape hatch — so without this, toasts are
+// unclickable behind any open drawer/modal/bottom sheet. Scoped to the <li>,
+// not the whole viewport, so the zero-height <ol> wrapper stays click-through
+// outside its toasts. Lower specificity than sonner's own
+// `[data-sonner-toast][data-visible='false']{pointer-events:none}`, so
+// hidden/stacked toasts still correctly ignore pointer events.
 .toast-li {
   width: min(25rem, calc(100vw - #{$spacing-xl} * 2));
+  pointer-events: auto;
 
   @media (min-width: 1440px) {
     width: 27rem;
@@ -48,6 +61,17 @@
 
 [data-sonner-toast]:focus-visible .card {
   box-shadow: var(--shadow-lg), 0 0 0 $focus-ring-width var(--focus-ring-color);
+}
+
+// Sonner sets `data-expanded="true"` on every toast the instant the pointer
+// enters the toaster (Toaster.tsx's onMouseEnter sets `expanded` for the
+// whole stack), and that's the exact condition under which it also pauses
+// its own real auto-dismiss timer (sonner's `remainingTime` effect keys off
+// the same `expanded` flag). Pausing the CSS countdown on the same selector
+// keeps .card__timer visually truthful to when the toast can actually still
+// disappear.
+[data-sonner-toast][data-expanded='true'] .card__timer {
+  animation-play-state: paused;
 }
 
 .card {
@@ -192,6 +216,36 @@
   &:hover {
     background-color: var(--border-color-subtle);
     color: var(--text-primary);
+  }
+}
+
+@keyframes toast-timer-shrink {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+// Countdown to auto-dismiss for toasts with a time-limited action (Undo).
+// `--toast-duration` is set inline per instance (ToastCard.tsx) to match the
+// same value passed to sonner's own `duration` option, so the bar empties
+// exactly when the toast actually disappears. Sits inside `.card`'s
+// `overflow: hidden` + rounded corners, so no separate radius is needed here.
+.card__timer {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: var(--toast-accent);
+  opacity: 0.4;
+  transform-origin: left;
+  animation: toast-timer-shrink var(--toast-duration, 4000ms) linear forwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    display: none;
   }
 }
 

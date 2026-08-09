@@ -4,7 +4,7 @@ import { ICategoryProps } from '../CategoryControl';
 import { CategoryList } from '../../category-list/CategoryList';
 import style from './category-popup.module.scss';
 import { Dialog } from 'radix-ui';
-import { getModalRoot } from '@/shared/lib';
+import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 
 
 export const CategoryPopup: FC<ICategoryProps> = ({
@@ -32,7 +32,10 @@ export const CategoryPopup: FC<ICategoryProps> = ({
                     
                     className={style['category-popup__backdrop']}
                 />
-                <Dialog.Content className={style['category-popup__window']}>
+                <Dialog.Content
+                    className={style['category-popup__window']}
+                    onPointerDownOutside={ignoreToastInteraction}
+                >
                     <div className={style['category-popup__header']}>
                         <Dialog.Title className={style['category-popup__title']}>Category</Dialog.Title>
                         <Dialog.Close asChild>

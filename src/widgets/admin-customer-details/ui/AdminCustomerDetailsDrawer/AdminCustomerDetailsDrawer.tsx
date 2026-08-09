@@ -5,7 +5,7 @@ import { IoClose } from 'react-icons/io5';
 
 import { AdminCustomerDetailsHeader, AdminCustomerDetailsBody } from '../components';
 import { AdminCustomerDetailsProps } from '../AdminCustomerDetails';
-import { getModalRoot } from '@/shared/lib';
+import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 import style from './admin-customer-details-drawer.module.scss';
 
 type AdminCustomerDetailsDrawerProps = AdminCustomerDetailsProps & {
@@ -35,6 +35,7 @@ export const AdminCustomerDetailsDrawer: FC<AdminCustomerDetailsDrawerProps> = (
                             document.activeElement.blur();
                         }
                     }}
+                    onPointerDownOutside={ignoreToastInteraction}
                 >
                     <VisuallyHidden.Root>
                         <Drawer.Title>Customer details</Drawer.Title>

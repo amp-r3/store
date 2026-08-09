@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/shared/model"
 import { useCallback } from "react"
 import { selectIsAuth } from "@/entities/session";
-import { useGetWishlistQuery, useToggleWishlistMutation, toogleFavorite, WishlistState } from "@/entities/wishlist";
+import { useGetWishlistQuery, useToggleWishlistMutation, toogleFavorite, addFavorite, WishlistState } from "@/entities/wishlist";
 import { showToast } from "@/shared/ui";
 
 interface useWishlistActionsProps {
@@ -28,10 +28,19 @@ export const useWishlistActions = (): useWishlistActionsProps => {
     }
 
     if (isInWishlist) {
-      // Undo is UI only for now — it dismisses the toast, it does not restore the item.
+      const restoreItem = () => {
+        if (isAuth) {
+          toggleWishlist({ productId: id, isInWishlist: false, priceAtAdd: price });
+        } else {
+          dispatch(addFavorite(id));
+        }
+        showToast('added', 'Returned to wishlist', { key: 'wishlist-undo' });
+      };
+
       showToast('removed', 'Removed from wishlist', {
         key: 'wishlist',
-        action: { label: 'Undo', emphasis: 'ghost' },
+        showTimer: true,
+        action: { label: 'Undo', emphasis: 'ghost', onClick: restoreItem },
       });
     } else {
       showToast('added', 'Added to wishlist', {

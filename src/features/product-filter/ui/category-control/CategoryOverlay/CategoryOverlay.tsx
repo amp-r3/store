@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Drawer } from 'vaul';
 import { ICategoryProps } from '../CategoryControl';
 import { CategoryList } from '../../category-list/CategoryList';
+import { ignoreToastInteraction } from '@/shared/lib';
 import style from './category-overlay.module.scss';
 
 export const CategoryOverlay: FC<ICategoryProps> = ({
@@ -23,6 +24,7 @@ export const CategoryOverlay: FC<ICategoryProps> = ({
                             document.activeElement.blur();
                         }
                     }}
+                    onPointerDownOutside={ignoreToastInteraction}
                 >
                     <div className={style['category-overlay__handle']} />
 

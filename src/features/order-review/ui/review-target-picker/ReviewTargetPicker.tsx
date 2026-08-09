@@ -6,7 +6,7 @@ import { LuStar } from 'react-icons/lu';
 import { EnrichedOrderItem } from "@/entities/order";
 import style from './review-target-picker.module.scss'
 import { useMediaQuery } from "@/shared/lib/hooks";
-import { getModalRoot } from "@/shared/lib";
+import { getModalRoot, ignoreToastInteraction } from "@/shared/lib";
 import { OrderItem } from "@/entities/order";
 import { OrderItemSkeleton } from "@/entities/order";
 
@@ -56,7 +56,11 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
             <Drawer.Root open={isOpen} onOpenChange={onOpenChange} direction="bottom">
                 <Drawer.Portal container={modalRoot}>
                     <Drawer.Overlay className={style['review-drawer__overlay']} />
-                    <Drawer.Content className={style['review-drawer__content']} aria-label="Which item you want to rate">
+                    <Drawer.Content
+                        className={style['review-drawer__content']}
+                        aria-label="Which item you want to rate"
+                        onPointerDownOutside={ignoreToastInteraction}
+                    >
                         <Drawer.Handle className={style['review-drawer__handle']} />
                         
                         <button className={style['review-drawer__close-btn']} aria-label="Close" onClick={() => onOpenChange(false)}>
@@ -95,7 +99,10 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
         <Dialog.Root open={isOpen} onOpenChange={onOpenChange} >
             <Dialog.Portal container={modalRoot}>
                 <Dialog.Overlay className={style['review-modal__overlay']} />
-                <Dialog.Content className={style['review-modal__content']}>
+                <Dialog.Content
+                    className={style['review-modal__content']}
+                    onPointerDownOutside={ignoreToastInteraction}
+                >
                     <Dialog.Close asChild>
                         <button className={style['review-modal__close-btn']} aria-label="Close">
                             <IoClose size={20} />

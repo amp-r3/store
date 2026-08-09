@@ -16,7 +16,7 @@ interface CartItemProps {
     product: CartItemType;
     onIncrease?: (sizeId: number, productId: number, stock?: number) => void;
     onDecrease?: (sizeId: number, productId: number) => void;
-    onRemove?: (sizeId: number) => void;
+    onRemove?: (sizeId: number, productId: number, quantity: number) => void;
     onClose?: () => void;
     readonly?: boolean;
 }
@@ -124,7 +124,7 @@ export const CartItem = memo<CartItemProps>(({
 
                     <button
                         className={`${styles['cart-item__btn']} ${styles['cart-item__btn--remove']}`}
-                        onClick={() => onRemove?.(sizeId)}
+                        onClick={() => onRemove?.(sizeId, id, quantity)}
                         aria-label="Remove item"
                     >
                         <IoTrashOutline size={24} />

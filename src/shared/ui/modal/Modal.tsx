@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 import { IoClose } from 'react-icons/io5';
 import style from './modal.module.scss';
 import { Dialog } from 'radix-ui';
-import { getModalRoot } from '@/shared/lib';
+import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 
 interface ModalProps {
   isOpen: boolean;
@@ -36,7 +36,10 @@ export const Modal: FC<ModalProps> = ({
       <Dialog.Portal container={getModalRoot()}>
         <Dialog.Overlay className={style.overlay} />
 
-        <Dialog.Content className={`${style.content} ${style[actionVariant]}`}>
+        <Dialog.Content
+          className={`${style.content} ${style[actionVariant]}`}
+          onPointerDownOutside={ignoreToastInteraction}
+        >
           <div className={style.header}>
             {icon && <div className={style.iconWrapper}>{icon}</div>}
             <Dialog.Title className={style.title}>{title}</Dialog.Title>
