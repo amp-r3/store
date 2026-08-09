@@ -1,4 +1,5 @@
 @use 'app/styles/index' as *;
+@use 'app/styles/controls' as *;
 
 .wrapper {
   display: flex;
@@ -8,20 +9,11 @@
 }
 
 .label {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
-  font-family: $font-primary;
-  font-size: $fs-sm;
-  font-weight: $fw-semibold;
-  color: var(--text-secondary);
+  @include field-label;
 }
 
 .optionalBadge {
-  font-size: $fs-xs;
-  font-weight: $fw-normal;
-  font-style: italic;
-  color: var(--text-muted);
+  @include field-optional-marker;
 }
 
 .control {
@@ -70,12 +62,12 @@
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--error-color);
-  margin-left: $spacing-xs;
+  margin-left: $spacing-md;
 }
 
 .description {
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--text-muted);
-  margin-left: $spacing-xs;
+  margin-left: $spacing-md;
 }

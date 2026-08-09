@@ -104,12 +104,14 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
             <div className={style.addForm}>
                 <FormField
                     label="Size"
+                    labelPlacement="stacked"
                     value={newValue}
                     onChange={(event) => setNewValue(event.target.value)}
                     onKeyDown={handleSizeInputKeyDown}
                 />
                 <FormField
                     label="Stock"
+                    labelPlacement="stacked"
                     showStepper
                     type="number"
                     min={0}

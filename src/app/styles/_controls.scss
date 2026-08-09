@@ -24,6 +24,26 @@
     }
 }
 
+// ── Stacked field label ───────────────────────────────────────────────────
+// The label-above-control recipe shared by FormField (stacked placement),
+// Select, Textarea and the admin tags field.
+@mixin field-label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    color: var(--text-secondary);
+}
+
+@mixin field-optional-marker {
+    font-size: $fs-xs;
+    font-weight: $fw-normal;
+    font-style: italic;
+    color: var(--text-muted);
+}
+
 // ── Pill search input ─────────────────────────────────────────────────────
 // The rounded search-with-icon recipe repeated across the orders/products/
 // customers/reviews toolbars.

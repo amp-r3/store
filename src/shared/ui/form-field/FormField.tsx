@@ -17,15 +17,24 @@ export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   suffix?: ReactNode;
   /** `type="number"` only — renders −/+ buttons that step the native input and dispatch a real `input` event, so react-hook-form's registered onChange still fires. */
   showStepper?: boolean;
+  /**
+   * `float` (default) keeps the Material-style label inside the box — right
+   * for short forms (auth, checkout). `stacked` renders the label above the
+   * control, matching Select/Textarea geometry so mixed rows in a grid
+   * align; use it for dense admin data entry.
+   */
+  labelPlacement?: 'float' | 'stacked';
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, description, warning, id, className, optional, icon, placeholder, suffix, showStepper, type = 'text', ...props }, ref) => {
+  ({ label, error, description, warning, id, className, optional, icon, placeholder, suffix, showStepper, type = 'text', labelPlacement = 'float', ...props }, ref) => {
     const generatedId = useId();
     const inputId = id || generatedId;
     const errorId = `${inputId}-error`;
     const descriptionId = `${inputId}-description`;
     const warningId = `${inputId}-warning`;
+    const optionalId = `${inputId}-optional`;
+    const isStacked = labelPlacement === 'stacked';
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,11 +65,19 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
       error ? errorId : null,
       !error && description ? descriptionId : null,
       warning ? warningId : null,
+      optional ? optionalId : null,
       props['aria-describedby'] ?? null,
     ].filter(Boolean).join(' ') || undefined;
 
     return (
       <div className={style.wrapper}>
+
+        {isStacked && (
+          <label htmlFor={inputId} className={style.stackedLabel}>
+            {label}
+            {optional && <span id={optionalId} className={style.stackedOptional}>Optional</span>}
+          </label>
+        )}
 
         <div
           className={[
@@ -92,12 +109,11 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             <input
               id={inputId}
               ref={setRefs}
-              placeholder=" "
+              placeholder={isStacked ? placeholder : ' '}
               className={[
                 style.input,
                 icon ? style.inputWithIcon : '',
-                error ? style.inputError : '',
-                optional ? style.inputOptional : '',
+                isStacked ? style.inputStacked : '',
                 showStepper ? style.inputCentered : '',
                 className || '',
               ].filter(Boolean).join(' ')}
@@ -107,17 +123,19 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
               aria-describedby={describedBy}
             />
 
-            <label
-              htmlFor={inputId}
-              className={[
-                style.label,
-                optional ? style.labelOptional : '',
-              ].filter(Boolean).join(' ')}
-            >
-              {label}
-            </label>
+            {!isStacked && (
+              <label
+                htmlFor={inputId}
+                className={[
+                  style.label,
+                  optional ? style.labelOptional : '',
+                ].filter(Boolean).join(' ')}
+              >
+                {label}
+              </label>
+            )}
 
-            {placeholder && (
+            {!isStacked && placeholder && (
               <span className={style.hint} aria-hidden="true">
                 {placeholder}
               </span>
@@ -154,8 +172,8 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             </button>
           )}
 
-          {optional && (
-            <span className={style.optionalBadge}>Optional</span>
+          {!isStacked && optional && (
+            <span id={optionalId} className={style.optionalBadge}>Optional</span>
           )}
         </div>
 

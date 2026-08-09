@@ -1,4 +1,5 @@
 @use 'app/styles/index' as *;
+@use 'app/styles/controls' as *;
 
 .form {
   display: flex;
@@ -9,22 +10,22 @@
 .pricePreview {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: $spacing-xxs;
-  padding: $spacing-sm $spacing-md;
-  background: var(--glass-background-subtle);
-  border: 1px solid var(--border-color-subtle);
-  border-radius: $radius-md;
+  gap: $spacing-xs;
+  width: 100%;
 }
 
 .pricePreviewLabel {
-  font-size: $fs-xs;
-  text-transform: uppercase;
-  letter-spacing: $letter-spacing-wide;
-  color: var(--text-muted);
+  @include field-label;
 }
 
 .pricePreviewValue {
+  display: flex;
+  align-items: center;
+  min-height: $input-height;
+  padding: $spacing-sm $spacing-md;
+  background: var(--glass-background-subtle);
+  border: 1px solid var(--border-color-subtle);
+  border-radius: $radius-input;
   font-size: $fs-lg;
   font-weight: $fw-bold;
   color: var(--text-primary);

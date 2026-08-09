@@ -1,6 +1,5 @@
 .col {
   grid-column: span var(--col-span, 12);
-  align-self: var(--col-align, start);
   min-width: 0;
 
   @media (max-width: 1024px) {

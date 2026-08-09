@@ -1,4 +1,5 @@
 @use 'app/styles/index' as *;
+@use 'app/styles/controls' as *;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Floating Label Constants
@@ -8,7 +9,6 @@ $float-label-size-floated : $fs-xs; // ≈ 0.6875rem
 $float-label-size-resting : $fs-base; // 1rem
 $input-padding-y : $spacing-sm;
 $input-padding-x : $spacing-md;
-$input-min-height : 56px;
 $label-notch-padding : $spacing-xxs;
 
 
@@ -25,6 +25,19 @@ $label-notch-padding : $spacing-xxs;
 
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Stacked label (labelPlacement="stacked")
+// ─────────────────────────────────────────────────────────────────────────────
+
+.stackedLabel {
+  @include field-label;
+}
+
+.stackedOptional {
+  @include field-optional-marker;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Input wrapper
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -35,7 +48,7 @@ $label-notch-padding : $spacing-xxs;
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: $input-min-height;
+  min-height: $input-height;
   background: var(--field-bg);
   border: 1px solid var(--border-color);
   border-radius: $radius-input;
@@ -155,7 +168,8 @@ $label-notch-padding : $spacing-xxs;
 .hint {
   position: absolute;
   left: $spacing-md;
-  bottom: $spacing-md;
+  top: 50%;
+  transform: translateY(-50%);
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--text-muted);
@@ -327,7 +341,7 @@ $label-notch-padding : $spacing-xxs;
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--text-primary);
-    -webkit-box-shadow: 0 0 0px 1000px var(--background-component) inset;
+    -webkit-box-shadow: 0 0 0px 1000px var(--field-bg) inset;
     transition: background-color 5000s ease-in-out 0s;
   }
 }
@@ -336,12 +350,8 @@ $label-notch-padding : $spacing-xxs;
   padding-left: $spacing-xs;
 }
 
-.inputOptional {
-  opacity: 0.85;
-
-  &:focus {
-    opacity: 1;
-  }
+.inputStacked::placeholder {
+  color: var(--text-muted);
 }
 
 .inputCentered {
@@ -355,8 +365,7 @@ $label-notch-padding : $spacing-xxs;
 
 .optionalBadge {
   flex-shrink: 0;
-  align-self: flex-start;
-  margin-top: $spacing-xs;
+  align-self: center;
   margin-right: $spacing-sm;
 
   font-family: $font-primary;
@@ -385,7 +394,7 @@ $label-notch-padding : $spacing-xxs;
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--error-color);
-  margin-left: $spacing-xs;
+  margin-left: $spacing-md;
   animation: slideDown $transition-fast $ease-out-expo;
 }
 
@@ -393,7 +402,7 @@ $label-notch-padding : $spacing-xxs;
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--text-muted);
-  margin-left: $spacing-xs;
+  margin-left: $spacing-md;
 }
 
 .warning {
@@ -403,7 +412,7 @@ $label-notch-padding : $spacing-xxs;
   font-family: $font-primary;
   font-size: $fs-sm;
   color: var(--status-warning-text);
-  margin-left: $spacing-xs;
+  margin-left: $spacing-md;
 }
 
 @keyframes slideDown {
@@ -415,5 +424,23 @@ $label-notch-padding : $spacing-xxs;
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inputWrapper {
+    transition: none;
+  }
+
+  .label {
+    transition: none;
+  }
+
+  .hint {
+    transition: none;
+  }
+
+  .error {
+    animation: none;
   }
 }

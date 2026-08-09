@@ -138,8 +138,8 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
             {errors.root && <Alert variant="error">{errors.root.message}</Alert>}
 
             <AdminProductFormSection title="Basics">
-                <AdminProductFormCol span={6} align="center">
-                    <FormField label="Title" error={errors.title?.message} {...register('title')} />
+                <AdminProductFormCol span={6}>
+                    <FormField label="Title" labelPlacement="stacked" error={errors.title?.message} {...register('title')} />
                 </AdminProductFormCol>
                 <AdminProductFormCol span={6}>
                     <Select
@@ -151,10 +151,10 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                     />
                 </AdminProductFormCol>
                 <AdminProductFormCol span={6}>
-                    <FormField label="Brand" optional error={errors.brand?.message} {...register('brand')} />
+                    <FormField label="Brand" labelPlacement="stacked" optional error={errors.brand?.message} {...register('brand')} />
                 </AdminProductFormCol>
                 <AdminProductFormCol span={6}>
-                    <FormField label="SKU" optional error={errors.sku?.message} {...register('sku')} />
+                    <FormField label="SKU" labelPlacement="stacked" optional error={errors.sku?.message} {...register('sku')} />
                 </AdminProductFormCol>
                 <AdminProductFormCol span={12}>
                     <Textarea label="Description" optional rows={6} error={errors.description?.message} {...register('description')} />
@@ -165,6 +165,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <AdminProductFormCol span={4} spanMd={6}>
                     <FormField
                         label="Base price"
+                        labelPlacement="stacked"
                         type="number"
                         step="0.01"
                         min={0}
@@ -175,6 +176,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <AdminProductFormCol span={4} spanMd={6}>
                     <FormField
                         label="Discount"
+                        labelPlacement="stacked"
                         suffix="%"
                         type="number"
                         step="0.01"
@@ -185,7 +187,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                         {...register('discountPercentage')}
                     />
                 </AdminProductFormCol>
-                <AdminProductFormCol span={4} spanMd={12} align="center">
+                <AdminProductFormCol span={4} spanMd={12}>
                     <div className={style.pricePreview}>
                         <span className={style.pricePreviewLabel}>Final price</span>
                         <span className={style.pricePreviewValue}>${previewPrice.toFixed(2)}</span>
@@ -211,6 +213,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <AdminProductFormCol span={6}>
                     <FormField
                         label="Weight"
+                        labelPlacement="stacked"
                         suffix="kg"
                         type="number"
                         step="0.01"
@@ -223,6 +226,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <AdminProductFormCol span={6}>
                     <FormField
                         label="Min. order quantity"
+                        labelPlacement="stacked"
                         showStepper
                         type="number"
                         step="1"
@@ -234,6 +238,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <AdminProductFormCol span={4}>
                     <FormField
                         label="Width"
+                        labelPlacement="stacked"
                         suffix="cm"
                         type="number"
                         step="0.01"
@@ -245,6 +250,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <AdminProductFormCol span={4}>
                     <FormField
                         label="Height"
+                        labelPlacement="stacked"
                         suffix="cm"
                         type="number"
                         step="0.01"
@@ -256,6 +262,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                 <AdminProductFormCol span={4}>
                     <FormField
                         label="Depth"
+                        labelPlacement="stacked"
                         suffix="cm"
                         type="number"
                         step="0.01"
@@ -285,11 +292,11 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
                         error={errors.availabilityStatus?.message}
                     />
                 </AdminProductFormCol>
-                <AdminProductFormCol span={3} spanMd={6} align="center">
-                    <FormField label="Barcode" optional error={errors.barcode?.message} {...register('barcode')} />
+                <AdminProductFormCol span={3} spanMd={6}>
+                    <FormField label="Barcode" labelPlacement="stacked" optional error={errors.barcode?.message} {...register('barcode')} />
                 </AdminProductFormCol>
-                <AdminProductFormCol span={3} spanMd={6} align="center">
-                    <FormField label="QR code" optional error={errors.qrCode?.message} {...register('qrCode')} />
+                <AdminProductFormCol span={3} spanMd={6}>
+                    <FormField label="QR code" labelPlacement="stacked" optional error={errors.qrCode?.message} {...register('qrCode')} />
                 </AdminProductFormCol>
                 <AdminProductFormCol span={6}>
                     <Textarea
