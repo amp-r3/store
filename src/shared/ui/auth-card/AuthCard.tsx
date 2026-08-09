@@ -1,9 +1,10 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import Link from 'next/link'
 import style from './auth-card.module.scss'
 import { Logo } from '../logo/Logo'
 import { FaRegUser } from 'react-icons/fa'
 import { LuArrowLeft } from 'react-icons/lu'
+import { AuthCardLoadingContext } from './authCardLoading'
 
 interface AuthCardProps {
   title: string
@@ -14,6 +15,10 @@ interface AuthCardProps {
    *  which shouldn't offer a way to navigate away mid-redirect). */
   backTo?: string | null
   backLabel?: string
+  /** Static busy flag, for callers with no interactive children to report
+   *  their own state (e.g. the OAuth callback card). Combined with whatever
+   *  children report via useAuthCardLoading. */
+  isLoading?: boolean
 }
 
 export const AuthCard = ({
@@ -23,34 +28,44 @@ export const AuthCard = ({
   icon = <FaRegUser />,
   backTo = '/',
   backLabel = 'Back to store',
-}: AuthCardProps) => (
-  <main className={style.root}>
-    <div className={style.card}>
-      <div className={style.card__inner}>
-        <div className={style.card__header}>
-          <Logo />
-          {backTo && (
-            <Link href={backTo} className={style.card__back} aria-label={backLabel}>
-              <LuArrowLeft aria-hidden="true" />
-              <span className={style.card__backLabel}>{backLabel}</span>
-            </Link>
-          )}
-        </div>
+  isLoading = false,
+}: AuthCardProps) => {
+  const [childLoading, setChildLoading] = useState(false)
+  const busy = isLoading || childLoading
 
-        <div className={style.card__body}>
-          <span className={style.card__icon}>{icon}</span>
-          <h1 className={style.card__title}>{title}</h1>
-          {subtitle && <p className={style.card__subtitle}>{subtitle}</p>}
-        </div>
+  return (
+    <main className={style.root}>
+      <div className={style.card} aria-busy={busy || undefined}>
+        {busy && <span className={style.card__progress} aria-hidden="true" />}
 
-        {children}
+        <div className={style.card__inner}>
+          <div className={style.card__header}>
+            <Logo />
+            {backTo && (
+              <Link href={backTo} className={style.card__back} aria-label={backLabel}>
+                <LuArrowLeft aria-hidden="true" />
+                <span className={style.card__backLabel}>{backLabel}</span>
+              </Link>
+            )}
+          </div>
+
+          <div className={style.card__body}>
+            <span className={style.card__icon}>{icon}</span>
+            <h1 className={style.card__title}>{title}</h1>
+            {subtitle && <p className={style.card__subtitle}>{subtitle}</p>}
+          </div>
+
+          <AuthCardLoadingContext.Provider value={setChildLoading}>
+            {children}
+          </AuthCardLoadingContext.Provider>
+        </div>
       </div>
-    </div>
 
-    <footer className={style.footer}>
-      {/* No Terms of Service / Privacy Policy pages exist yet — plain text
-          until those routes exist, then this becomes a <Link>. */}
-      <p>By continuing, you agree to our Terms of Service and Privacy Policy.</p>
-    </footer>
-  </main>
-)
+      <footer className={style.footer}>
+        {/* No Terms of Service / Privacy Policy pages exist yet — plain text
+            until those routes exist, then this becomes a <Link>. */}
+        <p>By continuing, you agree to our Terms of Service and Privacy Policy.</p>
+      </footer>
+    </main>
+  )
+}

@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
-import { Alert, FormField, PasswordRequirements, PasswordStrength } from '@/shared/ui';
+import { Alert, FormField, PasswordRequirements, PasswordStrength, useAuthCardLoading } from '@/shared/ui';
 import { useCapsLock, useHaptics, getErrorMessage } from '@/shared/lib';
 import { useRegisterMutation } from '@/entities/session';
 import { RegisterSchema, registerSchema } from '../../model/registerSchema';
@@ -18,7 +18,7 @@ const PASSWORD_REQUIREMENTS_ID = 'register-password-requirements';
 
 export const RegisterForm = () => {
   const [isEmail, setIsEmail] = useState(false);
-  const [registerUser, { isLoading }] = useRegisterMutation();
+  const [registerUser, { isLoading, isSuccess }] = useRegisterMutation();
   const { success } = useHaptics();
   const errorRef = useRef<HTMLDivElement>(null);
   const { isCapsLockOn, capsLockProps } = useCapsLock();
@@ -56,7 +56,14 @@ export const RegisterForm = () => {
     if (isEmail) setFocus('email');
   }, [isEmail, setFocus]);
 
-  const signInWithOAuth = useOAuthSignIn((message) => setError('root', { type: 'server', message }));
+  const { signInWithOAuth, pendingProvider } = useOAuthSignIn(
+    (message) => setError('root', { type: 'server', message })
+  );
+
+  // Stays true until PublicRoute redirects away, so the button doesn't flash
+  // back from spinner to label between the mutation resolving and the redirect.
+  const isSubmitting = isLoading || isSuccess;
+  useAuthCardLoading(isSubmitting || pendingProvider !== null);
 
   const onSubmit = async (formData: RegisterSchema) => {
     try {
@@ -147,13 +154,14 @@ export const RegisterForm = () => {
               {...register('confirm')}
             />
 
-            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Register" isLoading={isLoading} />
+            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Register" isLoading={isSubmitting} />
           </>
         ) : (
           <AuthProviderList
             onEmailClick={() => setIsEmail(true)}
             onProviderClick={signInWithOAuth}
             failedProviders={failedProviders}
+            pendingProvider={pendingProvider}
           />
         )}
       </div>

@@ -91,10 +91,19 @@
     box-shadow: 0 0 0 1px var(--status-warning-border);
   }
 
+  &--loading:disabled {
+    opacity: 0.85;
+    cursor: progress;
+    pointer-events: none;
+    transform: none;
+  }
+
   &__icon {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: $fs-icon-md;
+    height: $fs-icon-md;
     font-size: $fs-icon-md;
     flex-shrink: 0;
 

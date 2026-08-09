@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine } from 'react-icons/ri';
-import { Alert, FormField } from '@/shared/ui';
+import { Alert, FormField, useAuthCardLoading } from '@/shared/ui';
 import { useCapsLock, useHaptics } from '@/shared/lib';
 import { useLoginMutation } from '@/entities/session';
 import { LoginSchema, loginSchema } from '../../model/loginSchema';
@@ -16,7 +16,7 @@ import style from './login-form.module.scss';
 
 export const LoginForm = () => {
   const [isEmail, setIsEmail] = useState(false);
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading, isSuccess }] = useLoginMutation();
   const { success } = useHaptics();
   const errorRef = useRef<HTMLDivElement>(null);
   const { isCapsLockOn, capsLockProps } = useCapsLock();
@@ -51,7 +51,14 @@ export const LoginForm = () => {
     if (isEmail) setFocus('email');
   }, [isEmail, setFocus]);
 
-  const signInWithOAuth = useOAuthSignIn((message) => setError('root', { type: 'server', message }));
+  const { signInWithOAuth, pendingProvider } = useOAuthSignIn(
+    (message) => setError('root', { type: 'server', message })
+  );
+
+  // Stays true until PublicRoute redirects away, so the button doesn't flash
+  // back from spinner to label between the mutation resolving and the redirect.
+  const isSubmitting = isLoading || isSuccess;
+  useAuthCardLoading(isSubmitting || pendingProvider !== null);
 
   const onSubmit = async (data: LoginSchema) => {
     try {
@@ -105,13 +112,14 @@ export const LoginForm = () => {
               {...capsLockProps}
             />
 
-            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Log in" isLoading={isLoading} />
+            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Log in" isLoading={isSubmitting} />
           </>
         ) : (
           <AuthProviderList
             onEmailClick={() => setIsEmail(true)}
             onProviderClick={signInWithOAuth}
             failedProviders={failedProviders}
+            pendingProvider={pendingProvider}
           />
         )}
       </div>

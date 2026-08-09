@@ -1,3 +1,4 @@
+import { Loader } from '@/shared/ui';
 import style from './sign-in-button.module.scss';
 import { PROVIDER_CONFIG, type AuthProviderId } from '@/shared/config';
 
@@ -10,6 +11,8 @@ interface SignInButtonProps {
    *  (cancelled consent, network blip) shouldn't lock the provider out for
    *  the rest of the session with no way back in. */
   hasFailed?: boolean;
+  isLoading?: boolean;
+  disabled?: boolean;
 }
 
 export const SignInButton = ({
@@ -17,6 +20,8 @@ export const SignInButton = ({
   className,
   onClick,
   hasFailed,
+  isLoading,
+  disabled,
 }: SignInButtonProps) => {
   const { label, icon, slug } = PROVIDER_CONFIG[provider];
   const buttonLabel = hasFailed ? `Try ${label} again` : `Continue with ${label}`;
@@ -25,6 +30,7 @@ export const SignInButton = ({
     style['sign-in'],
     style[`sign-in--${slug}`],
     hasFailed ? style['sign-in--failed'] : '',
+    isLoading ? style['sign-in--loading'] : '',
     className,
   ]
     .filter(Boolean)
@@ -35,10 +41,12 @@ export const SignInButton = ({
       className={buttonClasses}
       type="button"
       aria-label={buttonLabel}
+      aria-busy={isLoading || undefined}
+      disabled={disabled || isLoading}
       onClick={onClick}
     >
       <span className={style['sign-in__icon']}>
-        {icon}
+        {isLoading ? <Loader size="xs" /> : icon}
       </span>
 
       <span className={style['sign-in__label']}>

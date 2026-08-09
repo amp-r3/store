@@ -1,5 +1,6 @@
 export * from './alert/Alert';
 export * from './auth-card/AuthCard';
+export * from './auth-card/authCardLoading';
 export * from './breadcrumbs/Breadcrumbs';
 export * from './breadcrumbs/crumbs';
 export * from './page-layout/PageLayout';
