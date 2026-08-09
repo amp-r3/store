@@ -8,7 +8,7 @@
     padding: $spacing-xs $spacing-md;
     border-radius: $radius-pill;
     position: sticky;
-    top: calc($topbar-height + $spacing-xs);
+    top: calc(var(--topbar-offset) + #{$spacing-xs});
     margin-top: $spacing-xs;
     z-index: $z-index-sticky;
     max-width: 50rem;

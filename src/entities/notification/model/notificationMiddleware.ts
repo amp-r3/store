@@ -1,5 +1,10 @@
 import { isFulfilled, isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
 import { getErrorMessage } from '@/shared/lib';
+// Deep import, not the `@/shared/ui` barrel — this module is reachable from
+// `app/store.ts` via `entities/notification`'s index.ts (also evaluated in
+// the Node server process), and the barrel would pull the whole UI kit into
+// that graph for one function.
+import { showToast, dismissToasts } from '@/shared/ui/toast';
 import { clearNotifications, notify, NotificationType } from './notificationSlice';
 
 // Endpoints whose rejection is already surfaced locally (forms/pages) —
@@ -85,11 +90,15 @@ export const notificationMiddleware: Middleware = (api) => (next) => (action) =>
 
         if (meta.arg?.type === 'mutation' && meta.arg.endpointName === 'signOut') {
             api.dispatch(clearNotifications());
-            api.dispatch(notify({ type: 'info', text: 'Signed out' }));
+            dismissToasts();
+            showToast('info', 'Signed out');
         } else if (meta.arg?.type === 'mutation') {
             const successNotification = SUCCESS_MESSAGES[meta.arg.endpointName ?? ''];
             if (successNotification) {
-                api.dispatch(notify(successNotification));
+                showToast(successNotification.type, successNotification.text, {
+                    key: successNotification.key,
+                    action: successNotification.action,
+                });
             }
         }
     }

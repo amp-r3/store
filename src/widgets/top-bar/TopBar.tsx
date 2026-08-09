@@ -12,10 +12,8 @@ import {
 import { useAppDispatch, useAppSelector } from '@/shared/model';
 import style from './top-bar.module.scss';
 
-const DEFAULT_TEXT = 'Portfolio site: materials are not commercial.';
-
 const TYPE_CLASS: Record<NotificationType, string> = {
-  info: '',
+  info: style['topbar--info'],
   success: style['topbar--success'],
   warning: style['topbar--warning'],
   error: style['topbar--error'],
@@ -43,33 +41,45 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
     return () => clearTimeout(timeoutId);
   }, [notification, dispatch]);
 
-  const type = notification?.type ?? 'info';
+  // Toggles a var the rest of the layout (navbar, checkout summary, toast
+  // viewport) reads to reserve/release the bar's height — the bar itself no
+  // longer has a permanent idle state, so nothing can hardcode that offset.
+  useEffect(() => {
+    if (!notification) return;
+
+    document.documentElement.dataset.topbar = 'true';
+    return () => {
+      delete document.documentElement.dataset.topbar;
+    };
+  }, [notification]);
+
+  if (!notification) return null;
 
   return (
-    <header className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''} ${TYPE_CLASS[type]}`}>
+    <header className={`${style.topbar} ${isOverlay ? style['topbar--overlay'] : ''} ${TYPE_CLASS[notification.type]}`}>
       <div className={`${style.topbar__container} container`}>
         {pendingCount > 0 && (
           <button
             type="button"
             className={style.topbar__count}
             aria-label={`${pendingCount} more notification${pendingCount > 1 ? 's' : ''}`}
-            onClick={() => notification && dispatch(dismissNotification(notification.id))}
+            onClick={() => dispatch(dismissNotification(notification.id))}
           >
             +{pendingCount}
           </button>
         )}
 
         <p className={style.topbar__text} aria-live="polite">
-          {notification?.text ?? DEFAULT_TEXT}
+          {notification.text}
         </p>
 
-        {notification?.action && (
+        {notification.action && (
           <Link href={notification.action.to} className={style.topbar__action}>
             {notification.action.label}
           </Link>
         )}
 
-        {notification && notification.id !== -1 && (
+        {notification.id !== -1 && (
           <button
             type="button"
             className={style.topbar__dismiss}

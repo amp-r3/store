@@ -23,6 +23,18 @@ ul {
     list-style: none;
 }
 
+:root {
+    // Set by TopBar (widgets/top-bar) via a data attribute while a
+    // notification is showing — the bar has no permanent idle state
+    // anymore, so layout that needs to clear it (navbar, checkout summary,
+    // toast viewport) reads this instead of assuming $topbar-height.
+    --topbar-offset: 0px;
+}
+
+:root[data-topbar='true'] {
+    --topbar-offset: #{$topbar-height};
+}
+
 body {
     font-family: $font-primary;
     color: var(--text-primary);

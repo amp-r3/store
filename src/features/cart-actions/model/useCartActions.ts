@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/shared/model";
 import { selectIsAuth } from "@/entities/session";
 import { useUpsertCartItemMutation, useDeleteCartItemMutation, useClearCartMutation, changeQuantity, removeFromCart, clearCart } from "@/entities/cart";
-import { notify } from "@/entities/notification";
+import { showToast } from "@/shared/ui";
 
 // Mirrors the aggregate threshold in ProductStockBadge ("There are a few
 // left" at <= 10), applied here to the single size being added to the cart.
@@ -35,9 +35,9 @@ export const useCartActions = (): UseCartActionsReturn => {
     }
 
     if (stock !== undefined && stock <= LOW_STOCK_THRESHOLD) {
-      dispatch(notify({ type: 'warning', text: `Only ${stock} left in stock`, key: 'cart' }));
+      showToast('warning', `Only ${stock} left in stock`, { key: 'cart' });
     } else {
-      dispatch(notify({ type: 'success', text: 'Added to cart', key: 'cart' }));
+      showToast('success', 'Added to cart', { key: 'cart' });
     }
   }, [isAuth, upsertItem, dispatch])
 
@@ -47,7 +47,7 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(changeQuantity({ sizeId, productId, type: 'dec' }));
     }
-    dispatch(notify({ type: 'info', text: 'Removed from cart', key: 'cart' }));
+    showToast('info', 'Removed from cart', { key: 'cart' });
   }, [isAuth, upsertItem, dispatch]);
 
   const onRemove = useCallback((sizeId: number) => {
@@ -56,7 +56,7 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(removeFromCart(sizeId));
     }
-    dispatch(notify({ type: 'info', text: 'Removed from cart', key: 'cart' }));
+    showToast('info', 'Removed from cart', { key: 'cart' });
   }, [isAuth, deleteItem, dispatch]);
 
   const onClearCart = useCallback(() => {
@@ -65,7 +65,7 @@ export const useCartActions = (): UseCartActionsReturn => {
     } else {
       dispatch(clearCart());
     }
-    dispatch(notify({ type: 'info', text: 'Cart cleared', key: 'cart' }));
+    showToast('info', 'Cart cleared', { key: 'cart' });
   }, [isAuth, clearServerCart, dispatch]);
 
   return { onIncrease, onDecrease, onRemove, onClearCart, isUpdating };

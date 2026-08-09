@@ -5,11 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { LuTriangleAlert } from 'react-icons/lu';
 
-import { FormField, Textarea, Select, Button, Alert } from '@/shared/ui';
+import { FormField, Textarea, Select, Button, Alert, showToast } from '@/shared/ui';
 import { getErrorMessage } from '@/shared/lib';
 import { useHaptics } from '@/shared/lib/hooks';
-import { useAppDispatch } from '@/shared/model';
-import { notify } from '@/entities/notification';
 import {
     AdminProductDetail,
     useGetAdminCategoriesQuery,
@@ -40,7 +38,6 @@ interface AdminProductFormProps {
 
 export const AdminProductForm = ({ product }: AdminProductFormProps) => {
     const router = useRouter();
-    const dispatch = useAppDispatch();
     const { success } = useHaptics();
     const isEditMode = !!product;
 
@@ -103,7 +100,7 @@ export const AdminProductForm = ({ product }: AdminProductFormProps) => {
 
         const changes = buildProductChanges(productDetailToFormValues(product), values, categories ?? [], mediaDraft);
         if (!hasProductChanges(changes)) {
-            dispatch(notify({ type: 'info', text: 'No changes to save', key: 'admin-product' }));
+            showToast('info', 'No changes to save', { key: 'admin-product' });
             return;
         }
 

@@ -1,0 +1,72 @@
+@use 'app/styles/index' as *;
+
+// sonner ships its own stacking/swipe/motion mechanics (data-mounted,
+// data-removed, data-swiping, data-expanded transforms) — reimplementing
+// that against `unstyled: true` isn't worth it. Instead we repaint its own
+// CSS custom properties with project tokens. `richColors` makes sonner apply
+// --success-bg/-border/-text (etc.) per `data-type`, which is what these
+// selectors below feed. The extra `[data-sonner-theme='dark']` attribute is
+// only there to out-specificity sonner's own same-attribute rule regardless
+// of stylesheet insertion order.
+[data-sonner-toaster][data-sonner-theme='dark'].toaster {
+  --normal-bg: var(--glass-background-strong);
+  --normal-border: var(--border-color-light);
+  --normal-text: var(--text-primary);
+
+  --success-bg: var(--success-background);
+  --success-border: rgba(var(--success-color-rgb), 0.12);
+  --success-text: var(--success-color-dark);
+
+  --info-bg: var(--status-info-bg);
+  --info-border: var(--status-info-border);
+  --info-text: var(--status-info-text);
+
+  --warning-bg: var(--status-warning-bg);
+  --warning-border: var(--status-warning-border);
+  --warning-text: var(--status-warning-text);
+
+  --error-bg: var(--status-danger-bg);
+  --error-border: var(--status-danger-border);
+  --error-text: var(--status-danger-text);
+
+  --border-radius: #{$radius-lg};
+  --width: min(22rem, calc(100vw - #{$spacing-xl} * 2));
+  z-index: $z-index-toast-viewport;
+}
+
+.toast {
+  font-family: $font-primary !important;
+  font-size: $fs-sm !important;
+  font-weight: $fw-normal;
+  box-shadow: var(--shadow-lg) !important;
+  backdrop-filter: $backdrop-blur-sm;
+
+  &:focus-visible {
+    box-shadow: var(--shadow-lg), 0 0 0 $focus-ring-width var(--focus-ring-color) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  [data-title] {
+    font-family: $font-display;
+  }
+
+  [data-close-button] {
+    width: $touch-target-min !important;
+    height: $touch-target-min !important;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -$spacing-xxs;
+    }
+  }
+
+  [data-button] {
+    min-height: $touch-target-min !important;
+    border-radius: $radius-sm !important;
+  }
+}

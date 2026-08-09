@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { UseFormSetError } from 'react-hook-form';
-import { useAppDispatch } from '@/shared/model';
 import { useHaptics } from '@/shared/lib/hooks';
 import { getErrorMessage } from '@/shared/lib';
-import { notify } from '@/entities/notification';
+import { showToast } from '@/shared/ui';
 import { useClearCartMutation, CartProduct } from '@/entities/cart';
 import { useCreateOrderMutation, CreateOrderPayload } from '@/entities/order';
 import { CheckoutFormValues } from './checkoutMasterSchema';
@@ -16,7 +15,6 @@ interface UseCheckoutSubmitParams {
 }
 
 export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError }: UseCheckoutSubmitParams) => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const { success } = useHaptics();
   const [createOrder, { isLoading: isCreating }] = useCreateOrderMutation();
@@ -50,14 +48,14 @@ export const useCheckoutSubmit = ({ checkoutItems, isShippingRequired, setError 
       await clearServerCart().unwrap().catch(() => {});
       // checkout.items is cleared on the success page itself, not here — clearing it
       // before navigating races CheckoutGuard against the lazy-loaded success route.
-      dispatch(notify({ type: 'success', text: 'Order placed' }));
+      showToast('success', 'Order placed');
       success();
 
       router.replace(`/checkout/success?order=${encodeURIComponent(orderId)}`);
     } catch (err) {
       setError('root', { type: 'server', message: getErrorMessage(err) });
     }
-  }, [checkoutItems, isShippingRequired, createOrder, clearServerCart, dispatch, router, success, setError]);
+  }, [checkoutItems, isShippingRequired, createOrder, clearServerCart, router, success, setError]);
 
   return {
     submitOrder,

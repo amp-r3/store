@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/shared/model"
 import { useCallback } from "react"
 import { selectIsAuth } from "@/entities/session";
 import { useGetWishlistQuery, useToggleWishlistMutation, toogleFavorite, WishlistState } from "@/entities/wishlist";
-import { notify } from "@/entities/notification";
+import { showToast } from "@/shared/ui";
 
 interface useWishlistActionsProps {
   onWishlist(id: number, price?: number): void;
@@ -27,16 +27,14 @@ export const useWishlistActions = (): useWishlistActionsProps => {
       dispatch(toogleFavorite(id))
     }
 
-    dispatch(
-      isInWishlist
-        ? notify({ type: 'info', text: 'Removed from wishlist', key: 'wishlist' })
-        : notify({
-          type: 'success',
-          text: 'Added to wishlist',
-          key: 'wishlist',
-          action: { label: 'View', to: '/wishlist' },
-        })
-    );
+    if (isInWishlist) {
+      showToast('info', 'Removed from wishlist', { key: 'wishlist' });
+    } else {
+      showToast('success', 'Added to wishlist', {
+        key: 'wishlist',
+        action: { label: 'View', to: '/wishlist' },
+      });
+    }
   }, [isAuth, toggleWishlist, dispatch, wishlistData, guestFavoriteItems])
 
   return { onWishlist, isUpdating: isToggling }

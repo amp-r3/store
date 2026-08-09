@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { makeStore, type AppStore } from '@/app/store';
-import { RouteProgress } from '@/shared/ui';
+import { RouteProgress, Toaster } from '@/shared/ui';
 import { useAuthSync } from './auth/useAuthSync';
 import { useNotificationsSync } from './notifications/useNotificationsSync';
 
@@ -42,6 +42,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <Provider store={storeRef.current}>
       <SkeletonTheme baseColor="var(--skeleton-base)" highlightColor="var(--skeleton-highlight)">
         <RouteProgress />
+        <Toaster />
         <AppEffects>{children}</AppEffects>
       </SkeletonTheme>
     </Provider>

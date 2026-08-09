@@ -2,7 +2,7 @@
 
 .summary {
   position: sticky;
-  top: calc($topbar-height + $spacing-md);
+  top: calc(var(--topbar-offset) + #{$spacing-md});
   display: flex;
   flex-direction: column;
   gap: $spacing-md;

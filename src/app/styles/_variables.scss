@@ -117,6 +117,10 @@ $z-index-modal-backdrop: 400 !default;
 $z-index-modal: 500 !default;
 $z-index-popover: 600 !default;
 $z-index-toast: 700 !default;
+// Sonner's viewport is a fixed-positioned element outside the normal stacking
+// context; it must clear #modal-root's hardcoded z-index: 9999 (main.scss) so
+// toasts stay visible above drawers/modals (e.g. the review modal).
+$z-index-toast-viewport: 10000 !default;
 
 // ---------------------------------------------
 // # EFFECTS (NON-COLOR)
