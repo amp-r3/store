@@ -42,3 +42,4 @@ export * from './button/Button';
 export * from './icon-button/IconButton';
 export * from './action-menu/ActionMenu';
 export * from './filter-panel/FilterPanel';
+export * from './route-progress/RouteProgress';

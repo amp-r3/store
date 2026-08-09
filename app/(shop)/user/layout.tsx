@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ProtectedRoute } from '@/app/providers/ProtectedRoute/ProtectedRoute';
 import { UserLayout } from '@/app/layouts/UserLayout/UserLayout';
+import { UserLayoutSkeleton } from '@/app/layouts/UserLayout/UserLayoutSkeleton';
 
 // Every page under here is per-user data behind auth — force dynamic
 // rendering rather than auditing every useSearchParams()/useUrlState() call
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function UserSegmentLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute fallback={<UserLayoutSkeleton />}>
       <UserLayout>{children}</UserLayout>
     </ProtectedRoute>
   );

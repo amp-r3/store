@@ -5,7 +5,15 @@ import { usePathname, useRouter } from 'next/navigation';
 import { selectIsAuth } from '@/entities/session';
 import { useAppSelector, useIsRehydrated } from "@/shared/model";
 
-export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  /** Shown while redux-persist rehydration is still resolving, instead of a
+   * blank screen — only for the "not decided yet" state, never for the
+   * "denied, redirecting" one. */
+  fallback?: React.ReactNode;
+}
+
+export const ProtectedRoute = ({ children, fallback }: ProtectedRouteProps) => {
   const isAuth = useAppSelector(selectIsAuth);
   const isRehydrated = useIsRehydrated();
   const pathname = usePathname();
@@ -21,7 +29,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isRehydrated, isAuth, pathname, router]);
 
-  if (!isRehydrated) return null;
+  if (!isRehydrated) return <>{fallback ?? null}</>;
   if (!isAuth) return null;
 
   return <>{children}</>;

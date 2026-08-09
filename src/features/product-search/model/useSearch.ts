@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { useUrlState } from "@/shared/lib/hooks";
+import { usePathname } from "next/navigation";
+import { useUrlState, useTransitionRouter } from "@/shared/lib/hooks";
 
 export function useSearch() {
     const pathname = usePathname();
-    const router = useRouter();
+    const router = useTransitionRouter();
     const isCatalogPage = pathname === '/catalog';
     const [searchParams, setSearchParams] = useUrlState();
 

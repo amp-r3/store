@@ -8,6 +8,7 @@ import { useMediaQuery } from '@/shared/lib/hooks';
 import { PageLayout, HOME_CRUMB, PROFILE_CRUMB, type BreadcrumbItem } from '@/shared/ui';
 import { ProfileNav } from '@/widgets/profile-nav';
 
+import { UserLayoutSkeleton } from './UserLayoutSkeleton';
 import style from './user-layout.module.scss';
 
 const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
@@ -22,7 +23,7 @@ export const UserLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
     const isMobile = useMediaQuery('(max-width: 768px)');
 
-    if (!user) return null;
+    if (!user) return <UserLayoutSkeleton />;
 
     const key = pathname.replace(/\/+$/, '') || '/user';
 

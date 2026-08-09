@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from '@/shared/api/supabase/authz';
 import { AdminRoute } from '@/app/providers/AdminRoute/AdminRoute';
 import { AdminLayout } from '@/app/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutSkeleton } from '@/app/layouts/AdminLayout/AdminLayoutSkeleton';
 
 // Reads the session on every request anyway (the role check below) and every
 // page under here is per-user admin data — force dynamic rather than
@@ -32,7 +33,7 @@ export default async function AdminSegmentLayout({ children }: { children: React
   }
 
   return (
-    <AdminRoute>
+    <AdminRoute fallback={<AdminLayoutSkeleton />}>
       <AdminLayout>{children}</AdminLayout>
     </AdminRoute>
   );

@@ -12,3 +12,4 @@ export * from './usePagination';
 export * from './usePaginationBounds';
 export * from './usePasswordScore';
 export * from './useUrlState';
+export * from './useTransitionRouter';

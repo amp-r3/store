@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { Drawer } from 'vaul';
-import { useRouter } from 'next/navigation';
 import { VisuallyHidden } from 'radix-ui'
 import { IoWarningOutline } from "react-icons/io5";
 
@@ -8,7 +7,7 @@ import styles from './cart-drawer.module.scss';
 import { Modal } from '@/shared/ui';
 import { selectIsAuth } from '@/entities/session';
 import { addToCheckout } from '@/features/checkout-process';
-import { useHaptics } from "@/shared/lib/hooks";
+import { useHaptics, useTransitionRouter } from "@/shared/lib/hooks";
 import { getModalRoot } from "@/shared/lib";
 import { useAppDispatch } from "@/shared/model";
 import { useAppSelector } from "@/shared/model";
@@ -29,7 +28,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { cartDetails, isEmpty, totals, isLoading, isFetching, cartItems, totalQuantity, refetchCart } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const router = useRouter();
+  const router = useTransitionRouter();
   const { soft } = useHaptics();
   const dispatch = useAppDispatch()
   const modalRoot = getModalRoot();

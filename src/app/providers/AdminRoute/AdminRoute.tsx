@@ -4,9 +4,17 @@ import { useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { selectIsAuth, selectUserRole } from '@/entities/session';
 import { useAppSelector, useIsRehydrated } from '@/shared/model';
-import { Loader } from '@/shared/ui';
 
-export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+interface AdminRouteProps {
+  children: React.ReactNode;
+  /** Shown while redux-persist rehydration or the session-role fetch is
+   * still resolving, instead of a blank screen / full-page spinner — only
+   * for the "not decided yet" states, never for the "denied, redirecting"
+   * ones. */
+  fallback?: React.ReactNode;
+}
+
+export const AdminRoute = ({ children, fallback }: AdminRouteProps) => {
   const isAuth = useAppSelector(selectIsAuth);
   const role = useAppSelector(selectUserRole);
   const isRehydrated = useIsRehydrated();
@@ -35,7 +43,7 @@ export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isRehydrated, isAuth, role, pathname, searchParams, router]);
 
-  if (!isRehydrated) return null;
+  if (!isRehydrated) return <>{fallback ?? null}</>;
   if (!isAuth) return null;
 
   // `role` is null until useSessionSync's profiles fetch lands -- setSession
@@ -44,7 +52,7 @@ export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   // every hard refresh; hold the route instead. useSessionSync always
   // resolves this to a non-null role even when the profile fetch fails, so
   // it cannot hang here.
-  if (role === null) return <Loader />;
+  if (role === null) return <>{fallback ?? null}</>;
 
   if (role !== 'admin') return null;
 

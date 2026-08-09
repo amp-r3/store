@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { IoSearchOutline, IoArrowBackOutline, IoHomeOutline, IoCartOutline } from 'react-icons/io5';
 import { FaRegHeart } from 'react-icons/fa';
@@ -14,7 +14,7 @@ import { useGetUnreadNotificationsCountQuery } from "@/entities/notification";
 import { useProduct, useGetSizesQuery, useSelectedSize, getPurchaseState } from "@/entities/product";
 import { useCartActions, AddToCartButton, QuickBuyButton } from "@/features/cart-actions";
 import { addToCheckout, clearCheckout } from "@/features/checkout-process";
-import { useHideOnScroll, useHaptics, useOnScreen, useMediaQuery, useIsNavActive } from "@/shared/lib/hooks";
+import { useHideOnScroll, useHaptics, useOnScreen, useMediaQuery, useIsNavActive, useTransitionRouter } from "@/shared/lib/hooks";
 import { formatPrice, scrollToElement, REQUEST_SIZE_EVENT } from "@/shared/lib";
 import { useAppDispatch, useAppSelector, useIsRehydrated } from "@/shared/model";
 
@@ -29,7 +29,7 @@ export const MobileBar = () => {
     const [isNavPinned, setIsNavPinned] = useState(false);
     const { soft } = useHaptics();
     const dispatch = useAppDispatch();
-    const router = useRouter();
+    const router = useTransitionRouter();
     const pathname = usePathname();
 
     const isAuth = useAppSelector(selectIsAuth);

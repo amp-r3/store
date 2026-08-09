@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useTransitionRouter } from './useTransitionRouter';
 
 type SearchParamsUpdater = URLSearchParams | ((prev: URLSearchParams) => URLSearchParams);
 
@@ -16,7 +17,7 @@ interface SetSearchParamsOptions {
  * since ScrollRestoration was keyed by pathname alone). */
 export function useUrlState(): [URLSearchParams, (updater: SearchParamsUpdater, options?: SetSearchParamsOptions) => void] {
     const pathname = usePathname();
-    const router = useRouter();
+    const router = useTransitionRouter();
     const searchParams = useSearchParams();
 
     const setSearchParams = useCallback((updater: SearchParamsUpdater, options?: SetSearchParamsOptions) => {

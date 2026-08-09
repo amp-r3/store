@@ -9,6 +9,7 @@ import { PageLayout, HOME_CRUMB, ADMIN_CRUMB, type BreadcrumbItem } from '@/shar
 import { TopBar } from '@/widgets/top-bar';
 import { AdminNav } from '@/widgets/admin-nav';
 
+import { AdminLayoutSkeleton } from './AdminLayoutSkeleton';
 import style from './admin-layout.module.scss';
 
 const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
@@ -44,7 +45,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
     const isMobile = useMediaQuery('(max-width: 768px)');
 
-    if (!user) return null;
+    if (!user) return <AdminLayoutSkeleton />;
 
     return (
         <>

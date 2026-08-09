@@ -12,3 +12,4 @@ export * from './domEvents';
 export * from './hooks';
 export * from './storage';
 export * from './getModalRoot';
+export * from './routeProgress';
