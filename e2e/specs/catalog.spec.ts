@@ -21,7 +21,7 @@ test.describe('catalog discovery', () => {
     const term = title.split(' ')[0];
 
     await catalogPage.search(term);
-    await expect(catalogPage.productCardLinks().first()).toBeVisible();
+    await catalogPage.expectAllCardsToMatch(term);
     for (const link of await catalogPage.productCardLinks().all()) {
       await expect(link).toHaveAccessibleName(new RegExp(escapeRegExp(term), 'i'));
     }

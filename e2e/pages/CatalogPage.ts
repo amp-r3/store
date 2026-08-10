@@ -32,13 +32,27 @@ export class CatalogPage extends BasePage {
     return this.page.getByRole('link', { name: /^View details for/ });
   }
 
+  /** MobileBar keeps its search layer `inert` (opacity 0, pointer-events none)
+   * until the dock's "Open search" button is tapped. Playwright still matches
+   * the input inside it — it has no `inert` support — but it cannot be
+   * focused, so typing never reaches React. No-op on desktop (MobileBar is
+   * not mounted) and on a second search in the same test (layer already
+   * open). */
+  private async openMobileSearchIfNeeded() {
+    const isInert = await this.searchInput.evaluate((el) => !!el.closest('[inert]'));
+    if (!isInert) return;
+    await this.page.getByRole('button', { name: 'Open search' }).click();
+    await expect
+      .poll(async () => this.searchInput.evaluate((el) => !!el.closest('[inert]')))
+      .toBe(false);
+  }
+
   async search(query: string) {
+    await this.openMobileSearchIfNeeded();
+    // `useSearch`'s 300 ms debounce on the input's `onChange` is the only path
+    // that writes `?q=` on `/catalog` — `submitSearch()` early-returns there,
+    // so pressing Enter cannot help and on mobile it closes the search layer.
     await this.searchInput.fill(query);
-    // `/catalog`'s debounced auto-search (AGENTS.md, 300 ms) should update
-    // the URL from the fill alone, but submitting is the same code path
-    // the app itself defines for triggering a search and removes any
-    // dependency on the debounce's timing/focus state — belt and braces.
-    await this.searchInput.press('Enter');
     await expect(this.page).toHaveURL(new RegExp(`q=${encodeURIComponent(query)}`));
   }
 
@@ -90,5 +104,22 @@ export class CatalogPage extends BasePage {
 
   async expectNoMatchesFound() {
     await expect(this.page.getByRole('heading', { name: 'No matches found' })).toBeVisible();
+  }
+
+  /** Waits for the grid to finish re-rendering: RTK Query keeps the previous
+   * result on screen while refetching, so `productCardLinks().all()` otherwise
+   * snapshots stale cards. Polling every card (not just the first) is what
+   * makes this a real wait — the term is derived from the first card's title,
+   * so the pre-search first card already matches it. */
+  async expectAllCardsToMatch(term: string) {
+    const pattern = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    await expect
+      .poll(async () => {
+        const labels = await this.productCardLinks().evaluateAll((nodes) =>
+          nodes.map((node) => node.getAttribute('aria-label') ?? ''),
+        );
+        return labels.length > 0 && labels.every((label) => pattern.test(label));
+      })
+      .toBe(true);
   }
 }

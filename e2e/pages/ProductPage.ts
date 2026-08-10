@@ -40,15 +40,23 @@ export class ProductPage extends BasePage {
     await options.first().locator('button').click();
   }
 
-  /** Not scoped to `#product-purchase-box`: on mobile that box can start
-   * below the fold behind `MobileBar`'s fixed dock, which renders its own
-   * "Add to Cart" (icon-only, same accessible name) for the active
-   * product. Only one of the two is ever actionable at a time — the
-   * inactive one sits in an `inert` container, which excludes it from the
-   * accessibility tree — so the global role query naturally resolves to
-   * whichever is currently interactive; `.first()` is a safety net. */
+  /** Scoped to `#product-purchase-box`: MobileBar renders a second, icon-only
+   * "Add to Cart" with the same accessible name whenever it is mounted
+   * (≤525px, `MainLayout`), and neither `:visible` nor `getByRole` filters it
+   * out — its inactive layer is `opacity: 0`, and Playwright has no `inert`
+   * support, so an unscoped query can resolve to both. */
+  private get addToCartButton(): Locator {
+    return this.purchaseBox.getByRole('button', { name: 'Add to Cart' });
+  }
+
   async addToCart() {
-    await this.page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    // MobileBar is a fixed bottom dock above the page in z-order, so
+    // Playwright's minimal scroll-into-view can leave this button beneath it
+    // and the click retries on hit-target until it times out. Centring also
+    // brings the purchase box on screen, which flips the dock back to its nav
+    // layer (`useOnScreen('product-purchase-box')` in `MobileBar.tsx`).
+    await this.addToCartButton.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await this.addToCartButton.click();
   }
 
   stockLine() {
