@@ -39,8 +39,9 @@ export const ShareCopyBtn = () => {
           url: window.location.href,
         });
         handleSuccess();
-      } catch (err) {
-        console.log('The user closed the Share window:', err);
+      } catch {
+        // navigator.share() rejects when the user dismisses the OS share sheet —
+        // an expected outcome, not a failure. Nothing to report.
       }
     } else {
       try {

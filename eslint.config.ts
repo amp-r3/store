@@ -21,6 +21,9 @@ const config = [
         'error',
         { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_' },
       ],
+      'react-hooks/exhaustive-deps': 'error',
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+      'react/no-danger': 'error',
       // eslint-config-next pulls in eslint-plugin-react-hooks v7, whose
       // recommended set adds React Compiler-readiness rules (this project
       // doesn't run the compiler). They flag ~60 pre-existing, functionally
@@ -34,11 +37,25 @@ const config = [
       'react-hooks/incompatible-library': 'off',
     },
   },
+  // supabase/functions/** is Deno, not Node/browser: `Deno.*` globals, remote
+  // `https://` imports, its own deno.json. Excluded from tsconfig.json and
+  // typechecked by the Deno LSP (.vscode/settings.json), so the browser-facing
+  // rules above don't apply. `globals` ships no `deno` set — declare it here.
+  {
+    files: ['supabase/functions/**/*.ts'],
+    languageOptions: { globals: { Deno: 'readonly' } },
+    rules: { 'no-console': 'off' },
+  },
   // FSD layer direction (AGENTS.md §1): a layer may only import from layers
   // strictly below it. Catches upward/skip-layer imports mechanically,
   // regardless of quote style — the repo-wide grep block in AGENTS.md still
   // owns same-slice deep-import and cross-feature-runtime-import checks,
   // which a glob-based rule here can't distinguish from legitimate cases.
+  //
+  // Each block below sets `no-restricted-imports` wholesale (flat config
+  // replaces a rule's value, it does not merge options) — a new pattern must
+  // be added to all five, or a sixth block added for app/**, never hoisted
+  // into a single repo-wide rule (it would be dead here or disable these).
   {
     files: ['src/shared/**/*.{ts,tsx}'],
     rules: {

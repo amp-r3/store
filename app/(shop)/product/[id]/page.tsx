@@ -136,6 +136,10 @@ export default async function ProductRoutePage({ params }: ProductRouteProps) {
         type="application/ld+json"
         // Product fields are admin-authored, not raw user input; escaping
         // `<` is still cheap insurance against breaking out of the tag.
+        // Sanitizer: the .replace() call below escapes every `<` to its
+        // unicode form — JSON-LD needs no HTML markup, so that's a complete
+        // escape for this sink.
+        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <ProductPage
