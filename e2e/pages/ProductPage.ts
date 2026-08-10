@@ -50,12 +50,16 @@ export class ProductPage extends BasePage {
   }
 
   async addToCart() {
-    // MobileBar is a fixed bottom dock above the page in z-order, so
-    // Playwright's minimal scroll-into-view can leave this button beneath it
-    // and the click retries on hit-target until it times out. Centring also
-    // brings the purchase box on screen, which flips the dock back to its nav
-    // layer (`useOnScreen('product-purchase-box')` in `MobileBar.tsx`).
-    await this.addToCartButton.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    // `click()` alone already auto-scrolls and re-checks actionability, but
+    // doing it explicitly first, plus asserting `enabled` (disabled while
+    // `isLoading`/out of stock/max quantity reached — AddToCartButton.tsx),
+    // turns a real state bug into a clear assertion failure instead of a
+    // generic click timeout indistinguishable from a covered/unstable
+    // element. See `playwright.config.ts`'s `reducedMotion` for why the
+    // element's bounding box can otherwise never "settle" long enough to
+    // pass the click's stability check.
+    await this.addToCartButton.scrollIntoViewIfNeeded();
+    await expect(this.addToCartButton).toBeEnabled();
     await this.addToCartButton.click();
   }
 

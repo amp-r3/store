@@ -29,6 +29,20 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // Every component here ships a `prefers-reduced-motion: reduce` branch
+    // (AGENTS.md's a11y rule) that strips its CSS transitions/transforms —
+    // the add-to-cart button's hover-lift, MobileBar's layer cross-fade,
+    // the qty-pop bounce, etc. A transform still mid-transition when
+    // Playwright hovers/clicks keeps the element's bounding box from
+    // settling, which its actionability check reads as "not stable" and
+    // retries until `actionTimeout` — indistinguishable from a hang.
+    // Requesting reduced motion here removes that whole class of flake
+    // instead of chasing it one selector at a time. `reducedMotion` isn't a
+    // top-level `use` key in this Playwright version — it's a
+    // `browser.newContext()` option, routed through `contextOptions`.
+    contextOptions: {
+      reducedMotion: 'reduce',
+    },
   },
   projects: [
     {
