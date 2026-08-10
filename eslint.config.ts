@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import nextConfig from 'eslint-config-next';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 const config = [
   { ignores: ['.next', '.next-second', 'out', 'next-env.d.ts', 'public'] },
@@ -10,6 +11,7 @@ const config = [
   ...nextConfig,
   {
     files: ['**/*.{ts,tsx}'],
+    plugins: { 'unused-imports': unusedImports },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -17,9 +19,11 @@ const config = [
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': [
+      '@typescript-eslint/no-unused-vars': 'off', // superseded by unused-imports/no-unused-vars
+      'unused-imports/no-unused-imports': 'error', // autofixable
+      'unused-imports/no-unused-vars': [
         'error',
-        { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_' },
+        { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
       ],
       'react-hooks/exhaustive-deps': 'error',
       'no-console': ['error', { allow: ['warn', 'error'] }],
