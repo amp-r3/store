@@ -19,6 +19,13 @@ out
 next-env.d.ts
 *.tsbuildinfo
 
+# Playwright
+test-results
+playwright-report
+blob-report
+playwright/.cache
+e2e/.auth
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

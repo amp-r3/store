@@ -81,7 +81,9 @@ export const CartFooter: FC<CartFooterProps> = ({
           {isLoading ? (
             <Skeleton width={46} />
           ) : (
-            <span className={style.footer__total}>{formatPrice(total)}</span>
+            <span className={style.footer__total} data-testid="cart-total">
+              {formatPrice(total)}
+            </span>
           )}
         </div>
 

@@ -38,7 +38,7 @@ export const CheckoutSection = ({ step, children }: CheckoutSectionProps) => {
   };
 
   return (
-    <section className={style.section} data-state={state}>
+    <section className={style.section} data-state={state} data-testid={`checkout-step-${step}`}>
       <div className={style.section__rail} aria-hidden="true">
         <span className={style.section__marker}>
           {state === 'completed' ? (

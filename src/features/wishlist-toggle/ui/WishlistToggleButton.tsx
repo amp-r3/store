@@ -26,7 +26,11 @@ export const WishlistToggleButton: FC<WishlistToggleButtonProps> = ({ productId,
   };
 
   return (
-    <button className={style['wishlist-btn']} onClick={handleAddToWishlist}>
+    <button
+      className={style['wishlist-btn']}
+      onClick={handleAddToWishlist}
+      aria-label={isFavorite ? 'Remove from wishlist' : 'Add to wishlist'}
+    >
       {isFavorite ? (
         <FaHeart className={style['wishlist-btn__icon']} />
       ) : (

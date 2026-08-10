@@ -51,6 +51,7 @@ export const NavActions = () => {
         }}
         type="button"
         aria-label="open cart"
+        data-testid="cart-open"
         className={btnClass}
       >
         {isCartLoaded && <span className={style['nav-actions__btn__count']}>{cartTotals}</span>}

@@ -5,7 +5,18 @@ import nextConfig from 'eslint-config-next';
 import unusedImports from 'eslint-plugin-unused-imports';
 
 const config = [
-  { ignores: ['.next', '.next-second', 'out', 'next-env.d.ts', 'public'] },
+  {
+    ignores: [
+      '.next',
+      '.next-second',
+      'out',
+      'next-env.d.ts',
+      'public',
+      'playwright-report',
+      'test-results',
+      'blob-report',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...nextConfig,
@@ -49,6 +60,15 @@ const config = [
     files: ['supabase/functions/**/*.ts'],
     languageOptions: { globals: { Deno: 'readonly' } },
     rules: { 'no-console': 'off' },
+  },
+  // e2e/** is Playwright test code, not React — eslint-config-next's
+  // react-hooks/rules-of-hooks misfires on fixture factories' `use(...)`
+  // callback parameter (its name coincidentally matches the "custom hook"
+  // naming convention the rule looks for), flagging plain async functions
+  // that aren't hooks at all.
+  {
+    files: ['e2e/**/*.ts', 'playwright.config.ts'],
+    rules: { 'react-hooks/rules-of-hooks': 'off' },
   },
   // FSD layer direction (AGENTS.md §1): a layer may only import from layers
   // strictly below it. Catches upward/skip-layer imports mechanically,

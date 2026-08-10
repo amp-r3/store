@@ -216,6 +216,7 @@ export const MobileBar = () => {
               type="button"
               className={style.navbar__tab}
               aria-label="Open cart"
+              data-testid="cart-open"
               onClick={() => {
                 dispatch(openCart());
                 soft();
