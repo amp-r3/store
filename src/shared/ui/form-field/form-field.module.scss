@@ -5,12 +5,11 @@
 // Floating Label Constants
 // ─────────────────────────────────────────────────────────────────────────────
 
-$float-label-size-floated : $fs-xs; // ≈ 0.6875rem
-$float-label-size-resting : $fs-base; // 1rem
-$input-padding-y : $spacing-sm;
-$input-padding-x : $spacing-md;
-$label-notch-padding : $spacing-xxs;
-
+$float-label-size-floated: $fs-xs; // ≈ 0.6875rem
+$float-label-size-resting: $fs-base; // 1rem
+$input-padding-y: $spacing-sm;
+$input-padding-x: $spacing-md;
+$label-notch-padding: $spacing-xxs;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Wrapper
@@ -23,7 +22,6 @@ $label-notch-padding : $spacing-xxs;
   width: 100%;
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Stacked label (labelPlacement="stacked")
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,7 +33,6 @@ $label-notch-padding : $spacing-xxs;
 .stackedOptional {
   @include field-optional-marker;
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Input wrapper
@@ -84,7 +81,6 @@ $label-notch-padding : $spacing-xxs;
   cursor: not-allowed;
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Float group
 // ─────────────────────────────────────────────────────────────────────────────
@@ -96,7 +92,6 @@ $label-notch-padding : $spacing-xxs;
   display: flex;
   align-items: center;
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Floating label
@@ -160,7 +155,6 @@ $label-notch-padding : $spacing-xxs;
   color: var(--primary-accent);
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Hint
 // ─────────────────────────────────────────────────────────────────────────────
@@ -182,7 +176,6 @@ $label-notch-padding : $spacing-xxs;
     opacity: 1;
   }
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Icon slot
@@ -210,7 +203,6 @@ $label-notch-padding : $spacing-xxs;
   }
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Suffix slot (unit glyph — %, kg, cm)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -225,7 +217,6 @@ $label-notch-padding : $spacing-xxs;
   pointer-events: none;
   user-select: none;
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Stepper buttons (−/+, number fields only)
@@ -269,7 +260,6 @@ $label-notch-padding : $spacing-xxs;
   }
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Password toggle
 // ─────────────────────────────────────────────────────────────────────────────
@@ -307,7 +297,6 @@ $label-notch-padding : $spacing-xxs;
     height: 20px;
   }
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Input
@@ -358,7 +347,6 @@ $label-notch-padding : $spacing-xxs;
   text-align: center;
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Optional badge
 // ─────────────────────────────────────────────────────────────────────────────
@@ -381,7 +369,6 @@ $label-notch-padding : $spacing-xxs;
   user-select: none;
   pointer-events: none;
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Error message

@@ -3,9 +3,9 @@
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { selectIsAuth } from '@/entities/session';
-import { useAppSelector, useIsRehydrated } from "@/shared/model";
-import { safeRedirectPath } from "@/shared/lib";
-import { AUTH_STORAGE_KEYS } from "@/shared/config";
+import { useAppSelector, useIsRehydrated } from '@/shared/model';
+import { safeRedirectPath } from '@/shared/lib';
+import { AUTH_STORAGE_KEYS } from '@/shared/config';
 
 /** Sole owner of the post-login redirect: reacts to `isAuth` becoming true
  * (from either a password login or an OAuth round-trip) and redirects to

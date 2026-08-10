@@ -16,7 +16,10 @@
   background-color: var(--primary-accent);
   color: var(--text-inverse);
   box-shadow: var(--shadow-accent-sm);
-  transition: background-color $transition-fast $ease-in-out-smooth, box-shadow $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
+  transition:
+    background-color $transition-fast $ease-in-out-smooth,
+    box-shadow $transition-fast $ease-in-out-smooth,
+    transform $transition-fast $ease-in-out-smooth;
 
   &:hover {
     background-color: var(--primary-accent-dark);

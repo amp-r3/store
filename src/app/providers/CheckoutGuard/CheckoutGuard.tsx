@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { selectIsAuth } from '@/entities/session';
-import { useAppSelector, useIsRehydrated } from "@/shared/model";
-import { selectCheckoutItemsMap } from "@/features/checkout-process";
+import { useAppSelector, useIsRehydrated } from '@/shared/model';
+import { selectCheckoutItemsMap } from '@/features/checkout-process';
 
 export const CheckoutGuard = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();

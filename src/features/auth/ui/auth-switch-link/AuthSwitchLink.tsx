@@ -9,6 +9,9 @@ interface AuthSwitchLinkProps {
 
 export const AuthSwitchLink = ({ prompt, to, label }: AuthSwitchLinkProps) => (
   <p className={style['auth-switch-link']}>
-    {prompt} <Link href={to} className={style['auth-switch-link__link']}>{label}</Link>
+    {prompt}{' '}
+    <Link href={to} className={style['auth-switch-link__link']}>
+      {label}
+    </Link>
   </p>
 );

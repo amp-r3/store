@@ -3,8 +3,8 @@ import { Product } from '@/entities/product';
 import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
 import { calculateCartTotals } from '@/entities/cart';
-import { selectCheckoutItemsArray } from "@/features/checkout-process";
-import { CartItemDetails, CartProduct } from "@/entities/cart";
+import { selectCheckoutItemsArray } from '@/features/checkout-process';
+import { CartItemDetails, CartProduct } from '@/entities/cart';
 
 interface CheckoutDetailsReturn {
   checkoutItems: CartProduct[];
@@ -21,17 +21,24 @@ export const useCheckoutDetails = (freeShippingThreshold: number | null): Checko
 
   const productIds = useMemo(
     () => checkoutItems.map((item: CartProduct) => item.productId),
-    [checkoutItems]
+    [checkoutItems],
   );
 
-  const { products, isLoading: isProductsLoading, isFetching: isProductsFetching, isError: isProductsError } =
-    useProductsByIds(productIds, true);
+  const {
+    products,
+    isLoading: isProductsLoading,
+    isFetching: isProductsFetching,
+    isError: isProductsError,
+  } = useProductsByIds(productIds, true);
 
   const checkoutDetails = useMemo(() => {
-    const productsMap = products.reduce<Record<number, Product>>((acc: Record<number, Product>, product: Product) => {
-      acc[product.id] = product;
-      return acc;
-    }, {});
+    const productsMap = products.reduce<Record<number, Product>>(
+      (acc: Record<number, Product>, product: Product) => {
+        acc[product.id] = product;
+        return acc;
+      },
+      {},
+    );
 
     return checkoutItems.map((item: CartProduct) => {
       const serverProduct = productsMap[item.productId];
@@ -46,7 +53,9 @@ export const useCheckoutDetails = (freeShippingThreshold: number | null): Checko
   }, [products, checkoutItems]);
 
   const totals = useMemo(() => {
-    const validItems = checkoutDetails.filter((item: CartItemDetails | null): item is CartItemDetails => item !== null);
+    const validItems = checkoutDetails.filter(
+      (item: CartItemDetails | null): item is CartItemDetails => item !== null,
+    );
 
     return calculateCartTotals(validItems, freeShippingThreshold);
   }, [checkoutDetails, freeShippingThreshold]);

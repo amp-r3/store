@@ -13,21 +13,21 @@ let rawSelectedSizeId: number | undefined;
 const listeners = new Set<() => void>();
 
 const subscribe = (listener: () => void) => {
-    listeners.add(listener);
-    return () => listeners.delete(listener);
+  listeners.add(listener);
+  return () => listeners.delete(listener);
 };
 
 const getSnapshot = () => rawSelectedSizeId;
 const getServerSnapshot = () => undefined;
 
 export const useSelectedSize = (sizes?: ProductSize[]) => {
-    const rawId = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-    const selectedSizeId = sizes?.some(size => size.id === rawId) ? rawId : undefined;
+  const rawId = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const selectedSizeId = sizes?.some((size) => size.id === rawId) ? rawId : undefined;
 
-    const setSelectedSizeId = useCallback((id: number | undefined) => {
-        rawSelectedSizeId = id;
-        listeners.forEach(listener => listener());
-    }, []);
+  const setSelectedSizeId = useCallback((id: number | undefined) => {
+    rawSelectedSizeId = id;
+    listeners.forEach((listener) => listener());
+  }, []);
 
-    return { selectedSizeId, setSelectedSizeId };
+  return { selectedSizeId, setSelectedSizeId };
 };

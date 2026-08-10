@@ -35,7 +35,7 @@ export const MaskedFormField = forwardRef<HTMLInputElement, MaskedFormFieldProps
         {...rest}
       />
     );
-  }
+  },
 );
 
 MaskedFormField.displayName = 'MaskedFormField';

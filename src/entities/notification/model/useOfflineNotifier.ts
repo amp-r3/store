@@ -8,25 +8,25 @@ import { showToast } from '@/shared/ui/toast';
 import { setOffline } from './notificationSlice';
 
 export const useOfflineNotifier = () => {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        const handleOffline = () => dispatch(setOffline(true));
-        const handleOnline = () => {
-            dispatch(setOffline(false));
-            showToast('success', 'Connection restored');
-        };
+  useEffect(() => {
+    const handleOffline = () => dispatch(setOffline(true));
+    const handleOnline = () => {
+      dispatch(setOffline(false));
+      showToast('success', 'Connection restored');
+    };
 
-        if (!navigator.onLine) {
-            dispatch(setOffline(true));
-        }
+    if (!navigator.onLine) {
+      dispatch(setOffline(true));
+    }
 
-        window.addEventListener('offline', handleOffline);
-        window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
 
-        return () => {
-            window.removeEventListener('offline', handleOffline);
-            window.removeEventListener('online', handleOnline);
-        };
-    }, [dispatch]);
+    return () => {
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, [dispatch]);
 };

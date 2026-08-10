@@ -20,7 +20,12 @@ export default function AuthCallbackCompletePage() {
   }, [router]);
 
   return (
-    <AuthCard title="Finishing sign-in…" subtitle="Hang tight, this only takes a second." backTo={null} isLoading>
+    <AuthCard
+      title="Finishing sign-in…"
+      subtitle="Hang tight, this only takes a second."
+      backTo={null}
+      isLoading
+    >
       <div className={style['auth-callback-complete__body']}>
         <Loader size="md" />
       </div>

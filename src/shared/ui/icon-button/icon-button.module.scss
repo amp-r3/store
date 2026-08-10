@@ -13,7 +13,9 @@
   border-radius: $radius-md;
   cursor: pointer;
   text-decoration: none;
-  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth,
+  transition:
+    background $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth,
     border-color $transition-fast $ease-in-out-smooth;
 
   &:hover:not(:disabled) {

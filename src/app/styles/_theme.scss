@@ -16,15 +16,14 @@
   --text-on-accent: #232329;
   --text-on-accent-rgb: 35, 35, 41;
 
-  --secondary-accent: #FF7A60;
+  --secondary-accent: #ff7a60;
   --secondary-accent-rgb: 255, 122, 96;
 
-  --secondary-accent-dark: #E65D46;
+  --secondary-accent-dark: #e65d46;
   --secondary-accent-dark-rgb: 230, 93, 70;
 
-  --secondary-accent-light: #FF9B85;
+  --secondary-accent-light: #ff9b85;
   --secondary-accent-light-rgb: 255, 155, 133;
-
 
   // --- Text Colors  ---
   --text-primary: #e8e6f5;
@@ -41,7 +40,11 @@
   --background-component-rgb: 35, 35, 41;
   --background-glass-base: #292930;
   --background-glass-base-rgb: 41, 41, 48;
-  --background-image-holder: linear-gradient(135deg, rgba(184, 167, 240, 0.09), rgba(217, 201, 240, 0.04));
+  --background-image-holder: linear-gradient(
+    135deg,
+    rgba(184, 167, 240, 0.09),
+    rgba(217, 201, 240, 0.04)
+  );
 
   // --- Body Gradients ---
   --gradient-body-start: #292930;
@@ -61,7 +64,7 @@
   --success-color: #22c55e;
   --success-color-rgb: 34, 197, 94;
   --success-color-dark: #16a34a;
-  --success-background: rgba(34, 197, 94, 0.10);
+  --success-background: rgba(34, 197, 94, 0.1);
   --shadow-success-sm: 0 4px 15px rgba(34, 197, 94, 0.14);
 
   // --- Status Badge Colors ---
@@ -69,14 +72,14 @@
   // Success (completed / paid / delivered)
   --status-success-rgb: 34, 197, 94;
   --status-success-text: #4ade80;
-  --status-success-bg: rgba(34, 197, 94, 0.10);
-  --status-success-border: rgba(34, 197, 94, 0.20);
+  --status-success-bg: rgba(34, 197, 94, 0.1);
+  --status-success-border: rgba(34, 197, 94, 0.2);
 
   // Warning (pending / awaiting / in-transit)
   --status-warning-rgb: 245, 158, 11;
   --status-warning-text: #fbbf24;
-  --status-warning-bg: rgba(245, 158, 11, 0.10);
-  --status-warning-border: rgba(245, 158, 11, 0.20);
+  --status-warning-bg: rgba(245, 158, 11, 0.1);
+  --status-warning-border: rgba(245, 158, 11, 0.2);
 
   // Info (processing / shipped)
   --status-info-rgb: 56, 189, 248;
@@ -108,7 +111,7 @@
   --glass-background: rgba(35, 35, 41, 0.52);
   --glass-background-strong: rgba(35, 35, 41, 0.72);
   --glass-background-fallback: rgba(35, 35, 41, 0.94);
-  --glass-border-subtle: rgba(184, 167, 240, 0.10);
+  --glass-border-subtle: rgba(184, 167, 240, 0.1);
   --glass-border: rgba(184, 167, 240, 0.16);
   --glass-highlight-subtle: rgba(255, 255, 255, 0.02);
   --glass-highlight: rgba(255, 255, 255, 0.05);
@@ -130,7 +133,7 @@
   --shadow-lg: 0 12px 40px rgba(184, 167, 240, 0.14);
   --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.45);
   --shadow-card: 0 4px 15px rgba(184, 167, 240, 0.06);
-  --shadow-accent: 0 10px 30px rgba(var(--primary-accent-rgb), 0.20);
+  --shadow-accent: 0 10px 30px rgba(var(--primary-accent-rgb), 0.2);
   --shadow-accent-sm: 0 4px 15px rgba(var(--primary-accent-rgb), 0.12);
   --shadow-accent-hover: 0 6px 24px rgba(var(--primary-accent-rgb), 0.28);
   --shadow-text-accent: 0 0 12px rgba(var(--primary-accent-rgb), 0.38);

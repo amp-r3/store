@@ -1,6 +1,10 @@
 import { ReactNode } from 'react';
 import { Order, OrderStatus, OrderStatusEvent } from '@/entities/order/model/types';
-import { ORDER_PROGRESS_STEPS, ORDER_STATUS_MAP, TERMINAL_ORDER_STATUSES } from '@/entities/order/config/order-management.config';
+import {
+  ORDER_PROGRESS_STEPS,
+  ORDER_STATUS_MAP,
+  TERMINAL_ORDER_STATUSES,
+} from '@/entities/order/config/order-management.config';
 
 export type OrderProgressState = 'done' | 'current' | 'upcoming';
 
@@ -24,7 +28,10 @@ export interface OrderProgressResult {
 //  - derailed (cancelled/returned/refunded): the rail stops at the last
 //    happy-path step actually reached, followed by one terminal node for the
 //    negative status. There is no "upcoming" after a derail.
-export const buildOrderProgress = (order: Order, events: OrderStatusEvent[]): OrderProgressResult => {
+export const buildOrderProgress = (
+  order: Order,
+  events: OrderStatusEvent[],
+): OrderProgressResult => {
   const firstSeenAt = new Map<OrderStatus, string>();
   const sortedEvents = [...events].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
@@ -37,7 +44,9 @@ export const buildOrderProgress = (order: Order, events: OrderStatusEvent[]): Or
     firstSeenAt.set('pending', order.createdAt);
   }
 
-  const isDerailed = (TERMINAL_ORDER_STATUSES as readonly OrderStatus[]).includes(order.status) && order.status !== 'completed';
+  const isDerailed =
+    (TERMINAL_ORDER_STATUSES as readonly OrderStatus[]).includes(order.status) &&
+    order.status !== 'completed';
 
   if (!isDerailed) {
     const currentIndex = ORDER_PROGRESS_STEPS.findIndex((step) => step.status === order.status);
@@ -54,18 +63,21 @@ export const buildOrderProgress = (order: Order, events: OrderStatusEvent[]): Or
   }
 
   const reachedIndex = ORDER_PROGRESS_STEPS.reduce(
-    (maxIndex, step, index) => (firstSeenAt.has(step.status) ? Math.max(maxIndex, index) : maxIndex),
+    (maxIndex, step, index) =>
+      firstSeenAt.has(step.status) ? Math.max(maxIndex, index) : maxIndex,
     0,
   );
 
-  const reachedNodes: OrderProgressNode[] = ORDER_PROGRESS_STEPS.slice(0, reachedIndex + 1).map((step) => ({
-    status: step.status,
-    label: step.label,
-    icon: step.icon,
-    state: 'done',
-    at: firstSeenAt.get(step.status) ?? null,
-    isTerminalNegative: false,
-  }));
+  const reachedNodes: OrderProgressNode[] = ORDER_PROGRESS_STEPS.slice(0, reachedIndex + 1).map(
+    (step) => ({
+      status: step.status,
+      label: step.label,
+      icon: step.icon,
+      state: 'done',
+      at: firstSeenAt.get(step.status) ?? null,
+      isTerminalNegative: false,
+    }),
+  );
 
   const terminalEvent = [...sortedEvents].reverse().find((event) => event.status === order.status);
 

@@ -1,10 +1,10 @@
-import { ProductsResponse } from "@/entities/product";
-import { Product } from "@/entities/product";
+import { ProductsResponse } from '@/entities/product';
+import { Product } from '@/entities/product';
 
 export const getItemsToRender = (
   response: ProductsResponse | undefined,
   isLoading: boolean,
-  itemsPerPage: number
+  itemsPerPage: number,
 ): Product[] => {
   if (isLoading) return Array.from({ length: itemsPerPage });
   if (!response?.items || !response?.ids) return [];

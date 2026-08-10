@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, ReactNode } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6';
 import style from './expandable-content.module.scss';
-import { useHaptics } from "@/shared/lib/hooks";
+import { useHaptics } from '@/shared/lib/hooks';
 
 interface ExpandableContentProps {
   children: ReactNode;

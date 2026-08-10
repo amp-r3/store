@@ -1,25 +1,25 @@
 import { FC, ReactNode, useState } from 'react';
 import { Drawer } from 'vaul';
-import { VisuallyHidden } from 'radix-ui'
-import { IoWarningOutline } from "react-icons/io5";
+import { VisuallyHidden } from 'radix-ui';
+import { IoWarningOutline } from 'react-icons/io5';
 
 import styles from './cart-drawer.module.scss';
 import { Modal } from '@/shared/ui';
 import { selectIsAuth } from '@/entities/session';
 import { addToCheckout } from '@/features/checkout-process';
-import { useHaptics, useTransitionRouter } from "@/shared/lib/hooks";
-import { getModalRoot, ignoreToastInteraction } from "@/shared/lib";
-import { useAppDispatch } from "@/shared/model";
-import { useAppSelector } from "@/shared/model";
-import { useCartActions } from "@/features/cart-actions";
-import { useCartDetails } from "@/entities/cart";
-import { CartItem } from "@/entities/cart";
-import { CartItemSkeleton } from "@/entities/cart";
-import { CartFooter } from "@/entities/cart";
-import { CartHeader } from "@/entities/cart";
-import { EmptyCart } from "@/entities/cart";
-import { CartUndoStrip } from "@/entities/cart";
-import { CART_UNDO_DURATION_MS, RemovedEntry, useCartRemovalUndo } from "./useCartRemovalUndo";
+import { useHaptics, useTransitionRouter } from '@/shared/lib/hooks';
+import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
+import { useAppDispatch } from '@/shared/model';
+import { useAppSelector } from '@/shared/model';
+import { useCartActions } from '@/features/cart-actions';
+import { useCartDetails } from '@/entities/cart';
+import { CartItem } from '@/entities/cart';
+import { CartItemSkeleton } from '@/entities/cart';
+import { CartFooter } from '@/entities/cart';
+import { CartHeader } from '@/entities/cart';
+import { EmptyCart } from '@/entities/cart';
+import { CartUndoStrip } from '@/entities/cart';
+import { CART_UNDO_DURATION_MS, RemovedEntry, useCartRemovalUndo } from './useCartRemovalUndo';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -27,16 +27,33 @@ interface CartDrawerProps {
 }
 
 export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cartDetails, isEmpty, totals, isLoading, isFetching, cartItems, totalQuantity, refetchCart } = useCartDetails(isOpen);
-  const isAuth = useAppSelector(selectIsAuth)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const {
+    cartDetails,
+    isEmpty,
+    totals,
+    isLoading,
+    isFetching,
+    cartItems,
+    totalQuantity,
+    refetchCart,
+  } = useCartDetails(isOpen);
+  const isAuth = useAppSelector(selectIsAuth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useTransitionRouter();
   const { soft } = useHaptics();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const modalRoot = getModalRoot();
 
   const removalUndo = useCartRemovalUndo({ cartItems, cartDetails, isOpen });
-  const { onIncrease, onDecrease, onRemove, onClearCart, onRestoreItem, onRestoreCart, isUpdating } = useCartActions({
+  const {
+    onIncrease,
+    onDecrease,
+    onRemove,
+    onClearCart,
+    onRestoreItem,
+    onRestoreCart,
+    isUpdating,
+  } = useCartActions({
     onRemoved: removalUndo.handleRemoved,
     onCleared: removalUndo.handleCleared,
   });
@@ -60,11 +77,10 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
       if (isAuth) {
         refetchCart();
       }
-
     } catch (error) {
-      console.error("Error reconciling cart:", error);
+      console.error('Error reconciling cart:', error);
     }
-    dispatch(addToCheckout(cartItems))
+    dispatch(addToCheckout(cartItems));
     router.push('/checkout');
     onClose();
   };
@@ -81,7 +97,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   // its undo window is still open — drop the stale strip rather than
   // showing two conflicting rows for the same line.
   const pendingRemovals = removalUndo.removedEntries.filter(
-    (entry) => !cartItems.some((item) => item.sizeId === entry.sizeId)
+    (entry) => !cartItems.some((item) => item.sizeId === entry.sizeId),
   );
 
   const showEmptyState = isEmpty && !showSkeleton && pendingRemovals.length === 0;
@@ -96,21 +112,21 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     const liveRows: ReactNode[] = showSkeleton
       ? cartItems.map((item) => <CartItemSkeleton key={`skeleton-${item.sizeId}`} />)
       : cartItems.reduce<ReactNode[]>((acc, item, index) => {
-        const productDetails = cartDetails[index];
-        if (!productDetails) return acc;
+          const productDetails = cartDetails[index];
+          if (!productDetails) return acc;
 
-        acc.push(
-          <CartItem
-            key={item.sizeId}
-            product={productDetails}
-            onIncrease={onIncrease}
-            onDecrease={onDecrease}
-            onRemove={onRemove}
-            onClose={onClose}
-          />
-        );
-        return acc;
-      }, []);
+          acc.push(
+            <CartItem
+              key={item.sizeId}
+              product={productDetails}
+              onIncrease={onIncrease}
+              onDecrease={onDecrease}
+              onRemove={onRemove}
+              onClose={onClose}
+            />,
+          );
+          return acc;
+        }, []);
 
     // Splice each removed row's strip back into the position it occupied
     // right before removal, so the list doesn't visually reshuffle.
@@ -127,19 +143,14 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             actionLabel="Undo"
             durationMs={CART_UNDO_DURATION_MS}
             onAction={() => handleUndoItem(entry)}
-          />
+          />,
         );
       });
   }
 
   return (
     <>
-
-      <Drawer.Root
-        open={isOpen}
-        onOpenChange={(open) => !open && onClose()}
-        direction="right"
-      >
+      <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()} direction="right">
         <Drawer.Portal container={modalRoot}>
           <Drawer.Overlay className={styles.cart__backdrop} />
 
@@ -168,7 +179,6 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
             <div className={styles.cart__scrollArea}>
               <div className={styles.cart__body}>
-
                 {removalUndo.clearedEntry && (
                   <CartUndoStrip
                     message={`Cart cleared · ${removalUndo.clearedEntry.count} item${removalUndo.clearedEntry.count === 1 ? '' : 's'}`}
@@ -178,12 +188,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   />
                 )}
 
-                {showEmptyState ? (
-                  <EmptyCart onStartShopping={onStartShopping} />
-                ) : (
-                  cartRows
-                )}
-
+                {showEmptyState ? <EmptyCart onStartShopping={onStartShopping} /> : cartRows}
               </div>
             </div>
 
@@ -204,8 +209,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>
-      {
-        !isAuth &&
+      {!isAuth && (
         <Modal
           isOpen={isModalOpen}
           onOpenChange={setIsModalOpen}
@@ -213,9 +217,12 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           description="To continue you need to register"
           icon={<IoWarningOutline size={50} />}
           actionLabel="register"
-          onAction={() => { router.push('/register'); setIsModalOpen(false) }}
+          onAction={() => {
+            router.push('/register');
+            setIsModalOpen(false);
+          }}
         />
-      }
+      )}
     </>
   );
 };

@@ -1,11 +1,11 @@
 import { Product } from '@/entities/product';
 
 export interface CartItemDetails extends Product {
-    sizeId: number;
-    quantity: number;
+  sizeId: number;
+  quantity: number;
 }
 
 export interface CartData {
-    productId: number;
-    quantity: number;
+  productId: number;
+  quantity: number;
 }

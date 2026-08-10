@@ -3,7 +3,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine, RiShieldCheckLine } from 'react-icons/ri';
-import { Alert, FormField, PasswordRequirements, PasswordStrength, useAuthCardLoading } from '@/shared/ui';
+import {
+  Alert,
+  FormField,
+  PasswordRequirements,
+  PasswordStrength,
+  useAuthCardLoading,
+} from '@/shared/ui';
 import { useCapsLock, useHaptics, getErrorMessage } from '@/shared/lib';
 import { useRegisterMutation } from '@/entities/session';
 import { RegisterSchema, registerSchema } from '../../model/registerSchema';
@@ -29,10 +35,10 @@ export const RegisterForm = () => {
     setError,
     setFocus,
     watch,
-    formState: { errors, touchedFields, isSubmitted }
+    formState: { errors, touchedFields, isSubmitted },
   } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
-    mode: 'onTouched'
+    mode: 'onTouched',
   });
 
   const passwordValue = watch('password') || '';
@@ -43,7 +49,7 @@ export const RegisterForm = () => {
     if (errorMsg) {
       setError('root', {
         type: 'server',
-        message: errorMsg
+        message: errorMsg,
       });
     }
   }, [errorMsg, setError]);
@@ -56,8 +62,8 @@ export const RegisterForm = () => {
     if (isEmail) setFocus('email');
   }, [isEmail, setFocus]);
 
-  const { signInWithOAuth, pendingProvider } = useOAuthSignIn(
-    (message) => setError('root', { type: 'server', message })
+  const { signInWithOAuth, pendingProvider } = useOAuthSignIn((message) =>
+    setError('root', { type: 'server', message }),
   );
 
   // Stays true until PublicRoute redirects away, so the button doesn't flash
@@ -76,19 +82,17 @@ export const RegisterForm = () => {
       if (errText.includes('already registered') || errText.includes('already exists')) {
         setError('email', {
           type: 'server',
-          message: 'This email is already registered'
+          message: 'This email is already registered',
         });
-      }
-      else if (errText.includes('password')) {
+      } else if (errText.includes('password')) {
         setError('password', {
           type: 'server',
-          message: 'The password is too weak'
+          message: 'The password is too weak',
         });
-      }
-      else {
+      } else {
         setError('root', {
           type: 'server',
-          message: errorMessage
+          message: errorMessage,
         });
       }
     }
@@ -96,10 +100,11 @@ export const RegisterForm = () => {
 
   return (
     <form className={style['register-form']} onSubmit={handleSubmit(onSubmit)} noValidate>
-
       {errors.root && (
         <div className={style['register-form__error']}>
-          <Alert ref={errorRef} tabIndex={-1} variant="error">{errors.root.message}</Alert>
+          <Alert ref={errorRef} tabIndex={-1} variant="error">
+            {errors.root.message}
+          </Alert>
         </div>
       )}
 
@@ -111,7 +116,7 @@ export const RegisterForm = () => {
         {isEmail ? (
           <>
             <FormField
-              label='Email'
+              label="Email"
               type="email"
               inputMode="email"
               autoCapitalize="none"
@@ -124,8 +129,8 @@ export const RegisterForm = () => {
             />
 
             <FormField
-              label='Password'
-              type='password'
+              label="Password"
+              type="password"
               icon={<RiLockPasswordLine />}
               placeholder="At least 6 characters"
               autoComplete="new-password"
@@ -145,8 +150,8 @@ export const RegisterForm = () => {
             />
 
             <FormField
-              label='Repeat password'
-              type='password'
+              label="Repeat password"
+              type="password"
               icon={<RiShieldCheckLine />}
               placeholder="Confirm your password"
               autoComplete="new-password"
@@ -154,7 +159,11 @@ export const RegisterForm = () => {
               {...register('confirm')}
             />
 
-            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Register" isLoading={isSubmitting} />
+            <AuthFormActions
+              onBack={() => setIsEmail(false)}
+              submitLabel="Register"
+              isLoading={isSubmitting}
+            />
           </>
         ) : (
           <AuthProviderList

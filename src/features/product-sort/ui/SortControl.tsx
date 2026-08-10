@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { SortingOption } from '@/entities/product';
 import { SortBottomSheet } from './SortBottomSheet/SortBottomSheet';
 import { SortDropdown } from './SortDropdown/SortDropdown';
-import { useMediaQuery } from "@/shared/lib/hooks";
+import { useMediaQuery } from '@/shared/lib/hooks';
 
 export interface SortControlProps {
   sortingOptions: SortingOption[];

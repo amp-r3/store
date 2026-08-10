@@ -1,28 +1,28 @@
 @use 'app/styles/index' as *;
 
 .footer {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    padding: $spacing-md $spacing-xl;
-    border-top: 1px solid var(--border-color-subtle);
-    background: var(--glass-background-subtle);
-    flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-xl;
+  border-top: 1px solid var(--border-color-subtle);
+  background: var(--glass-background-subtle);
+  flex-shrink: 0;
 
-    @media (max-width: 768px) {
-        padding: $spacing-md;
-    }
+  @media (max-width: 768px) {
+    padding: $spacing-md;
+  }
 }
 
 .footer__updating {
-    align-self: flex-start;
-    font-size: $fs-xs;
-    font-weight: $fw-semibold;
-    color: var(--primary-accent);
+  align-self: flex-start;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  color: var(--primary-accent);
 }
 
 .footer__selects {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
-    gap: $spacing-sm;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+  gap: $spacing-sm;
 }

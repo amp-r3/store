@@ -68,10 +68,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         <span className={iconOnly ? 'sr-only' : styles.text}>{displayAddText}</span>
       </button>
 
-      <div
-        className={styles.counter}
-        inert={!isActive ? true : undefined}
-      >
+      <div className={styles.counter} inert={!isActive ? true : undefined}>
         <button
           type="button"
           className={styles['counter-btn']}

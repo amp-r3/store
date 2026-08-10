@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import style from './password-requirements.module.scss';
 import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
-import { PASSWORD_RULES, STRENGTH_RULE, PASSWORD_MIN_STRENGTH_SCORE } from '../../lib/passwordRules';
+import {
+  PASSWORD_RULES,
+  STRENGTH_RULE,
+  PASSWORD_MIN_STRENGTH_SCORE,
+} from '../../lib/passwordRules';
 import { usePasswordScore } from '../../lib/hooks/usePasswordScore';
 
 interface PasswordRequirementsProps {
@@ -11,14 +15,26 @@ interface PasswordRequirementsProps {
   id?: string;
 }
 
-export const PasswordRequirements = ({ password = '', showUnmetAsError = false, id }: PasswordRequirementsProps) => {
+export const PasswordRequirements = ({
+  password = '',
+  showUnmetAsError = false,
+  id,
+}: PasswordRequirementsProps) => {
   const score = usePasswordScore(password);
   const requirements = useMemo(
     () => [
-      ...PASSWORD_RULES.map((rule) => ({ id: rule.id, label: rule.label, isMet: rule.test(password) })),
-      { id: STRENGTH_RULE.id, label: STRENGTH_RULE.label, isMet: score >= PASSWORD_MIN_STRENGTH_SCORE },
+      ...PASSWORD_RULES.map((rule) => ({
+        id: rule.id,
+        label: rule.label,
+        isMet: rule.test(password),
+      })),
+      {
+        id: STRENGTH_RULE.id,
+        label: STRENGTH_RULE.label,
+        isMet: score >= PASSWORD_MIN_STRENGTH_SCORE,
+      },
     ],
-    [password, score]
+    [password, score],
   );
 
   const metCount = requirements.filter((req) => req.isMet).length;
@@ -32,8 +48,8 @@ export const PasswordRequirements = ({ password = '', showUnmetAsError = false, 
             req.isMet
               ? style['password-requirements__item--met']
               : showUnmetAsError
-              ? style['password-requirements__item--error']
-              : style['password-requirements__item--unmet']
+                ? style['password-requirements__item--error']
+                : style['password-requirements__item--unmet']
           }`}
         >
           {req.isMet ? (

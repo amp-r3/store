@@ -27,7 +27,11 @@ export const CheckoutSection = ({ step, children }: CheckoutSectionProps) => {
   const isLast = ownIndex === STEPS_ORDER.length - 1;
   const config = CHECKOUT_STEPS[step];
   const isActive = step === currentStep;
-  const state: SectionState = isActive ? 'active' : ownIndex > maxReachedIndex ? 'locked' : 'completed';
+  const state: SectionState = isActive
+    ? 'active'
+    : ownIndex > maxReachedIndex
+      ? 'locked'
+      : 'completed';
 
   const handleHeaderClick = () => {
     if (state === 'completed') goToStep(step);
@@ -37,7 +41,13 @@ export const CheckoutSection = ({ step, children }: CheckoutSectionProps) => {
     <section className={style.section} data-state={state}>
       <div className={style.section__rail} aria-hidden="true">
         <span className={style.section__marker}>
-          {state === 'completed' ? <HiCheck /> : state === 'locked' ? <HiLockClosed /> : config.order}
+          {state === 'completed' ? (
+            <HiCheck />
+          ) : state === 'locked' ? (
+            <HiLockClosed />
+          ) : (
+            config.order
+          )}
         </span>
         {!isLast && <span className={style.section__line} />}
       </div>
@@ -63,7 +73,10 @@ export const CheckoutSection = ({ step, children }: CheckoutSectionProps) => {
           </button>
         </h2>
 
-        <div id={bodyId} className={`${style.section__body} ${isActive ? style['section__body--expanded'] : ''}`}>
+        <div
+          id={bodyId}
+          className={`${style.section__body} ${isActive ? style['section__body--expanded'] : ''}`}
+        >
           <div className={style.section__inner} inert={!isActive}>
             {children}
             {isActive && !isMobile && <CheckoutStepActions />}

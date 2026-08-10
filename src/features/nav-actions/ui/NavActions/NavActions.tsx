@@ -12,60 +12,65 @@ import { useAppDispatch, useAppSelector, useIsRehydrated } from '@/shared/model'
 import style from './nav-actions.module.scss';
 
 export const NavActions = () => {
-    const { soft } = useHaptics();
-    const dispatch = useAppDispatch();
-    const isAuth = useAppSelector(selectIsAuth);
-    const isRehydrated = useIsRehydrated();
-    const { totalQuantity: cartTotals } = useCartDetails();
-    const { totalQuantity: wishlistTotals } = useWishlistDetails();
-    const { data: unreadCount } = useGetUnreadNotificationsCountQuery(undefined, { skip: !isAuth });
+  const { soft } = useHaptics();
+  const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(selectIsAuth);
+  const isRehydrated = useIsRehydrated();
+  const { totalQuantity: cartTotals } = useCartDetails();
+  const { totalQuantity: wishlistTotals } = useWishlistDetails();
+  const { data: unreadCount } = useGetUnreadNotificationsCountQuery(undefined, { skip: !isAuth });
 
-    // Guest cart/wishlist counts come from persisted state, empty until
-    // redux-persist restores it (always the case on the server) — gate the
-    // badge on that explicitly rather than relying on the count incidentally
-    // being 0 pre-rehydration.
-    const isCartLoaded = isRehydrated && (cartTotals ?? 0) >= 1;
-    const isWishlistLoaded = isRehydrated && (wishlistTotals ?? 0) >= 1;
-    const hasUnread = (unreadCount ?? 0) >= 1;
-    // Same reasoning: auth.user is persisted too, so isAuth can already be
-    // true on the client's first render (SSR always renders false, no
-    // session available there) — gate the profile-vs-login branch on it or
-    // the link's href/label/icon mismatch between server and client.
-    const isAuthReady = isRehydrated && isAuth;
+  // Guest cart/wishlist counts come from persisted state, empty until
+  // redux-persist restores it (always the case on the server) — gate the
+  // badge on that explicitly rather than relying on the count incidentally
+  // being 0 pre-rehydration.
+  const isCartLoaded = isRehydrated && (cartTotals ?? 0) >= 1;
+  const isWishlistLoaded = isRehydrated && (wishlistTotals ?? 0) >= 1;
+  const hasUnread = (unreadCount ?? 0) >= 1;
+  // Same reasoning: auth.user is persisted too, so isAuth can already be
+  // true on the client's first render (SSR always renders false, no
+  // session available there) — gate the profile-vs-login branch on it or
+  // the link's href/label/icon mismatch between server and client.
+  const isAuthReady = isRehydrated && isAuth;
 
-    const btnClass = style['nav-actions__btn'];
+  const btnClass = style['nav-actions__btn'];
 
-    return (
-        <div className={style['nav-actions']}>
-            <Link href={'/wishlist'} aria-label="open wishlist" className={btnClass}>
-                {isWishlistLoaded && <span className={style['nav-actions__btn__count']}>{wishlistTotals}</span>}
-                <FaRegHeart />
-            </Link>
+  return (
+    <div className={style['nav-actions']}>
+      <Link href={'/wishlist'} aria-label="open wishlist" className={btnClass}>
+        {isWishlistLoaded && (
+          <span className={style['nav-actions__btn__count']}>{wishlistTotals}</span>
+        )}
+        <FaRegHeart />
+      </Link>
 
-            <button
-                onClick={() => { dispatch(openCart()); soft() }}
-                type="button"
-                aria-label="open cart"
-                className={btnClass}
-            >
-                {isCartLoaded && <span className={style['nav-actions__btn__count']}>{cartTotals}</span>}
-                <IoCartOutline />
-            </button>
+      <button
+        onClick={() => {
+          dispatch(openCart());
+          soft();
+        }}
+        type="button"
+        aria-label="open cart"
+        className={btnClass}
+      >
+        {isCartLoaded && <span className={style['nav-actions__btn__count']}>{cartTotals}</span>}
+        <IoCartOutline />
+      </button>
 
-            {isAuthReady ? (
-                <Link href={'/user'} aria-label="open profile" className={btnClass}>
-                    {hasUnread && (
-                        <span className={style['nav-actions__btn__count']}>
-                            {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
-                        </span>
-                    )}
-                    <FaUser />
-                </Link>
-            ) : (
-                <Link href={'/login'} aria-label="sign in" className={btnClass}>
-                    <FaArrowRightToBracket />
-                </Link>
-            )}
-        </div>
-    );
+      {isAuthReady ? (
+        <Link href={'/user'} aria-label="open profile" className={btnClass}>
+          {hasUnread && (
+            <span className={style['nav-actions__btn__count']}>
+              {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+          <FaUser />
+        </Link>
+      ) : (
+        <Link href={'/login'} aria-label="sign in" className={btnClass}>
+          <FaArrowRightToBracket />
+        </Link>
+      )}
+    </div>
+  );
 };

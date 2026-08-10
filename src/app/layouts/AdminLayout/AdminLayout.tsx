@@ -13,15 +13,15 @@ import { AdminLayoutSkeleton } from './AdminLayoutSkeleton';
 import style from './admin-layout.module.scss';
 
 const BREADCRUMBS: Record<string, BreadcrumbItem[]> = {
-    '/admin': [HOME_CRUMB, { label: 'Admin' }],
-    '/admin/orders': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Orders' }],
-    '/admin/products': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Products' }],
-    '/admin/categories': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Categories' }],
-    '/admin/customers': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Customers' }],
-    '/admin/reviews': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Reviews' }],
-    '/admin/settings': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Settings' }],
-    '/admin/audit': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Audit log' }],
-    '/admin/finance': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Finance' }],
+  '/admin': [HOME_CRUMB, { label: 'Admin' }],
+  '/admin/orders': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Orders' }],
+  '/admin/products': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Products' }],
+  '/admin/categories': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Categories' }],
+  '/admin/customers': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Customers' }],
+  '/admin/reviews': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Reviews' }],
+  '/admin/settings': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Settings' }],
+  '/admin/audit': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Audit log' }],
+  '/admin/finance': [HOME_CRUMB, ADMIN_CRUMB, { label: 'Finance' }],
 };
 
 const PRODUCTS_CRUMB: BreadcrumbItem = { label: 'Products', path: '/admin/products' };
@@ -30,38 +30,39 @@ const PRODUCTS_CRUMB: BreadcrumbItem = { label: 'Products', path: '/admin/produc
 // but /admin/products/:id/edit has a dynamic segment, which a plain Record
 // can't key on. Those get a couple of prefix rules on top of the same table.
 const resolveBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
-    const key = pathname.replace(/\/+$/, '') || '/admin';
+  const key = pathname.replace(/\/+$/, '') || '/admin';
 
-    if (BREADCRUMBS[key]) return BREADCRUMBS[key];
-    if (key === '/admin/products/new') return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'New product' }];
-    if (key === '/admin/products/low-stock') return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'Low stock' }];
-    if (/^\/admin\/products\/[^/]+\/edit$/.test(key)) return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'Edit product' }];
+  if (BREADCRUMBS[key]) return BREADCRUMBS[key];
+  if (key === '/admin/products/new')
+    return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'New product' }];
+  if (key === '/admin/products/low-stock')
+    return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'Low stock' }];
+  if (/^\/admin\/products\/[^/]+\/edit$/.test(key))
+    return [HOME_CRUMB, ADMIN_CRUMB, PRODUCTS_CRUMB, { label: 'Edit product' }];
 
-    return BREADCRUMBS['/admin'];
+  return BREADCRUMBS['/admin'];
 };
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-    const user = useAppSelector(selectUser);
-    const pathname = usePathname();
-    const isMobile = useMediaQuery('(max-width: 768px)');
+  const user = useAppSelector(selectUser);
+  const pathname = usePathname();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
-    if (!user) return <AdminLayoutSkeleton />;
+  if (!user) return <AdminLayoutSkeleton />;
 
-    return (
-        <>
-            <TopBar />
-            <PageLayout
-                breadcrumbs={isMobile ? undefined : resolveBreadcrumbs(pathname)}
-                className={style['admin-layout']}
-            >
-                <div className={style['admin-layout__grid']}>
-                    <AdminNav />
+  return (
+    <>
+      <TopBar />
+      <PageLayout
+        breadcrumbs={isMobile ? undefined : resolveBreadcrumbs(pathname)}
+        className={style['admin-layout']}
+      >
+        <div className={style['admin-layout__grid']}>
+          <AdminNav />
 
-                    <section className={style['admin-layout__content']}>
-                        {children}
-                    </section>
-                </div>
-            </PageLayout>
-        </>
-    );
+          <section className={style['admin-layout__content']}>{children}</section>
+        </div>
+      </PageLayout>
+    </>
+  );
 };

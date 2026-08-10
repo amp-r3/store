@@ -48,12 +48,12 @@
   background: var(--background-glass-base);
 
   &.default .iconWrapper {
-    background-color: rgba(var(--primary-accent-rgb), 0.10);
+    background-color: rgba(var(--primary-accent-rgb), 0.1);
     color: var(--primary-accent);
   }
 
   &.danger .iconWrapper {
-    background-color: rgba(220, 38, 38, 0.10);
+    background-color: rgba(220, 38, 38, 0.1);
     color: var(--error-color);
   }
 

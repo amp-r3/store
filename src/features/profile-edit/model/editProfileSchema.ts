@@ -1,10 +1,9 @@
-import { z } from 'zod'
-
+import { z } from 'zod';
 
 const optionalMin3 = z
   .string()
   .optional()
-  .refine(val => !val || val.length >= 3, 'Minimum 3 characters')
+  .refine((val) => !val || val.length >= 3, 'Minimum 3 characters');
 
 export const editProfileSchema = z.object({
   firstName: optionalMin3,
@@ -12,9 +11,8 @@ export const editProfileSchema = z.object({
   username: z.string().min(3, 'Minimum 3 characters'),
   email: z.preprocess(
     (val: string) => (val === '' ? undefined : val),
-    z.string().email({ message: 'Please enter a valid email address.' })
-      .optional()
-  )
-})
+    z.string().email({ message: 'Please enter a valid email address.' }).optional(),
+  ),
+});
 
-export type EditProfileSchema = z.infer<typeof editProfileSchema>
+export type EditProfileSchema = z.infer<typeof editProfileSchema>;

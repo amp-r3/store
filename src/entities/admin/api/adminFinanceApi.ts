@@ -66,7 +66,10 @@ export const adminFinanceApi = baseApi.injectEndpoints({
     // the page — mirrors the RPC split used by the dashboard's adminStatsApi.
     getAdminFinanceSummary: builder.query<AdminFinanceSummary, number | void>({
       queryFn: async (days) => {
-        const { data, error } = await supabase.rpc('admin_finance_summary', days ? { p_days: days } : undefined);
+        const { data, error } = await supabase.rpc(
+          'admin_finance_summary',
+          days ? { p_days: days } : undefined,
+        );
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -98,7 +101,10 @@ export const adminFinanceApi = baseApi.injectEndpoints({
 
     getAdminFinanceSeries: builder.query<AdminFinanceSeriesPoint[], number | void>({
       queryFn: async (days) => {
-        const { data, error } = await supabase.rpc('admin_finance_series', days ? { p_days: days } : undefined);
+        const { data, error } = await supabase.rpc(
+          'admin_finance_series',
+          days ? { p_days: days } : undefined,
+        );
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -129,15 +135,33 @@ export const adminFinanceApi = baseApi.injectEndpoints({
 
     getAdminFinanceBreakdown: builder.query<AdminFinanceBreakdown, number | void>({
       queryFn: async (days) => {
-        const { data, error } = await supabase.rpc('admin_finance_breakdown', days ? { p_days: days } : undefined);
+        const { data, error } = await supabase.rpc(
+          'admin_finance_breakdown',
+          days ? { p_days: days } : undefined,
+        );
 
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
 
         const row = data as unknown as {
-          payment_methods: { code: string; name: string; fee_percentage: number; fee_fixed: number; orders_count: number; gross: number; fees: number }[];
-          delivery_methods: { code: string; name: string; orders_count: number; collected: number; free_count: number; subsidy: number }[];
+          payment_methods: {
+            code: string;
+            name: string;
+            fee_percentage: number;
+            fee_fixed: number;
+            orders_count: number;
+            gross: number;
+            fees: number;
+          }[];
+          delivery_methods: {
+            code: string;
+            name: string;
+            orders_count: number;
+            collected: number;
+            free_count: number;
+            subsidy: number;
+          }[];
         };
 
         return {

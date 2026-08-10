@@ -4,21 +4,21 @@
 // The card recipe repeated across CheckoutContacts/Shipping/Payments/Summary:
 // opaque background, hairline border, radius that shrinks with viewport.
 @mixin panel {
-    padding: $spacing-xl;
-    background-color: var(--background-component);
-    border: 1px solid var(--border-color-light);
-    border-radius: $radius-xl;
-    box-shadow: var(--shadow-sm);
+  padding: $spacing-xl;
+  background-color: var(--background-component);
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-xl;
+  box-shadow: var(--shadow-sm);
 
-    @media (max-width: 768px) {
-        border-radius: $radius-lg;
-        padding: $spacing-lg;
-    }
+  @media (max-width: 768px) {
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+  }
 
-    @media (max-width: 480px) {
-        border-radius: $radius-md;
-        padding: $spacing-md;
-    }
+  @media (max-width: 480px) {
+    border-radius: $radius-md;
+    padding: $spacing-md;
+  }
 }
 
 // ── Neutral pill chip ─────────────────────────────────────────────────────
@@ -26,14 +26,14 @@
 // badges and the audit entity chip — differs only in color and how tight
 // the inline padding is.
 @mixin chip($bg, $color, $padding-inline: $spacing-sm) {
-    display: inline-flex;
-    align-items: center;
-    gap: $spacing-xxs;
-    width: fit-content;
-    font-size: $fs-xs;
-    font-weight: $fw-semibold;
-    color: $color;
-    background: $bg;
-    border-radius: $radius-pill;
-    padding: $spacing-xxs $padding-inline;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  width: fit-content;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  color: $color;
+  background: $bg;
+  border-radius: $radius-pill;
+  padding: $spacing-xxs $padding-inline;
 }

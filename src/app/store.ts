@@ -1,13 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import {
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-  persistReducer
-} from 'redux-persist';
+import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, persistReducer } from 'redux-persist';
 import { baseApi } from '@/shared/api';
 import { persistStorage } from '@/shared/lib';
 import { authReducer } from '@/entities/session';
@@ -26,7 +18,7 @@ import '@/entities/order';
 const checkoutPersistConfig = {
   key: 'checkout',
   storage: persistStorage,
-  whitelist: ['items', 'draft']
+  whitelist: ['items', 'draft'],
 };
 
 const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutReducer);
@@ -51,8 +43,7 @@ export const makeStore = () =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      })
-        .concat(baseApi.middleware, notificationMiddleware)
+      }).concat(baseApi.middleware, notificationMiddleware),
   });
 
 export type AppStore = ReturnType<typeof makeStore>;

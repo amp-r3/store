@@ -1,4 +1,4 @@
-import { Product } from "@/entities/product";
+import { Product } from '@/entities/product';
 
 export type PaymentOptions = 'cash_on_delivery' | 'online_card' | 'paypal' | 'sepa' | 'klarna';
 export type DeliveryOptions = 'standard' | 'express' | 'pickup';
@@ -46,9 +46,11 @@ export interface CreateOrderPayload {
   p_items: CheckoutCartItem[];
 }
 
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled' | 'returned' | 'refunded';
+export type OrderStatus =
+  'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled' | 'returned' | 'refunded';
 export type PaymentStatus = 'awaiting_payment' | 'paid' | 'failed' | 'refunded';
-export type DeliveryStatus = 'awaiting_dispatch' | 'dispatched' | 'in_transit' | 'delivered' | 'returned' | 'cancelled'
+export type DeliveryStatus =
+  'awaiting_dispatch' | 'dispatched' | 'in_transit' | 'delivered' | 'returned' | 'cancelled';
 export type OrderItemProduct = Pick<Product, 'id' | 'title' | 'thumbnail' | 'category'>;
 
 export interface EnrichedOrderItem {

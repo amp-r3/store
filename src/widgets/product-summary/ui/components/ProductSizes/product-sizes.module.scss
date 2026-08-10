@@ -1,132 +1,141 @@
 @use 'app/styles/index' as *;
 
 .product-sizes {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-top: $spacing-sm;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  &__title {
+    color: var(--text-muted);
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wider;
+    margin: 0;
+  }
+
+  &__list {
     display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    margin-top: $spacing-sm;
-    
+    flex-wrap: nowrap;
+    overflow-x: auto;
     width: 100%;
     max-width: 100%;
-    min-width: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    gap: $spacing-sm;
+    padding-top: $spacing-xxs;
+    padding-bottom: $spacing-xxs;
+    margin: 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    border-radius: $radius-sm;
 
-    &__title {
-        color: var(--text-muted);
-        font-size: $fs-xs;
-        font-weight: $fw-bold;
-        text-transform: uppercase;
-        letter-spacing: $letter-spacing-wider;
-        margin: 0;
+    li {
+      scroll-snap-align: start;
+      flex-shrink: 0;
     }
 
-    &__list {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        width: 100%;
-        max-width: 100%;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        &::-webkit-scrollbar {
-            display: none;
-        }
-        gap: $spacing-sm;
-        padding-top: $spacing-xxs;
-        padding-bottom: $spacing-xxs;
-        margin: 0;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        border-radius: $radius-sm;
+    @media (max-width: 768px) {
+      scroll-snap-type: x mandatory;
+      -webkit-mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+      mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+      padding-right: $spacing-md;
+    }
+  }
 
-        li {
-            scroll-snap-align: start;
-            flex-shrink: 0;
-        }
+  &--highlighted &__list {
+    animation: sizes-shake 0.4s $ease-out-expo;
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: 4px;
+    border-radius: $radius-sm;
 
-        @media (max-width: 768px) {
-            scroll-snap-type: x mandatory;
-            -webkit-mask-image: linear-gradient(to right, #000 88%, transparent 100%);
-            mask-image: linear-gradient(to right, #000 88%, transparent 100%);
-            padding-right: $spacing-md;
-        }
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: $touch-target-comfortable;
+    height: $touch-target-comfortable;
+    padding: 0 $spacing-md;
+    border: 1px solid var(--border-color-strong);
+    border-radius: $radius-sm;
+    background-color: transparent;
+    color: var(--text-primary);
+    font-size: $fs-base;
+    font-weight: $fw-semibold;
+    cursor: pointer;
+    transition: all $transition-fast $ease-out-expo;
+    position: relative;
+    overflow: hidden;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
     }
 
-    &--highlighted &__list {
-        animation: sizes-shake 0.4s $ease-out-expo;
-        outline: $focus-ring-width solid var(--focus-ring-color);
-        outline-offset: 4px;
-        border-radius: $radius-sm;
-
-        @media (prefers-reduced-motion: reduce) {
-            animation: none;
-        }
+    &:focus-visible {
+      outline: none;
+      border-color: var(--focus-ring-color);
+      box-shadow: var(--shadow-focus-button);
     }
 
-    &__item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: $touch-target-comfortable;
-        height: $touch-target-comfortable;
-        padding: 0 $spacing-md;
-        border: 1px solid var(--border-color-strong);
-        border-radius: $radius-sm;
-        background-color: transparent; 
-        color: var(--text-primary);
-        font-size: $fs-base;
-        font-weight: $fw-semibold;
-        cursor: pointer;
-        transition: all $transition-fast $ease-out-expo;
-        position: relative;
-        overflow: hidden;
-
-        @media (prefers-reduced-motion: reduce) {
-            transition: none;
-        }
-
-        &:focus-visible {
-            outline: none;
-            border-color: var(--focus-ring-color);
-            box-shadow: var(--shadow-focus-button);
-        }
-
-        @media (hover: hover) {
-            &:hover:not(:disabled) {
-                border-color: var(--text-primary);
-                transform: $hover-lift;
-            }
-        }
-
-        &--active {
-            background-color: var(--primary-accent-light); 
-            border-color: var(--border-color);
-            color: var(--background-body);
-
-            @media (hover: hover) {
-                &:hover:not(:disabled) {
-                    transform: none;
-                }
-            }
-        }
-
-        &:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            color: var(--text-muted);
-            border-color: var(--border-color-light);
-            background-image: linear-gradient(
-                to top right,
-                transparent calc(50% - 1px),
-                var(--border-color-strong) calc(50% - 1px),
-                var(--border-color-strong) calc(50% + 1px),
-                transparent calc(50% + 1px)
-            );
-        }
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        border-color: var(--text-primary);
+        transform: $hover-lift;
+      }
     }
+
+    &--active {
+      background-color: var(--primary-accent-light);
+      border-color: var(--border-color);
+      color: var(--background-body);
+
+      @media (hover: hover) {
+        &:hover:not(:disabled) {
+          transform: none;
+        }
+      }
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      color: var(--text-muted);
+      border-color: var(--border-color-light);
+      background-image: linear-gradient(
+        to top right,
+        transparent calc(50% - 1px),
+        var(--border-color-strong) calc(50% - 1px),
+        var(--border-color-strong) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      );
+    }
+  }
 }
 
 @keyframes sizes-shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-4px); }
-    40%, 80% { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
 }

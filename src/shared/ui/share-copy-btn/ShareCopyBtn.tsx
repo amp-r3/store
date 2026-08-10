@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import style from './share-copy-btn.module.scss';
-import { FaShare, FaCopy, FaRegSquareCheck } from "react-icons/fa6";
+import { FaShare, FaCopy, FaRegSquareCheck } from 'react-icons/fa6';
 import { useMediaQuery } from '@/shared/lib/hooks';
 
 export const ShareCopyBtn = () => {
-  const isMobile = useMediaQuery("(pointer: coarse)");
+  const isMobile = useMediaQuery('(pointer: coarse)');
 
   // navigator.share isn't queried during render (it would run at prerender
   // time for /product/[id]'s ISR build and always disagree with the client's
@@ -53,7 +53,7 @@ export const ShareCopyBtn = () => {
   }
 
   const icon = isSharePossible ? <FaShare /> : <FaCopy />;
-  const ariaLabel = isSharePossible ? "Share link" : "Copy link";
+  const ariaLabel = isSharePossible ? 'Share link' : 'Copy link';
 
   return (
     <button
@@ -62,9 +62,7 @@ export const ShareCopyBtn = () => {
       aria-label={ariaLabel}
       title={ariaLabel}
     >
-      <span className={style['share-copy-btn__icon']}>
-        {success ? <FaRegSquareCheck /> : icon}
-      </span>
+      <span className={style['share-copy-btn__icon']}>{success ? <FaRegSquareCheck /> : icon}</span>
     </button>
   );
-}
+};

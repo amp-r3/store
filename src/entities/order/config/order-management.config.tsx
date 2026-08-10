@@ -1,21 +1,36 @@
-import { ReactNode } from 'react'
-import { FaCreditCard, FaPaypal } from 'react-icons/fa'
-import { SiKlarna, SiSepa } from 'react-icons/si'
-import { LuBanknote, LuHandCoins, LuClipboardCheck, LuCircleAlert, LuShieldCheck, LuClock, LuTruck, LuPlaneTakeoff, LuStore, LuRefreshCw, LuHouse, LuPackageOpen, LuMapPin, LuReceiptText, LuPackage, LuCheck } from 'react-icons/lu'
-import { DeliveryStatus, OrderStatus, PaymentStatus } from '@/entities/order/model/types'
-import type { InfoBannerItem, InfoBannerProps } from '@/shared/ui'
+import { ReactNode } from 'react';
+import { FaCreditCard, FaPaypal } from 'react-icons/fa';
+import { SiKlarna, SiSepa } from 'react-icons/si';
+import {
+  LuBanknote,
+  LuHandCoins,
+  LuClipboardCheck,
+  LuCircleAlert,
+  LuShieldCheck,
+  LuClock,
+  LuTruck,
+  LuPlaneTakeoff,
+  LuStore,
+  LuRefreshCw,
+  LuHouse,
+  LuPackageOpen,
+  LuMapPin,
+  LuReceiptText,
+  LuPackage,
+  LuCheck,
+} from 'react-icons/lu';
+import { DeliveryStatus, OrderStatus, PaymentStatus } from '@/entities/order/model/types';
+import type { InfoBannerItem, InfoBannerProps } from '@/shared/ui';
 
-export type PaymentDetailItem = InfoBannerItem
-export type PaymentBanner = InfoBannerProps
+export type PaymentDetailItem = InfoBannerItem;
+export type PaymentBanner = InfoBannerProps;
 
 export interface PaymentConfig {
-  id: string
-  label: string
-  icon: ReactNode
-  banner?: PaymentBanner
+  id: string;
+  label: string;
+  icon: ReactNode;
+  banner?: PaymentBanner;
 }
-
-
 
 export const PAYMENT_CONFIG: PaymentConfig[] = [
   {
@@ -25,7 +40,8 @@ export const PAYMENT_CONFIG: PaymentConfig[] = [
     banner: {
       icon: <FaCreditCard />,
       title: 'Pay by card',
-      description: 'Secure payment via Visa, Mastercard or other supported cards. Your data is encrypted and never stored.',
+      description:
+        'Secure payment via Visa, Mastercard or other supported cards. Your data is encrypted and never stored.',
       details: [
         { icon: <LuShieldCheck />, text: '3D Secure authentication' },
         { icon: <LuClipboardCheck />, text: 'Instant payment confirmation' },
@@ -40,7 +56,8 @@ export const PAYMENT_CONFIG: PaymentConfig[] = [
     banner: {
       icon: <LuBanknote />,
       title: 'Pay upon delivery',
-      description: 'Our courier will collect payment when your order arrives. Please have the exact amount ready — change may not always be available.',
+      description:
+        'Our courier will collect payment when your order arrives. Please have the exact amount ready — change may not always be available.',
       details: [
         { icon: <LuHandCoins />, text: 'Cash or card accepted at the door' },
         { icon: <LuClipboardCheck />, text: "You'll receive an invoice after delivery" },
@@ -55,7 +72,8 @@ export const PAYMENT_CONFIG: PaymentConfig[] = [
     banner: {
       icon: <FaPaypal />,
       title: 'Pay with PayPal',
-      description: 'Fast and secure checkout with your PayPal account. No need to enter card details every time.',
+      description:
+        'Fast and secure checkout with your PayPal account. No need to enter card details every time.',
       details: [
         { icon: <LuShieldCheck />, text: 'Buyer protection included' },
         { icon: <LuClipboardCheck />, text: 'Instant transfer from your PayPal balance' },
@@ -70,7 +88,8 @@ export const PAYMENT_CONFIG: PaymentConfig[] = [
     banner: {
       icon: <SiSepa />,
       title: 'SEPA Bank Transfer',
-      description: 'Direct bank transfer within the EU. Ideal for larger orders — no card required.',
+      description:
+        'Direct bank transfer within the EU. Ideal for larger orders — no card required.',
       details: [
         { icon: <LuClock />, text: 'Processing takes 1–3 business days' },
         { icon: <LuClipboardCheck />, text: 'Order confirmed once payment is received' },
@@ -85,7 +104,8 @@ export const PAYMENT_CONFIG: PaymentConfig[] = [
     banner: {
       icon: <SiKlarna />,
       title: 'Pay with Klarna',
-      description: 'Buy now and pay later — split your purchase into instalments or pay in 30 days.',
+      description:
+        'Buy now and pay later — split your purchase into instalments or pay in 30 days.',
       details: [
         { icon: <LuClock />, text: 'Pay in 3 interest-free instalments' },
         { icon: <LuShieldCheck />, text: 'No impact on your credit score to apply' },
@@ -93,27 +113,36 @@ export const PAYMENT_CONFIG: PaymentConfig[] = [
       ],
     },
   },
-]
+];
 
 export const PICKUP_BANNER: PaymentBanner = {
   icon: <LuHouse />,
   title: 'Pick up at a nearby location',
-  description: "Your order will be ready for pickup at the nearest collection point. We'll send you a notification with the exact address and a confirmation code once your order is prepared.",
+  description:
+    "Your order will be ready for pickup at the nearest collection point. We'll send you a notification with the exact address and a confirmation code once your order is prepared.",
   details: [
     { icon: <LuClock />, text: 'Ready within 2–4 hours after payment' },
     { icon: <LuPackageOpen />, text: 'Bring a valid ID and your confirmation code' },
     { icon: <LuMapPin />, text: 'The pickup address will be confirmed via email' },
   ],
-}
+};
 
-export interface DeliveryConfig { id: string; label: string; icon: ReactNode }
+export interface DeliveryConfig {
+  id: string;
+  label: string;
+  icon: ReactNode;
+}
 export const DELIVERY_CONFIG: DeliveryConfig[] = [
   { id: 'standard', label: 'Standard Delivery', icon: <LuTruck /> },
   { id: 'express', label: 'Express Shipping', icon: <LuPlaneTakeoff /> },
   { id: 'pickup', label: 'In-Store Pickup', icon: <LuStore /> },
-]
+];
 
-export interface StatusMeta { label: string; hasIcon?: boolean; icon?: ReactNode }
+export interface StatusMeta {
+  label: string;
+  hasIcon?: boolean;
+  icon?: ReactNode;
+}
 
 export const ORDER_STATUS_MAP: Record<OrderStatus | string, StatusMeta> = {
   pending: { label: 'Pending', hasIcon: true, icon: <LuRefreshCw /> },
@@ -123,14 +152,14 @@ export const ORDER_STATUS_MAP: Record<OrderStatus | string, StatusMeta> = {
   cancelled: { label: 'Cancelled' },
   returned: { label: 'Returned' },
   refunded: { label: 'Refunded' },
-}
+};
 
 export const PAYMENT_STATUS_MAP: Record<PaymentStatus | string, StatusMeta> = {
   awaiting_payment: { label: 'Awaiting Payment', hasIcon: true, icon: <LuRefreshCw /> },
   paid: { label: 'Paid Successfully' },
   failed: { label: 'Payment Failed' },
   refunded: { label: 'Refunded' },
-}
+};
 
 export const DELIVERY_STATUS_MAP: Record<DeliveryStatus | string, StatusMeta> = {
   awaiting_dispatch: { label: 'Awaiting Dispatch' },
@@ -139,16 +168,41 @@ export const DELIVERY_STATUS_MAP: Record<DeliveryStatus | string, StatusMeta> = 
   delivered: { label: 'Delivered' },
   returned: { label: 'Returned' },
   cancelled: { label: 'Cancelled' },
-}
+};
 
-export const ORDER_STATUS_OPTIONS = ['pending', 'processing', 'shipped', 'completed', 'cancelled', 'returned', 'refunded'] as const satisfies readonly OrderStatus[];
-export const PAYMENT_STATUS_OPTIONS = ['awaiting_payment', 'paid', 'failed', 'refunded'] as const satisfies readonly PaymentStatus[];
-export const DELIVERY_STATUS_OPTIONS = ['awaiting_dispatch', 'dispatched', 'in_transit', 'delivered', 'returned', 'cancelled'] as const satisfies readonly DeliveryStatus[];
+export const ORDER_STATUS_OPTIONS = [
+  'pending',
+  'processing',
+  'shipped',
+  'completed',
+  'cancelled',
+  'returned',
+  'refunded',
+] as const satisfies readonly OrderStatus[];
+export const PAYMENT_STATUS_OPTIONS = [
+  'awaiting_payment',
+  'paid',
+  'failed',
+  'refunded',
+] as const satisfies readonly PaymentStatus[];
+export const DELIVERY_STATUS_OPTIONS = [
+  'awaiting_dispatch',
+  'dispatched',
+  'in_transit',
+  'delivered',
+  'returned',
+  'cancelled',
+] as const satisfies readonly DeliveryStatus[];
 
 // Mirrors is_terminal_order_status() in Postgres (single source of truth is
 // the DB function; this is read-only UI/query-filter usage, not a second
 // implementation of the derivation rules themselves).
-export const TERMINAL_ORDER_STATUSES = ['completed', 'cancelled', 'returned', 'refunded'] as const satisfies readonly OrderStatus[];
+export const TERMINAL_ORDER_STATUSES = [
+  'completed',
+  'cancelled',
+  'returned',
+  'refunded',
+] as const satisfies readonly OrderStatus[];
 
 export interface OrderProgressStep {
   status: OrderStatus;

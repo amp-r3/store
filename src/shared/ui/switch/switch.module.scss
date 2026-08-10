@@ -24,7 +24,9 @@
   border-radius: $radius-pill;
   background: var(--border-color-subtle);
   cursor: pointer;
-  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth;
+  transition:
+    background $transition-fast $ease-in-out-smooth,
+    border-color $transition-fast $ease-in-out-smooth;
 
   &:disabled {
     cursor: not-allowed;

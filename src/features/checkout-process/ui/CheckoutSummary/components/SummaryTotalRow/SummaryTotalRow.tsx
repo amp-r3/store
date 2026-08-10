@@ -9,13 +9,19 @@ export interface SummaryTotalRowProps {
 }
 
 export const SummaryTotalRow = ({ label, value, isFinal, valueVariant }: SummaryTotalRowProps) => (
-  <div className={[style['total-row'], isFinal ? style['total-row--final'] : ''].filter(Boolean).join(' ')}>
+  <div
+    className={[style['total-row'], isFinal ? style['total-row--final'] : '']
+      .filter(Boolean)
+      .join(' ')}
+  >
     <span className={style['total-row__label']}>{label}</span>
     <span
       className={[
         style['total-row__value'],
         valueVariant ? style[`total-row__value--${valueVariant}`] : '',
-      ].filter(Boolean).join(' ')}
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
       {value}
     </span>
@@ -29,10 +35,9 @@ export interface SummaryTotalBadgeProps {
 
 export const SummaryTotalBadge = ({ children, variant }: SummaryTotalBadgeProps) => (
   <span
-    className={[
-      style['total-row__badge'],
-      variant ? style[`total-row__badge--${variant}`] : '',
-    ].filter(Boolean).join(' ')}
+    className={[style['total-row__badge'], variant ? style[`total-row__badge--${variant}`] : '']
+      .filter(Boolean)
+      .join(' ')}
   >
     {children}
   </span>

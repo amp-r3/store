@@ -14,7 +14,11 @@ interface UseCheckoutDraftParams {
   paymentMethods?: PaymentMethod[];
 }
 
-export const useCheckoutDraft = ({ methods, deliveryMethods, paymentMethods }: UseCheckoutDraftParams) => {
+export const useCheckoutDraft = ({
+  methods,
+  deliveryMethods,
+  paymentMethods,
+}: UseCheckoutDraftParams) => {
   const dispatch = useAppDispatch();
   const draft = useAppSelector(selectCheckoutDraft);
   const hadDraftOnMountRef = useRef(!!draft);
@@ -35,8 +39,10 @@ export const useCheckoutDraft = ({ methods, deliveryMethods, paymentMethods }: U
 
     hasRestoredRef.current = true;
 
-    const deliveryValid = !!draft.deliveryMethodId && deliveryMethods.some((m) => m.id === draft.deliveryMethodId);
-    const paymentValid = !!draft.paymentMethodId && paymentMethods.some((m) => m.id === draft.paymentMethodId);
+    const deliveryValid =
+      !!draft.deliveryMethodId && deliveryMethods.some((m) => m.id === draft.deliveryMethodId);
+    const paymentValid =
+      !!draft.paymentMethodId && paymentMethods.some((m) => m.id === draft.paymentMethodId);
 
     reset({
       ...getValues(),

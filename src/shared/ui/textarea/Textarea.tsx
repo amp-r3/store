@@ -15,11 +15,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     const errorId = `${textareaId}-error`;
     const descriptionId = `${textareaId}-description`;
 
-    const describedBy = [
-      error ? errorId : null,
-      !error && description ? descriptionId : null,
-      props['aria-describedby'] ?? null,
-    ].filter(Boolean).join(' ') || undefined;
+    const describedBy =
+      [
+        error ? errorId : null,
+        !error && description ? descriptionId : null,
+        props['aria-describedby'] ?? null,
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined;
 
     return (
       <div className={style.wrapper}>
@@ -32,7 +35,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           id={textareaId}
           ref={ref}
           rows={rows}
-          className={[style.control, error ? style.controlError : '', className || ''].filter(Boolean).join(' ')}
+          className={[style.control, error ? style.controlError : '', className || '']
+            .filter(Boolean)
+            .join(' ')}
           aria-invalid={!!error}
           {...props}
           aria-describedby={describedBy}
@@ -51,7 +56,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Textarea.displayName = 'Textarea';

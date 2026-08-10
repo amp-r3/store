@@ -22,12 +22,14 @@ import { useAppSelector } from './redux';
  * the server regardless of how fast rehydration wins that race. */
 export const useIsRehydrated = () => {
   const [hasMounted, setHasMounted] = useState(false);
-  const reduxRehydrated = useAppSelector((state) => Boolean(
-    state.auth._persist?.rehydrated &&
-    state.cart._persist?.rehydrated &&
-    state.wishlist._persist?.rehydrated &&
-    state.checkout._persist?.rehydrated
-  ));
+  const reduxRehydrated = useAppSelector((state) =>
+    Boolean(
+      state.auth._persist?.rehydrated &&
+      state.cart._persist?.rehydrated &&
+      state.wishlist._persist?.rehydrated &&
+      state.checkout._persist?.rehydrated,
+    ),
+  );
 
   useEffect(() => {
     setHasMounted(true);

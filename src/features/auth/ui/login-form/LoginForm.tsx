@@ -26,10 +26,10 @@ export const LoginForm = () => {
     handleSubmit,
     setError,
     setFocus,
-    formState: { errors }
+    formState: { errors },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
-    mode: 'onTouched'
+    mode: 'onTouched',
   });
 
   const { errorMsg, failedProviders } = useAuthUrlError();
@@ -38,7 +38,7 @@ export const LoginForm = () => {
     if (errorMsg) {
       setError('root', {
         type: 'server',
-        message: errorMsg
+        message: errorMsg,
       });
     }
   }, [errorMsg, setError]);
@@ -51,8 +51,8 @@ export const LoginForm = () => {
     if (isEmail) setFocus('email');
   }, [isEmail, setFocus]);
 
-  const { signInWithOAuth, pendingProvider } = useOAuthSignIn(
-    (message) => setError('root', { type: 'server', message })
+  const { signInWithOAuth, pendingProvider } = useOAuthSignIn((message) =>
+    setError('root', { type: 'server', message }),
   );
 
   // Stays true until PublicRoute redirects away, so the button doesn't flash
@@ -73,10 +73,11 @@ export const LoginForm = () => {
 
   return (
     <form className={style['login-form']} onSubmit={handleSubmit(onSubmit)} noValidate>
-
       {errors.root && (
         <div className={style['login-form__error']}>
-          <Alert ref={errorRef} tabIndex={-1} variant="error">{errors.root.message}</Alert>
+          <Alert ref={errorRef} tabIndex={-1} variant="error">
+            {errors.root.message}
+          </Alert>
         </div>
       )}
 
@@ -88,7 +89,7 @@ export const LoginForm = () => {
         {isEmail ? (
           <>
             <FormField
-              label='Email'
+              label="Email"
               type="email"
               inputMode="email"
               autoCapitalize="none"
@@ -101,7 +102,7 @@ export const LoginForm = () => {
             />
 
             <FormField
-              label='Password'
+              label="Password"
               type="password"
               icon={<RiLockPasswordLine />}
               placeholder="Enter your password"
@@ -112,7 +113,11 @@ export const LoginForm = () => {
               {...capsLockProps}
             />
 
-            <AuthFormActions onBack={() => setIsEmail(false)} submitLabel="Log in" isLoading={isSubmitting} />
+            <AuthFormActions
+              onBack={() => setIsEmail(false)}
+              submitLabel="Log in"
+              isLoading={isSubmitting}
+            />
           </>
         ) : (
           <AuthProviderList

@@ -14,52 +14,56 @@ const DEALS_LIMIT = 12;
 const SKELETON_CARDS_COUNT = 4;
 
 interface DealsShowcaseProps {
-    initialProducts?: Product[];
+  initialProducts?: Product[];
 }
 
 export const DealsShowcase = memo(({ initialProducts }: DealsShowcaseProps = {}) => {
-    const { data: liveProducts, isLoading: isLiveLoading, error } = useGetDealsProductsQuery({ limit: DEALS_LIMIT });
-    const products = liveProducts ?? initialProducts;
-    const isLoading = isLiveLoading && !products;
-    const { soft } = useHaptics();
+  const {
+    data: liveProducts,
+    isLoading: isLiveLoading,
+    error,
+  } = useGetDealsProductsQuery({ limit: DEALS_LIMIT });
+  const products = liveProducts ?? initialProducts;
+  const isLoading = isLiveLoading && !products;
+  const { soft } = useHaptics();
 
-    if (error && !products?.length) return null;
-    if (!isLoading && (!products || products.length === 0)) return null;
+  if (error && !products?.length) return null;
+  if (!isLoading && (!products || products.length === 0)) return null;
 
-    return (
-        <section className={style.dealsShowcase} aria-labelledby="deals-showcase-heading">
-            <div className={`${style.dealsShowcase__inner} container`}>
-                <div className={style.dealsShowcase__header}>
-                    <h2 id="deals-showcase-heading" className={style.dealsShowcase__title}>
-                        <IoFlame className={style.dealsShowcase__titleIcon} aria-hidden="true" />
-                        Hot Deals
-                    </h2>
-                    <Link href="/catalog?deals=true" className={style.dealsShowcase__viewAll} onClick={soft}>
-                        View All
-                    </Link>
+  return (
+    <section className={style.dealsShowcase} aria-labelledby="deals-showcase-heading">
+      <div className={`${style.dealsShowcase__inner} container`}>
+        <div className={style.dealsShowcase__header}>
+          <h2 id="deals-showcase-heading" className={style.dealsShowcase__title}>
+            <IoFlame className={style.dealsShowcase__titleIcon} aria-hidden="true" />
+            Hot Deals
+          </h2>
+          <Link href="/catalog?deals=true" className={style.dealsShowcase__viewAll} onClick={soft}>
+            View All
+          </Link>
+        </div>
+
+        <HorizontalScroll ariaLabel="Discounted products">
+          {isLoading
+            ? Array.from({ length: SKELETON_CARDS_COUNT }).map((_, index) => (
+                <div key={`deals-skeleton-${index}`} className={style.dealsShowcase__item}>
+                  <ProductCardSkeleton />
                 </div>
-
-                <HorizontalScroll ariaLabel="Discounted products">
-                    {
-                        isLoading
-                            ? Array.from({ length: SKELETON_CARDS_COUNT }).map((_, index) => (
-                                <div key={`deals-skeleton-${index}`} className={style.dealsShowcase__item}>
-                                    <ProductCardSkeleton />
-                                </div>
-                            ))
-                            : products!.map((product) => (
-                                <div key={product.id} className={style.dealsShowcase__item}>
-                                    <ProductCard
-                                        product={product}
-                                        actionSlot={<WishlistToggleButton productId={product.id} price={product.price} />}
-                                    />
-                                </div>
-                            ))
+              ))
+            : products!.map((product) => (
+                <div key={product.id} className={style.dealsShowcase__item}>
+                  <ProductCard
+                    product={product}
+                    actionSlot={
+                      <WishlistToggleButton productId={product.id} price={product.price} />
                     }
-                </HorizontalScroll>
-            </div>
-        </section>
-    );
+                  />
+                </div>
+              ))}
+        </HorizontalScroll>
+      </div>
+    </section>
+  );
 });
 
 DealsShowcase.displayName = 'DealsShowcase';

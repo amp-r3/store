@@ -18,13 +18,12 @@
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
   &[data-state='open'] {
-    animation: slide-down 500ms $ease-out-expo
+    animation: slide-down 500ms $ease-out-expo;
   }
 
   &[data-state='closed'] {
     animation: fade-out 200ms ease-in;
   }
-
 
   ul {
     margin: 0;

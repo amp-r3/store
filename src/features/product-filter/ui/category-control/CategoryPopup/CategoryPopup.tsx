@@ -6,58 +6,48 @@ import style from './category-popup.module.scss';
 import { Dialog } from 'radix-ui';
 import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 
-
 export const CategoryPopup: FC<ICategoryProps> = ({
-    categoryOptions,
-    activeCategoryOption,
-    changeCategory,
-    isOpen,
-    onClose,
+  categoryOptions,
+  activeCategoryOption,
+  changeCategory,
+  isOpen,
+  onClose,
 }) => {
+  const handleChangeCategory = (newCategory: string | null) => {
+    changeCategory(newCategory);
+    onClose();
+  };
 
-
-    const handleChangeCategory = (newCategory: string | null) => {
-        changeCategory(newCategory);
-        onClose()
-    };
-
-
-    return (
-        <Dialog.Root
-            open={isOpen}
-            onOpenChange={(open) => !open && onClose()}
+  return (
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog.Portal container={getModalRoot()}>
+        <Dialog.Overlay className={style['category-popup__backdrop']} />
+        <Dialog.Content
+          className={style['category-popup__window']}
+          onPointerDownOutside={ignoreToastInteraction}
         >
-            <Dialog.Portal container={getModalRoot()}>
-                <Dialog.Overlay
-                    
-                    className={style['category-popup__backdrop']}
-                />
-                <Dialog.Content
-                    className={style['category-popup__window']}
-                    onPointerDownOutside={ignoreToastInteraction}
-                >
-                    <div className={style['category-popup__header']}>
-                        <Dialog.Title className={style['category-popup__title']}>Category</Dialog.Title>
-                        <Dialog.Close asChild>
-                            <button
-                                type="button"
-                                className={style['category-popup__close']}
-                                onClick={onClose}
-                                aria-label="Close"
-                            >
-                                <IoClose aria-hidden="true" />
-                            </button>
-                        </Dialog.Close>
-                    </div>
-                    <div className={style['category-popup__body']}>
-                        <CategoryList
-                            categoryOptions={categoryOptions}
-                            activeCategoryOption={activeCategoryOption}
-                            changeCategory={handleChangeCategory}
-                        />
-                    </div>
-                </Dialog.Content>
-            </Dialog.Portal>
-        </Dialog.Root>
-    );
+          <div className={style['category-popup__header']}>
+            <Dialog.Title className={style['category-popup__title']}>Category</Dialog.Title>
+            <Dialog.Close asChild>
+              <button
+                type="button"
+                className={style['category-popup__close']}
+                onClick={onClose}
+                aria-label="Close"
+              >
+                <IoClose aria-hidden="true" />
+              </button>
+            </Dialog.Close>
+          </div>
+          <div className={style['category-popup__body']}>
+            <CategoryList
+              categoryOptions={categoryOptions}
+              activeCategoryOption={activeCategoryOption}
+              changeCategory={handleChangeCategory}
+            />
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
 };

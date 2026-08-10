@@ -39,7 +39,9 @@ export const useAuthUrlError = () => {
       setErrorMsg(decodedMsg);
 
       // 4. Determine which provider failed
-      const attemptedProvider = sessionStorage.getItem(AUTH_STORAGE_KEYS.oauthProvider) as AuthProviderId | null;
+      const attemptedProvider = sessionStorage.getItem(
+        AUTH_STORAGE_KEYS.oauthProvider,
+      ) as AuthProviderId | null;
       if (attemptedProvider) {
         if (!failedList.includes(attemptedProvider)) {
           const nextFailed = [...failedList, attemptedProvider];
@@ -55,12 +57,15 @@ export const useAuthUrlError = () => {
       // preserved — in particular `?from=`, which now carries the post-login
       // destination that used to live in react-router's location.state.
       // Replacing the URL (no hash in the new string) also drops the hash.
-      setSearchParams((prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete('error');
-        next.delete('error_description');
-        return next;
-      }, { replace: true });
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.delete('error');
+          next.delete('error_description');
+          return next;
+        },
+        { replace: true },
+      );
     }
   }, [searchParams, setSearchParams]);
 

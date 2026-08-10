@@ -1,198 +1,194 @@
-@use "index" as *;
+@use 'index' as *;
 
 ::selection {
-    background-color: var(--selection-bg);
+  background-color: var(--selection-bg);
 }
 
 ::-moz-selection {
-    background-color: var(--selection-bg);
+  background-color: var(--selection-bg);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 :root {
-    // Set by TopBar (widgets/top-bar) via a data attribute while a
-    // notification is showing — the bar has no permanent idle state
-    // anymore, so layout that needs to clear it (navbar, checkout summary,
-    // toast viewport) reads this instead of assuming $topbar-height.
-    --topbar-offset: 0px;
+  // Set by TopBar (widgets/top-bar) via a data attribute while a
+  // notification is showing — the bar has no permanent idle state
+  // anymore, so layout that needs to clear it (navbar, checkout summary,
+  // toast viewport) reads this instead of assuming $topbar-height.
+  --topbar-offset: 0px;
 }
 
 :root[data-topbar='true'] {
-    --topbar-offset: #{$topbar-height};
+  --topbar-offset: #{$topbar-height};
 }
 
 body {
-    font-family: $font-primary;
-    color: var(--text-primary);
-    background-color: var(--background-body);
+  font-family: $font-primary;
+  color: var(--text-primary);
+  background-color: var(--background-body);
 
-    &::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -1;
-        background-image:
-            radial-gradient(ellipse at top, var(--gradient-body-start), transparent),
-            radial-gradient(ellipse at bottom, var(--gradient-body-end), transparent);
-        background-color: var(--background-body);
-        opacity: 0.7;
-    }
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-image:
+      radial-gradient(ellipse at top, var(--gradient-body-start), transparent),
+      radial-gradient(ellipse at bottom, var(--gradient-body-end), transparent);
+    background-color: var(--background-body);
+    opacity: 0.7;
+  }
 }
 
 h1,
 h2,
 h3 {
-    font-family: $font-display;
+  font-family: $font-display;
 }
 
 .container {
-    max-width: $container-width;
-    width: 100%;
-    margin: 0 auto;
-    padding-inline: $spacing-md;
+  max-width: $container-width;
+  width: 100%;
+  margin: 0 auto;
+  padding-inline: $spacing-md;
 }
 
 .content {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: $spacing-xl;
-    padding: $spacing-xl 0;
-    justify-items: center;
-    transition: opacity 0.3s ease;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: $spacing-xl;
+  padding: $spacing-xl 0;
+  justify-items: center;
+  transition: opacity 0.3s ease;
 
-    &.fetching-state {
-        opacity: 0.6;
-        pointer-events: none;
-    }
+  &.fetching-state {
+    opacity: 0.6;
+    pointer-events: none;
+  }
 
-    @media (max-width: 768px) {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: $spacing-md;
-    }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $spacing-md;
+  }
 
-    @media (max-width: 500px) {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: $spacing-xs;
-        padding: $spacing-md 0;
-    }
+  @media (max-width: 500px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $spacing-xs;
+    padding: $spacing-md 0;
+  }
 }
 
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 input,
 textarea,
 button {
-    border: none;
-    outline: none;
-    font-size: inherit;
-    font-family: inherit;
-    color: inherit;
-    background: transparent;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 // Hide the browser's own spinner so every number field goes through one of
 // the app's own recipes (FormField's optional −/+ stepper, or none at all)
 // instead of three different-looking native arrow widgets.
 input[type='number'] {
-    appearance: textfield;
-    -moz-appearance: textfield;
+  appearance: textfield;
+  -moz-appearance: textfield;
 
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 *,
 *::before,
 *::after {
-    -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar {
-    width: $spacing-sm;
-    height: $spacing-sm;
+  width: $spacing-sm;
+  height: $spacing-sm;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--background-component);
-    border-radius: $radius-pill;
-    margin: $spacing-xs;
+  background: var(--background-component);
+  border-radius: $radius-pill;
+  margin: $spacing-xs;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg,
-            var(--primary-accent-light),
-            var(--primary-accent));
-    border-radius: $radius-pill;
-    border: $loader-border-width-xs solid var(--background-component);
-    transition: background $transition-base $ease-in-out-smooth;
+  background: linear-gradient(180deg, var(--primary-accent-light), var(--primary-accent));
+  border-radius: $radius-pill;
+  border: $loader-border-width-xs solid var(--background-component);
+  transition: background $transition-base $ease-in-out-smooth;
 
-    &:hover {
-        background: linear-gradient(180deg,
-                var(--primary-accent),
-                var(--primary-accent-dark));
-        box-shadow: var(--shadow-accent-sm);
-    }
+  &:hover {
+    background: linear-gradient(180deg, var(--primary-accent), var(--primary-accent-dark));
+    box-shadow: var(--shadow-accent-sm);
+  }
 
-    &:active {
-        background: var(--primary-accent-dark);
-    }
+  &:active {
+    background: var(--primary-accent-dark);
+  }
 }
 
 * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-accent) var(--background-component);
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-accent) var(--background-component);
 }
 
 #modal-root {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
 
-    z-index: 9999;
+  z-index: 9999;
 
-    pointer-events: none;
+  pointer-events: none;
 }
 
 #modal-root:not(:empty) {
-    height: 100vh;
+  height: 100vh;
 }
 
-#modal-root>* {
-    pointer-events: auto;
+#modal-root > * {
+  pointer-events: auto;
 }

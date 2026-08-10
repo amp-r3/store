@@ -34,10 +34,12 @@ export async function proxy(request: NextRequest) {
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
         },
       },
-    }
+    },
   );
 
   // Calling this is what actually triggers the refresh and the setAll
@@ -67,7 +69,5 @@ export const config = {
   // Skip Next's own asset routes and anything under public/ (any path whose
   // last segment has a file extension — favicon.ico, sitemap.xml,
   // robots.txt, images, the webmanifest, etc.) rather than listing each one.
-  matcher: [
-    '/((?!_next/static|_next/image|.*\\..*).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|.*\\..*).*)'],
 };

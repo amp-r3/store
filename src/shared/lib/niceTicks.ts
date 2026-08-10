@@ -6,22 +6,22 @@
  * always has a little headroom at the top.
  */
 export const niceTicks = (maxValue: number, tickCount: number): number[] => {
-    if (maxValue <= 0) return [0];
+  if (maxValue <= 0) return [0];
 
-    const rawStep = maxValue / Math.max(tickCount - 1, 1);
-    const magnitude = 10 ** Math.floor(Math.log10(rawStep));
-    const residual = rawStep / magnitude;
+  const rawStep = maxValue / Math.max(tickCount - 1, 1);
+  const magnitude = 10 ** Math.floor(Math.log10(rawStep));
+  const residual = rawStep / magnitude;
 
-    let step: number;
-    if (residual > 5) step = 10 * magnitude;
-    else if (residual > 2) step = 5 * magnitude;
-    else if (residual > 1) step = 2 * magnitude;
-    else step = magnitude;
+  let step: number;
+  if (residual > 5) step = 10 * magnitude;
+  else if (residual > 2) step = 5 * magnitude;
+  else if (residual > 1) step = 2 * magnitude;
+  else step = magnitude;
 
-    const niceMax = Math.ceil(maxValue / step) * step;
-    const ticks: number[] = [];
-    for (let value = 0; value <= niceMax + step / 2; value += step) {
-        ticks.push(Math.round(value * 100) / 100);
-    }
-    return ticks;
+  const niceMax = Math.ceil(maxValue / step) * step;
+  const ticks: number[] = [];
+  for (let value = 0; value <= niceMax + step / 2; value += step) {
+    ticks.push(Math.round(value * 100) / 100);
+  }
+  return ticks;
 };

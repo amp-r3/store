@@ -90,7 +90,11 @@
   font-size: $fs-sm;
   font-weight: $fw-semibold;
   color: var(--text-secondary);
-  transition: background $transition-fast $ease-in-out-smooth, border-color $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
+  transition:
+    background $transition-fast $ease-in-out-smooth,
+    border-color $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth,
+    transform $transition-fast $ease-in-out-smooth;
 
   &:hover {
     background: var(--glass-highlight-strong);

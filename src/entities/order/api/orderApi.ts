@@ -1,7 +1,14 @@
 import { CreateOrderPayload, ShippingAddress } from '../model/types';
 import { supabase, baseApi } from '@/shared/api';
 import type { Database } from '@/shared/api';
-import { Order, OrderCounts, OrdersScope, DeliveryMethod, PaymentMethod, OrderStatusEvent } from '@/entities/order/model/types';
+import {
+  Order,
+  OrderCounts,
+  OrdersScope,
+  DeliveryMethod,
+  PaymentMethod,
+  OrderStatusEvent,
+} from '@/entities/order/model/types';
 import { TERMINAL_ORDER_STATUSES } from '@/entities/order/config/order-management.config';
 import { fetchDeliveryMethods, fetchPaymentMethods } from './queries';
 import { getErrorMessage } from '@/shared/lib';
@@ -55,7 +62,6 @@ export const ORDERS_SELECT = `
   )
 `;
 
-
 export const mapOrderResponseToOrder = (order: OrderRow): Order => ({
   id: order.id,
   // order_number is nullable in the schema but always set by the create_order
@@ -96,7 +102,9 @@ export const mapOrderResponseToOrder = (order: OrderRow): Order => ({
   })),
 });
 
-const mapStatusEventRow = (row: Database['public']['Tables']['order_status_events']['Row']): OrderStatusEvent => ({
+const mapStatusEventRow = (
+  row: Database['public']['Tables']['order_status_events']['Row'],
+): OrderStatusEvent => ({
   id: row.id,
   orderId: row.order_id,
   status: row.status,
@@ -106,7 +114,9 @@ const mapStatusEventRow = (row: Database['public']['Tables']['order_status_event
 });
 
 const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: { status: 401, data: 'The user is not authorized' } };
@@ -120,9 +130,10 @@ const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
     .select(ORDERS_SELECT, { count: 'exact' })
     .eq('user_id', user.id);
 
-  query = scope === 'completed'
-    ? query.in('status', TERMINAL_ORDER_STATUSES)
-    : query.not('status', 'in', TERMINAL_STATUSES_LIST);
+  query =
+    scope === 'completed'
+      ? query.in('status', TERMINAL_ORDER_STATUSES)
+      : query.not('status', 'in', TERMINAL_STATUSES_LIST);
 
   const { data, error, count } = await query
     .order('created_at', { ascending: false })
@@ -138,8 +149,8 @@ const fetchOrders = async ({ page, limit, scope }: OrdersQueryArgs) => {
       // isn't narrowed precisely by postgrest-js's select-string inference;
       // OrderRow is composed entirely from generated table types.
       items: (data as unknown as OrderRow[]).map(mapOrderResponseToOrder),
-      totalCount: count || 0
-    }
+      totalCount: count || 0,
+    },
   };
 };
 
@@ -147,7 +158,7 @@ export const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getOrdersPagination: builder.query<PaginatedOrders, OrdersQueryArgs>({
       queryFn: (args) => fetchOrders(args),
-      providesTags: ['Order']
+      providesTags: ['Order'],
     }),
 
     getOrdersScroll: builder.query<PaginatedOrders, OrdersQueryArgs>({
@@ -166,16 +177,20 @@ export const orderApi = baseApi.injectEndpoints({
         currentCache.totalCount = newResponse.totalCount;
       },
       forceRefetch({ currentArg, previousArg }) {
-        return currentArg?.page !== previousArg?.page
-          || currentArg?.limit !== previousArg?.limit
-          || currentArg?.scope !== previousArg?.scope;
+        return (
+          currentArg?.page !== previousArg?.page ||
+          currentArg?.limit !== previousArg?.limit ||
+          currentArg?.scope !== previousArg?.scope
+        );
       },
-      providesTags: ['Order']
+      providesTags: ['Order'],
     }),
 
     getOrderById: builder.query<Order, string>({
       queryFn: async (id) => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user) {
           return { error: { status: 401, data: 'The user is not authorized' } };
@@ -194,12 +209,14 @@ export const orderApi = baseApi.injectEndpoints({
 
         return { data: mapOrderResponseToOrder(data as unknown as OrderRow) };
       },
-      providesTags: ['Order']
+      providesTags: ['Order'],
     }),
 
     getOrderCounts: builder.query<OrderCounts, void>({
       queryFn: async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user) {
           return { error: { status: 401, data: 'The user is not authorized' } };
@@ -224,12 +241,14 @@ export const orderApi = baseApi.injectEndpoints({
 
         return { data: { active: active.count ?? 0, completed: completed.count ?? 0 } };
       },
-      providesTags: ['Order']
+      providesTags: ['Order'],
     }),
 
     createOrder: builder.mutation<CreateOrderResponse, CreateOrderPayload>({
       queryFn: async (payload) => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user) {
           return { error: { status: 401, data: 'The user is not authorized' } };
@@ -239,7 +258,10 @@ export const orderApi = baseApi.injectEndpoints({
           // create_order's Args are typed as generic Json server-side (the
           // function accepts jsonb parameters); payload matches the expected
           // shape but has no index signature to satisfy Json structurally.
-          .rpc('create_order', payload as unknown as Database['public']['Functions']['create_order']['Args']);
+          .rpc(
+            'create_order',
+            payload as unknown as Database['public']['Functions']['create_order']['Args'],
+          );
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -274,7 +296,9 @@ export const orderApi = baseApi.injectEndpoints({
 
     getLastShippingAddress: builder.query<ShippingAddress | null, void>({
       queryFn: async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user) {
           return { error: { status: 401, data: 'The user is not authorized' } };

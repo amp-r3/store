@@ -18,7 +18,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     >
       {isLoading ? <Loader size="sm" /> : children}
     </button>
-  )
+  ),
 );
 
 Button.displayName = 'Button';

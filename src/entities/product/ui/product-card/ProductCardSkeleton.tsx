@@ -1,9 +1,7 @@
-import Skeleton from 'react-loading-skeleton'
+import Skeleton from 'react-loading-skeleton';
 import style from './product-card.module.scss';
 
-
 export const ProductCardSkeleton = () => {
-
   return (
     <article className={style.card}>
       <div className={style.card__imageWrapper}>
@@ -23,5 +21,5 @@ export const ProductCardSkeleton = () => {
         </div>
       </div>
     </article>
-  )
-}
+  );
+};

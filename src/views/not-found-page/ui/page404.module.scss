@@ -1,4 +1,4 @@
-@use 'app/styles/index'as *;
+@use 'app/styles/index' as *;
 
 .notFoundPage {
   display: grid;
@@ -26,7 +26,13 @@
   font-weight: $fw-black;
   margin: 0;
   line-height: $lh-ui;
-  background: linear-gradient(130deg, var(--gradient-logo-start), var(--gradient-logo-mid-1), var(--gradient-logo-mid-2), var(--gradient-logo-end));
+  background: linear-gradient(
+    130deg,
+    var(--gradient-logo-start),
+    var(--gradient-logo-mid-1),
+    var(--gradient-logo-mid-2),
+    var(--gradient-logo-end)
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

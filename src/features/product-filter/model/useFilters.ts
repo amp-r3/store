@@ -1,151 +1,163 @@
-import { useUrlState } from "@/shared/lib/hooks";
-import { sortingOptions, SortingOption, Categories, Category } from "@/entities/product";
-import { useCallback, useMemo } from "react";
-import { catalogParamsSchema } from "@/features/product-filter/model/catalogParamsSchema";
+import { useUrlState } from '@/shared/lib/hooks';
+import { sortingOptions, SortingOption, Categories, Category } from '@/entities/product';
+import { useCallback, useMemo } from 'react';
+import { catalogParamsSchema } from '@/features/product-filter/model/catalogParamsSchema';
 
 export interface UseFilterReturn {
-    page: number;
-    currentSortBy: string | null;
-    currentOrder: string | null;
-    currentCategory: string;
-    categories: Categories;
-    categoriesLoading: boolean;
-    categoriesFetching: boolean;
-    categoriesError: unknown;
-    activeSortOption: SortingOption;
-    activeCategoryOption?: Category;
-    sortingOptions: SortingOption[];
-    isDealsActive: boolean;
-    changeSort(newSortBy: string | null, newOrder: string | null): void;
-    changeCategory(newCategory: string | null): void;
-    setPage(newPage: number): void;
-    toggleDeals(): void;
-    clearAllFilters(): void;
+  page: number;
+  currentSortBy: string | null;
+  currentOrder: string | null;
+  currentCategory: string;
+  categories: Categories;
+  categoriesLoading: boolean;
+  categoriesFetching: boolean;
+  categoriesError: unknown;
+  activeSortOption: SortingOption;
+  activeCategoryOption?: Category;
+  sortingOptions: SortingOption[];
+  isDealsActive: boolean;
+  changeSort(newSortBy: string | null, newOrder: string | null): void;
+  changeCategory(newCategory: string | null): void;
+  setPage(newPage: number): void;
+  toggleDeals(): void;
+  clearAllFilters(): void;
 }
 
 interface CategoriesQueryProps {
-    data?: Categories;
-    isLoading: boolean;
-    isFetching: boolean;
-    error?: unknown;
+  data?: Categories;
+  isLoading: boolean;
+  isFetching: boolean;
+  error?: unknown;
 }
 
-
-
 export function useFilters(
-    defaultPage = 1,
-    { data: categories = [],
-        isLoading: categoriesLoading,
-        isFetching: categoriesFetching,
-        error: categoriesError,
-    }: CategoriesQueryProps
+  defaultPage = 1,
+  {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    isFetching: categoriesFetching,
+    error: categoriesError,
+  }: CategoriesQueryProps,
 ): UseFilterReturn {
-    const [searchParams, setSearchParams] = useUrlState();
+  const [searchParams, setSearchParams] = useUrlState();
 
-    const parsed = useMemo(() => {
-        const rawParams = {
-            page: searchParams.get('page'),
-            sortBy: searchParams.get('sortBy'),
-            order: searchParams.get('order'),
-            category: searchParams.get('category'),
-            deals: searchParams.get('deals'),
-        };
-        return catalogParamsSchema.parse(rawParams);
-    }, [searchParams]);
-
-    const { page, sortBy, order, category: currentCategory, deals: isDealsActive } = parsed;
-
-    const activeSortOption = useMemo(() => {
-        return sortingOptions.find(
-            (opt) => opt.sortBy === sortBy && opt.order === order
-        ) || sortingOptions[0];
-    }, [sortBy, order]);
-
-    const currentSortBy = activeSortOption.sortBy;
-    const currentOrder = activeSortOption.order;
-
-    const finalCategory = useMemo(() => {
-        if (currentCategory === 'all' || categories.length === 0) {
-            return currentCategory;
-        }
-        const exists = categories.some((cat) => cat.slug === currentCategory);
-        return exists ? currentCategory : 'all';
-    }, [categories, currentCategory]);
-
-    const activeCategoryOption = useMemo(() => {
-        return categories.find((opt) => opt.slug === finalCategory);
-    }, [categories, finalCategory]);
-
-    const updateParams = useCallback((
-        updates: Record<string, string | number | null>,
-        action: 'replace' | 'push' = 'replace'
-    ) => {
-        setSearchParams((prev) => {
-            const newParams = new URLSearchParams(prev);
-
-            Object.entries(updates).forEach(([key, value]) => {
-                if (value === null || value === 'all') {
-                    newParams.delete(key);
-                } else {
-                    newParams.set(key, String(value));
-                }
-            });
-
-            if (!('page' in updates)) {
-                newParams.delete('page');
-            }
-
-            return newParams;
-        }, { replace: action === 'replace' });
-    }, [setSearchParams]);
-
-    const changeSort = useCallback((newSortBy: string | null, newOrder: string | null) => {
-        if (newSortBy && newOrder) {
-            updateParams({ sortBy: newSortBy, order: newOrder });
-        } else {
-            updateParams({ sortBy: null, order: null });
-        }
-    }, [updateParams]);
-
-    const changeCategory = useCallback((newCategory: string | null) => {
-        updateParams({ category: newCategory });
-    }, [updateParams]);
-
-    const setPage = useCallback((newPage: number) => {
-        updateParams({ page: newPage }, 'push');
-    }, [updateParams]);
-
-    const toggleDeals = useCallback(() => {
-        updateParams({ deals: isDealsActive ? null : 'true' });
-    }, [updateParams, isDealsActive]);
-
-    const clearAllFilters = useCallback(() => {
-        updateParams({
-            sortBy: null,
-            order: null,
-            category: null,
-            deals: null,
-            page: null
-        });
-    }, [updateParams]);
-
-    return {
-        page: page !== 1 ? page : defaultPage,
-        currentSortBy,
-        currentOrder,
-        currentCategory: finalCategory,
-        categories,
-        categoriesLoading,
-        categoriesFetching,
-        categoriesError,
-        activeSortOption,
-        activeCategoryOption,
-        sortingOptions,
-        isDealsActive,
-        changeSort,
-        changeCategory,
-        setPage,
-        toggleDeals,
-        clearAllFilters
+  const parsed = useMemo(() => {
+    const rawParams = {
+      page: searchParams.get('page'),
+      sortBy: searchParams.get('sortBy'),
+      order: searchParams.get('order'),
+      category: searchParams.get('category'),
+      deals: searchParams.get('deals'),
     };
+    return catalogParamsSchema.parse(rawParams);
+  }, [searchParams]);
+
+  const { page, sortBy, order, category: currentCategory, deals: isDealsActive } = parsed;
+
+  const activeSortOption = useMemo(() => {
+    return (
+      sortingOptions.find((opt) => opt.sortBy === sortBy && opt.order === order) ||
+      sortingOptions[0]
+    );
+  }, [sortBy, order]);
+
+  const currentSortBy = activeSortOption.sortBy;
+  const currentOrder = activeSortOption.order;
+
+  const finalCategory = useMemo(() => {
+    if (currentCategory === 'all' || categories.length === 0) {
+      return currentCategory;
+    }
+    const exists = categories.some((cat) => cat.slug === currentCategory);
+    return exists ? currentCategory : 'all';
+  }, [categories, currentCategory]);
+
+  const activeCategoryOption = useMemo(() => {
+    return categories.find((opt) => opt.slug === finalCategory);
+  }, [categories, finalCategory]);
+
+  const updateParams = useCallback(
+    (updates: Record<string, string | number | null>, action: 'replace' | 'push' = 'replace') => {
+      setSearchParams(
+        (prev) => {
+          const newParams = new URLSearchParams(prev);
+
+          Object.entries(updates).forEach(([key, value]) => {
+            if (value === null || value === 'all') {
+              newParams.delete(key);
+            } else {
+              newParams.set(key, String(value));
+            }
+          });
+
+          if (!('page' in updates)) {
+            newParams.delete('page');
+          }
+
+          return newParams;
+        },
+        { replace: action === 'replace' },
+      );
+    },
+    [setSearchParams],
+  );
+
+  const changeSort = useCallback(
+    (newSortBy: string | null, newOrder: string | null) => {
+      if (newSortBy && newOrder) {
+        updateParams({ sortBy: newSortBy, order: newOrder });
+      } else {
+        updateParams({ sortBy: null, order: null });
+      }
+    },
+    [updateParams],
+  );
+
+  const changeCategory = useCallback(
+    (newCategory: string | null) => {
+      updateParams({ category: newCategory });
+    },
+    [updateParams],
+  );
+
+  const setPage = useCallback(
+    (newPage: number) => {
+      updateParams({ page: newPage }, 'push');
+    },
+    [updateParams],
+  );
+
+  const toggleDeals = useCallback(() => {
+    updateParams({ deals: isDealsActive ? null : 'true' });
+  }, [updateParams, isDealsActive]);
+
+  const clearAllFilters = useCallback(() => {
+    updateParams({
+      sortBy: null,
+      order: null,
+      category: null,
+      deals: null,
+      page: null,
+    });
+  }, [updateParams]);
+
+  return {
+    page: page !== 1 ? page : defaultPage,
+    currentSortBy,
+    currentOrder,
+    currentCategory: finalCategory,
+    categories,
+    categoriesLoading,
+    categoriesFetching,
+    categoriesError,
+    activeSortOption,
+    activeCategoryOption,
+    sortingOptions,
+    isDealsActive,
+    changeSort,
+    changeCategory,
+    setPage,
+    toggleDeals,
+    clearAllFilters,
+  };
 }

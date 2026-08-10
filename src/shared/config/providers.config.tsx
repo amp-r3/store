@@ -28,10 +28,14 @@ export const PROVIDER_CONFIG: Record<AuthProviderId, ProviderConfig> = {
   },
 };
 
-export const SIGN_IN_PROVIDER_ORDER: readonly AuthProviderId[] = ['email', 'google', 'custom:telegram'];
+export const SIGN_IN_PROVIDER_ORDER: readonly AuthProviderId[] = [
+  'email',
+  'google',
+  'custom:telegram',
+];
 
 const PROVIDER_CONFIG_BY_KEY = new Map(
-  Object.entries(PROVIDER_CONFIG).map(([id, config]) => [id.toLowerCase(), config])
+  Object.entries(PROVIDER_CONFIG).map(([id, config]) => [id.toLowerCase(), config]),
 );
 
 /** Looks up a provider config by an arbitrary string (e.g. from Supabase's

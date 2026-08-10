@@ -10,98 +10,97 @@ import { clearNotifications, notify, NotificationType } from './notificationSlic
 // Endpoints whose rejection is already surfaced locally (forms/pages) —
 // skip them here to avoid a duplicate error alongside the local one.
 const LOCALLY_HANDLED_ENDPOINTS = new Set([
-    'login',
-    'register',
-    'signInWithOAuth',
-    'updateProfile',
-    'requestPasswordReset',
-    'updatePassword',
-    'changePassword',
-    'deleteAccount',
-    'createOrder',
-    'addOrUpdateReview',
-    'deleteReview',
-    'toggleReviewLike',
-    'upsertAdminCategory',
-    'deleteAdminCategory',
-    'updateAdminProduct',
-    'setAdminUserRole',
-    'deleteAdminReview',
-    'updateAdminDeliveryMethod',
-    'updateAdminPaymentMethod',
+  'login',
+  'register',
+  'signInWithOAuth',
+  'updateProfile',
+  'requestPasswordReset',
+  'updatePassword',
+  'changePassword',
+  'deleteAccount',
+  'createOrder',
+  'addOrUpdateReview',
+  'deleteReview',
+  'toggleReviewLike',
+  'upsertAdminCategory',
+  'deleteAdminCategory',
+  'updateAdminProduct',
+  'setAdminUserRole',
+  'deleteAdminReview',
+  'updateAdminDeliveryMethod',
+  'updateAdminPaymentMethod',
 ]);
 
 interface SuccessNotification {
-    type: NotificationType;
-    text: string;
-    key?: string;
-    action?: { label: string; to: string };
+  type: NotificationType;
+  text: string;
+  key?: string;
+  action?: { label: string; to: string };
 }
 
 // Endpoints whose fulfilled result should surface a notification. `signOut`
 // is handled separately below since it also needs to clear the queue.
 const SUCCESS_MESSAGES: Record<string, SuccessNotification> = {
-    login: { type: 'success', text: 'Signed in', key: 'auth' },
-    register: { type: 'success', text: 'Account created', key: 'auth' },
-    updateProfile: { type: 'success', text: 'Profile updated', key: 'profile' },
-    updatePassword: { type: 'success', text: 'Password updated', key: 'auth' },
-    changePassword: { type: 'success', text: 'Password changed', key: 'auth' },
-    deleteAccount: { type: 'info', text: 'Account deleted', key: 'auth' },
-    addOrUpdateReview: {
-        type: 'success',
-        text: 'Review submitted',
-        key: 'review',
-        action: { label: 'View', to: '/user/reviews' },
-    },
-    deleteReview: { type: 'info', text: 'Review deleted', key: 'review' },
-    syncCart: { type: 'success', text: 'Cart synced to your account', key: 'sync-cart' },
-    syncWishlist: { type: 'success', text: 'Wishlist synced to your account', key: 'sync-wishlist' },
-    updateOrderStatus: { type: 'success', text: 'Order status updated', key: 'admin-order' },
-    upsertAdminCategory: { type: 'success', text: 'Category saved', key: 'admin-category' },
-    deleteAdminCategory: { type: 'info', text: 'Category deleted', key: 'admin-category' },
-    updateAdminProduct: { type: 'success', text: 'Product saved', key: 'admin-product' },
-    setAdminUserRole: { type: 'success', text: 'Role updated', key: 'admin-customer' },
-    deleteAdminReview: { type: 'info', text: 'Review deleted', key: 'admin-review' },
-    updateAdminDeliveryMethod: { type: 'success', text: 'Settings saved', key: 'admin-settings' },
-    updateAdminPaymentMethod: { type: 'success', text: 'Settings saved', key: 'admin-settings' },
+  login: { type: 'success', text: 'Signed in', key: 'auth' },
+  register: { type: 'success', text: 'Account created', key: 'auth' },
+  updateProfile: { type: 'success', text: 'Profile updated', key: 'profile' },
+  updatePassword: { type: 'success', text: 'Password updated', key: 'auth' },
+  changePassword: { type: 'success', text: 'Password changed', key: 'auth' },
+  deleteAccount: { type: 'info', text: 'Account deleted', key: 'auth' },
+  addOrUpdateReview: {
+    type: 'success',
+    text: 'Review submitted',
+    key: 'review',
+    action: { label: 'View', to: '/user/reviews' },
+  },
+  deleteReview: { type: 'info', text: 'Review deleted', key: 'review' },
+  syncCart: { type: 'success', text: 'Cart synced to your account', key: 'sync-cart' },
+  syncWishlist: { type: 'success', text: 'Wishlist synced to your account', key: 'sync-wishlist' },
+  updateOrderStatus: { type: 'success', text: 'Order status updated', key: 'admin-order' },
+  upsertAdminCategory: { type: 'success', text: 'Category saved', key: 'admin-category' },
+  deleteAdminCategory: { type: 'info', text: 'Category deleted', key: 'admin-category' },
+  updateAdminProduct: { type: 'success', text: 'Product saved', key: 'admin-product' },
+  setAdminUserRole: { type: 'success', text: 'Role updated', key: 'admin-customer' },
+  deleteAdminReview: { type: 'info', text: 'Review deleted', key: 'admin-review' },
+  updateAdminDeliveryMethod: { type: 'success', text: 'Settings saved', key: 'admin-settings' },
+  updateAdminPaymentMethod: { type: 'success', text: 'Settings saved', key: 'admin-settings' },
 };
 
 interface RtkQueryActionMeta {
-    arg?: {
-        type?: 'query' | 'mutation';
-        endpointName?: string;
-    };
+  arg?: {
+    type?: 'query' | 'mutation';
+    endpointName?: string;
+  };
 }
 
 export const notificationMiddleware: Middleware = (api) => (next) => (action) => {
-    if (isRejectedWithValue(action)) {
-        const meta = action.meta as RtkQueryActionMeta;
-        const isUnhandledMutation =
-            meta.arg?.type === 'mutation' &&
-            !LOCALLY_HANDLED_ENDPOINTS.has(meta.arg.endpointName ?? '');
+  if (isRejectedWithValue(action)) {
+    const meta = action.meta as RtkQueryActionMeta;
+    const isUnhandledMutation =
+      meta.arg?.type === 'mutation' && !LOCALLY_HANDLED_ENDPOINTS.has(meta.arg.endpointName ?? '');
 
-        if (isUnhandledMutation) {
-            api.dispatch(notify({ type: 'error', text: getErrorMessage(action.payload) }));
-        }
+    if (isUnhandledMutation) {
+      api.dispatch(notify({ type: 'error', text: getErrorMessage(action.payload) }));
     }
+  }
 
-    if (isFulfilled(action)) {
-        const meta = action.meta as RtkQueryActionMeta;
+  if (isFulfilled(action)) {
+    const meta = action.meta as RtkQueryActionMeta;
 
-        if (meta.arg?.type === 'mutation' && meta.arg.endpointName === 'signOut') {
-            api.dispatch(clearNotifications());
-            dismissToasts();
-            showToast('info', 'Signed out');
-        } else if (meta.arg?.type === 'mutation') {
-            const successNotification = SUCCESS_MESSAGES[meta.arg.endpointName ?? ''];
-            if (successNotification) {
-                showToast(successNotification.type, successNotification.text, {
-                    key: successNotification.key,
-                    action: successNotification.action,
-                });
-            }
-        }
+    if (meta.arg?.type === 'mutation' && meta.arg.endpointName === 'signOut') {
+      api.dispatch(clearNotifications());
+      dismissToasts();
+      showToast('info', 'Signed out');
+    } else if (meta.arg?.type === 'mutation') {
+      const successNotification = SUCCESS_MESSAGES[meta.arg.endpointName ?? ''];
+      if (successNotification) {
+        showToast(successNotification.type, successNotification.text, {
+          key: successNotification.key,
+          action: successNotification.action,
+        });
+      }
     }
+  }
 
-    return next(action);
+  return next(action);
 };

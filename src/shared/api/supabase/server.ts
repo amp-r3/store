@@ -26,7 +26,9 @@ export async function createServerSupabaseClient() {
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options),
+            );
           } catch {
             // Called from a Server Component render — cookies are read-only
             // there. Safe to ignore: proxy.ts refreshes the session cookie
@@ -34,7 +36,7 @@ export async function createServerSupabaseClient() {
           }
         },
       },
-    }
+    },
   );
 }
 
@@ -45,6 +47,6 @@ export async function createServerSupabaseClient() {
 export function createStaticSupabaseClient() {
   return createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );
 }

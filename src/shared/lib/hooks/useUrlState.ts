@@ -7,7 +7,7 @@ import { useTransitionRouter } from './useTransitionRouter';
 type SearchParamsUpdater = URLSearchParams | ((prev: URLSearchParams) => URLSearchParams);
 
 interface SetSearchParamsOptions {
-    replace?: boolean;
+  replace?: boolean;
 }
 
 /** Same shape as react-router's `useSearchParams()` tuple — a callback/value
@@ -15,25 +15,30 @@ interface SetSearchParamsOptions {
  * read-only version, so call sites written against react-router barely
  * change. Query-only updates never scroll (react-router's version never did,
  * since ScrollRestoration was keyed by pathname alone). */
-export function useUrlState(): [URLSearchParams, (updater: SearchParamsUpdater, options?: SetSearchParamsOptions) => void] {
-    const pathname = usePathname();
-    const router = useTransitionRouter();
-    const searchParams = useSearchParams();
+export function useUrlState(): [
+  URLSearchParams,
+  (updater: SearchParamsUpdater, options?: SetSearchParamsOptions) => void,
+] {
+  const pathname = usePathname();
+  const router = useTransitionRouter();
+  const searchParams = useSearchParams();
 
-    const setSearchParams = useCallback((updater: SearchParamsUpdater, options?: SetSearchParamsOptions) => {
-        const next = typeof updater === 'function'
-            ? updater(new URLSearchParams(searchParams))
-            : updater;
+  const setSearchParams = useCallback(
+    (updater: SearchParamsUpdater, options?: SetSearchParamsOptions) => {
+      const next =
+        typeof updater === 'function' ? updater(new URLSearchParams(searchParams)) : updater;
 
-        const query = next.toString();
-        const url = query ? `${pathname}?${query}` : pathname;
+      const query = next.toString();
+      const url = query ? `${pathname}?${query}` : pathname;
 
-        if (options?.replace) {
-            router.replace(url, { scroll: false });
-        } else {
-            router.push(url, { scroll: false });
-        }
-    }, [pathname, router, searchParams]);
+      if (options?.replace) {
+        router.replace(url, { scroll: false });
+      } else {
+        router.push(url, { scroll: false });
+      }
+    },
+    [pathname, router, searchParams],
+  );
 
-    return [searchParams, setSearchParams];
+  return [searchParams, setSearchParams];
 }

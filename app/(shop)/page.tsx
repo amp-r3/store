@@ -27,8 +27,8 @@ export default async function HomeRoutePage() {
     fetchDealsProducts(supabase, { limit: DEALS_LIMIT }),
     Promise.all(
       realCategories.map((category) =>
-        fetchProducts(supabase, { category: category.name, page: 1, limit: ROW_LIMIT })
-      )
+        fetchProducts(supabase, { category: category.name, page: 1, limit: ROW_LIMIT }),
+      ),
     ),
   ]);
 

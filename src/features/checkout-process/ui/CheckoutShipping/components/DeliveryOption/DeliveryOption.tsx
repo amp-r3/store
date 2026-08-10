@@ -1,6 +1,6 @@
 import { DeliveryMethod, DeliveryOptions, isDeliveryFree } from '@/entities/order';
 import { RadioCard } from '@/shared/ui';
-import style from './delivery-option.module.scss'
+import style from './delivery-option.module.scss';
 import { formatPrice } from '@/shared/lib';
 import { FC } from 'react';
 
@@ -11,7 +11,12 @@ interface DeliveryOptionProps {
   handleSelect(id: string, code: DeliveryOptions): void;
 }
 
-export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, cartTotal, handleSelect }) => {
+export const DeliveryOption: FC<DeliveryOptionProps> = ({
+  option,
+  isSelected,
+  cartTotal,
+  handleSelect,
+}) => {
   const isFree = isDeliveryFree(option, cartTotal);
 
   return (
@@ -26,11 +31,7 @@ export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, ca
       <div className={style['delivery-option__info']}>
         <span className={style['delivery-option__label']}>
           {option.label}
-          {!option.isActive && (
-            <span className={style['delivery-option__badge']}>
-              Unavailable
-            </span>
-          )}
+          {!option.isActive && <span className={style['delivery-option__badge']}>Unavailable</span>}
         </span>
         <span className={style['delivery-option__duration']}>{option.duration}</span>
       </div>
@@ -38,5 +39,5 @@ export const DeliveryOption: FC<DeliveryOptionProps> = ({ option, isSelected, ca
         {isFree ? 'Free' : formatPrice(option.price)}
       </span>
     </RadioCard>
-  )
-}
+  );
+};

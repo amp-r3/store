@@ -1,4 +1,4 @@
-@use 'app/styles/index'as *;
+@use 'app/styles/index' as *;
 
 .sort-options-list {
   display: flex;
@@ -59,9 +59,11 @@
     }
 
     &--active {
-      background: linear-gradient(135deg,
-          rgba(var(--primary-accent-rgb), 0.12),
-          rgba(var(--primary-accent-rgb), 0.03));
+      background: linear-gradient(
+        135deg,
+        rgba(var(--primary-accent-rgb), 0.12),
+        rgba(var(--primary-accent-rgb), 0.03)
+      );
       border-color: rgba(var(--primary-accent-rgb), 0.3);
       color: var(--text-primary);
       font-weight: $fw-semibold;

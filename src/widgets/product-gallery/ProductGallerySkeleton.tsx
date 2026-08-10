@@ -1,5 +1,5 @@
-import Skeleton from 'react-loading-skeleton'
-import style from './product-gallery.module.scss'
+import Skeleton from 'react-loading-skeleton';
+import style from './product-gallery.module.scss';
 
 export const ProductGallerySkeleton = () => {
   return (
@@ -10,5 +10,5 @@ export const ProductGallerySkeleton = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

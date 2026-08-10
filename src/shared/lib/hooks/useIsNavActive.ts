@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
  * matches its own path and any nested path under it (`/admin` also matches
  * `/admin/orders`); with `end`, only an exact match counts. */
 export function useIsNavActive(to: string, end = false): boolean {
-    const pathname = usePathname();
+  const pathname = usePathname();
 
-    if (end) return pathname === to;
+  if (end) return pathname === to;
 
-    return pathname === to || pathname.startsWith(`${to}/`);
+  return pathname === to || pathname.startsWith(`${to}/`);
 }

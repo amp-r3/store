@@ -20,7 +20,12 @@ export const SummaryTotals = () => {
 
       {hasDiscount && (
         <SummaryTotalRow
-          label={<>Discount <SummaryTotalBadge variant="discount">{discountPercent}% off</SummaryTotalBadge></>}
+          label={
+            <>
+              Discount{' '}
+              <SummaryTotalBadge variant="discount">{discountPercent}% off</SummaryTotalBadge>
+            </>
+          }
           value={`− ${formatPrice(discountAmount)}`}
           valueVariant="discount"
         />
@@ -52,14 +57,22 @@ export const SummaryTotals = () => {
         <>
           {feePercentage > 0 && (
             <SummaryTotalRow
-              label={<>Payment fee <SummaryTotalBadge>{feePercentage}%</SummaryTotalBadge></>}
+              label={
+                <>
+                  Payment fee <SummaryTotalBadge>{feePercentage}%</SummaryTotalBadge>
+                </>
+              }
               value={`+ ${formatPrice(feePercentageAmount)}`}
               valueVariant="fee"
             />
           )}
 
           {feeFixed > 0 && (
-            <SummaryTotalRow label="Fixed fee" value={`+ ${formatPrice(feeFixed)}`} valueVariant="fee" />
+            <SummaryTotalRow
+              label="Fixed fee"
+              value={`+ ${formatPrice(feeFixed)}`}
+              valueVariant="fee"
+            />
           )}
 
           {feePercentage === 0 && feeFixed === 0 && (

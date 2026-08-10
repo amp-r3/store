@@ -16,5 +16,5 @@ export const supabase = createBrowserClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
     },
-  }
+  },
 );

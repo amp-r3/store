@@ -4,11 +4,11 @@ import style from './control-panel.module.scss';
 import { SortControl } from '@/features/product-sort';
 import { CategoryControl } from '@/features/product-filter';
 import { Categories, Category, SortingOption } from '@/entities/product';
-import { DropdownMenu } from 'radix-ui'
-import { useHaptics } from "@/shared/lib/hooks";
+import { DropdownMenu } from 'radix-ui';
+import { useHaptics } from '@/shared/lib/hooks';
 
 interface ControlPanelProps {
-  clearAll: () => void
+  clearAll: () => void;
   changeSort: (newSortBy: string | null, newOrder: string | null) => void;
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
@@ -32,11 +32,11 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   isDealsActive,
   toggleDeals,
 }) => {
-
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
-  const isFilter = activeCategoryOption?.slug !== 'all' || activeSortOption.id !== 'default' || isDealsActive
+  const isFilter =
+    activeCategoryOption?.slug !== 'all' || activeSortOption.id !== 'default' || isDealsActive;
 
   const panelRef = useRef<HTMLDivElement>(null);
   const sortBtnRef = useRef<HTMLButtonElement>(null);
@@ -60,31 +60,36 @@ export const ControlPanel: FC<ControlPanelProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-
   const handleToggleCategory = () => {
-    soft()
+    soft();
     setIsCategoryOpen((prev) => !prev);
     setIsSortOpen(false);
   };
 
-  const handleSortChange = useCallback((newSortBy: string | null, newOrder: string | null) => {
-    light()
-    changeSort(newSortBy, newOrder);
-    setIsSortOpen(false);
-  }, [changeSort, light]);
+  const handleSortChange = useCallback(
+    (newSortBy: string | null, newOrder: string | null) => {
+      light();
+      changeSort(newSortBy, newOrder);
+      setIsSortOpen(false);
+    },
+    [changeSort, light],
+  );
 
   const handleCategoryChange = (newCategory: string | null) => {
-    light()
+    light();
     changeCategory(newCategory);
   };
 
   const handleToggleDeals = () => {
-    light()
+    light();
     toggleDeals();
   };
 
   return (
-    <div className={`${style['control-panel']} ${isFetching ? style['control-panel__fetching-state'] : ''}`} ref={panelRef}>
+    <div
+      className={`${style['control-panel']} ${isFetching ? style['control-panel__fetching-state'] : ''}`}
+      ref={panelRef}
+    >
       <DropdownMenu.Root
         open={isSortOpen}
         onOpenChange={(open) => {
@@ -96,7 +101,6 @@ export const ControlPanel: FC<ControlPanelProps> = ({
         }}
       >
         <div className={style['control-panel__group']}>
-
           <DropdownMenu.Trigger asChild>
             <button
               ref={sortBtnRef}
@@ -141,7 +145,10 @@ export const ControlPanel: FC<ControlPanelProps> = ({
               className={`${style['control-panel__btn']} ${style['control-panel__btn--reset']}`}
               type="button"
               aria-label="Reset all filters"
-              onClick={() => { clearAll(); light(); }}
+              onClick={() => {
+                clearAll();
+                light();
+              }}
             >
               Reset
             </button>

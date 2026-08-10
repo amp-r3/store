@@ -60,7 +60,9 @@
   height: $touch-target-min;
   color: var(--text-muted);
   border-radius: $radius-circle;
-  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth;
+  transition:
+    background $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth;
 
   &:hover {
     color: var(--text-primary);

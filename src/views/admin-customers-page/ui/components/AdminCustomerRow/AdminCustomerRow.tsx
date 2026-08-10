@@ -9,84 +9,102 @@ import { IconButton } from '@/shared/ui';
 import style from './admin-customer-row.module.scss';
 
 const getDisplayName = (customer: AdminCustomer) => {
-    const fullName = `${customer.firstName ?? ''} ${customer.lastName ?? ''}`.trim();
-    return fullName || `@${customer.username}`;
+  const fullName = `${customer.firstName ?? ''} ${customer.lastName ?? ''}`.trim();
+  return fullName || `@${customer.username}`;
 };
 
 const getInitial = (customer: AdminCustomer) => {
-    const name = customer.firstName || customer.lastName;
-    if (name) return name.charAt(0).toUpperCase();
-    return customer.username.charAt(0).toUpperCase();
+  const name = customer.firstName || customer.lastName;
+  if (name) return name.charAt(0).toUpperCase();
+  return customer.username.charAt(0).toUpperCase();
 };
 
 interface AdminCustomerRowProps {
-    customer: AdminCustomer;
-    isCurrentUser: boolean;
-    onOpenDetails: (customerId: string) => void;
-    onChangeRole: (customer: AdminCustomer) => void;
+  customer: AdminCustomer;
+  isCurrentUser: boolean;
+  onOpenDetails: (customerId: string) => void;
+  onChangeRole: (customer: AdminCustomer) => void;
 }
 
-export const AdminCustomerRow = memo(({ customer, isCurrentUser, onOpenDetails, onChangeRole }: AdminCustomerRowProps) => {
+export const AdminCustomerRow = memo(
+  ({ customer, isCurrentUser, onOpenDetails, onChangeRole }: AdminCustomerRowProps) => {
     return (
-        <article role="listitem" className={style['admin-customer-row']}>
-            <div className={style['admin-customer-row__cell']}>
-                <span className={style['admin-customer-row__cell-label']}>Customer</span>
-                <button
-                    type="button"
-                    className={style['admin-customer-row__identity']}
-                    onClick={() => onOpenDetails(customer.id)}
-                >
-                    {customer.avatarUrl ? (
-                        <Image src={customer.avatarUrl} alt="" width={36} height={36} className={style['admin-customer-row__avatar']} />
-                    ) : (
-                        <span className={style['admin-customer-row__avatar-fallback']} aria-hidden="true">
-                            {getInitial(customer)}
-                        </span>
-                    )}
-                    <span className={style['admin-customer-row__name']}>{getDisplayName(customer)}</span>
-                </button>
-            </div>
+      <article role="listitem" className={style['admin-customer-row']}>
+        <div className={style['admin-customer-row__cell']}>
+          <span className={style['admin-customer-row__cell-label']}>Customer</span>
+          <button
+            type="button"
+            className={style['admin-customer-row__identity']}
+            onClick={() => onOpenDetails(customer.id)}
+          >
+            {customer.avatarUrl ? (
+              <Image
+                src={customer.avatarUrl}
+                alt=""
+                width={36}
+                height={36}
+                className={style['admin-customer-row__avatar']}
+              />
+            ) : (
+              <span className={style['admin-customer-row__avatar-fallback']} aria-hidden="true">
+                {getInitial(customer)}
+              </span>
+            )}
+            <span className={style['admin-customer-row__name']}>{getDisplayName(customer)}</span>
+          </button>
+        </div>
 
-            <div className={style['admin-customer-row__cell']}>
-                <span className={style['admin-customer-row__cell-label']}>Email</span>
-                <span className={style['admin-customer-row__email']}>{customer.email}</span>
-            </div>
+        <div className={style['admin-customer-row__cell']}>
+          <span className={style['admin-customer-row__cell-label']}>Email</span>
+          <span className={style['admin-customer-row__email']}>{customer.email}</span>
+        </div>
 
-            <div className={style['admin-customer-row__cell']}>
-                <span className={style['admin-customer-row__cell-label']}>Role</span>
-                <span className={`${style['admin-customer-row__role-badge']} ${customer.role === 'admin' ? style['admin-customer-row__role-badge--admin'] : ''}`}>
-                    {customer.role === 'admin' && <LuShieldCheck aria-hidden="true" />}
-                    {customer.role === 'admin' ? 'Admin' : 'Customer'}
-                </span>
-            </div>
+        <div className={style['admin-customer-row__cell']}>
+          <span className={style['admin-customer-row__cell-label']}>Role</span>
+          <span
+            className={`${style['admin-customer-row__role-badge']} ${customer.role === 'admin' ? style['admin-customer-row__role-badge--admin'] : ''}`}
+          >
+            {customer.role === 'admin' && <LuShieldCheck aria-hidden="true" />}
+            {customer.role === 'admin' ? 'Admin' : 'Customer'}
+          </span>
+        </div>
 
-            <div className={style['admin-customer-row__cell']}>
-                <span className={style['admin-customer-row__cell-label']}>Orders</span>
-                {customer.ordersCount}
-            </div>
+        <div className={style['admin-customer-row__cell']}>
+          <span className={style['admin-customer-row__cell-label']}>Orders</span>
+          {customer.ordersCount}
+        </div>
 
-            <div className={style['admin-customer-row__cell']}>
-                <span className={style['admin-customer-row__cell-label']}>Spent</span>
-                <span className={style['admin-customer-row__spent']}>{formatPrice(customer.totalSpent)}</span>
-            </div>
+        <div className={style['admin-customer-row__cell']}>
+          <span className={style['admin-customer-row__cell-label']}>Spent</span>
+          <span className={style['admin-customer-row__spent']}>
+            {formatPrice(customer.totalSpent)}
+          </span>
+        </div>
 
-            <div className={style['admin-customer-row__cell']}>
-                <span className={style['admin-customer-row__cell-label']}>Registered</span>
-                <span className={style['admin-customer-row__date']}>{formatDate(customer.registeredAt, 'medium')}</span>
-            </div>
+        <div className={style['admin-customer-row__cell']}>
+          <span className={style['admin-customer-row__cell-label']}>Registered</span>
+          <span className={style['admin-customer-row__date']}>
+            {formatDate(customer.registeredAt, 'medium')}
+          </span>
+        </div>
 
-            <div className={style['admin-customer-row__actions']}>
-                <IconButton
-                    onClick={() => onChangeRole(customer)}
-                    disabled={isCurrentUser}
-                    title={isCurrentUser ? "You can't change your own role" : undefined}
-                    aria-label={isCurrentUser ? "You can't change your own role" : `Change role for ${getDisplayName(customer)}`}
-                >
-                    <LuUserCog />
-                </IconButton>
-            </div>
-        </article>
+        <div className={style['admin-customer-row__actions']}>
+          <IconButton
+            onClick={() => onChangeRole(customer)}
+            disabled={isCurrentUser}
+            title={isCurrentUser ? "You can't change your own role" : undefined}
+            aria-label={
+              isCurrentUser
+                ? "You can't change your own role"
+                : `Change role for ${getDisplayName(customer)}`
+            }
+          >
+            <LuUserCog />
+          </IconButton>
+        </div>
+      </article>
     );
-});
+  },
+);
 
 AdminCustomerRow.displayName = 'AdminCustomerRow';

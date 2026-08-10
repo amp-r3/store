@@ -1,22 +1,22 @@
 export interface ProductReview {
-    id: number;
-    productId: number;
-    rating: number;
-    comment: string | null;
-    date: string;
-    helpfulCount: number;
+  id: number;
+  productId: number;
+  rating: number;
+  comment: string | null;
+  date: string;
+  helpfulCount: number;
 
-    reviewerName: string | null;
+  reviewerName: string | null;
 
-    userId: string | null;
-    isLiked: boolean;
-    isEdited: boolean;
-    isVerified: boolean;
+  userId: string | null;
+  isLiked: boolean;
+  isEdited: boolean;
+  isVerified: boolean;
 
-    author?: {
-        name: string;
-        avatarUrl: string;
-    };
+  author?: {
+    name: string;
+    avatarUrl: string;
+  };
 }
 
 /**
@@ -24,26 +24,26 @@ export interface ProductReview {
  * from `@/entities/product` so the review slice stays free of entity↔entity coupling.
  */
 export interface ReviewProductPreview {
-    id: number;
-    title: string;
-    thumbnail: string;
+  id: number;
+  title: string;
+  thumbnail: string;
 }
 
 export interface UnreviewedPurchase {
-    productId: number;
-    lastPurchasedAt: string;
-    purchaseCount: number;
+  productId: number;
+  lastPurchasedAt: string;
+  purchaseCount: number;
 }
 
 export interface RatingStatsItem {
-    stars: number;
-    count: number;
-    percentage: number;
+  stars: number;
+  count: number;
+  percentage: number;
 }
 
 export interface ReviewRatingStats {
-    total: number;
-    distribution: RatingStatsItem[];
+  total: number;
+  distribution: RatingStatsItem[];
 }
 
 export const REVIEWS_PAGE_SIZE = 10;
@@ -51,14 +51,14 @@ export const REVIEWS_PAGE_SIZE = 10;
 export type ReviewSort = 'newest' | 'oldest' | 'most_helpful';
 
 export interface ReviewsQueryArgs {
-    productId: number;
-    page?: number;
-    limit?: number;
-    sort?: ReviewSort;
-    rating?: number | null;
+  productId: number;
+  page?: number;
+  limit?: number;
+  sort?: ReviewSort;
+  rating?: number | null;
 }
 
 export interface PaginatedReviews {
-    items: ProductReview[];
-    totalCount: number;
+  items: ProductReview[];
+  totalCount: number;
 }

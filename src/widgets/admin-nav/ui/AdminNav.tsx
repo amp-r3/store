@@ -8,9 +8,9 @@ import { AdminMobileNav } from './AdminMobileNav/AdminMobileNav';
 const MOBILE_QUERY = '(max-width: 768px)';
 
 export const AdminNav = memo(() => {
-    const isMobile = useMediaQuery(MOBILE_QUERY);
+  const isMobile = useMediaQuery(MOBILE_QUERY);
 
-    return isMobile ? <AdminMobileNav /> : <AdminSidebar />;
+  return isMobile ? <AdminMobileNav /> : <AdminSidebar />;
 });
 
 AdminNav.displayName = 'AdminNav';

@@ -50,7 +50,9 @@ export const ReviewModal: React.FC = () => {
 
           <form className={style['review-modal__form']} onSubmit={handleSubmit(onSubmit)}>
             <div className={style['review-modal__field']}>
-              <span id="review-rating-label" className={style['review-modal__label']}>Rating *</span>
+              <span id="review-rating-label" className={style['review-modal__label']}>
+                Rating *
+              </span>
               <Controller
                 name="rating"
                 control={control}
@@ -83,7 +85,11 @@ export const ReviewModal: React.FC = () => {
                 )}
               />
               {errors.rating && (
-                <span id="review-rating-error" className={style['review-modal__error']} role="alert">
+                <span
+                  id="review-rating-error"
+                  className={style['review-modal__error']}
+                  role="alert"
+                >
                   {errors.rating.message}
                 </span>
               )}
@@ -94,9 +100,7 @@ export const ReviewModal: React.FC = () => {
                 <label htmlFor="comment" className={style['review-modal__label']}>
                   Comment (optional)
                 </label>
-                <span className={style['review-modal__char-count']}>
-                  {commentLength}/2000
-                </span>
+                <span className={style['review-modal__char-count']}>{commentLength}/2000</span>
               </div>
               <textarea
                 id="comment"
@@ -107,7 +111,11 @@ export const ReviewModal: React.FC = () => {
                 aria-describedby={errors.comment ? 'review-comment-error' : undefined}
               />
               {errors.comment && (
-                <span id="review-comment-error" className={style['review-modal__error']} role="alert">
+                <span
+                  id="review-comment-error"
+                  className={style['review-modal__error']}
+                  role="alert"
+                >
                   {errors.comment.message}
                 </span>
               )}

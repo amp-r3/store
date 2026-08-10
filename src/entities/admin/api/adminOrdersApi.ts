@@ -1,5 +1,11 @@
 import { supabase, baseApi } from '@/shared/api';
-import type { PaymentStatus, DeliveryStatus, AdminOrderStatusFilter, PaginatedOrders, Order } from '@/entities/order';
+import type {
+  PaymentStatus,
+  DeliveryStatus,
+  AdminOrderStatusFilter,
+  PaginatedOrders,
+  Order,
+} from '@/entities/order';
 // Read-only, one-directional entity↔entity import: reuses entities/order's
 // own select string, row type and mapper instead of re-deriving them here.
 // Flagged per AGENTS.md's entity cross-import rule — order never imports
@@ -49,9 +55,7 @@ export const adminOrdersApi = baseApi.injectEndpoints({
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
-        let query = supabase
-          .from('orders')
-          .select(ORDERS_SELECT, { count: 'exact' });
+        let query = supabase.from('orders').select(ORDERS_SELECT, { count: 'exact' });
 
         if (status !== 'all') {
           query = query.eq('status', status);
@@ -90,10 +94,10 @@ export const adminOrdersApi = baseApi.injectEndpoints({
           data: {
             items: (data as unknown as OrderRow[]).map(mapOrderResponseToOrder),
             totalCount: count || 0,
-          }
+          },
         };
       },
-      providesTags: ['Order']
+      providesTags: ['Order'],
     }),
 
     // The only other admin write path alongside create_order, both SECURITY
@@ -123,7 +127,7 @@ export const adminOrdersApi = baseApi.injectEndpoints({
       },
       // Also invalidates StatusTransition-adjacent 'Order' consumers (admin
       // dashboard stats, order-by-status breakdown) that tag on 'Order'.
-      invalidatesTags: ['Order']
+      invalidatesTags: ['Order'],
     }),
 
     // entities/order's getOrderById hard-filters .eq('user_id', user.id), so
@@ -163,7 +167,9 @@ export const adminOrdersApi = baseApi.injectEndpoints({
           return { error: { status: 400, data: (payment.error ?? delivery.error)!.message } };
         }
 
-        const toMap = <T extends string>(rows: { from_status: T; to_status: T }[]): Record<T, T[]> => {
+        const toMap = <T extends string>(
+          rows: { from_status: T; to_status: T }[],
+        ): Record<T, T[]> => {
           const map = {} as Record<T, T[]>;
           for (const row of rows) {
             (map[row.from_status] ??= []).push(row.to_status);
@@ -173,8 +179,12 @@ export const adminOrdersApi = baseApi.injectEndpoints({
 
         return {
           data: {
-            payment: toMap(payment.data as { from_status: PaymentStatus; to_status: PaymentStatus }[]),
-            delivery: toMap(delivery.data as { from_status: DeliveryStatus; to_status: DeliveryStatus }[]),
+            payment: toMap(
+              payment.data as { from_status: PaymentStatus; to_status: PaymentStatus }[],
+            ),
+            delivery: toMap(
+              delivery.data as { from_status: DeliveryStatus; to_status: DeliveryStatus }[],
+            ),
           },
         };
       },

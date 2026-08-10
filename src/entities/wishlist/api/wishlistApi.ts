@@ -1,13 +1,15 @@
-import { supabase, baseApi } from "@/shared/api";
-import { getErrorMessage } from "@/shared/lib";
+import { supabase, baseApi } from '@/shared/api';
+import { getErrorMessage } from '@/shared/lib';
 
 export const wishlistApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-
     getWishlist: builder.query<Record<number, boolean>, void>({
       async queryFn() {
         try {
-          const { data: { user }, error: authError } = await supabase.auth.getUser();
+          const {
+            data: { user },
+            error: authError,
+          } = await supabase.auth.getUser();
           if (authError || !user) {
             return { error: { status: 401, data: 'Not authorized' } };
           }
@@ -34,13 +36,18 @@ export const wishlistApi = baseApi.injectEndpoints({
           return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
-      providesTags: ['Wishlist']
+      providesTags: ['Wishlist'],
     }),
 
-    toggleWishlist: builder.mutation<null, { productId: number; isInWishlist: boolean; priceAtAdd?: number }>({
+    toggleWishlist: builder.mutation<
+      null,
+      { productId: number; isInWishlist: boolean; priceAtAdd?: number }
+    >({
       queryFn: async ({ productId, isInWishlist, priceAtAdd }) => {
         try {
-          const { data: { session } } = await supabase.auth.getSession();
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
           const user = session?.user;
           if (!user) {
             return { error: { status: 'CUSTOM_ERROR', data: 'Not authorized' } };
@@ -59,7 +66,7 @@ export const wishlistApi = baseApi.injectEndpoints({
               .from('wishlist_items')
               .upsert(
                 { user_id: user.id, product_id: productId, price_at_add: priceAtAdd },
-                { onConflict: 'user_id, product_id' }
+                { onConflict: 'user_id, product_id' },
               );
             dbError = error;
           }
@@ -82,7 +89,7 @@ export const wishlistApi = baseApi.injectEndpoints({
             } else {
               draft[productId] = true;
             }
-          })
+          }),
         );
 
         try {
@@ -90,13 +97,15 @@ export const wishlistApi = baseApi.injectEndpoints({
         } catch {
           patchResult.undo();
         }
-      }
+      },
     }),
 
     syncWishlist: builder.mutation<null, Record<number, boolean>>({
       queryFn: async (localWishlist) => {
         try {
-          const { data: { session } } = await supabase.auth.getSession();
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
           const user = session?.user;
 
           if (!user) {
@@ -105,7 +114,7 @@ export const wishlistApi = baseApi.injectEndpoints({
 
           const itemsToSync = Object.entries(localWishlist).map(([productId]) => ({
             user_id: user.id,
-            product_id: Number(productId)
+            product_id: Number(productId),
           }));
 
           if (itemsToSync.length === 0) {
@@ -125,13 +134,10 @@ export const wishlistApi = baseApi.injectEndpoints({
           return { error: { status: 'CUSTOM_ERROR', data: getErrorMessage(error) } };
         }
       },
-      invalidatesTags: ['Wishlist']
+      invalidatesTags: ['Wishlist'],
     }),
-  })
+  }),
 });
 
-export const {
-  useGetWishlistQuery,
-  useToggleWishlistMutation,
-  useSyncWishlistMutation
-} = wishlistApi;
+export const { useGetWishlistQuery, useToggleWishlistMutation, useSyncWishlistMutation } =
+  wishlistApi;

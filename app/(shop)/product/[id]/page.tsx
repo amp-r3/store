@@ -2,7 +2,12 @@ import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createStaticSupabaseClient } from '@/shared/api/supabase/server';
-import { fetchProductById, fetchSizes, fetchCategories, fetchProducts } from '@/entities/product/server';
+import {
+  fetchProductById,
+  fetchSizes,
+  fetchCategories,
+  fetchProducts,
+} from '@/entities/product/server';
 import type { Product } from '@/entities/product/server';
 import { fetchReviews, fetchReviewStats, REVIEWS_PAGE_SIZE } from '@/entities/review/server';
 import { ProductPage } from '@/views/product-page';
@@ -89,7 +94,13 @@ export default async function ProductRoutePage({ params }: ProductRouteProps) {
     fetchSizes(supabase, numericId),
     fetchCategories(supabase),
     fetchReviewStats(supabase, numericId),
-    fetchReviews(supabase, { productId: numericId, page: 1, limit: REVIEWS_PAGE_SIZE, sort: 'newest', rating: null }),
+    fetchReviews(supabase, {
+      productId: numericId,
+      page: 1,
+      limit: REVIEWS_PAGE_SIZE,
+      sort: 'newest',
+      rating: null,
+    }),
   ]);
 
   const jsonLd = {
@@ -105,9 +116,10 @@ export default async function ProductRoutePage({ params }: ProductRouteProps) {
       url: `${getSiteOrigin()}/product/${id}`,
       priceCurrency: 'USD',
       price: product.price,
-      availability: product.availabilityStatus === 'Out of Stock'
-        ? 'https://schema.org/OutOfStock'
-        : 'https://schema.org/InStock',
+      availability:
+        product.availabilityStatus === 'Out of Stock'
+          ? 'https://schema.org/OutOfStock'
+          : 'https://schema.org/InStock',
     },
     ...(reviewStats.total > 0 && {
       aggregateRating: {

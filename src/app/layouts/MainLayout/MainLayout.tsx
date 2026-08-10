@@ -16,50 +16,46 @@ import { selectIsCartOpen } from '@/entities/cart';
 
 // Style
 import style from './main-layout.module.scss';
-import { useAppDispatch } from "@/shared/model";
-import { useAppSelector } from "@/shared/model";
-import { useMediaQuery } from "@/shared/lib/hooks";
-import { CartDrawer } from "@/widgets/cart-drawer";
-import { ReviewModal } from "@/features/order-review";
+import { useAppDispatch } from '@/shared/model';
+import { useAppSelector } from '@/shared/model';
+import { useMediaQuery } from '@/shared/lib/hooks';
+import { CartDrawer } from '@/widgets/cart-drawer';
+import { ReviewModal } from '@/features/order-review';
 
 export const MainLayout = ({ children }: { children: React.ReactNode }) => {
-    const pathname = usePathname();
-    const dispatch = useAppDispatch();
-    const isOpen = useAppSelector(selectIsCartOpen);
-    const isHomePage = pathname === '/';
-    const isMobileBarWidth = useMediaQuery('(max-width: 525px)');
+  const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const isOpen = useAppSelector(selectIsCartOpen);
+  const isHomePage = pathname === '/';
+  const isMobileBarWidth = useMediaQuery('(max-width: 525px)');
 
-    const handleClose = () => {
-        dispatch(closeCart())
-    }
+  const handleClose = () => {
+    dispatch(closeCart());
+  };
 
-
-    return (
-        <>
-            <TopBar isOverlay={isHomePage} />
-            <div className={style.layout}>
-                {/* Navbar/MobileBar read the URL (search box) via useSearchParams,
+  return (
+    <>
+      <TopBar isOverlay={isHomePage} />
+      <div className={style.layout}>
+        {/* Navbar/MobileBar read the URL (search box) via useSearchParams,
                     which opts a static page into full CSR without a Suspense
                     boundary around it — wrap here instead of forcing the page
                     content below (children) to give up static generation too. */}
-                <Suspense fallback={null}>
-                    <Navbar isOverlay={isHomePage} />
-                </Suspense>
-                {children}
-                <CartDrawer
-                    isOpen={isOpen}
-                    onClose={handleClose}
-                />
-                <ReviewModal />
-                {isMobileBarWidth && (
-                    <div className={style.mobileBar}>
-                        <Suspense fallback={null}>
-                            <MobileBar />
-                        </Suspense>
-                    </div>
-                )}
-            </div>
-            <Footer />
-        </>
-    );
+        <Suspense fallback={null}>
+          <Navbar isOverlay={isHomePage} />
+        </Suspense>
+        {children}
+        <CartDrawer isOpen={isOpen} onClose={handleClose} />
+        <ReviewModal />
+        {isMobileBarWidth && (
+          <div className={style.mobileBar}>
+            <Suspense fallback={null}>
+              <MobileBar />
+            </Suspense>
+          </div>
+        )}
+      </div>
+      <Footer />
+    </>
+  );
 };

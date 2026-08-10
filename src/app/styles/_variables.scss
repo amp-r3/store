@@ -103,7 +103,9 @@ $container-padding: 1rem !default;
 $mobile-bar-fab-size: 56px !default;
 $mobile-bar-fab-raise: 14px !default;
 $mobile-bar-button-size: 44px !default;
-$mobile-bar-dock-height: calc(#{$spacing-md} + #{$spacing-xs} * 2 + #{$mobile-bar-button-size} + #{$mobile-bar-fab-raise}) !default;
+$mobile-bar-dock-height: calc(
+  #{$spacing-md} + #{$spacing-xs} * 2 + #{$mobile-bar-button-size} + #{$mobile-bar-fab-raise}
+) !default;
 
 // --- Safe Area Insets ---
 $safe-area-top: env(safe-area-inset-top, 0px) !default;

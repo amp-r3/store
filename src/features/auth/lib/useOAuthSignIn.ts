@@ -20,23 +20,26 @@ export const useOAuthSignIn = (onError: (message: string) => void) => {
   const [signInWithOAuth] = useSignInWithOAuthMutation();
   const [pendingProvider, setPendingProvider] = useState<OAuthProviderId | null>(null);
 
-  const signIn = useCallback(async (provider: OAuthProviderId) => {
-    if (pendingProvider) return;
+  const signIn = useCallback(
+    async (provider: OAuthProviderId) => {
+      if (pendingProvider) return;
 
-    const from = safeRedirectPath(searchParams.get('from'));
+      const from = safeRedirectPath(searchParams.get('from'));
 
-    setPendingProvider(provider);
-    try {
-      sessionStorage.setItem(AUTH_STORAGE_KEYS.oauthProvider, provider);
-      sessionStorage.setItem(AUTH_STORAGE_KEYS.redirectFrom, from);
-      await signInWithOAuth(provider).unwrap();
-    } catch (err) {
-      sessionStorage.removeItem(AUTH_STORAGE_KEYS.oauthProvider);
-      sessionStorage.removeItem(AUTH_STORAGE_KEYS.redirectFrom);
-      setPendingProvider(null);
-      onError(getErrorMessage(err));
-    }
-  }, [pendingProvider, searchParams, signInWithOAuth, onError]);
+      setPendingProvider(provider);
+      try {
+        sessionStorage.setItem(AUTH_STORAGE_KEYS.oauthProvider, provider);
+        sessionStorage.setItem(AUTH_STORAGE_KEYS.redirectFrom, from);
+        await signInWithOAuth(provider).unwrap();
+      } catch (err) {
+        sessionStorage.removeItem(AUTH_STORAGE_KEYS.oauthProvider);
+        sessionStorage.removeItem(AUTH_STORAGE_KEYS.redirectFrom);
+        setPendingProvider(null);
+        onError(getErrorMessage(err));
+      }
+    },
+    [pendingProvider, searchParams, signInWithOAuth, onError],
+  );
 
   return { signInWithOAuth: signIn, pendingProvider };
 };

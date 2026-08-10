@@ -14,11 +14,16 @@ export interface AlertProps {
 
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(
   ({ variant = 'error', icon, children, tabIndex }, ref) => (
-    <div ref={ref} tabIndex={tabIndex} className={`${style.alert} ${style[`alert--${variant}`]}`} role="alert">
+    <div
+      ref={ref}
+      tabIndex={tabIndex}
+      className={`${style.alert} ${style[`alert--${variant}`]}`}
+      role="alert"
+    >
       <span className={style.alert__icon}>{icon ?? '!'}</span>
       <span className={style.alert__text}>{children}</span>
     </div>
-  )
+  ),
 );
 
 Alert.displayName = 'Alert';

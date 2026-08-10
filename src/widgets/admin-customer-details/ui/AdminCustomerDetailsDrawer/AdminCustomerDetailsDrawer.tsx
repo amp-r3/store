@@ -9,54 +9,57 @@ import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 import style from './admin-customer-details-drawer.module.scss';
 
 type AdminCustomerDetailsDrawerProps = AdminCustomerDetailsProps & {
-    direction: 'bottom' | 'right';
+  direction: 'bottom' | 'right';
 };
 
 export const AdminCustomerDetailsDrawer: FC<AdminCustomerDetailsDrawerProps> = ({
-    open,
-    customer,
-    isFetching,
-    direction,
-    onOpenChange,
+  open,
+  customer,
+  isFetching,
+  direction,
+  onOpenChange,
 }) => {
-    const modalRoot = getModalRoot();
+  const modalRoot = getModalRoot();
 
-    return (
-        <Drawer.Root open={open} onOpenChange={onOpenChange} direction={direction}>
-            <Drawer.Portal container={modalRoot}>
-                <Drawer.Overlay className={style['admin-customer-drawer__overlay']} />
+  return (
+    <Drawer.Root open={open} onOpenChange={onOpenChange} direction={direction}>
+      <Drawer.Portal container={modalRoot}>
+        <Drawer.Overlay className={style['admin-customer-drawer__overlay']} />
 
-                <Drawer.Content
-                    className={`${style['admin-customer-drawer__content']} ${style[`admin-customer-drawer__content--${direction}`]}`}
-                    aria-describedby={undefined}
-                    onOpenAutoFocus={(e) => {
-                        e.preventDefault();
-                        if (document.activeElement instanceof HTMLElement) {
-                            document.activeElement.blur();
-                        }
-                    }}
-                    onPointerDownOutside={ignoreToastInteraction}
-                >
-                    <VisuallyHidden.Root>
-                        <Drawer.Title>Customer details</Drawer.Title>
-                    </VisuallyHidden.Root>
+        <Drawer.Content
+          className={`${style['admin-customer-drawer__content']} ${style[`admin-customer-drawer__content--${direction}`]}`}
+          aria-describedby={undefined}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            if (document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
+          }}
+          onPointerDownOutside={ignoreToastInteraction}
+        >
+          <VisuallyHidden.Root>
+            <Drawer.Title>Customer details</Drawer.Title>
+          </VisuallyHidden.Root>
 
-                    {direction === 'bottom' && (
-                        <Drawer.Handle className={style['admin-customer-drawer__handle']} />
-                    )}
+          {direction === 'bottom' && (
+            <Drawer.Handle className={style['admin-customer-drawer__handle']} />
+          )}
 
-                    <Drawer.Close asChild>
-                        <button className={style['admin-customer-drawer__close']} aria-label="Close customer details">
-                            <IoClose size={20} />
-                        </button>
-                    </Drawer.Close>
+          <Drawer.Close asChild>
+            <button
+              className={style['admin-customer-drawer__close']}
+              aria-label="Close customer details"
+            >
+              <IoClose size={20} />
+            </button>
+          </Drawer.Close>
 
-                    <div className={style['admin-customer-drawer__layout']}>
-                        <AdminCustomerDetailsHeader customer={customer} isFetching={isFetching} />
-                        <AdminCustomerDetailsBody customer={customer} />
-                    </div>
-                </Drawer.Content>
-            </Drawer.Portal>
-        </Drawer.Root>
-    );
+          <div className={style['admin-customer-drawer__layout']}>
+            <AdminCustomerDetailsHeader customer={customer} isFetching={isFetching} />
+            <AdminCustomerDetailsBody customer={customer} />
+          </div>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
+  );
 };

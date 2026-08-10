@@ -6,7 +6,10 @@ import {
   PaymentOptions,
 } from '@/entities/order';
 
-export const useCheckoutDelivery = (deliveryCode?: DeliveryOptions, paymentCode?: PaymentOptions) => {
+export const useCheckoutDelivery = (
+  deliveryCode?: DeliveryOptions,
+  paymentCode?: PaymentOptions,
+) => {
   const {
     data: deliveryMethods,
     isLoading: isDeliveryLoading,
@@ -23,19 +26,19 @@ export const useCheckoutDelivery = (deliveryCode?: DeliveryOptions, paymentCode?
 
   const selectedDelivery = useMemo(
     () => deliveryMethods?.find((method) => method.code === deliveryCode),
-    [deliveryMethods, deliveryCode]
+    [deliveryMethods, deliveryCode],
   );
 
   const selectedPayment = useMemo(
     () => paymentMethods?.find((method) => method.code === paymentCode),
-    [paymentMethods, paymentCode]
+    [paymentMethods, paymentCode],
   );
 
   const freeShippingThreshold = useMemo(
-    () => deliveryMethods?.find(
-      (method) => method.freeFromPrice !== null && method.freeFromPrice > 0
-    )?.freeFromPrice ?? null,
-    [deliveryMethods]
+    () =>
+      deliveryMethods?.find((method) => method.freeFromPrice !== null && method.freeFromPrice > 0)
+        ?.freeFromPrice ?? null,
+    [deliveryMethods],
   );
 
   const isShippingRequired = deliveryCode !== 'pickup';

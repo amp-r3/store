@@ -15,7 +15,10 @@
   cursor: pointer;
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: background $transition-base, border-color $transition-base, box-shadow $transition-base;
+    transition:
+      background $transition-base,
+      border-color $transition-base,
+      box-shadow $transition-base;
   }
 
   @media (hover: hover) and (pointer: fine) {

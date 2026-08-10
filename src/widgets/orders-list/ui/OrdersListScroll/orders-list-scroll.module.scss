@@ -1,46 +1,46 @@
 @use 'app/styles/index' as *;
 
 @keyframes order-item-in {
-    from {
-        opacity: 0;
-        transform: translateY($spacing-sm);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY($spacing-sm);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .order-list__item {
-    animation: order-item-in $transition-base $ease-out-expo both;
+  animation: order-item-in $transition-base $ease-out-expo both;
 
-    @media (prefers-reduced-motion: reduce) {
-        animation: none;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .order-list {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
 
-    height: auto;
-    min-height: 200px;
-    overflow: visible;
+  height: auto;
+  min-height: 200px;
+  overflow: visible;
 
-    .scroll-loader {
-        margin-top: $spacing-xs;
-    }
+  .scroll-loader {
+    margin-top: $spacing-xs;
+  }
 }
 
 .scroll-trigger {
-    height: 20px;
-    width: 100%;
+  height: 20px;
+  width: 100%;
 }
 
 .end-of-list {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: $fs-sm;
-    padding: $spacing-md 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: $fs-sm;
+  padding: $spacing-md 0;
 }

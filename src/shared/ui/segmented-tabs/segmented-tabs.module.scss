@@ -1,95 +1,95 @@
 @use 'app/styles/index' as *;
 
 .tabs {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(var(--tab-count), 1fr);
-    gap: $spacing-xxs;
-    padding: $spacing-xxs;
-    border: 1px solid var(--border-color-light);
-    border-radius: $radius-pill;
-    background: var(--glass-background-subtle);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--tab-count), 1fr);
+  gap: $spacing-xxs;
+  padding: $spacing-xxs;
+  border: 1px solid var(--border-color-light);
+  border-radius: $radius-pill;
+  background: var(--glass-background-subtle);
 }
 
 /** Sliding indicator behind the active tab. */
 .tabs__pill {
-    position: absolute;
-    inset-block: $spacing-xxs;
-    left: $spacing-xxs;
-    width: calc((100% - #{$spacing-xxs} * 2) / var(--tab-count));
-    border-radius: $radius-pill;
-    background: var(--primary-accent);
-    transform: translateX(calc(var(--tab-index) * 100%));
-    transition: transform $transition-base $ease-out-expo;
+  position: absolute;
+  inset-block: $spacing-xxs;
+  left: $spacing-xxs;
+  width: calc((100% - #{$spacing-xxs} * 2) / var(--tab-count));
+  border-radius: $radius-pill;
+  background: var(--primary-accent);
+  transform: translateX(calc(var(--tab-index) * 100%));
+  transition: transform $transition-base $ease-out-expo;
 
-    @media (prefers-reduced-motion: reduce) {
-        transition: none;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 .tabs__tab {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: $spacing-xs;
-    min-height: $touch-target-min;
-    padding-inline: $spacing-md;
-    border: none;
-    border-radius: $radius-pill;
-    background: transparent;
-    cursor: pointer;
-    font-family: $font-primary;
-    font-size: $fs-sm;
-    font-weight: $fw-semibold;
-    color: var(--text-secondary);
-    transition: color $transition-base $ease-in-out-smooth;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  min-height: $touch-target-min;
+  padding-inline: $spacing-md;
+  border: none;
+  border-radius: $radius-pill;
+  background: transparent;
+  cursor: pointer;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-secondary);
+  transition: color $transition-base $ease-in-out-smooth;
 
-    &:focus-visible {
-        outline: 2px solid var(--focus-ring-color);
-        outline-offset: 2px;
-    }
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
 
-    &:not(&--active):hover {
-        color: var(--text-primary);
-    }
+  &:not(&--active):hover {
+    color: var(--text-primary);
+  }
 
-    &--active {
-        color: var(--text-on-accent);
-    }
+  &--active {
+    color: var(--text-on-accent);
+  }
 
-    @media (prefers-reduced-motion: reduce) {
-        transition: none;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 // A period switcher inside a panel header doesn't need full touch-target
 // height on a precise pointer — only restore it where the pointer is coarse
 // (touch), so the accessibility floor from CLAUDE.md still holds on mobile.
 .tabs--sm .tabs__tab {
-    min-height: 32px;
-    padding-inline: $spacing-sm;
-    font-size: $fs-xs;
+  min-height: 32px;
+  padding-inline: $spacing-sm;
+  font-size: $fs-xs;
 
-    @media (pointer: coarse) {
-        min-height: $touch-target-min;
-    }
+  @media (pointer: coarse) {
+    min-height: $touch-target-min;
+  }
 }
 
 .tabs__count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 22px;
-    padding-inline: $spacing-xxs;
-    border-radius: $radius-pill;
-    background: var(--glass-background);
-    font-size: $fs-xs;
-    color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding-inline: $spacing-xxs;
+  border-radius: $radius-pill;
+  background: var(--glass-background);
+  font-size: $fs-xs;
+  color: var(--text-muted);
 }
 
 .tabs__tab--active .tabs__count {
-    background: rgba(var(--text-on-accent-rgb), 0.12);
-    color: var(--text-on-accent);
+  background: rgba(var(--text-on-accent-rgb), 0.12);
+  color: var(--text-on-accent);
 }

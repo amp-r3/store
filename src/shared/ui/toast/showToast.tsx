@@ -7,25 +7,25 @@ export type ToastVariant = 'added' | 'removed' | 'info' | 'success' | 'warning' 
 export const TOAST_DURATION_MS = 4000;
 
 export interface ToastAction {
-    label: string;
-    /** next/link when set; otherwise a plain button. Omit both for a dismiss-only action. */
-    to?: string;
-    onClick?: () => void;
-    emphasis?: 'primary' | 'ghost';
+  label: string;
+  /** next/link when set; otherwise a plain button. Omit both for a dismiss-only action. */
+  to?: string;
+  onClick?: () => void;
+  emphasis?: 'primary' | 'ghost';
 }
 
 interface ToastOptions {
-    /** Maps to sonner's toast `id` — repeat calls with the same key update
-     *  the existing toast in place instead of stacking a new one. */
-    key?: string;
-    action?: ToastAction;
-    icon?: ReactNode;
-    description?: string;
-    durationMs?: number;
-    /** Renders a shrinking bar counting down to auto-dismiss — use on toasts
-     *  with a time-limited action (e.g. Undo) so the window to act on it is
-     *  visible, not just felt. */
-    showTimer?: boolean;
+  /** Maps to sonner's toast `id` — repeat calls with the same key update
+   *  the existing toast in place instead of stacking a new one. */
+  key?: string;
+  action?: ToastAction;
+  icon?: ReactNode;
+  description?: string;
+  durationMs?: number;
+  /** Renders a shrinking bar counting down to auto-dismiss — use on toasts
+   *  with a time-limited action (e.g. Undo) so the window to act on it is
+   *  visible, not just felt. */
+  showTimer?: boolean;
 }
 
 let anonymousToastId = 0;
@@ -36,25 +36,25 @@ let anonymousToastId = 0;
 let toastCallId = 0;
 
 export const showToast = (variant: ToastVariant, text: string, options?: ToastOptions) => {
-    const id = options?.key ?? `toast-${++anonymousToastId}`;
-    const durationMs = options?.durationMs ?? TOAST_DURATION_MS;
+  const id = options?.key ?? `toast-${++anonymousToastId}`;
+  const durationMs = options?.durationMs ?? TOAST_DURATION_MS;
 
-    sonnerToast.custom(
-        () => (
-            <ToastCard
-                key={++toastCallId}
-                variant={variant}
-                text={text}
-                description={options?.description}
-                action={options?.action}
-                icon={options?.icon}
-                durationMs={durationMs}
-                showTimer={options?.showTimer}
-                onDismiss={() => sonnerToast.dismiss(id)}
-            />
-        ),
-        { id, duration: durationMs }
-    );
+  sonnerToast.custom(
+    () => (
+      <ToastCard
+        key={++toastCallId}
+        variant={variant}
+        text={text}
+        description={options?.description}
+        action={options?.action}
+        icon={options?.icon}
+        durationMs={durationMs}
+        showTimer={options?.showTimer}
+        onDismiss={() => sonnerToast.dismiss(id)}
+      />
+    ),
+    { id, duration: durationMs },
+  );
 };
 
 export const dismissToasts = () => sonnerToast.dismiss();

@@ -12,7 +12,8 @@
   // Payment/delivery selects carry the longest text ("Awaiting Dispatch",
   // "Paid Successfully") of any column, so they get the largest share here —
   // order/customer/total can afford to lean on their own ellipsis instead.
-  --admin-table-grid: minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 0.7fr) minmax(0, 0.8fr) minmax(0, 1.2fr) minmax(0, 1.2fr);
+  --admin-table-grid: minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 0.7fr) minmax(0, 0.8fr)
+    minmax(0, 1.2fr) minmax(0, 1.2fr);
 }
 
 .admin-orders-table__header {

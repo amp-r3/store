@@ -49,7 +49,9 @@
   border: 1px solid var(--border-color-subtle);
   border-radius: $radius-md;
   cursor: pointer;
-  transition: color $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
+  transition:
+    color $transition-fast $ease-in-out-smooth,
+    background $transition-fast $ease-in-out-smooth;
 
   &:hover {
     color: var(--error-color);

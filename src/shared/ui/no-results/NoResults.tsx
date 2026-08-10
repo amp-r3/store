@@ -1,7 +1,7 @@
-import { useRouter } from 'next/navigation'
-import { TbSearchOff } from 'react-icons/tb'
-import style from './noResults.module.scss'
-import { useHaptics } from "@/shared/lib/hooks";
+import { useRouter } from 'next/navigation';
+import { TbSearchOff } from 'react-icons/tb';
+import style from './noResults.module.scss';
+import { useHaptics } from '@/shared/lib/hooks';
 
 interface NoResultsProps {
   query?: string;
@@ -9,13 +9,13 @@ interface NoResultsProps {
 }
 
 export const NoResults = ({ query, description }: NoResultsProps) => {
-  const router = useRouter()
-  const { light } = useHaptics()
+  const router = useRouter();
+  const { light } = useHaptics();
 
   const handleReset = () => {
-    light()
-    router.replace('/catalog')
-  }
+    light();
+    router.replace('/catalog');
+  };
 
   return (
     <div className={style.wrapper}>
@@ -33,7 +33,8 @@ export const NoResults = ({ query, description }: NoResultsProps) => {
             description
           ) : query ? (
             <>
-              We couldn&apos;t find any items matching <span className={style.noResults__highlight}>&quot;{query}&quot;</span>.
+              We couldn&apos;t find any items matching{' '}
+              <span className={style.noResults__highlight}>&quot;{query}&quot;</span>.
             </>
           ) : (
             'Try adjusting your search or filter settings to find what you are looking for.'
@@ -45,5 +46,5 @@ export const NoResults = ({ query, description }: NoResultsProps) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};

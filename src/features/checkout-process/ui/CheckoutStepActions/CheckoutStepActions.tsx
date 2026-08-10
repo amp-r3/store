@@ -12,7 +12,8 @@ interface CheckoutStepActionsProps {
 }
 
 export const CheckoutStepActions = ({ variant = 'inline' }: CheckoutStepActionsProps) => {
-  const { step, stepIndex, isLastStep, isSubmitting, goNext, goToStep, orderTotals } = useCheckoutContext();
+  const { step, stepIndex, isLastStep, isSubmitting, goNext, goToStep, orderTotals } =
+    useCheckoutContext();
   const { cta, ctaIcon } = CHECKOUT_STEPS[step];
 
   return (
@@ -40,11 +41,15 @@ export const CheckoutStepActions = ({ variant = 'inline' }: CheckoutStepActionsP
           form={isLastStep ? 'checkout-form' : undefined}
           onClick={isLastStep ? undefined : goNext}
         >
-          {isSubmitting ? <Loader size="sm" /> : (
+          {isSubmitting ? (
+            <Loader size="sm" />
+          ) : (
             <>
               <span className={style['actions__cta-icon-step']}>{ctaIcon}</span>
               <span className={style['actions__cta-label']}>{cta}</span>
-              <span className={style['actions__cta-icon-arrow']}><HiArrowRight /></span>
+              <span className={style['actions__cta-icon-arrow']}>
+                <HiArrowRight />
+              </span>
             </>
           )}
         </button>

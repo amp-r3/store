@@ -39,11 +39,13 @@ function resolveParams(searchParams: CatalogSearchParams, categories: Categories
     deals: readParam(searchParams, 'deals'),
   });
 
-  const activeSortOption = sortingOptions.find(
-    (option) => option.sortBy === parsed.sortBy && option.order === parsed.order
-  ) ?? sortingOptions[0];
+  const activeSortOption =
+    sortingOptions.find(
+      (option) => option.sortBy === parsed.sortBy && option.order === parsed.order,
+    ) ?? sortingOptions[0];
 
-  const categoryExists = parsed.category === 'all' || categories.some((c) => c.slug === parsed.category);
+  const categoryExists =
+    parsed.category === 'all' || categories.some((c) => c.slug === parsed.category);
   const finalCategorySlug = categoryExists ? parsed.category : 'all';
   const categoryName = categories.find((c) => c.slug === finalCategorySlug)?.name;
 

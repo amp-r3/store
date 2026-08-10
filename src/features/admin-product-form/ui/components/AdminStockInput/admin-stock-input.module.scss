@@ -34,7 +34,9 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: color $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
+  transition:
+    color $transition-fast $ease-in-out-smooth,
+    background $transition-fast $ease-in-out-smooth;
 
   &:hover {
     color: var(--text-primary);

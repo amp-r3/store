@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 // Custom Components
-import { Logo } from "@/shared/ui";
-import { NavActions } from "@/features/nav-actions";
-import { SearchForm } from "@/features/product-search";
-import { useSearch } from "@/features/product-search";
+import { Logo } from '@/shared/ui';
+import { NavActions } from '@/features/nav-actions';
+import { SearchForm } from '@/features/product-search';
+import { useSearch } from '@/features/product-search';
 // Custom Hooks
-import { useNavbarScroll } from "@/shared/lib/hooks";
+import { useNavbarScroll } from '@/shared/lib/hooks';
 // Styles
 import style from './navbar.module.scss';
 
@@ -19,10 +19,7 @@ export const Navbar = ({ isOverlay = false }: NavbarProps) => {
   useNavbarScroll(navRef);
 
   return (
-    <nav
-      ref={navRef}
-      className={`${style.nav} ${isOverlay ? style['nav--overlay'] : ''}`}
-    >
+    <nav ref={navRef} className={`${style.nav} ${isOverlay ? style['nav--overlay'] : ''}`}>
       <Logo />
 
       <div className={style.nav__form}>

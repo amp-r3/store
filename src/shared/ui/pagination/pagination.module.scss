@@ -1,154 +1,153 @@
 @use 'app/styles/index' as *;
 
-
 $_item-transition:
-    background-color $transition-fast $ease-in-out-smooth,
-    color            $transition-fast $ease-in-out-smooth,
-    border-color     $transition-fast $ease-in-out-smooth,
-    transform        $transition-fast $ease-out-expo,
-    box-shadow       $transition-fast $ease-in-out-smooth;
+  background-color $transition-fast $ease-in-out-smooth,
+  color $transition-fast $ease-in-out-smooth,
+  border-color $transition-fast $ease-in-out-smooth,
+  transform $transition-fast $ease-out-expo,
+  box-shadow $transition-fast $ease-in-out-smooth;
 
 // Outer wrapper: always 100% of whatever slot it's placed in (a flex column
 // in the page, a sidebar-narrowed content panel, ...).
 .pagination {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .pagination__bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 100%;
-    width: max-content;
-    gap: $spacing-xs;
-    padding: $spacing-sm $spacing-md;
-    border-radius: $radius-pill;
-    background: var(--glass-background);
-    border: 1.5px solid var(--glass-border);
-    box-shadow: var(--shadow-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  width: max-content;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-pill;
+  background: var(--glass-background);
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--shadow-default);
 
-    @supports (backdrop-filter: blur(1px)) {
-        backdrop-filter: $backdrop-blur;
-    }
+  @supports (backdrop-filter: blur(1px)) {
+    backdrop-filter: $backdrop-blur;
+  }
 
-    @supports not (backdrop-filter: blur(1px)) {
-        background: var(--glass-background-fallback);
-    }
+  @supports not (backdrop-filter: blur(1px)) {
+    background: var(--glass-background-fallback);
+  }
 
-    // Driven by the same JS width measurement as isCompact, not a separate
-    // breakpoint — Pagination.tsx sets this below TIGHT_MAX_WIDTH (420px).
-    &--tight {
-        padding: $spacing-xs $spacing-sm;
-        gap: $spacing-xxs;
-    }
+  // Driven by the same JS width measurement as isCompact, not a separate
+  // breakpoint — Pagination.tsx sets this below TIGHT_MAX_WIDTH (420px).
+  &--tight {
+    padding: $spacing-xs $spacing-sm;
+    gap: $spacing-xxs;
+  }
 }
 
 .pagination__pages {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-    gap: $spacing-xs;
-    row-gap: $spacing-xxs;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  gap: $spacing-xs;
+  row-gap: $spacing-xxs;
 
-    // Slot count is fitted to the measured container width in Pagination.tsx,
-    // so this shouldn't engage — a safety net against the fit calculation and
-    // this file's geometry drifting out of sync, in which case pages wrap
-    // inside the pill instead of overflowing it.
-    &--tight {
-        gap: $spacing-xxs;
-    }
+  // Slot count is fitted to the measured container width in Pagination.tsx,
+  // so this shouldn't engage — a safety net against the fit calculation and
+  // this file's geometry drifting out of sync, in which case pages wrap
+  // inside the pill instead of overflowing it.
+  &--tight {
+    gap: $spacing-xxs;
+  }
 }
 
 .pagination__status {
-    display: flex;
-    align-items: center;
-    min-height: $touch-target-min;
-    padding-inline: $spacing-sm;
-    color: var(--text-primary);
-    font-size: $fs-sm;
-    font-weight: $fw-semibold;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+  display: flex;
+  align-items: center;
+  min-height: $touch-target-min;
+  padding-inline: $spacing-sm;
+  color: var(--text-primary);
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .pagination__item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: $touch-target-min;
-    height: $touch-target-min;
-    border-radius: $radius-circle;
-    border: 1px solid var(--border-color);
-    background: transparent;
-    color: var(--text-muted);
-    font-size: $fs-base;
-    font-weight: $fw-semibold;
-    transition: $_item-transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  border-radius: $radius-circle;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: $fs-base;
+  font-weight: $fw-semibold;
+  transition: $_item-transition;
 
-    &:focus-visible {
-        outline: $focus-ring-width solid var(--focus-ring-color);
-        outline-offset: $focus-ring-offset;
-        box-shadow: var(--shadow-focus-button);
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: $focus-ring-offset;
+    box-shadow: var(--shadow-focus-button);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--primary-accent);
+      color: var(--text-on-accent, var(--text-inverse));
+      border-color: transparent;
+      transform: scale($scale-up-md);
+      box-shadow: var(--shadow-accent-sm);
     }
+  }
+
+  &--active {
+    background-color: var(--primary-accent);
+    color: var(--text-on-accent, var(--text-inverse));
+    border-color: transparent;
+    text-shadow: var(--shadow-text-accent);
+    box-shadow: var(--shadow-accent-sm);
+    cursor: default;
 
     @media (hover: hover) {
-        &:hover {
-            background-color: var(--primary-accent);
-            color: var(--text-on-accent, var(--text-inverse));
-            border-color: transparent;
-            transform: scale($scale-up-md);
-            box-shadow: var(--shadow-accent-sm);
-        }
-    }
-
-    &--active {
-        background-color: var(--primary-accent);
-        color: var(--text-on-accent, var(--text-inverse));
-        border-color: transparent;
-        text-shadow: var(--shadow-text-accent);
+      &:hover {
+        transform: none;
         box-shadow: var(--shadow-accent-sm);
-        cursor: default;
-
-        @media (hover: hover) {
-            &:hover {
-                transform: none;
-                box-shadow: var(--shadow-accent-sm);
-            }
-        }
+      }
     }
+  }
 
-    &--disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
+  &--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }
 
 .pagination__dots {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: $touch-target-min;
-    height: $touch-target-min;
-    color: var(--text-muted);
-    font-size: $fs-base;
-    user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: $touch-target-min;
+  height: $touch-target-min;
+  color: var(--text-muted);
+  font-size: $fs-base;
+  user-select: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .pagination__item {
-        transition: none;
+  .pagination__item {
+    transition: none;
 
-        @media (hover: hover) {
-            &:hover {
-                transform: none;
-            }
-        }
+    @media (hover: hover) {
+      &:hover {
+        transform: none;
+      }
     }
+  }
 }

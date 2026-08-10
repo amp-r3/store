@@ -5,23 +5,22 @@ import { CategoryPopup } from './CategoryPopup/CategoryPopup';
 // Hooks
 // Types
 import { Categories, Category } from '@/entities/product';
-import { useMediaQuery } from "@/shared/lib/hooks";
+import { useMediaQuery } from '@/shared/lib/hooks';
 
 export interface ICategoryProps {
-    categoryOptions: Categories;
-    activeCategoryOption: Category | null;
-    changeCategory: (newCategory: string | null) => void;
-    isOpen: boolean;
-    onClose: () => void
+  categoryOptions: Categories;
+  activeCategoryOption: Category | null;
+  changeCategory: (newCategory: string | null) => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const CategoryControl: FC<ICategoryProps> = (props) => {
-    const isMobile = useMediaQuery('(max-width: 549px)');
+  const isMobile = useMediaQuery('(max-width: 549px)');
 
+  if (isMobile) {
+    return <CategoryOverlay {...props} />;
+  }
 
-    if (isMobile) {
-        return <CategoryOverlay {...props} />;
-    }
-
-    return <CategoryPopup {...props} />;
+  return <CategoryPopup {...props} />;
 };

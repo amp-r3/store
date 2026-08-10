@@ -10,7 +10,8 @@
   flex-direction: column;
   gap: $spacing-sm;
 
-  --admin-table-grid: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 0.7fr) #{$touch-target-min};
+  --admin-table-grid: minmax(0, 2fr) minmax(0, 0.7fr) minmax(0, 0.9fr) minmax(0, 0.9fr)
+    minmax(0, 0.7fr) #{$touch-target-min};
 }
 
 .admin-products-table__header {

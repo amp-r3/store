@@ -49,10 +49,7 @@ export const adminMethodsApi = baseApi.injectEndpoints({
     // an unfiltered select works here too.
     getAdminDeliveryMethods: builder.query<AdminDeliveryMethod[], void>({
       queryFn: async () => {
-        const { data, error } = await supabase
-          .from('delivery_methods')
-          .select('*')
-          .order('price');
+        const { data, error } = await supabase.from('delivery_methods').select('*').order('price');
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -75,10 +72,7 @@ export const adminMethodsApi = baseApi.injectEndpoints({
 
     getAdminPaymentMethods: builder.query<AdminPaymentMethod[], void>({
       queryFn: async () => {
-        const { data, error } = await supabase
-          .from('payment_methods')
-          .select('*')
-          .order('name');
+        const { data, error } = await supabase.from('payment_methods').select('*').order('name');
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -98,7 +92,10 @@ export const adminMethodsApi = baseApi.injectEndpoints({
       providesTags: ['PaymentMethod'],
     }),
 
-    updateAdminDeliveryMethod: builder.mutation<null, { id: string; payload: UpdateDeliveryMethodPayload }>({
+    updateAdminDeliveryMethod: builder.mutation<
+      null,
+      { id: string; payload: UpdateDeliveryMethodPayload }
+    >({
       queryFn: async ({ id, payload }) => {
         const { error } = await supabase.rpc('admin_update_delivery_method', {
           p_id: id,
@@ -120,7 +117,10 @@ export const adminMethodsApi = baseApi.injectEndpoints({
       invalidatesTags: ['DeliveryMethod'],
     }),
 
-    updateAdminPaymentMethod: builder.mutation<null, { id: string; payload: UpdatePaymentMethodPayload }>({
+    updateAdminPaymentMethod: builder.mutation<
+      null,
+      { id: string; payload: UpdatePaymentMethodPayload }
+    >({
       queryFn: async ({ id, payload }) => {
         const { error } = await supabase.rpc('admin_update_payment_method', {
           p_id: id,

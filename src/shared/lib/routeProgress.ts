@@ -5,28 +5,28 @@ let activeCount = 0;
 const listeners = new Set<() => void>();
 
 const notify = () => {
-    for (const listener of listeners) listener();
+  for (const listener of listeners) listener();
 };
 
 export const startRouteProgress = () => {
-    activeCount += 1;
-    if (activeCount === 1) notify();
+  activeCount += 1;
+  if (activeCount === 1) notify();
 };
 
 export const endRouteProgress = () => {
-    activeCount = Math.max(0, activeCount - 1);
-    if (activeCount === 0) notify();
+  activeCount = Math.max(0, activeCount - 1);
+  if (activeCount === 0) notify();
 };
 
 export const resetRouteProgress = () => {
-    if (activeCount === 0) return;
-    activeCount = 0;
-    notify();
+  if (activeCount === 0) return;
+  activeCount = 0;
+  notify();
 };
 
 export const subscribeRouteProgress = (callback: () => void) => {
-    listeners.add(callback);
-    return () => listeners.delete(callback);
+  listeners.add(callback);
+  return () => listeners.delete(callback);
 };
 
 export const getRouteProgressSnapshot = () => activeCount > 0;

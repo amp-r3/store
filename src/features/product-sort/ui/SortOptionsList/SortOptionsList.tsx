@@ -20,16 +20,11 @@ export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps
           changeSort(newSortBy, newOrder);
         }, 150);
       },
-      [changeSort]
+      [changeSort],
     );
 
     return (
-      <ul
-        className={style['sort-options-list']}
-        role="listbox"
-        aria-label="Sort options"
-        ref={ref}
-      >
+      <ul className={style['sort-options-list']} role="listbox" aria-label="Sort options" ref={ref}>
         {sortingOptions.map((option) => {
           const isActive = option.id === activeSortOption?.id;
           const Icon = option.icon;
@@ -37,21 +32,17 @@ export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps
           return (
             <li key={option.id} role="option" aria-selected={isActive}>
               <button
-                className={`${style['sort-options-list__item']} ${isActive ? style['sort-options-list__item--active'] : ''
-                  }`}
+                className={`${style['sort-options-list__item']} ${
+                  isActive ? style['sort-options-list__item--active'] : ''
+                }`}
                 type="button"
                 onClick={() => handleSelect(option.sortBy, option.order)}
               >
                 <div className={style['sort-options-list__item-content']}>
                   {Icon && (
-                    <Icon
-                      className={style['sort-options-list__item-icon']}
-                      aria-hidden="true"
-                    />
+                    <Icon className={style['sort-options-list__item-icon']} aria-hidden="true" />
                   )}
-                  <span className={style['sort-options-list__item-label']}>
-                    {option.label}
-                  </span>
+                  <span className={style['sort-options-list__item-label']}>{option.label}</span>
                 </div>
                 {isActive && (
                   <IoCheckmark
@@ -65,7 +56,7 @@ export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps
         })}
       </ul>
     );
-  }
+  },
 );
 
 SortOptionsList.displayName = 'SortOptionsList';

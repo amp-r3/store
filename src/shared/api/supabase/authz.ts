@@ -13,7 +13,9 @@ export interface ServerSession {
  * reuse it instead of duplicating the query. */
 export async function getServerSession(): Promise<ServerSession | null> {
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) return null;
 

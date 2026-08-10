@@ -105,7 +105,9 @@ const toRpcPayload = (payload: AdminProductPayload) => ({
   ...(payload.description !== undefined && { description: payload.description }),
   ...(payload.categoryId !== undefined && { category_id: payload.categoryId }),
   ...(payload.basePrice !== undefined && { base_price: payload.basePrice }),
-  ...(payload.discountPercentage !== undefined && { discount_percentage: payload.discountPercentage }),
+  ...(payload.discountPercentage !== undefined && {
+    discount_percentage: payload.discountPercentage,
+  }),
   ...(payload.thumbnail !== undefined && { thumbnail: payload.thumbnail }),
   ...(payload.images !== undefined && { images: payload.images }),
   ...(payload.tags !== undefined && { tags: payload.tags }),
@@ -113,11 +115,19 @@ const toRpcPayload = (payload: AdminProductPayload) => ({
   ...(payload.sku !== undefined && { sku: payload.sku }),
   ...(payload.weight !== undefined && { weight: payload.weight }),
   ...(payload.dimensions !== undefined && { dimensions: payload.dimensions }),
-  ...(payload.warrantyInformation !== undefined && { warranty_information: payload.warrantyInformation }),
-  ...(payload.shippingInformation !== undefined && { shipping_information: payload.shippingInformation }),
-  ...(payload.availabilityStatus !== undefined && { availability_status: payload.availabilityStatus }),
+  ...(payload.warrantyInformation !== undefined && {
+    warranty_information: payload.warrantyInformation,
+  }),
+  ...(payload.shippingInformation !== undefined && {
+    shipping_information: payload.shippingInformation,
+  }),
+  ...(payload.availabilityStatus !== undefined && {
+    availability_status: payload.availabilityStatus,
+  }),
   ...(payload.returnPolicy !== undefined && { return_policy: payload.returnPolicy }),
-  ...(payload.minimumOrderQuantity !== undefined && { minimum_order_quantity: payload.minimumOrderQuantity }),
+  ...(payload.minimumOrderQuantity !== undefined && {
+    minimum_order_quantity: payload.minimumOrderQuantity,
+  }),
   ...(payload.meta !== undefined && { meta: payload.meta }),
 });
 
@@ -133,7 +143,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         let query = supabase
           .from('products')
-          .select('id, title, thumbnail, sku, base_price, price, discount_percentage, rating, is_archived, categories(name)', { count: 'exact' });
+          .select(
+            'id, title, thumbnail, sku, base_price, price, discount_percentage, rating, is_archived, categories(name)',
+            { count: 'exact' },
+          );
 
         if (!includeArchived) {
           query = query.eq('is_archived', false);
@@ -144,9 +157,7 @@ export const adminProductsApi = baseApi.injectEndpoints({
           query = query.ilike('title', `%${trimmedSearch}%`);
         }
 
-        const { data, error, count } = await query
-          .order('id', { ascending: true })
-          .range(from, to);
+        const { data, error, count } = await query.order('id', { ascending: true }).range(from, to);
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -169,17 +180,16 @@ export const adminProductsApi = baseApi.injectEndpoints({
       },
       providesTags: (result) =>
         result
-          ? [...result.items.map((item) => ({ type: 'Product' as const, id: item.id })), { type: 'Product', id: 'ADMIN_LIST' }]
+          ? [
+              ...result.items.map((item) => ({ type: 'Product' as const, id: item.id })),
+              { type: 'Product', id: 'ADMIN_LIST' },
+            ]
           : [{ type: 'Product', id: 'ADMIN_LIST' }],
     }),
 
     getAdminProductById: builder.query<AdminProductDetail, number>({
       queryFn: async (id) => {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('id', id)
-          .single();
+        const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -188,7 +198,8 @@ export const adminProductsApi = baseApi.injectEndpoints({
         const row = data as Database['public']['Tables']['products']['Row'];
         // dimensions/meta are jsonb with no shape guarantee from the DB —
         // documented cast at the query boundary, same as elsewhere in the app.
-        const dimensions = (row.dimensions as { width?: number; height?: number; depth?: number } | null) ?? {};
+        const dimensions =
+          (row.dimensions as { width?: number; height?: number; depth?: number } | null) ?? {};
         const meta = (row.meta as { barcode?: string; qrCode?: string } | null) ?? {};
 
         return {
@@ -231,7 +242,9 @@ export const adminProductsApi = baseApi.injectEndpoints({
           // admin_create_product's Args are generic Json server-side; the
           // payload matches what the function reads but jsonb has no index
           // signature to satisfy Json structurally.
-          { p_payload: toRpcPayload(payload) } as unknown as Database['public']['Functions']['admin_create_product']['Args']
+          {
+            p_payload: toRpcPayload(payload),
+          } as unknown as Database['public']['Functions']['admin_create_product']['Args'],
         );
 
         if (error) {
@@ -240,7 +253,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         return { data: data as unknown as number };
       },
-      invalidatesTags: [{ type: 'Product', id: 'ADMIN_LIST' }, { type: 'Product', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'Product', id: 'ADMIN_LIST' },
+        { type: 'Product', id: 'LIST' },
+      ],
       async onQueryStarted(_payload, { queryFulfilled }) {
         try {
           await queryFulfilled;
@@ -257,7 +273,9 @@ export const adminProductsApi = baseApi.injectEndpoints({
       queryFn: async ({ id, payload }) => {
         const { error } = await supabase.rpc('admin_update_product', {
           p_id: id,
-          p_payload: toRpcPayload(payload) as unknown as Database['public']['Functions']['admin_update_product']['Args']['p_payload'],
+          p_payload: toRpcPayload(
+            payload,
+          ) as unknown as Database['public']['Functions']['admin_update_product']['Args']['p_payload'],
         });
 
         if (error) {
@@ -283,7 +301,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
     archiveAdminProduct: builder.mutation<null, { id: number; archived: boolean }>({
       queryFn: async ({ id, archived }) => {
-        const { error } = await supabase.rpc('admin_archive_product', { p_id: id, p_archived: archived });
+        const { error } = await supabase.rpc('admin_archive_product', {
+          p_id: id,
+          p_archived: archived,
+        });
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -322,7 +343,12 @@ export const adminProductsApi = baseApi.injectEndpoints({
         // `products(count)` embeds as a single-element aggregate row, not a
         // typed relationship the generated Row type knows about — cast at
         // the boundary same as the other aggregate/Json reads in this file.
-        const rows = data as unknown as { id: number; name: string; slug: string; products: { count: number }[] }[];
+        const rows = data as unknown as {
+          id: number;
+          name: string;
+          slug: string;
+          products: { count: number }[];
+        }[];
 
         return {
           data: rows.map((row) => ({
@@ -336,15 +362,19 @@ export const adminProductsApi = baseApi.injectEndpoints({
       providesTags: [{ type: 'Category', id: 'ADMIN_LIST' }],
     }),
 
-    upsertAdminCategory: builder.mutation<number, { id: number | null; name: string; slug: string }>({
+    upsertAdminCategory: builder.mutation<
+      number,
+      { id: number | null; name: string; slug: string }
+    >({
       queryFn: async ({ id, name, slug }) => {
         // p_id has no SQL default, so the generator infers a required
         // `number` even though the function accepts and branches on null
         // (create vs. update) — see admin_upsert_category's body.
-        const { data, error } = await supabase.rpc(
-          'admin_upsert_category',
-          { p_id: id, p_name: name, p_slug: slug } as unknown as Database['public']['Functions']['admin_upsert_category']['Args']
-        );
+        const { data, error } = await supabase.rpc('admin_upsert_category', {
+          p_id: id,
+          p_name: name,
+          p_slug: slug,
+        } as unknown as Database['public']['Functions']['admin_upsert_category']['Args']);
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -352,7 +382,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         return { data: data as unknown as number };
       },
-      invalidatesTags: [{ type: 'Category', id: 'ADMIN_LIST' }, { type: 'Category', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'Category', id: 'ADMIN_LIST' },
+        { type: 'Category', id: 'LIST' },
+      ],
       async onQueryStarted(_payload, { queryFulfilled }) {
         try {
           await queryFulfilled;
@@ -373,7 +406,11 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         return { data: null };
       },
-      invalidatesTags: [{ type: 'Category', id: 'ADMIN_LIST' }, { type: 'Category', id: 'LIST' }, { type: 'Product', id: 'ADMIN_LIST' }],
+      invalidatesTags: [
+        { type: 'Category', id: 'ADMIN_LIST' },
+        { type: 'Category', id: 'LIST' },
+        { type: 'Product', id: 'ADMIN_LIST' },
+      ],
       async onQueryStarted(_id, { queryFulfilled }) {
         try {
           await queryFulfilled;
@@ -405,7 +442,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
       providesTags: (_result, _error, productId) => [{ type: 'Size', id: productId }],
     }),
 
-    upsertAdminProductSize: builder.mutation<number, { productId: number; value: string; stock: number }>({
+    upsertAdminProductSize: builder.mutation<
+      number,
+      { productId: number; value: string; stock: number }
+    >({
       queryFn: async ({ productId, value, stock }) => {
         const { data, error } = await supabase.rpc('admin_upsert_product_size', {
           p_product_id: productId,
@@ -423,7 +463,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
       // provides only the bare tag (it isn't scoped to one product), which an
       // id-scoped invalidation doesn't reach — RTK Query only matches a bare
       // tag back from a more specific one, never the other way around.
-      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
+      invalidatesTags: (_result, _error, { productId }) => [
+        { type: 'Size', id: productId },
+        'Size',
+      ],
       async onQueryStarted({ productId }, { queryFulfilled }) {
         try {
           await queryFulfilled;
@@ -444,7 +487,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
 
         return { data: null };
       },
-      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
+      invalidatesTags: (_result, _error, { productId }) => [
+        { type: 'Size', id: productId },
+        'Size',
+      ],
       async onQueryStarted({ productId }, { queryFulfilled }) {
         try {
           await queryFulfilled;
@@ -461,7 +507,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
     // patchResult.undo() shape as cartApi's quantity updates.
     setAdminStock: builder.mutation<null, { sizeId: number; productId: number; stock: number }>({
       queryFn: async ({ sizeId, stock }) => {
-        const { error } = await supabase.rpc('admin_set_stock', { p_size_id: sizeId, p_stock: stock });
+        const { error } = await supabase.rpc('admin_set_stock', {
+          p_size_id: sizeId,
+          p_stock: stock,
+        });
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -474,7 +523,7 @@ export const adminProductsApi = baseApi.injectEndpoints({
           adminProductsApi.util.updateQueryData('getAdminProductSizes', productId, (draft) => {
             const size = draft.find((item) => item.id === sizeId);
             if (size) size.stock = stock;
-          })
+          }),
         );
 
         try {
@@ -491,7 +540,10 @@ export const adminProductsApi = baseApi.injectEndpoints({
           // revalidation shouldn't roll back the optimistic patch.
         }
       },
-      invalidatesTags: (_result, _error, { productId }) => [{ type: 'Size', id: productId }, 'Size'],
+      invalidatesTags: (_result, _error, { productId }) => [
+        { type: 'Size', id: productId },
+        'Size',
+      ],
     }),
 
     // Low-level Storage write, deliberately without its own invalidatesTags/
@@ -500,9 +552,11 @@ export const adminProductsApi = baseApi.injectEndpoints({
     // cache invalidation + revalidateProduct once the new URL is saved.
     uploadProductImage: builder.mutation<null, { fileName: string; file: File }>({
       queryFn: async ({ fileName, file }) => {
-        const { error } = await supabase.storage
-          .from(PRODUCT_IMAGE_BUCKET)
-          .upload(fileName, file, { upsert: true, contentType: PRODUCT_IMAGE_MIME, cacheControl: '3600' });
+        const { error } = await supabase.storage.from(PRODUCT_IMAGE_BUCKET).upload(fileName, file, {
+          upsert: true,
+          contentType: PRODUCT_IMAGE_MIME,
+          cacheControl: '3600',
+        });
 
         if (error) {
           return { error: { status: 400, data: error.message } };

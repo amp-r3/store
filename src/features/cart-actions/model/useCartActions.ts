@@ -1,7 +1,7 @@
 // useCartActions.ts
-import { useCallback, useEffect, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "@/shared/model";
-import { selectIsAuth } from "@/entities/session";
+import { useCallback, useEffect, useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '@/shared/model';
+import { selectIsAuth } from '@/entities/session';
 import {
   useUpsertCartItemMutation,
   useDeleteCartItemMutation,
@@ -17,8 +17,8 @@ import {
   openCart,
   selectCartItemsMap,
   CartData,
-} from "@/entities/cart";
-import { showToast } from "@/shared/ui";
+} from '@/entities/cart';
+import { showToast } from '@/shared/ui';
 
 // Mirrors the aggregate threshold in ProductStockBadge ("There are a few
 // left" at <= 10), applied here to the single size being added to the cart.
@@ -42,7 +42,10 @@ interface UseCartActionsReturn {
   isUpdating: boolean;
 }
 
-export const useCartActions = ({ onRemoved, onCleared }: UseCartActionsOptions = {}): UseCartActionsReturn => {
+export const useCartActions = ({
+  onRemoved,
+  onCleared,
+}: UseCartActionsOptions = {}): UseCartActionsReturn => {
   const dispatch = useAppDispatch();
   const isAuth = useAppSelector(selectIsAuth);
 
@@ -69,95 +72,121 @@ export const useCartActions = ({ onRemoved, onCleared }: UseCartActionsOptions =
 
   // Skip the confirmation toast when the caller (the cart drawer) already
   // renders the undo affordance inline, next to the item it restores.
-  const onRestoreItem = useCallback((sizeId: number, productId: number, quantity: number) => {
-    if (isAuth) {
-      restoreServerItem({ sizeId, productId, quantity });
-    } else {
-      dispatch(restoreCartItem({ sizeId, productId, quantity }));
-    }
-    if (!onRemoved) {
-      showToast('added', 'Returned to cart', { key: 'cart-undo' });
-    }
-  }, [isAuth, restoreServerItem, dispatch, onRemoved]);
+  const onRestoreItem = useCallback(
+    (sizeId: number, productId: number, quantity: number) => {
+      if (isAuth) {
+        restoreServerItem({ sizeId, productId, quantity });
+      } else {
+        dispatch(restoreCartItem({ sizeId, productId, quantity }));
+      }
+      if (!onRemoved) {
+        showToast('added', 'Returned to cart', { key: 'cart-undo' });
+      }
+    },
+    [isAuth, restoreServerItem, dispatch, onRemoved],
+  );
 
-  const onRestoreCart = useCallback((snapshot: Record<number, CartData>) => {
-    if (isAuth) {
-      restoreServerCart(snapshot);
-    } else {
-      dispatch(restoreCart(snapshot));
-    }
-    if (!onCleared) {
-      showToast('added', 'Cart restored', { key: 'cart-undo' });
-    }
-  }, [isAuth, restoreServerCart, dispatch, onCleared]);
+  const onRestoreCart = useCallback(
+    (snapshot: Record<number, CartData>) => {
+      if (isAuth) {
+        restoreServerCart(snapshot);
+      } else {
+        dispatch(restoreCart(snapshot));
+      }
+      if (!onCleared) {
+        showToast('added', 'Cart restored', { key: 'cart-undo' });
+      }
+    },
+    [isAuth, restoreServerCart, dispatch, onCleared],
+  );
 
-  const onIncrease = useCallback((sizeId: number, productId: number, stock?: number) => {
-    const quantityBefore = cartMapRef.current[sizeId]?.quantity ?? 0;
+  const onIncrease = useCallback(
+    (sizeId: number, productId: number, stock?: number) => {
+      const quantityBefore = cartMapRef.current[sizeId]?.quantity ?? 0;
 
-    if (isAuth) {
-      upsertItem({ sizeId, productId, action: 'inc' });
-    } else {
-      dispatch(changeQuantity({ sizeId, productId, type: 'inc' }));
-    }
+      if (isAuth) {
+        upsertItem({ sizeId, productId, action: 'inc' });
+      } else {
+        dispatch(changeQuantity({ sizeId, productId, type: 'inc' }));
+      }
 
-    // Only the 0 -> 1 transition is a genuine "added" event — later
-    // increments (product page stepper, mobile bar, cart drawer "+") are
-    // already reflected by the visible quantity counter.
-    if (quantityBefore > 0) return;
+      // Only the 0 -> 1 transition is a genuine "added" event — later
+      // increments (product page stepper, mobile bar, cart drawer "+") are
+      // already reflected by the visible quantity counter.
+      if (quantityBefore > 0) return;
 
-    const viewCartAction = { label: 'View', onClick: () => dispatch(openCart()) };
+      const viewCartAction = { label: 'View', onClick: () => dispatch(openCart()) };
 
-    if (stock !== undefined && stock <= LOW_STOCK_THRESHOLD) {
-      showToast('warning', `Only ${stock} left in stock`, { key: 'cart', action: viewCartAction });
-    } else {
-      showToast('added', 'Added to cart', { key: 'cart', action: viewCartAction });
-    }
-  }, [isAuth, upsertItem, dispatch])
+      if (stock !== undefined && stock <= LOW_STOCK_THRESHOLD) {
+        showToast('warning', `Only ${stock} left in stock`, {
+          key: 'cart',
+          action: viewCartAction,
+        });
+      } else {
+        showToast('added', 'Added to cart', { key: 'cart', action: viewCartAction });
+      }
+    },
+    [isAuth, upsertItem, dispatch],
+  );
 
-  const onDecrease = useCallback((sizeId: number, productId: number) => {
-    const quantityBefore = cartMapRef.current[sizeId]?.quantity ?? 0;
-    const isRemoval = quantityBefore <= 1;
+  const onDecrease = useCallback(
+    (sizeId: number, productId: number) => {
+      const quantityBefore = cartMapRef.current[sizeId]?.quantity ?? 0;
+      const isRemoval = quantityBefore <= 1;
 
-    if (isAuth) {
-      upsertItem({ sizeId, productId, action: 'dec' });
-    } else {
-      dispatch(changeQuantity({ sizeId, productId, type: 'dec' }));
-    }
+      if (isAuth) {
+        upsertItem({ sizeId, productId, action: 'dec' });
+      } else {
+        dispatch(changeQuantity({ sizeId, productId, type: 'dec' }));
+      }
 
-    // Only the line's last unit leaving is a "removal" worth feedback — a
-    // plain quantity step (3 -> 2) is visible in the counter already.
-    if (!isRemoval) return;
+      // Only the line's last unit leaving is a "removal" worth feedback — a
+      // plain quantity step (3 -> 2) is visible in the counter already.
+      if (!isRemoval) return;
 
-    if (onRemoved) {
-      onRemoved(sizeId, productId, 1);
-      return;
-    }
+      if (onRemoved) {
+        onRemoved(sizeId, productId, 1);
+        return;
+      }
 
-    showToast('removed', 'Removed from cart', {
-      key: 'cart',
-      showTimer: true,
-      action: { label: 'Undo', emphasis: 'ghost', onClick: () => onRestoreItem(sizeId, productId, 1) },
-    });
-  }, [isAuth, upsertItem, dispatch, onRemoved, onRestoreItem]);
+      showToast('removed', 'Removed from cart', {
+        key: 'cart',
+        showTimer: true,
+        action: {
+          label: 'Undo',
+          emphasis: 'ghost',
+          onClick: () => onRestoreItem(sizeId, productId, 1),
+        },
+      });
+    },
+    [isAuth, upsertItem, dispatch, onRemoved, onRestoreItem],
+  );
 
-  const onRemove = useCallback((sizeId: number, productId: number, quantity: number) => {
-    if (isAuth) {
-      deleteItem(sizeId);
-    } else {
-      dispatch(removeFromCart(sizeId));
-    }
+  const onRemove = useCallback(
+    (sizeId: number, productId: number, quantity: number) => {
+      if (isAuth) {
+        deleteItem(sizeId);
+      } else {
+        dispatch(removeFromCart(sizeId));
+      }
 
-    if (onRemoved) {
-      onRemoved(sizeId, productId, quantity);
-      return;
-    }
+      if (onRemoved) {
+        onRemoved(sizeId, productId, quantity);
+        return;
+      }
 
-    showToast('removed', 'Removed from cart', {
-      key: 'cart',
-      showTimer: true,
-      action: { label: 'Undo', emphasis: 'ghost', onClick: () => onRestoreItem(sizeId, productId, quantity) },
-    });
-  }, [isAuth, deleteItem, dispatch, onRemoved, onRestoreItem]);
+      showToast('removed', 'Removed from cart', {
+        key: 'cart',
+        showTimer: true,
+        action: {
+          label: 'Undo',
+          emphasis: 'ghost',
+          onClick: () => onRestoreItem(sizeId, productId, quantity),
+        },
+      });
+    },
+    [isAuth, deleteItem, dispatch, onRemoved, onRestoreItem],
+  );
 
   const onClearCart = useCallback(() => {
     const snapshot = { ...cartMapRef.current };
@@ -184,5 +213,13 @@ export const useCartActions = ({ onRemoved, onCleared }: UseCartActionsOptions =
     });
   }, [isAuth, clearServerCart, dispatch, onCleared, onRestoreCart]);
 
-  return { onIncrease, onDecrease, onRemove, onClearCart, onRestoreItem, onRestoreCart, isUpdating };
+  return {
+    onIncrease,
+    onDecrease,
+    onRemove,
+    onClearCart,
+    onRestoreItem,
+    onRestoreCart,
+    isUpdating,
+  };
 };

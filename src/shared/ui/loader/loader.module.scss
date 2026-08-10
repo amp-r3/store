@@ -13,29 +13,42 @@ $c: 125.66;
 
 @keyframes loader-arc {
   0% {
-    stroke-dasharray: 4, #{$c};
+    stroke-dasharray:
+      4,
+      #{$c};
     stroke-dashoffset: 0;
   }
 
   30% {
-    stroke-dasharray: 94, #{$c};
+    stroke-dasharray:
+      94,
+      #{$c};
     stroke-dashoffset: -30;
   }
 
   60% {
-    stroke-dasharray: 94, #{$c};
+    stroke-dasharray:
+      94,
+      #{$c};
     stroke-dashoffset: -64;
   }
 
   100% {
-    stroke-dasharray: 4, #{$c};
+    stroke-dasharray:
+      4,
+      #{$c};
     stroke-dashoffset: -#{$c};
   }
 }
 
 @keyframes loader-track-pulse {
-  0%, 100% { opacity: 0.07; }
-  50%       { opacity: 0.14; }
+  0%,
+  100% {
+    opacity: 0.07;
+  }
+  50% {
+    opacity: 0.14;
+  }
 }
 
 // ─── Wrappers ────────────────────────────────────────────────
@@ -71,7 +84,9 @@ $c: 125.66;
     height: $loader-size-xs;
 
     .spinnerTrack,
-    .spinnerPath { stroke-width: 6; }
+    .spinnerPath {
+      stroke-width: 6;
+    }
   }
 
   &--sm {
@@ -79,18 +94,21 @@ $c: 125.66;
     height: $loader-size-sm;
 
     .spinnerTrack,
-    .spinnerPath { stroke-width: 5; }
+    .spinnerPath {
+      stroke-width: 5;
+    }
   }
 
   &--md {
     width: $loader-size-md;
     height: $loader-size-md;
-    filter:
-      drop-shadow(0 0 10px rgba(var(--primary-accent-rgb), 0.45))
-      drop-shadow(0 0  4px rgba(var(--loader-grad-end-rgb), 0.30));
+    filter: drop-shadow(0 0 10px rgba(var(--primary-accent-rgb), 0.45))
+      drop-shadow(0 0 4px rgba(var(--loader-grad-end-rgb), 0.3));
 
     .spinnerTrack,
-    .spinnerPath { stroke-width: 4; }
+    .spinnerPath {
+      stroke-width: 4;
+    }
   }
 }
 

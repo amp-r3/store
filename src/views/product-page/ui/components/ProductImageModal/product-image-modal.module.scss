@@ -21,8 +21,6 @@
   }
 }
 
-
-
 .image-wrapper {
   position: fixed;
   top: 50%;
@@ -34,7 +32,7 @@
 
   width: 100%;
   max-width: $container-width;
-  height: 85dvh; 
+  height: 85dvh;
   padding: 30px;
 
   border-radius: $radius-xl;
@@ -136,16 +134,28 @@
 }
 
 @keyframes modalFadeOutSwipe {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes overlayFadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

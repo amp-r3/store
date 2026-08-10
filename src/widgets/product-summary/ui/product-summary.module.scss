@@ -1,46 +1,46 @@
 @use 'app/styles/index' as *;
 
 .summary {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  height: 100%;
+
+  padding: $spacing-lg;
+  border-radius: $radius-xl;
+  border: 1px solid var(--border-color-subtle);
+  background: var(--glass-background);
+  backdrop-filter: $backdrop-blur-sm;
+  box-shadow: var(--shadow-sm);
+  transition: all $transition-layout $ease-out-expo;
+
+  @media (max-width: 1024px) {
+    padding: $spacing-md;
+  }
+  @media (max-width: 768px) {
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
     gap: $spacing-md;
-    height: 100%;
-
-    padding: $spacing-lg;
-    border-radius: $radius-xl;
-    border: 1px solid var(--border-color-subtle);
-    background: var(--glass-background);
-    backdrop-filter: $backdrop-blur-sm;
-    box-shadow: var(--shadow-sm);
-    transition: all $transition-layout $ease-out-expo;
-
-    @media (max-width: 1024px) {
-        padding: $spacing-md;
-    }
-    @media (max-width: 768px) {
-        padding: 0;
-        border: none;
-        background: transparent;
-        box-shadow: none;
-        backdrop-filter: none;
-        gap: $spacing-md;
-    }
+  }
 }
 
 .top {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .sizesContainer {
-    margin-top: $spacing-xs;
+  margin-top: $spacing-xs;
 }
 
 .bottom {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-md;
-    padding-top: $spacing-md;
-    border-top: 1px solid var(--border-color-subtle);
-    margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid var(--border-color-subtle);
+  margin-top: auto;
 }

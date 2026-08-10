@@ -19,7 +19,9 @@ export const OrderProgress: FC<OrderProgressProps> = ({ order, events, isLoading
   const panelId = useId();
 
   const progress = useMemo(() => buildOrderProgress(order, events), [order, events]);
-  const currentNode = progress.nodes.find((node) => node.state === 'current') ?? progress.nodes[progress.nodes.length - 1];
+  const currentNode =
+    progress.nodes.find((node) => node.state === 'current') ??
+    progress.nodes[progress.nodes.length - 1];
 
   const toggle = () => {
     light();
@@ -31,7 +33,11 @@ export const OrderProgress: FC<OrderProgressProps> = ({ order, events, isLoading
   }
 
   return (
-    <section className={style['progress']} data-derailed={progress.isDerailed ? 'true' : undefined} aria-label="Order progress">
+    <section
+      className={style['progress']}
+      data-derailed={progress.isDerailed ? 'true' : undefined}
+      aria-label="Order progress"
+    >
       <button
         type="button"
         className={style['progress__bar']}
@@ -86,7 +92,9 @@ export const OrderProgress: FC<OrderProgressProps> = ({ order, events, isLoading
                         {formatDate(node.at, 'full')}
                       </time>
                     ) : (
-                      <span className={style['progress__time']} aria-hidden="true">—</span>
+                      <span className={style['progress__time']} aria-hidden="true">
+                        —
+                      </span>
                     )}
                   </span>
                 </li>

@@ -1,14 +1,18 @@
 import { CheckoutFormValues } from '../../model/checkoutMasterSchema';
 import { useCheckoutContext } from '../../model/CheckoutContext';
-import style from './checkout-contacts.module.scss'
-import { FormField, MaskedFormField } from "@/shared/ui";
+import style from './checkout-contacts.module.scss';
+import { FormField, MaskedFormField } from '@/shared/ui';
 import { Controller, useFormContext } from 'react-hook-form';
 import { PHONE_MASK } from '@/shared/config';
 
 export const CheckoutContacts = () => {
-
-  const { register, control, formState: { errors } } = useFormContext<CheckoutFormValues>();
-  const { hasPreviousAddress, showPreviousAddressChip, applyPreviousAddress } = useCheckoutContext();
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = useFormContext<CheckoutFormValues>();
+  const { hasPreviousAddress, showPreviousAddressChip, applyPreviousAddress } =
+    useCheckoutContext();
 
   return (
     <section className={style['contacts']}>
@@ -61,5 +65,5 @@ export const CheckoutContacts = () => {
         )}
       />
     </section>
-  )
-}
+  );
+};

@@ -319,7 +319,8 @@
 
 /* Reduced Motion compatibility */
 @media (prefers-reduced-motion: reduce) {
-  .review-modal, .review-drawer {
+  .review-modal,
+  .review-drawer {
     &__overlay,
     &__content {
       animation: none !important;

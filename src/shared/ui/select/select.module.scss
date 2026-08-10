@@ -62,7 +62,10 @@
   cursor: pointer;
   text-align: left;
   outline: none;
-  transition: border-color $transition-fast $ease-in-out-smooth, box-shadow $transition-fast $ease-in-out-smooth, background $transition-fast $ease-in-out-smooth;
+  transition:
+    border-color $transition-fast $ease-in-out-smooth,
+    box-shadow $transition-fast $ease-in-out-smooth,
+    background $transition-fast $ease-in-out-smooth;
 
   &:hover:not(:disabled):not(.controlError) {
     border-color: var(--border-color-strong);

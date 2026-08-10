@@ -13,84 +13,88 @@ import style from './admin-top-products-panel.module.scss';
 type TopProductsMetric = 'units' | 'revenue';
 
 const METRIC_ITEMS: SegmentedTabItem<TopProductsMetric>[] = [
-    { id: 'units', label: 'Units' },
-    { id: 'revenue', label: 'Revenue' },
+  { id: 'units', label: 'Units' },
+  { id: 'revenue', label: 'Revenue' },
 ];
 
 const TOP_PRODUCTS_LIMIT = 5;
 
 export const AdminTopProductsPanel = () => {
-    const [metric, setMetric] = useState<TopProductsMetric>('units');
-    const { data, isLoading, error } = useGetAdminTopProductsQuery(TOP_PRODUCTS_LIMIT);
+  const [metric, setMetric] = useState<TopProductsMetric>('units');
+  const { data, isLoading, error } = useGetAdminTopProductsQuery(TOP_PRODUCTS_LIMIT);
 
-    const products = useMemo(() => {
-        const items = data ?? [];
-        // The RPC sorts by units_sold desc; re-sort client-side for the
-        // revenue view — both numbers are already in each row, no new RPC arg needed.
-        return metric === 'revenue' ? [...items].sort((a, b) => b.revenue - a.revenue) : items;
-    }, [data, metric]);
+  const products = useMemo(() => {
+    const items = data ?? [];
+    // The RPC sorts by units_sold desc; re-sort client-side for the
+    // revenue view — both numbers are already in each row, no new RPC arg needed.
+    return metric === 'revenue' ? [...items].sort((a, b) => b.revenue - a.revenue) : items;
+  }, [data, metric]);
 
-    return (
-        <PanelCard
-            title="Top products"
-            action={
-                <SegmentedTabs
-                    items={METRIC_ITEMS}
-                    value={metric}
-                    onChange={setMetric}
-                    idPrefix="top-products-metric"
-                    ariaLabel="Rank by"
-                    size="sm"
+  return (
+    <PanelCard
+      title="Top products"
+      action={
+        <SegmentedTabs
+          items={METRIC_ITEMS}
+          value={metric}
+          onChange={setMetric}
+          idPrefix="top-products-metric"
+          ariaLabel="Rank by"
+          size="sm"
+        />
+      }
+      to="/admin/products"
+    >
+      {!!error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
+
+      {isLoading ? (
+        <div className={style['admin-top-products-panel__list']}>
+          {Array.from({ length: TOP_PRODUCTS_LIMIT }).map((_, index) => (
+            <div key={index} className={style['admin-top-products-panel__row']}>
+              <Skeleton width={40} height={40} borderRadius={8} />
+              <Skeleton width={140} height={16} />
+            </div>
+          ))}
+        </div>
+      ) : products.length === 0 ? (
+        <EmptyState
+          icon={<LuPackage />}
+          title="No sales yet"
+          text="Products that sell will show up here."
+        />
+      ) : (
+        <div className={style['admin-top-products-panel__list']}>
+          {products.map((product) => (
+            <Link
+              key={product.productId}
+              href={`/admin/products/${product.productId}/edit`}
+              className={style['admin-top-products-panel__row']}
+            >
+              {product.thumbnail && (
+                <Image
+                  className={style['admin-top-products-panel__thumbnail']}
+                  src={product.thumbnail}
+                  alt=""
+                  aria-hidden="true"
+                  width={40}
+                  height={40}
                 />
-            }
-            to="/admin/products"
-        >
-            {!!error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
-
-            {isLoading ? (
-                <div className={style['admin-top-products-panel__list']}>
-                    {Array.from({ length: TOP_PRODUCTS_LIMIT }).map((_, index) => (
-                        <div key={index} className={style['admin-top-products-panel__row']}>
-                            <Skeleton width={40} height={40} borderRadius={8} />
-                            <Skeleton width={140} height={16} />
-                        </div>
-                    ))}
-                </div>
-            ) : products.length === 0 ? (
-                <EmptyState icon={<LuPackage />} title="No sales yet" text="Products that sell will show up here." />
-            ) : (
-                <div className={style['admin-top-products-panel__list']}>
-                    {products.map((product) => (
-                        <Link
-                            key={product.productId}
-                            href={`/admin/products/${product.productId}/edit`}
-                            className={style['admin-top-products-panel__row']}
-                        >
-                            {product.thumbnail && (
-                                <Image
-                                    className={style['admin-top-products-panel__thumbnail']}
-                                    src={product.thumbnail}
-                                    alt=""
-                                    aria-hidden="true"
-                                    width={40}
-                                    height={40}
-                                />
-                            )}
-                            <span className={style['admin-top-products-panel__title']}>{product.title}</span>
-                            <span
-                                className={`${style['admin-top-products-panel__metric']} ${metric === 'units' ? style['admin-top-products-panel__metric--active'] : ''}`}
-                            >
-                                {product.unitsSold} {product.unitsSold === 1 ? 'unit' : 'units'}
-                            </span>
-                            <span
-                                className={`${style['admin-top-products-panel__metric']} ${metric === 'revenue' ? style['admin-top-products-panel__metric--active'] : ''}`}
-                            >
-                                {formatPrice(product.revenue)}
-                            </span>
-                        </Link>
-                    ))}
-                </div>
-            )}
-        </PanelCard>
-    );
+              )}
+              <span className={style['admin-top-products-panel__title']}>{product.title}</span>
+              <span
+                className={`${style['admin-top-products-panel__metric']} ${metric === 'units' ? style['admin-top-products-panel__metric--active'] : ''}`}
+              >
+                {product.unitsSold} {product.unitsSold === 1 ? 'unit' : 'units'}
+              </span>
+              <span
+                className={`${style['admin-top-products-panel__metric']} ${metric === 'revenue' ? style['admin-top-products-panel__metric--active'] : ''}`}
+              >
+                {formatPrice(product.revenue)}
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+    </PanelCard>
+  );
 };

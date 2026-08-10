@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { selectIsAuth } from '@/entities/session';
-import { useAppSelector, useIsRehydrated } from "@/shared/model";
+import { useAppSelector, useIsRehydrated } from '@/shared/model';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
-import { InputHTMLAttributes, ReactNode, forwardRef, useId, useRef, useState } from "react";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
-import { LuMinus, LuPlus } from "react-icons/lu";
+import { InputHTMLAttributes, ReactNode, forwardRef, useId, useRef, useState } from 'react';
+import { RiEyeLine, RiEyeOffLine } from 'react-icons/ri';
+import { LuMinus, LuPlus } from 'react-icons/lu';
 import style from './form-field.module.scss';
 
 export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -27,7 +27,25 @@ export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, description, warning, id, className, optional, icon, placeholder, suffix, showStepper, type = 'text', labelPlacement = 'float', ...props }, ref) => {
+  (
+    {
+      label,
+      error,
+      description,
+      warning,
+      id,
+      className,
+      optional,
+      icon,
+      placeholder,
+      suffix,
+      showStepper,
+      type = 'text',
+      labelPlacement = 'float',
+      ...props
+    },
+    ref,
+  ) => {
     const generatedId = useId();
     const inputId = id || generatedId;
     const errorId = `${inputId}-error`;
@@ -61,21 +79,27 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
 
     // `{...props}` is spread onto the input below, so a caller-supplied
     // aria-describedby must be merged here rather than overwritten by it.
-    const describedBy = [
-      error ? errorId : null,
-      !error && description ? descriptionId : null,
-      warning ? warningId : null,
-      optional ? optionalId : null,
-      props['aria-describedby'] ?? null,
-    ].filter(Boolean).join(' ') || undefined;
+    const describedBy =
+      [
+        error ? errorId : null,
+        !error && description ? descriptionId : null,
+        warning ? warningId : null,
+        optional ? optionalId : null,
+        props['aria-describedby'] ?? null,
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined;
 
     return (
       <div className={style.wrapper}>
-
         {isStacked && (
           <label htmlFor={inputId} className={style.stackedLabel}>
             {label}
-            {optional && <span id={optionalId} className={style.stackedOptional}>Optional</span>}
+            {optional && (
+              <span id={optionalId} className={style.stackedOptional}>
+                Optional
+              </span>
+            )}
           </label>
         )}
 
@@ -84,7 +108,9 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             style.inputWrapper,
             error ? style.inputWrapperError : '',
             props.disabled ? style.inputWrapperDisabled : '',
-          ].filter(Boolean).join(' ')}
+          ]
+            .filter(Boolean)
+            .join(' ')}
         >
           {icon && (
             <span className={style.iconSlot} aria-hidden="true">
@@ -116,7 +142,9 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
                 isStacked ? style.inputStacked : '',
                 showStepper ? style.inputCentered : '',
                 className || '',
-              ].filter(Boolean).join(' ')}
+              ]
+                .filter(Boolean)
+                .join(' ')}
               aria-invalid={!!error}
               type={inputType}
               {...props}
@@ -126,10 +154,9 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             {!isStacked && (
               <label
                 htmlFor={inputId}
-                className={[
-                  style.label,
-                  optional ? style.labelOptional : '',
-                ].filter(Boolean).join(' ')}
+                className={[style.label, optional ? style.labelOptional : '']
+                  .filter(Boolean)
+                  .join(' ')}
               >
                 {label}
               </label>
@@ -166,14 +193,16 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
               type="button"
               className={style.passwordToggle}
               onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+              aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
             >
               {isPasswordVisible ? <RiEyeOffLine /> : <RiEyeLine />}
             </button>
           )}
 
           {!isStacked && optional && (
-            <span id={optionalId} className={style.optionalBadge}>Optional</span>
+            <span id={optionalId} className={style.optionalBadge}>
+              Optional
+            </span>
           )}
         </div>
 
@@ -194,10 +223,9 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             {warning}
           </span>
         )}
-
       </div>
     );
-  }
+  },
 );
 
 FormField.displayName = 'FormField';

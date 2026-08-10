@@ -182,7 +182,7 @@ session picks up the role.
     <img src="./docs/screenshots/mobile-view.png" height="450" alt="Mobile View" />
   </div>
 
-  <br><br>
+<br><br>
 
   <div style="display: inline-block; margin: 10px; vertical-align: top;">
     <p>Interactive Cart</p>

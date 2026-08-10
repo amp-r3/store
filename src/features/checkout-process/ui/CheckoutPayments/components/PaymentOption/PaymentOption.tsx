@@ -1,6 +1,6 @@
 import { PaymentMethod, PaymentOptions } from '@/entities/order';
 import { RadioCard } from '@/shared/ui';
-import style from './payment-option.module.scss'
+import style from './payment-option.module.scss';
 import { FC } from 'react';
 
 interface PaymentOptionProps {
@@ -8,10 +8,16 @@ interface PaymentOptionProps {
   isSelected: boolean;
   icon: React.ReactNode;
   label: string;
-  handleSelect(id: string, code: PaymentOptions): void
+  handleSelect(id: string, code: PaymentOptions): void;
 }
 
-export const PaymentOption: FC<PaymentOptionProps> = ({ option, isSelected, icon, label, handleSelect }) => {
+export const PaymentOption: FC<PaymentOptionProps> = ({
+  option,
+  isSelected,
+  icon,
+  label,
+  handleSelect,
+}) => {
   return (
     <RadioCard
       variant="tile"
@@ -23,5 +29,5 @@ export const PaymentOption: FC<PaymentOptionProps> = ({ option, isSelected, icon
       <span className={style['payment__option__icon']}>{icon}</span>
       <span className={style['payment__option__label']}>{label}</span>
     </RadioCard>
-  )
-}
+  );
+};

@@ -8,10 +8,11 @@
  * Structurally typed to avoid pulling radix-ui's types into `shared/lib`
  * while still accepting Radix's `CustomEvent<{ originalEvent: PointerEvent }>`.
  */
-export const ignoreToastInteraction = (
-    event: { target: EventTarget | null; preventDefault(): void }
-) => {
-    if (event.target instanceof Element && event.target.closest('[data-sonner-toaster]')) {
-        event.preventDefault();
-    }
+export const ignoreToastInteraction = (event: {
+  target: EventTarget | null;
+  preventDefault(): void;
+}) => {
+  if (event.target instanceof Element && event.target.closest('[data-sonner-toaster]')) {
+    event.preventDefault();
+  }
 };

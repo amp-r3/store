@@ -22,87 +22,83 @@ interface OrderCardProps {
   onClick(id: string): void;
 }
 
-export const OrderCard = memo(({
-  orderId,
-  orderNumber,
-  orderStatus,
-  orderDate,
-  orderTotalAmount,
-  isActive,
-  items,
-  thumbnailsById,
-  onClick,
-}: OrderCardProps) => {
-  const visibleItems = items.slice(0, MAX_THUMBNAILS);
-  const extraCount = items.length - visibleItems.length;
+export const OrderCard = memo(
+  ({
+    orderId,
+    orderNumber,
+    orderStatus,
+    orderDate,
+    orderTotalAmount,
+    isActive,
+    items,
+    thumbnailsById,
+    onClick,
+  }: OrderCardProps) => {
+    const visibleItems = items.slice(0, MAX_THUMBNAILS);
+    const extraCount = items.length - visibleItems.length;
 
-  return (
-    <article
-      role="listitem"
-      tabIndex={0}
-      className={`${style.orderCard} ${isActive ? style.activeCard : ''}`}
-      onClick={() => onClick(orderId)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick(orderId);
-        }
-      }}
-    >
-      <div className={style.mainInfo}>
-        <StatusBadge
-          status={orderStatus}
-          label={ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}
-          ariaLabel={`Order status: ${ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}`}
-        />
-        <div className={style.orderTotal}>
-          {formatPrice(orderTotalAmount)}
+    return (
+      <article
+        role="listitem"
+        tabIndex={0}
+        className={`${style.orderCard} ${isActive ? style.activeCard : ''}`}
+        onClick={() => onClick(orderId)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick(orderId);
+          }
+        }}
+      >
+        <div className={style.mainInfo}>
+          <StatusBadge
+            status={orderStatus}
+            label={ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}
+            ariaLabel={`Order status: ${ORDER_STATUS_MAP[orderStatus]?.label ?? orderStatus}`}
+          />
+          <div className={style.orderTotal}>{formatPrice(orderTotalAmount)}</div>
         </div>
-      </div>
 
-      <div className={style.metaInfo}>
-        <span className={style.orderNumber}>
-          #{orderNumber}
-        </span>
-        <span className={style.orderDate}>
-          {orderDate}
-        </span>
-      </div>
-
-      {visibleItems.length > 0 && (
-        <div className={style.thumbnails}>
-          {visibleItems.map((item) => (
-            thumbnailsById ? (
-              <Image
-                key={item.id}
-                className={style.thumbnail}
-                src={thumbnailsById[item.productId]}
-                alt=""
-                aria-hidden="true"
-                width={44}
-                height={44}
-              />
-            ) : (
-              <Skeleton
-                key={item.id}
-                className={style.thumbnail}
-                width={44}
-                height={44}
-                borderRadius={8}
-                baseColor="var(--skeleton-base)"
-                highlightColor="var(--skeleton-highlight)"
-              />
-            )
-          ))}
-          {extraCount > 0 && (
-            <span className={style.thumbnailExtra} aria-hidden="true">
-              +{extraCount}
-            </span>
-          )}
+        <div className={style.metaInfo}>
+          <span className={style.orderNumber}>#{orderNumber}</span>
+          <span className={style.orderDate}>{orderDate}</span>
         </div>
-      )}
-    </article>
-  );
-});
+
+        {visibleItems.length > 0 && (
+          <div className={style.thumbnails}>
+            {visibleItems.map((item) =>
+              thumbnailsById ? (
+                <Image
+                  key={item.id}
+                  className={style.thumbnail}
+                  src={thumbnailsById[item.productId]}
+                  alt=""
+                  aria-hidden="true"
+                  width={44}
+                  height={44}
+                />
+              ) : (
+                <Skeleton
+                  key={item.id}
+                  className={style.thumbnail}
+                  width={44}
+                  height={44}
+                  borderRadius={8}
+                  baseColor="var(--skeleton-base)"
+                  highlightColor="var(--skeleton-highlight)"
+                />
+              ),
+            )}
+            {extraCount > 0 && (
+              <span className={style.thumbnailExtra} aria-hidden="true">
+                +{extraCount}
+              </span>
+            )}
+          </div>
+        )}
+      </article>
+    );
+  },
+);
 
 OrderCard.displayName = 'OrderCard';

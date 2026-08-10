@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { Dialog, VisuallyHidden } from 'radix-ui';
 import style from './product-image-modal.module.scss';
-import { useImageView } from "@/shared/lib/hooks";
-import { getModalRoot, ignoreToastInteraction } from "@/shared/lib";
+import { useImageView } from '@/shared/lib/hooks';
+import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 
 interface ProductImageModalProps {
   imageSrc: string;
@@ -11,9 +11,13 @@ interface ProductImageModalProps {
   isOpen: boolean;
 }
 
-export const ProductImageModal = ({ imageSrc, imageAlt, onClose, isOpen }: ProductImageModalProps) => {
-
-  const { contentRef, imageRef, bindDrag, bindPinch } = useImageView({ isOpen, onClose })
+export const ProductImageModal = ({
+  imageSrc,
+  imageAlt,
+  onClose,
+  isOpen,
+}: ProductImageModalProps) => {
+  const { contentRef, imageRef, bindDrag, bindPinch } = useImageView({ isOpen, onClose });
 
   return (
     <Dialog.Root
@@ -33,9 +37,7 @@ export const ProductImageModal = ({ imageSrc, imageAlt, onClose, isOpen }: Produ
           onPointerDownOutside={ignoreToastInteraction}
         >
           <VisuallyHidden.Root>
-            <Dialog.Title>
-              {imageAlt || 'Product image fullscreen'}
-            </Dialog.Title>
+            <Dialog.Title>{imageAlt || 'Product image fullscreen'}</Dialog.Title>
           </VisuallyHidden.Root>
 
           <div className={style['back-button']}>
@@ -57,9 +59,8 @@ export const ProductImageModal = ({ imageSrc, imageAlt, onClose, isOpen }: Produ
               style={{ touchAction: 'none' }}
             />
           </div>
-
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
-}
+};

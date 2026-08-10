@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { supabase } from "@/shared/api/supabase/client";
-import { useAppDispatch } from "@/shared/model";
-import { setSession, setRole, logout } from "@/entities/session";
-import { AUTH_STORAGE_KEYS } from "@/shared/config";
+import { useEffect } from 'react';
+import { supabase } from '@/shared/api/supabase/client';
+import { useAppDispatch } from '@/shared/model';
+import { setSession, setRole, logout } from '@/entities/session';
+import { AUTH_STORAGE_KEYS } from '@/shared/config';
 
 /** Mirrors the Supabase auth session into Redux. Dispatches `setSession` twice
  * on sign-in: once immediately with an empty name/username so `isAuth`
@@ -23,17 +23,18 @@ export const useSessionSync = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN') {
+        // A successful sign-in means any provider previously blocked by a
+        // failed OAuth attempt (see useAuthUrlError) is no longer blocked.
+        sessionStorage.removeItem(AUTH_STORAGE_KEYS.blockedProviders);
+      }
 
-        if (event === 'SIGNED_IN') {
-          // A successful sign-in means any provider previously blocked by a
-          // failed OAuth attempt (see useAuthUrlError) is no longer blocked.
-          sessionStorage.removeItem(AUTH_STORAGE_KEYS.blockedProviders);
-        }
-
-        if (session?.user) {
-          dispatch(setSession({
+      if (session?.user) {
+        dispatch(
+          setSession({
             user: {
               id: session.user.id,
               email: session.user.email!,
@@ -45,26 +46,28 @@ export const useSessionSync = () => {
               role: null,
             },
             token: session.access_token,
-          }));
+          }),
+        );
 
-          const fetchProfile = async () => {
-            try {
-              const { data: profile, error: profileError } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', session.user.id)
-                .single();
+        const fetchProfile = async () => {
+          try {
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
 
-              if (profileError) {
-                console.error('Error fetching user profile:', profileError);
-                // Resolves the null->admin/user tri-state even on failure, so
-                // AdminRoute's loading branch can't hang forever.
-                dispatch(setRole('user'));
-                return;
-              }
+            if (profileError) {
+              console.error('Error fetching user profile:', profileError);
+              // Resolves the null->admin/user tri-state even on failure, so
+              // AdminRoute's loading branch can't hang forever.
+              dispatch(setRole('user'));
+              return;
+            }
 
-              if (profile) {
-                dispatch(setSession({
+            if (profile) {
+              dispatch(
+                setSession({
                   user: {
                     id: session.user.id,
                     email: session.user.email!,
@@ -76,24 +79,25 @@ export const useSessionSync = () => {
                     role: profile.role,
                   },
                   token: session.access_token,
-                }));
-              }
-            } catch (error) {
-              console.error('Failed to load profile inside auth listener:', error);
-              dispatch(setRole('user'));
+                }),
+              );
             }
-          };
+          } catch (error) {
+            console.error('Failed to load profile inside auth listener:', error);
+            dispatch(setRole('user'));
+          }
+        };
 
-          fetchProfile();
-        } else {
-          // No session (e.g. INITIAL_SESSION firing with a null session
-          // because the httpOnly cookie expired, or an explicit sign-out) —
-          // clear any user redux-persist restored from localStorage. Without
-          // this, a stale persisted `auth.user` keeps `selectIsAuth` true
-          // forever, and PublicRoute/proxy.ts fight over the redirect.
-          dispatch(logout());
-        }
-      });
+        fetchProfile();
+      } else {
+        // No session (e.g. INITIAL_SESSION firing with a null session
+        // because the httpOnly cookie expired, or an explicit sign-out) —
+        // clear any user redux-persist restored from localStorage. Without
+        // this, a stale persisted `auth.user` keeps `selectIsAuth` true
+        // forever, and PublicRoute/proxy.ts fight over the redirect.
+        dispatch(logout());
+      }
+    });
 
     return () => {
       subscription.unsubscribe();

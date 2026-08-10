@@ -1,10 +1,17 @@
 import { ReactNode } from 'react';
 import {
-  HiOutlineUser, HiUser,
-  HiOutlineMapPin, HiMapPin,
-  HiOutlineCreditCard, HiCreditCard
-} from "react-icons/hi2";
-import { HiLocationMarker, HiCreditCard as HiCreditCardFilled, HiCheckCircle } from "react-icons/hi";
+  HiOutlineUser,
+  HiUser,
+  HiOutlineMapPin,
+  HiMapPin,
+  HiOutlineCreditCard,
+  HiCreditCard,
+} from 'react-icons/hi2';
+import {
+  HiLocationMarker,
+  HiCreditCard as HiCreditCardFilled,
+  HiCheckCircle,
+} from 'react-icons/hi';
 import { StepType } from './types';
 import { CheckoutFormValues } from './checkoutMasterSchema';
 
@@ -35,7 +42,15 @@ export const CHECKOUT_STEPS: Record<StepType, CheckoutStepConfig> = {
     ctaIcon: <HiCreditCardFilled />,
     icon: <HiOutlineMapPin />,
     iconActive: <HiMapPin />,
-    fields: ['deliveryMethodId', 'deliveryMethodCode', 'country', 'city', 'street', 'housenumber', 'postcode'],
+    fields: [
+      'deliveryMethodId',
+      'deliveryMethodCode',
+      'country',
+      'city',
+      'street',
+      'housenumber',
+      'postcode',
+    ],
   },
   payment: {
     order: '03',

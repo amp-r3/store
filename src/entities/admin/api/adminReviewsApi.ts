@@ -49,7 +49,10 @@ export interface PaginatedAdminReviews {
 const SORT_CLAUSE: Record<AdminReviewSort, { column: string; ascending: boolean }[]> = {
   newest: [{ column: 'date', ascending: false }],
   oldest: [{ column: 'date', ascending: true }],
-  lowest_rating: [{ column: 'rating', ascending: true }, { column: 'date', ascending: false }],
+  lowest_rating: [
+    { column: 'rating', ascending: true },
+    { column: 'date', ascending: false },
+  ],
   most_helpful: [{ column: 'helpful_count', ascending: false }],
 };
 
@@ -108,7 +111,10 @@ export const adminReviewsApi = baseApi.injectEndpoints({
       },
       providesTags: (result) =>
         result
-          ? [...result.items.map((item) => ({ type: 'Review' as const, id: item.id })), { type: 'Review', id: 'ADMIN_LIST' }]
+          ? [
+              ...result.items.map((item) => ({ type: 'Review' as const, id: item.id })),
+              { type: 'Review', id: 'ADMIN_LIST' },
+            ]
           : [{ type: 'Review', id: 'ADMIN_LIST' }],
     }),
 

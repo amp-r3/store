@@ -46,9 +46,7 @@ export const Modal: FC<ModalProps> = ({
           </div>
 
           {description && (
-            <Dialog.Description className={style.description}>
-              {description}
-            </Dialog.Description>
+            <Dialog.Description className={style.description}>{description}</Dialog.Description>
           )}
 
           {children && <div className={style.body}>{children}</div>}

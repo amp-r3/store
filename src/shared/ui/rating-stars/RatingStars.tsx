@@ -14,11 +14,22 @@ interface RatingStarsProps {
   className?: string;
 }
 
-export const RatingStars = ({ value, label, size = 'md', tone = 'default', className }: RatingStarsProps) => (
+export const RatingStars = ({
+  value,
+  label,
+  size = 'md',
+  tone = 'default',
+  className,
+}: RatingStarsProps) => (
   <span
     role="img"
     aria-label={label}
-    className={[style['rating-stars'], style[`rating-stars--${size}`], style[`rating-stars--${tone}`], className]
+    className={[
+      style['rating-stars'],
+      style[`rating-stars--${size}`],
+      style[`rating-stars--${tone}`],
+      className,
+    ]
       .filter(Boolean)
       .join(' ')}
   >
@@ -27,7 +38,7 @@ export const RatingStars = ({ value, label, size = 'md', tone = 'default', class
         <FaStar key={i} className={style['rating-stars__star--filled']} aria-hidden="true" />
       ) : (
         <FaRegStar key={i} className={style['rating-stars__star--empty']} aria-hidden="true" />
-      )
+      ),
     )}
   </span>
 );

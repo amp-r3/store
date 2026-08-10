@@ -1,56 +1,56 @@
 @use 'app/styles/index' as *;
 
 .section-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: $spacing-md;
-    border-bottom: 1px solid var(--border-color-subtle);
-    padding-bottom: $spacing-lg;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-md;
+  border-bottom: 1px solid var(--border-color-subtle);
+  padding-bottom: $spacing-lg;
 
-    @media (max-width: 549px) {
-        flex-direction: column;
-    }
+  @media (max-width: 549px) {
+    flex-direction: column;
+  }
 
-    // The subtitle disappears at the same 768px step (below), leaving a
-    // single line of text — the desktop-sized rule gap no longer fits it.
-    @media (max-width: 768px) {
-        padding-bottom: $spacing-md;
-    }
+  // The subtitle disappears at the same 768px step (below), leaving a
+  // single line of text — the desktop-sized rule gap no longer fits it.
+  @media (max-width: 768px) {
+    padding-bottom: $spacing-md;
+  }
 
-    @media (max-width: 480px) {
-        padding-bottom: $spacing-sm;
-    }
+  @media (max-width: 480px) {
+    padding-bottom: $spacing-sm;
+  }
 }
 
 .section-header__heading {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  min-width: 0;
 }
 
 .section-header__title {
-    font-family: $font-display;
-    font-size: $fs-xl;
-    font-weight: $fw-semibold;
-    color: var(--text-primary);
-    margin: 0;
-    letter-spacing: $letter-spacing-tight;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+  font-family: $font-display;
+  font-size: $fs-xl;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: $letter-spacing-tight;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .section-header__subtitle {
-    font-family: $font-primary;
-    font-size: $fs-sm;
-    color: var(--text-muted);
-    margin: 0;
-    line-height: $lh-relaxed;
+  font-family: $font-primary;
+  font-size: $fs-sm;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: $lh-relaxed;
 
-    // Only consumer today is the /user/* pages (UserLayout hides breadcrumbs
-    // at the same breakpoint) — safe to drop here for vertical density.
-    @media (max-width: 768px) {
-        display: none;
-    }
+  // Only consumer today is the /user/* pages (UserLayout hides breadcrumbs
+  // at the same breakpoint) — safe to drop here for vertical density.
+  @media (max-width: 768px) {
+    display: none;
+  }
 }

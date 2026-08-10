@@ -14,37 +14,27 @@ export interface HapticPreset {
 }
 
 export type HapticPresetName =
-  | "success"
-  | "warning"
-  | "error"
-  | "light"
-  | "medium"
-  | "heavy"
-  | "soft"
-  | "rigid"
-  | "selection"
-  | "nudge"
-  | "buzz";
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'light'
+  | 'medium'
+  | 'heavy'
+  | 'soft'
+  | 'rigid'
+  | 'selection'
+  | 'nudge'
+  | 'buzz';
 
 export const HAPTIC_PRESETS: Record<HapticPresetName, HapticPreset> = {
   success: {
-    pattern: [
-      { duration: 30 },
-      { delay: 60, duration: 40, intensity: 1 },
-    ],
+    pattern: [{ duration: 30 }, { delay: 60, duration: 40, intensity: 1 }],
   },
   warning: {
-    pattern: [
-      { duration: 30 },
-      { delay: 60, duration: 40, intensity: 1 },
-    ],
+    pattern: [{ duration: 30 }, { delay: 60, duration: 40, intensity: 1 }],
   },
   error: {
-    pattern: [
-      { duration: 40 },
-      { delay: 40, duration: 40 },
-      { delay: 40, duration: 40 },
-    ],
+    pattern: [{ duration: 40 }, { delay: 40, duration: 40 }, { delay: 40, duration: 40 }],
     options: { intensity: 0.9 },
   },
   light: {

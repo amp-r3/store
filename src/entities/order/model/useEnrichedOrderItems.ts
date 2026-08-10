@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { EnrichedOrderItem, OrderItem } from "@/entities/order/model/types";
-import { useProductsByIds } from "@/entities/product";
+import { useMemo } from 'react';
+import { EnrichedOrderItem, OrderItem } from '@/entities/order/model/types';
+import { useProductsByIds } from '@/entities/product';
 
 interface UseEnrichedOrderItemsReturn {
   items: EnrichedOrderItem[];
@@ -9,12 +9,9 @@ interface UseEnrichedOrderItemsReturn {
   isError: boolean;
 }
 
-export const useEnrichedOrderItems = (
-  orderItems: OrderItem[],
-): UseEnrichedOrderItemsReturn => {
-
+export const useEnrichedOrderItems = (orderItems: OrderItem[]): UseEnrichedOrderItemsReturn => {
   const ids = useMemo(() => {
-    return orderItems.map(item => item.productId);
+    return orderItems.map((item) => item.productId);
   }, [orderItems]);
 
   const { products, isLoading, isFetching, isError } = useProductsByIds(ids);
@@ -31,7 +28,7 @@ export const useEnrichedOrderItems = (
         const { id, title, thumbnail, category } = product;
         acc.push({
           ...orderItem,
-          product: { id, title, thumbnail, category }
+          product: { id, title, thumbnail, category },
         });
       }
 

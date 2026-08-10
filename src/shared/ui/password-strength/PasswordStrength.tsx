@@ -24,7 +24,9 @@ export const PasswordStrength = ({ password }: PasswordStrengthProps) => {
             className={[
               style['password-strength__segment'],
               segment < score ? style['password-strength__segment--filled'] : '',
-            ].filter(Boolean).join(' ')}
+            ]
+              .filter(Boolean)
+              .join(' ')}
           />
         ))}
       </div>

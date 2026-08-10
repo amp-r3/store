@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Button, Modal } from "@/shared/ui";
-import { CgTrash, CgLogOut } from "react-icons/cg";
+import { useState } from 'react';
+import { Button, Modal } from '@/shared/ui';
+import { CgTrash, CgLogOut } from 'react-icons/cg';
 
 import style from './user-profile-view.module.scss';
-import { SessionUser } from "@/entities/session";
-import { getProviderConfig } from "@/shared/config";
+import { SessionUser } from '@/entities/session';
+import { getProviderConfig } from '@/shared/config';
 
 interface UserProfileViewProps {
   user: SessionUser;
@@ -15,7 +15,15 @@ interface UserProfileViewProps {
   deleteError?: string;
 }
 
-const UserInfoRow = ({ label, value, prefix = '' }: { label: string, value: string | null, prefix?: string }) => (
+const UserInfoRow = ({
+  label,
+  value,
+  prefix = '',
+}: {
+  label: string;
+  value: string | null;
+  prefix?: string;
+}) => (
   <div className={style['profile-view__info-row']}>
     <span className={style['profile-view__label']}>{label}</span>
     <span className={style['profile-view__value']}>{value ? `${prefix}${value}` : '—'}</span>
@@ -44,7 +52,14 @@ const LinkedProviders = ({ providers }: { providers: string[] }) => {
   );
 };
 
-export const UserProfileView = ({ user, onEditClick, providers, onLogout, onDeleteAccount, deleteError }: UserProfileViewProps) => {
+export const UserProfileView = ({
+  user,
+  onEditClick,
+  providers,
+  onLogout,
+  onDeleteAccount,
+  deleteError,
+}: UserProfileViewProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
@@ -65,8 +80,13 @@ export const UserProfileView = ({ user, onEditClick, providers, onLogout, onDele
         </Button>
       </div>
 
-      <section className={style['profile-view__danger-zone']} aria-labelledby="profile-danger-title">
-        <h2 id="profile-danger-title" className={style['profile-view__danger-title']}>Danger zone</h2>
+      <section
+        className={style['profile-view__danger-zone']}
+        aria-labelledby="profile-danger-title"
+      >
+        <h2 id="profile-danger-title" className={style['profile-view__danger-title']}>
+          Danger zone
+        </h2>
         <div className={style['profile-view__danger-actions']}>
           <Button variant="ghost" onClick={() => setIsLogoutModalOpen(true)}>
             Log out
@@ -91,7 +111,10 @@ export const UserProfileView = ({ user, onEditClick, providers, onLogout, onDele
         icon={<CgLogOut size={50} />}
         actionLabel="Log out"
         actionVariant="danger"
-        onAction={() => { setIsLogoutModalOpen(false); onLogout(); }}
+        onAction={() => {
+          setIsLogoutModalOpen(false);
+          onLogout();
+        }}
       />
 
       <Modal

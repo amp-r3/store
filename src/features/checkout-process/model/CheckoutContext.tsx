@@ -97,42 +97,52 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setError,
   });
 
-  const value = useMemo<CheckoutContextValue>(() => ({
-    checkoutItems: details.checkoutItems,
-    checkoutDetails: details.checkoutDetails,
-    totals: details.totals,
-    orderTotals,
-    deliveryMethods: delivery.deliveryMethods,
-    paymentMethods: delivery.paymentMethods,
-    selectedDelivery: delivery.selectedDelivery,
-    selectedPayment: delivery.selectedPayment,
-    isShippingRequired: delivery.isShippingRequired,
-    isDeliveryLoading: delivery.isDeliveryLoading,
-    isPaymentLoading: delivery.isPaymentLoading,
-    selectDelivery,
-    selectPayment,
-    step: stepper.step,
-    stepIndex: stepper.stepIndex,
-    isLastStep: stepper.isLastStep,
-    maxReachedIndex: stepper.maxReachedIndex,
-    goNext: stepper.goNext,
-    goToStep: stepper.goToStep,
-    isLoading: details.isLoading || details.isFetching,
-    isSubmitting,
-    submitOrder,
-    applyPreviousAddress,
-    hasPreviousAddress,
-    showPreviousAddressChip,
-  }), [
-    details, orderTotals, delivery, selectDelivery, selectPayment, stepper, isSubmitting, submitOrder,
-    applyPreviousAddress, hasPreviousAddress, showPreviousAddressChip,
-  ]);
+  const value = useMemo<CheckoutContextValue>(
+    () => ({
+      checkoutItems: details.checkoutItems,
+      checkoutDetails: details.checkoutDetails,
+      totals: details.totals,
+      orderTotals,
+      deliveryMethods: delivery.deliveryMethods,
+      paymentMethods: delivery.paymentMethods,
+      selectedDelivery: delivery.selectedDelivery,
+      selectedPayment: delivery.selectedPayment,
+      isShippingRequired: delivery.isShippingRequired,
+      isDeliveryLoading: delivery.isDeliveryLoading,
+      isPaymentLoading: delivery.isPaymentLoading,
+      selectDelivery,
+      selectPayment,
+      step: stepper.step,
+      stepIndex: stepper.stepIndex,
+      isLastStep: stepper.isLastStep,
+      maxReachedIndex: stepper.maxReachedIndex,
+      goNext: stepper.goNext,
+      goToStep: stepper.goToStep,
+      isLoading: details.isLoading || details.isFetching,
+      isSubmitting,
+      submitOrder,
+      applyPreviousAddress,
+      hasPreviousAddress,
+      showPreviousAddressChip,
+    }),
+    [
+      details,
+      orderTotals,
+      delivery,
+      selectDelivery,
+      selectPayment,
+      stepper,
+      isSubmitting,
+      submitOrder,
+      applyPreviousAddress,
+      hasPreviousAddress,
+      showPreviousAddressChip,
+    ],
+  );
 
   return (
     <FormProvider {...methods}>
-      <CheckoutContext.Provider value={value}>
-        {children}
-      </CheckoutContext.Provider>
+      <CheckoutContext.Provider value={value}>{children}</CheckoutContext.Provider>
     </FormProvider>
   );
 };

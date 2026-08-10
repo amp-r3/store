@@ -3,7 +3,7 @@ import path from 'node:path';
 import { SUPABASE_IMAGE_HOST } from './src/shared/config/images';
 
 const nextConfig: NextConfig = {
-  distDir: process.env.SECOND_INSTANCE ? ".next-second" : ".next",
+  distDir: process.env.SECOND_INSTANCE ? '.next-second' : '.next',
   sassOptions: {
     implementation: 'sass-embedded',
     // Every .module.scss does `@use 'app/styles/index' as *;` — resolve that

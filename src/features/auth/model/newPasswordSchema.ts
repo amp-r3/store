@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { PASSWORD_RULES, STRENGTH_RULE, PASSWORD_MIN_STRENGTH_SCORE, getPasswordScoreAsync } from '@/shared/lib';
+import {
+  PASSWORD_RULES,
+  STRENGTH_RULE,
+  PASSWORD_MIN_STRENGTH_SCORE,
+  getPasswordScoreAsync,
+} from '@/shared/lib';
 
 /** Single source of truth for "a password we'd accept", shared by register
  * and change-password. Async because the strength check (zxcvbn) is loaded

@@ -1,5 +1,5 @@
-import style from './wishlist-empty.module.scss'
-import { IoIosHeartDislike } from "react-icons/io";
+import style from './wishlist-empty.module.scss';
+import { IoIosHeartDislike } from 'react-icons/io';
 
 export const WishlistEmpty = () => {
   return (
@@ -9,14 +9,12 @@ export const WishlistEmpty = () => {
           <IoIosHeartDislike />
         </div>
 
-        <h2 className={style['wishlist__title']}>
-          We&apos;ll save your favorite products here.
-        </h2>
+        <h2 className={style['wishlist__title']}>We&apos;ll save your favorite products here.</h2>
 
         <p className={style['wishlist__desc']}>
           Click ♡ on items you usually order or want to buy later
         </p>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -28,43 +28,47 @@ const fireSideConfetti = () => {
 };
 
 export const CheckoutSuccessPage = () => {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const dispatch = useAppDispatch()
-  const orderId = searchParams.get('order')
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const orderId = searchParams.get('order');
 
   useEffect(() => {
     if (!orderId) {
-      router.replace('/')
-      return
+      router.replace('/');
+      return;
     }
     // Cleared here (not right after the order is created) so the still-empty
     // checkout.items can't make CheckoutGuard bounce this route before the
     // lazy-loaded success page has actually committed and carries orderId.
-    dispatch(clearCheckout())
-    dispatch(clearCheckoutDraft())
-  }, [orderId, router, dispatch])
+    dispatch(clearCheckout());
+    dispatch(clearCheckoutDraft());
+  }, [orderId, router, dispatch]);
 
   useEffect(() => {
-    if (!orderId) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (!orderId) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    fireSideConfetti()
-  }, [orderId])
+    fireSideConfetti();
+  }, [orderId]);
 
-  if (!orderId) return null
+  if (!orderId) return null;
   return (
     <PageLayout>
       <Modal
         isOpen={true}
-        onOpenChange={() => { router.replace('/') }}
+        onOpenChange={() => {
+          router.replace('/');
+        }}
         title="You're all set!"
         description={`Order №${orderId} has been confirmed. You can track its status on the orders page.`}
         icon={<TbShoppingCartCheck size={50} />}
         actionLabel="My Orders"
-        onAction={() => { router.replace('/user/orders') }}
-        actionVariant='success'
+        onAction={() => {
+          router.replace('/user/orders');
+        }}
+        actionVariant="success"
       />
     </PageLayout>
-  )
-}
+  );
+};

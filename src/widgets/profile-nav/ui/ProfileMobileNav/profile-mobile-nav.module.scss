@@ -99,7 +99,10 @@
   text-decoration: none;
   font-size: $fs-sm;
   font-weight: $fw-normal;
-  transition: background $transition-fast $ease-in-out-smooth, color $transition-fast $ease-in-out-smooth, transform $transition-pressed $ease-in-out-smooth;
+  transition:
+    background $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth,
+    transform $transition-pressed $ease-in-out-smooth;
 
   &::before {
     content: '';
@@ -112,7 +115,9 @@
     background: var(--primary-accent);
     opacity: 0;
     transform: translateX(-50%) scaleX(0);
-    transition: opacity $transition-fast $ease-in-out-smooth, transform $transition-fast $ease-in-out-smooth;
+    transition:
+      opacity $transition-fast $ease-in-out-smooth,
+      transform $transition-fast $ease-in-out-smooth;
   }
 
   &:active {

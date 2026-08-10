@@ -60,7 +60,9 @@
 }
 
 [data-sonner-toast]:focus-visible .card {
-  box-shadow: var(--shadow-lg), 0 0 0 $focus-ring-width var(--focus-ring-color);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 $focus-ring-width var(--focus-ring-color);
 }
 
 // Sonner sets `data-expanded="true"` on every toast the instant the pointer

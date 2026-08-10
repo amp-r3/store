@@ -1,18 +1,19 @@
-
-import Skeleton from 'react-loading-skeleton'
-import { ExpandableContent } from '@/shared/ui'
-import style from './product-specs.module.scss'
-
+import Skeleton from 'react-loading-skeleton';
+import { ExpandableContent } from '@/shared/ui';
+import style from './product-specs.module.scss';
 
 export const ProductSpecsSkeleton = () => {
-
   const SpecRow = () => (
     <div className={style['spec-row']}>
       <span className={style['spec-icon']}>
         <Skeleton width={28} height={28} />
       </span>
-      <span className={style['spec-label']}><Skeleton width={40} /></span>
-      <span className={style['spec-value']}><Skeleton width={120} /></span>
+      <span className={style['spec-label']}>
+        <Skeleton width={40} />
+      </span>
+      <span className={style['spec-value']}>
+        <Skeleton width={120} />
+      </span>
     </div>
   );
   return (
@@ -41,5 +42,5 @@ export const ProductSpecsSkeleton = () => {
         </div>
       </ExpandableContent>
     </section>
-  )
-}
+  );
+};

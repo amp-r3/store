@@ -10,118 +10,140 @@ import { AdminReview, AdminReviewSort, useGetAdminReviewsQuery } from '@/entitie
 import { AdminReviewsToolbar, AdminReviewsTable, AdminReviewDeleteModal } from './components';
 
 export const AdminReviewsPage = () => {
-    const isMobile = useMediaQuery('(max-width: 768px)');
-    const [searchParams, setSearchParams] = useUrlState();
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [searchParams, setSearchParams] = useUrlState();
 
-    const search = searchParams.get('q') ?? '';
-    const ratingParam = searchParams.get('rating');
-    const rating = ratingParam ? Number(ratingParam) : undefined;
-    const sort = (searchParams.get('sort') as AdminReviewSort | null) ?? 'newest';
+  const search = searchParams.get('q') ?? '';
+  const ratingParam = searchParams.get('rating');
+  const rating = ratingParam ? Number(ratingParam) : undefined;
+  const sort = (searchParams.get('sort') as AdminReviewSort | null) ?? 'newest';
 
-    const [page, setPage] = useState(1);
-    const limit = isMobile ? 8 : 15;
+  const [page, setPage] = useState(1);
+  const limit = isMobile ? 8 : 15;
 
-    useEffect(() => {
-        setPage(1);
-    }, [isMobile]);
+  useEffect(() => {
+    setPage(1);
+  }, [isMobile]);
 
-    const { data, isLoading, error } = useGetAdminReviewsQuery({
-        page,
-        limit,
-        search: search || undefined,
-        rating,
-        sort,
-    });
+  const { data, isLoading, error } = useGetAdminReviewsQuery({
+    page,
+    limit,
+    search: search || undefined,
+    rating,
+    sort,
+  });
 
-    const reviews = data?.items ?? [];
-    const totalCount = data?.totalCount ?? 0;
+  const reviews = data?.items ?? [];
+  const totalCount = data?.totalCount ?? 0;
 
-    usePaginationBounds(page, totalCount, limit, setPage, error);
+  usePaginationBounds(page, totalCount, limit, setPage, error);
 
-    const [deletingReview, setDeletingReview] = useState<AdminReview | null>(null);
+  const [deletingReview, setDeletingReview] = useState<AdminReview | null>(null);
 
-    const handleSearchChange = useCallback((next: string) => {
-        setPage(1);
-        setSearchParams((params) => {
-            if (next) params.set('q', next); else params.delete('q');
-            return params;
-        }, { replace: true });
-    }, [setSearchParams]);
+  const handleSearchChange = useCallback(
+    (next: string) => {
+      setPage(1);
+      setSearchParams(
+        (params) => {
+          if (next) params.set('q', next);
+          else params.delete('q');
+          return params;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
-    const handleRatingChange = useCallback((next: number | undefined) => {
-        setPage(1);
-        setSearchParams((params) => {
-            if (next) params.set('rating', String(next)); else params.delete('rating');
-            return params;
-        }, { replace: true });
-    }, [setSearchParams]);
+  const handleRatingChange = useCallback(
+    (next: number | undefined) => {
+      setPage(1);
+      setSearchParams(
+        (params) => {
+          if (next) params.set('rating', String(next));
+          else params.delete('rating');
+          return params;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
-    const handleSortChange = useCallback((next: AdminReviewSort) => {
-        setPage(1);
-        setSearchParams((params) => {
-            if (next !== 'newest') params.set('sort', next); else params.delete('sort');
-            return params;
-        }, { replace: true });
-    }, [setSearchParams]);
+  const handleSortChange = useCallback(
+    (next: AdminReviewSort) => {
+      setPage(1);
+      setSearchParams(
+        (params) => {
+          if (next !== 'newest') params.set('sort', next);
+          else params.delete('sort');
+          return params;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
-    const handlePageChange = useCallback((newPage: number) => {
-        setPage(newPage);
-        scrollToTop();
-    }, []);
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage);
+    scrollToTop();
+  }, []);
 
-    const hasActiveFilter = !!search || !!rating;
-    // Search is always visible above the panel — only the collapsed
-    // filter (rating) counts toward the disclosure's badge.
-    const activeFilterCount = rating ? 1 : 0;
+  const hasActiveFilter = !!search || !!rating;
+  // Search is always visible above the panel — only the collapsed
+  // filter (rating) counts toward the disclosure's badge.
+  const activeFilterCount = rating ? 1 : 0;
 
-    return (
-        <>
-            <SectionHeader
-                title="Reviews"
-                subtitle="Every review left on a product in the store."
-            />
+  return (
+    <>
+      <SectionHeader title="Reviews" subtitle="Every review left on a product in the store." />
 
-            <AdminReviewsToolbar
-                search={search}
-                rating={rating}
-                sort={sort}
-                activeFilterCount={activeFilterCount}
-                onSearchChange={handleSearchChange}
-                onRatingChange={handleRatingChange}
-                onSortChange={handleSortChange}
-            />
+      <AdminReviewsToolbar
+        search={search}
+        rating={rating}
+        sort={sort}
+        activeFilterCount={activeFilterCount}
+        onSearchChange={handleSearchChange}
+        onRatingChange={handleRatingChange}
+        onSortChange={handleSortChange}
+      />
 
-            {error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
+      {error && <Alert variant="error">{getErrorMessage(error)}</Alert>}
 
-            {!isLoading && reviews.length === 0 ? (
-                <EmptyState
-                    icon={<LuMessageSquare />}
-                    title={hasActiveFilter ? 'No matching reviews' : 'No reviews yet'}
-                    text={hasActiveFilter
-                        ? 'Try a different search term or rating filter.'
-                        : 'Reviews left on products will show up here.'}
-                />
-            ) : (
-                <AdminReviewsTable
-                    reviews={reviews}
-                    isLoading={isLoading}
-                    limit={limit}
-                    onDelete={setDeletingReview}
-                />
-            )}
+      {!isLoading && reviews.length === 0 ? (
+        <EmptyState
+          icon={<LuMessageSquare />}
+          title={hasActiveFilter ? 'No matching reviews' : 'No reviews yet'}
+          text={
+            hasActiveFilter
+              ? 'Try a different search term or rating filter.'
+              : 'Reviews left on products will show up here.'
+          }
+        />
+      ) : (
+        <AdminReviewsTable
+          reviews={reviews}
+          isLoading={isLoading}
+          limit={limit}
+          onDelete={setDeletingReview}
+        />
+      )}
 
-            <Pagination
-                totalItems={totalCount}
-                currentPage={page}
-                itemsPerPage={limit}
-                onPageChange={handlePageChange}
-            />
+      <Pagination
+        totalItems={totalCount}
+        currentPage={page}
+        itemsPerPage={limit}
+        onPageChange={handlePageChange}
+      />
 
-            <AdminReviewDeleteModal
-                isOpen={!!deletingReview}
-                onOpenChange={(open) => { if (!open) setDeletingReview(null); }}
-                review={deletingReview}
-            />
-        </>
-    );
+      <AdminReviewDeleteModal
+        isOpen={!!deletingReview}
+        onOpenChange={(open) => {
+          if (!open) setDeletingReview(null);
+        }}
+        review={deletingReview}
+      />
+    </>
+  );
 };

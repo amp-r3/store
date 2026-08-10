@@ -25,10 +25,10 @@ export const ChangePasswordForm = ({ onSuccess, onCancel }: ChangePasswordFormPr
     handleSubmit,
     watch,
     setError,
-    formState: { errors, touchedFields, isSubmitted }
+    formState: { errors, touchedFields, isSubmitted },
   } = useForm<ChangePasswordSchema>({
     resolver: zodResolver(changePasswordSchema),
-    mode: 'onTouched'
+    mode: 'onTouched',
   });
 
   const passwordValue = watch('password') || '';
@@ -52,7 +52,6 @@ export const ChangePasswordForm = ({ onSuccess, onCancel }: ChangePasswordFormPr
 
   return (
     <form className={style['change-password-form']} onSubmit={handleSubmit(onSubmit)} noValidate>
-
       {errors.root && <Alert variant="error">{errors.root.message}</Alert>}
 
       <FormField

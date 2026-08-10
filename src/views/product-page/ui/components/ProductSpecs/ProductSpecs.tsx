@@ -60,41 +60,17 @@ export const ProductSpecs: FC<ProductSpecsProps> = ({
           {/* Product details */}
           <div className={style['specs-group']}>
             <span className={style['specs-group-label']}>Product</span>
-            <SpecRow
-              icon={<FaBarcode />}
-              label="SKU"
-              value={sku}
-            />
-            <SpecRow
-              icon={<FaWeightHanging />}
-              label="Weight"
-              value={weightFormatted}
-            />
-            <SpecRow
-              icon={<FaRulerCombined />}
-              label="Dimensions"
-              value={dimensionsFormatted}
-            />
+            <SpecRow icon={<FaBarcode />} label="SKU" value={sku} />
+            <SpecRow icon={<FaWeightHanging />} label="Weight" value={weightFormatted} />
+            <SpecRow icon={<FaRulerCombined />} label="Dimensions" value={dimensionsFormatted} />
           </div>
 
           {/* Policies */}
           <div className={style['specs-group']}>
             <span className={style['specs-group-label']}>Policies</span>
-            <SpecRow
-              icon={<FaShield />}
-              label="Warranty"
-              value={warranty}
-            />
-            <SpecRow
-              icon={<FaTruck />}
-              label="Shipping"
-              value={shipping}
-            />
-            <SpecRow
-              icon={<FaRotateLeft />}
-              label="Returns"
-              value={returnPolicy}
-            />
+            <SpecRow icon={<FaShield />} label="Warranty" value={warranty} />
+            <SpecRow icon={<FaTruck />} label="Shipping" value={shipping} />
+            <SpecRow icon={<FaRotateLeft />} label="Returns" value={returnPolicy} />
           </div>
         </div>
       </ExpandableContent>

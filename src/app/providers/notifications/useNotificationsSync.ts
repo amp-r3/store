@@ -5,22 +5,26 @@ import { selectUser } from '@/entities/session';
 import { notify, subscribeToNotifications } from '@/entities/notification';
 
 export const useNotificationsSync = () => {
-    const dispatch = useAppDispatch();
-    const userId = useAppSelector(selectUser)?.id;
+  const dispatch = useAppDispatch();
+  const userId = useAppSelector(selectUser)?.id;
 
-    useEffect(() => {
-        if (!userId) return;
+  useEffect(() => {
+    if (!userId) return;
 
-        const unsubscribe = subscribeToNotifications(userId, (notification) => {
-            dispatch(notify({
-                type: notification.level,
-                text: notification.title,
-                key: `center-${notification.id}`,
-                action: notification.actionPath ? { label: 'View', to: notification.actionPath } : undefined,
-            }));
-            dispatch(baseApi.util.invalidateTags(['Notification']));
-        });
+    const unsubscribe = subscribeToNotifications(userId, (notification) => {
+      dispatch(
+        notify({
+          type: notification.level,
+          text: notification.title,
+          key: `center-${notification.id}`,
+          action: notification.actionPath
+            ? { label: 'View', to: notification.actionPath }
+            : undefined,
+        }),
+      );
+      dispatch(baseApi.util.invalidateTags(['Notification']));
+    });
 
-        return unsubscribe;
-    }, [userId, dispatch]);
+    return unsubscribe;
+  }, [userId, dispatch]);
 };

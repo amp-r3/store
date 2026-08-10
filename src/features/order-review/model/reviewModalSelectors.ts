@@ -5,15 +5,15 @@ const selectReviewModalState = (state: { reviewModal: ReviewModalState }) => sta
 
 export const selectIsReviewModalOpen = createSelector(
   [selectReviewModalState],
-  (modalState) => modalState.isOpen
+  (modalState) => modalState.isOpen,
 );
 
 export const selectReviewModalProductId = createSelector(
   [selectReviewModalState],
-  (modalState) => modalState.productId
+  (modalState) => modalState.productId,
 );
 
 export const selectReviewModalInitialRating = createSelector(
   [selectReviewModalState],
-  (modalState) => modalState.initialRating
+  (modalState) => modalState.initialRating,
 );

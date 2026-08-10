@@ -11,10 +11,12 @@ interface ProductsFetchReturn {
 const EMPTY_PRODUCTS: Product[] = [];
 
 export const useProductsByIds = (ids: number[], isOpen: boolean = true): ProductsFetchReturn => {
-  const { data: products = EMPTY_PRODUCTS, isLoading, isError, isFetching } = useGetProductArrayByIdQuery(
-    ids,
-    { skip: !isOpen || ids.length === 0 }
-  );
+  const {
+    data: products = EMPTY_PRODUCTS,
+    isLoading,
+    isError,
+    isFetching,
+  } = useGetProductArrayByIdQuery(ids, { skip: !isOpen || ids.length === 0 });
 
   return {
     products,

@@ -25,25 +25,37 @@ export const useCheckoutForm = () => {
 
   const { setValue } = methods;
 
-  const applyDeliverySelection = useCallback((id: string, code: DeliveryOptions) => {
-    setValue('deliveryMethodId', id, { shouldValidate: true });
-    setValue('deliveryMethodCode', code, { shouldValidate: true });
-  }, [setValue]);
+  const applyDeliverySelection = useCallback(
+    (id: string, code: DeliveryOptions) => {
+      setValue('deliveryMethodId', id, { shouldValidate: true });
+      setValue('deliveryMethodCode', code, { shouldValidate: true });
+    },
+    [setValue],
+  );
 
-  const applyPaymentSelection = useCallback((id: string, code: PaymentOptions) => {
-    setValue('paymentMethodId', id, { shouldValidate: true });
-    setValue('paymentMethodCode', code, { shouldValidate: true });
-  }, [setValue]);
+  const applyPaymentSelection = useCallback(
+    (id: string, code: PaymentOptions) => {
+      setValue('paymentMethodId', id, { shouldValidate: true });
+      setValue('paymentMethodCode', code, { shouldValidate: true });
+    },
+    [setValue],
+  );
 
-  const selectDelivery = useCallback((id: string, code: DeliveryOptions) => {
-    applyDeliverySelection(id, code);
-    light();
-  }, [applyDeliverySelection, light]);
+  const selectDelivery = useCallback(
+    (id: string, code: DeliveryOptions) => {
+      applyDeliverySelection(id, code);
+      light();
+    },
+    [applyDeliverySelection, light],
+  );
 
-  const selectPayment = useCallback((id: string, code: PaymentOptions) => {
-    applyPaymentSelection(id, code);
-    light();
-  }, [applyPaymentSelection, light]);
+  const selectPayment = useCallback(
+    (id: string, code: PaymentOptions) => {
+      applyPaymentSelection(id, code);
+      light();
+    },
+    [applyPaymentSelection, light],
+  );
 
   return { methods, selectDelivery, selectPayment, applyPaymentSelection };
 };

@@ -16,6 +16,7 @@ export const persistStorage =
     ? createNoopStorage()
     : {
         getItem: (key: string) => Promise.resolve(window.localStorage.getItem(key)),
-        setItem: (key: string, value: string) => Promise.resolve(window.localStorage.setItem(key, value)),
+        setItem: (key: string, value: string) =>
+          Promise.resolve(window.localStorage.setItem(key, value)),
         removeItem: (key: string) => Promise.resolve(window.localStorage.removeItem(key)),
       };

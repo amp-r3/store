@@ -35,9 +35,7 @@ export const adminAuditApi = baseApi.injectEndpoints({
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
-        let query = supabase
-          .from('admin_audit_log')
-          .select('*', { count: 'exact' });
+        let query = supabase.from('admin_audit_log').select('*', { count: 'exact' });
 
         if (action) query = query.eq('action', action);
         if (entityType) query = query.eq('entity_type', entityType);
@@ -73,7 +71,10 @@ export const adminAuditApi = baseApi.injectEndpoints({
       },
       providesTags: (result) =>
         result
-          ? [...result.items.map((item) => ({ type: 'AuditLog' as const, id: item.id })), { type: 'AuditLog', id: 'LIST' }]
+          ? [
+              ...result.items.map((item) => ({ type: 'AuditLog' as const, id: item.id })),
+              { type: 'AuditLog', id: 'LIST' },
+            ]
           : [{ type: 'AuditLog', id: 'LIST' }],
     }),
   }),

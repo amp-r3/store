@@ -3,7 +3,7 @@ import { Product } from '@/entities/product';
 import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
 import { WishlistData, useGetWishlistQuery, selectFavoritesArray } from '@/entities/wishlist';
-import { selectIsAuth } from "@/entities/session";
+import { selectIsAuth } from '@/entities/session';
 
 interface WishlistDetailsReturn {
   wishlistDetails: Product[];
@@ -16,30 +16,36 @@ interface WishlistDetailsReturn {
 }
 
 export const useWishlistDetails = (): WishlistDetailsReturn => {
-  const isAuth = useAppSelector(selectIsAuth)
+  const isAuth = useAppSelector(selectIsAuth);
   const localWishlistItems = useAppSelector(selectFavoritesArray);
 
-  const { data, isLoading: isWishlistLoading, isError: isWishlistError, isFetching: isWishlistFetching } = useGetWishlistQuery(undefined, { skip: !isAuth });
+  const {
+    data,
+    isLoading: isWishlistLoading,
+    isError: isWishlistError,
+    isFetching: isWishlistFetching,
+  } = useGetWishlistQuery(undefined, { skip: !isAuth });
 
-  const unifiedWishlistItems = useMemo(
-    () => {
-      if (isAuth && data) {
-        return (Object.entries(data) as [string, boolean][]).map(
-          ([id]) => ({
-            id: Number(id)
-          })
-        );
-      }
-      return localWishlistItems
-    }, [isAuth, data, localWishlistItems]);
-
+  const unifiedWishlistItems = useMemo(() => {
+    if (isAuth && data) {
+      return (Object.entries(data) as [string, boolean][]).map(([id]) => ({
+        id: Number(id),
+      }));
+    }
+    return localWishlistItems;
+  }, [isAuth, data, localWishlistItems]);
 
   const productIds = useMemo(
-    () => unifiedWishlistItems.map(item => item.id),
-    [unifiedWishlistItems]
+    () => unifiedWishlistItems.map((item) => item.id),
+    [unifiedWishlistItems],
   );
 
-  const { products, isLoading: isProductsLoading, isFetching: isProductsFetching, isError: isProductsError } = useProductsByIds(productIds);
+  const {
+    products,
+    isLoading: isProductsLoading,
+    isFetching: isProductsFetching,
+    isError: isProductsError,
+  } = useProductsByIds(productIds);
 
   return {
     wishlistDetails: products,

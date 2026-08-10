@@ -1,5 +1,5 @@
-import Skeleton from 'react-loading-skeleton'
-import style from './control-panel.module.scss'
+import Skeleton from 'react-loading-skeleton';
+import style from './control-panel.module.scss';
 export const ControlPanelSkeleton = () => {
   return (
     <div className={style['control-panel']}>
@@ -17,5 +17,5 @@ export const ControlPanelSkeleton = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

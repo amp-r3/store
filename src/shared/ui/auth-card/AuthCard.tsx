@@ -1,24 +1,24 @@
-import { ReactNode, useState } from 'react'
-import Link from 'next/link'
-import style from './auth-card.module.scss'
-import { Logo } from '../logo/Logo'
-import { FaRegUser } from 'react-icons/fa'
-import { LuArrowLeft } from 'react-icons/lu'
-import { AuthCardLoadingContext } from './authCardLoading'
+import { ReactNode, useState } from 'react';
+import Link from 'next/link';
+import style from './auth-card.module.scss';
+import { Logo } from '../logo/Logo';
+import { FaRegUser } from 'react-icons/fa';
+import { LuArrowLeft } from 'react-icons/lu';
+import { AuthCardLoadingContext } from './authCardLoading';
 
 interface AuthCardProps {
-  title: string
-  subtitle?: string
-  children: ReactNode
-  icon?: ReactNode
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+  icon?: ReactNode;
   /** Header back-link target. Pass `null` to hide it (e.g. the auth callback,
    *  which shouldn't offer a way to navigate away mid-redirect). */
-  backTo?: string | null
-  backLabel?: string
+  backTo?: string | null;
+  backLabel?: string;
   /** Static busy flag, for callers with no interactive children to report
    *  their own state (e.g. the OAuth callback card). Combined with whatever
    *  children report via useAuthCardLoading. */
-  isLoading?: boolean
+  isLoading?: boolean;
 }
 
 export const AuthCard = ({
@@ -30,8 +30,8 @@ export const AuthCard = ({
   backLabel = 'Back to store',
   isLoading = false,
 }: AuthCardProps) => {
-  const [childLoading, setChildLoading] = useState(false)
-  const busy = isLoading || childLoading
+  const [childLoading, setChildLoading] = useState(false);
+  const busy = isLoading || childLoading;
 
   return (
     <main className={style.root}>
@@ -67,5 +67,5 @@ export const AuthCard = ({
         <p>By continuing, you agree to our Terms of Service and Privacy Policy.</p>
       </footer>
     </main>
-  )
-}
+  );
+};

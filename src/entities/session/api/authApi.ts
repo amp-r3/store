@@ -1,14 +1,18 @@
-import { ChangePasswordPayload, LoginFormData, RegisterFormData, SessionUser, UpdateProfilePayload } from "@/entities/session/model/types";
-import { supabase, baseApi } from "@/shared/api";
-import type { Database } from "@/shared/api";
-import type { OAuthResponse } from "@supabase/supabase-js";
-import type { OAuthProviderId } from "@/shared/config";
-import { getSiteOrigin } from "@/shared/config";
-
+import {
+  ChangePasswordPayload,
+  LoginFormData,
+  RegisterFormData,
+  SessionUser,
+  UpdateProfilePayload,
+} from '@/entities/session/model/types';
+import { supabase, baseApi } from '@/shared/api';
+import type { Database } from '@/shared/api';
+import type { OAuthResponse } from '@supabase/supabase-js';
+import type { OAuthProviderId } from '@/shared/config';
+import { getSiteOrigin } from '@/shared/config';
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-
     register: builder.mutation<SessionUser, RegisterFormData>({
       queryFn: async ({ email, password }) => {
         const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -25,7 +29,9 @@ export const authApi = baseApi.injectEndpoints({
         // server-side — fail loudly rather than storing a user with an empty
         // token, which reads as signed in while every query runs as `anon`.
         if (!authData.session) {
-          return { error: { status: 500, data: 'Registration succeeded but no session was returned' } };
+          return {
+            error: { status: 500, data: 'Registration succeeded but no session was returned' },
+          };
         }
 
         const user = authData.session.user;
@@ -69,14 +75,15 @@ export const authApi = baseApi.injectEndpoints({
     login: builder.mutation<SessionUser, LoginFormData>({
       queryFn: async ({ email, password }) => {
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-          email, password,
+          email,
+          password,
         });
 
         if (authError) {
           // Deliberately collapsed into one message for every failure reason
           // (anti-enumeration). `email_not_confirmed` can't occur here — email
           // confirmation is disabled project-wide — so don't add a branch for it.
-          return { error: { status: 401, data: 'Incorrect email or password' } }
+          return { error: { status: 401, data: 'Incorrect email or password' } };
         }
 
         const user = authData.user;
@@ -88,7 +95,7 @@ export const authApi = baseApi.injectEndpoints({
           .single();
 
         if (profileError) {
-          return { error: { status: 500, data: 'Error loading profile data' } }
+          return { error: { status: 500, data: 'Error loading profile data' } };
         }
 
         return {
@@ -100,9 +107,9 @@ export const authApi = baseApi.injectEndpoints({
             lastName: profile.last_name,
             username: profile.username,
             role: profile.role,
-          }
-        }
-      }
+          },
+        };
+      },
     }),
 
     signInWithOAuth: builder.mutation<OAuthResponse['data'], OAuthProviderId>({
@@ -110,8 +117,8 @@ export const authApi = baseApi.injectEndpoints({
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: `${getSiteOrigin()}/auth/callback`
-          }
+            redirectTo: `${getSiteOrigin()}/auth/callback`,
+          },
         });
 
         if (error) {
@@ -119,11 +126,13 @@ export const authApi = baseApi.injectEndpoints({
         }
 
         return { data };
-      }
+      },
     }),
     updateProfile: builder.mutation<Partial<SessionUser>, UpdateProfilePayload>({
       queryFn: async (userData) => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user) {
           return { error: { status: 401, data: 'The user is not authorized' } };
@@ -174,15 +183,17 @@ export const authApi = baseApi.injectEndpoints({
               lastName: updatedProfile.last_name,
               username: updatedProfile.username,
             }),
-            email: updatedEmail
-          }
+            email: updatedEmail,
+          },
         };
-      }
+      },
     }),
 
     changePassword: builder.mutation<null, ChangePasswordPayload>({
       queryFn: async ({ currentPassword, newPassword }) => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user?.email) {
           return { error: { status: 401, data: 'The user is not authorized' } };
@@ -200,7 +211,12 @@ export const authApi = baseApi.injectEndpoints({
 
         if (reauthError) {
           if (reauthError.status === 429) {
-            return { error: { status: 429, data: 'Too many attempts. Please wait a minute and try again.' } };
+            return {
+              error: {
+                status: 429,
+                data: 'Too many attempts. Please wait a minute and try again.',
+              },
+            };
           }
           return { error: { status: 401, data: 'Current password is incorrect' } };
         }
@@ -214,7 +230,7 @@ export const authApi = baseApi.injectEndpoints({
         void supabase.auth.signOut({ scope: 'others' });
 
         return { data: null };
-      }
+      },
     }),
 
     signOut: builder.mutation<null, void>({
@@ -226,7 +242,7 @@ export const authApi = baseApi.injectEndpoints({
         }
 
         return { data: null };
-      }
+      },
     }),
 
     deleteAccount: builder.mutation<null, void>({
@@ -242,11 +258,10 @@ export const authApi = baseApi.injectEndpoints({
         void supabase.auth.signOut();
 
         return { data: null };
-      }
+      },
     }),
-
-  })
-})
+  }),
+});
 
 export const {
   useLoginMutation,
@@ -256,4 +271,4 @@ export const {
   useChangePasswordMutation,
   useSignOutMutation,
   useDeleteAccountMutation,
-} = authApi
+} = authApi;

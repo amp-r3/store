@@ -25,7 +25,7 @@ const computeMaxReachedIndex = (draft: Partial<CheckoutFormValues> | null): numb
 
 export const useCheckoutStepper = (
   methods: UseFormReturn<CheckoutFormValues>,
-  draft: Partial<CheckoutFormValues> | null
+  draft: Partial<CheckoutFormValues> | null,
 ) => {
   const [searchParams, setSearchParams] = useUrlState();
   const [maxReachedIndex, setMaxReachedIndex] = useState(() => computeMaxReachedIndex(draft));
@@ -37,12 +37,18 @@ export const useCheckoutStepper = (
   const step = STEPS_ORDER[stepIndex];
   const isLastStep = stepIndex === STEPS_ORDER.length - 1;
 
-  const setStep = useCallback((target: StepType, replace = false) => {
-    setSearchParams((params) => {
-      params.set('step', target);
-      return params;
-    }, { replace });
-  }, [setSearchParams]);
+  const setStep = useCallback(
+    (target: StepType, replace = false) => {
+      setSearchParams(
+        (params) => {
+          params.set('step', target);
+          return params;
+        },
+        { replace },
+      );
+    },
+    [setSearchParams],
+  );
 
   useEffect(() => {
     if (requestedStep !== step) {
@@ -53,14 +59,16 @@ export const useCheckoutStepper = (
 
   const validateStep = useCallback(
     (target: StepType) => methods.trigger(CHECKOUT_STEPS[target].fields),
-    [methods]
+    [methods],
   );
 
   const goNext = useCallback(async () => {
     const isValid = await validateStep(step);
 
     if (!isValid) {
-      const firstErrorField = CHECKOUT_STEPS[step].fields.find((field) => methods.formState.errors[field]);
+      const firstErrorField = CHECKOUT_STEPS[step].fields.find(
+        (field) => methods.formState.errors[field],
+      );
       if (firstErrorField) methods.setFocus(firstErrorField);
       return;
     }
@@ -72,27 +80,30 @@ export const useCheckoutStepper = (
     scrollToElement('checkout-form');
   }, [step, stepIndex, validateStep, methods, setStep, soft]);
 
-  const goToStep = useCallback(async (target: StepType) => {
-    const targetIndex = STEPS_ORDER.indexOf(target);
+  const goToStep = useCallback(
+    async (target: StepType) => {
+      const targetIndex = STEPS_ORDER.indexOf(target);
 
-    if (targetIndex === stepIndex) return;
+      if (targetIndex === stepIndex) return;
 
-    if (targetIndex < stepIndex) {
-      setStep(target);
-      soft();
-      scrollToElement('checkout-form');
-      return;
-    }
-
-    if (targetIndex <= maxReachedIndex) {
-      const isValid = await validateStep(step);
-      if (isValid) {
+      if (targetIndex < stepIndex) {
         setStep(target);
         soft();
         scrollToElement('checkout-form');
+        return;
       }
-    }
-  }, [stepIndex, maxReachedIndex, step, validateStep, setStep, soft]);
+
+      if (targetIndex <= maxReachedIndex) {
+        const isValid = await validateStep(step);
+        if (isValid) {
+          setStep(target);
+          soft();
+          scrollToElement('checkout-form');
+        }
+      }
+    },
+    [stepIndex, maxReachedIndex, step, validateStep, setStep, soft],
+  );
 
   return { step, stepIndex, isLastStep, maxReachedIndex, goNext, goToStep };
 };

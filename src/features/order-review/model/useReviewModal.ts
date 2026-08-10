@@ -2,10 +2,14 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { reviewSchema, ReviewFormData } from '@/features/order-review/model/reviewSchema';
-import { useAppDispatch } from "@/shared/model";
-import { useAppSelector } from "@/shared/model";
+import { useAppDispatch } from '@/shared/model';
+import { useAppSelector } from '@/shared/model';
 import { closeReviewModal } from './reviewModalSlice';
-import { selectIsReviewModalOpen, selectReviewModalProductId, selectReviewModalInitialRating } from './reviewModalSelectors';
+import {
+  selectIsReviewModalOpen,
+  selectReviewModalProductId,
+  selectReviewModalInitialRating,
+} from './reviewModalSelectors';
 import { useGetMyReviewsQuery, useAddOrUpdateReviewMutation } from '@/entities/review';
 import { useHaptics } from '@/shared/lib/hooks';
 import { getErrorMessage } from '@/shared/lib';
@@ -16,12 +20,12 @@ export const useReviewModal = () => {
   const productId = useAppSelector(selectReviewModalProductId);
   const initialRating = useAppSelector(selectReviewModalInitialRating);
   const haptics = useHaptics();
-  
+
   const { data: myReviews } = useGetMyReviewsQuery(undefined, { skip: !productId });
   const [addOrUpdateReview, { isLoading }] = useAddOrUpdateReviewMutation();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const currentUserReview = myReviews?.find(r => r.productId === Number(productId));
+  const currentUserReview = myReviews?.find((r) => r.productId === Number(productId));
 
   const form = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
@@ -45,7 +49,7 @@ export const useReviewModal = () => {
   }, [isOpen, currentUserReview, initialRating, reset]);
 
   const handleClose = () => dispatch(closeReviewModal());
-  
+
   const handleOpenChange = (open: boolean) => {
     if (!open) handleClose();
   };
@@ -76,6 +80,6 @@ export const useReviewModal = () => {
     handleClose,
     onSubmit,
     submitError,
-    haptics
+    haptics,
   };
 };

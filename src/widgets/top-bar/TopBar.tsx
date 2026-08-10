@@ -49,7 +49,7 @@ export const TopBar = ({ isOverlay = false }: TopBarProps) => {
 
     const timeoutId = setTimeout(
       () => dispatch(dismissNotification(notification.id)),
-      notification.durationMs ?? AUTO_DISMISS_MS
+      notification.durationMs ?? AUTO_DISMISS_MS,
     );
 
     return () => clearTimeout(timeoutId);

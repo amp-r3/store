@@ -45,13 +45,9 @@ export const SignInButton = ({
       disabled={disabled || isLoading}
       onClick={onClick}
     >
-      <span className={style['sign-in__icon']}>
-        {isLoading ? <Loader size="xs" /> : icon}
-      </span>
+      <span className={style['sign-in__icon']}>{isLoading ? <Loader size="xs" /> : icon}</span>
 
-      <span className={style['sign-in__label']}>
-        {buttonLabel}
-      </span>
+      <span className={style['sign-in__label']}>{buttonLabel}</span>
     </button>
   );
 };

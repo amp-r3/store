@@ -26,7 +26,9 @@ export const RadioCard = ({
       style[`radio-card--${variant}`],
       isSelected ? style['radio-card--active'] : '',
       disabled ? style['radio-card--disabled'] : '',
-    ].filter(Boolean).join(' ')}
+    ]
+      .filter(Boolean)
+      .join(' ')}
     data-selected={isSelected}
     data-disabled={disabled}
   >

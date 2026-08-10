@@ -37,11 +37,7 @@ export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
       disabled={disabled || isLoading}
       aria-label="Buy Now"
     >
-      {isLoading ? (
-        <FaSpinner className={styles.spinning} />
-      ) : (
-        <FaBolt className={styles.icon} />
-      )}
+      {isLoading ? <FaSpinner className={styles.spinning} /> : <FaBolt className={styles.icon} />}
       <span className={iconOnly ? 'sr-only' : styles.text}>Buy Now</span>
     </button>
   );

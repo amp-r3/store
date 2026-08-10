@@ -1,6 +1,6 @@
-import { RiLockPasswordLine } from "react-icons/ri";
-import { AuthCard } from "@/shared/ui";
-import { LoginForm } from "@/features/auth";
+import { RiLockPasswordLine } from 'react-icons/ri';
+import { AuthCard } from '@/shared/ui';
+import { LoginForm } from '@/features/auth';
 
 export const LoginPage = () => (
   <AuthCard

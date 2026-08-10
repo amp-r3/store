@@ -1,101 +1,101 @@
 @use 'app/styles/index' as *;
 
 .cart-undo-strip {
-    position: relative;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+  padding: $spacing-md;
+  overflow: hidden;
+
+  background: rgba(var(--background-component-rgb), 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-lg;
+
+  @media (width < 480px) {
+    padding: $spacing-sm;
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: $radius-circle;
+    background: var(--status-danger-bg);
+    color: var(--status-danger-text);
+    font-size: $fs-icon-sm;
+  }
+
+  &__message {
+    flex: 1;
+    min-width: 0;
+    font-size: $fs-sm;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+
+    strong {
+      color: var(--text-primary);
+      font-weight: $fw-semibold;
+    }
+  }
+
+  &__action {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: $spacing-sm;
-    width: 100%;
-    padding: $spacing-md;
-    overflow: hidden;
-
-    background: rgba(var(--background-component-rgb), 0.4);
+    justify-content: center;
+    min-height: $touch-target-min;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-md;
+    background-color: transparent;
     border: 1px solid var(--border-color);
-    border-radius: $radius-lg;
+    color: var(--text-secondary);
+    font-family: $font-primary;
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    transition:
+      background-color $transition-fast $ease-in-out-smooth,
+      color $transition-fast $ease-in-out-smooth;
 
-    @media (width < 480px) {
-        padding: $spacing-sm;
+    &:hover {
+      background-color: var(--border-color-subtle);
+      color: var(--text-primary);
     }
 
-    &__icon {
-        display: grid;
-        place-items: center;
-        flex-shrink: 0;
-        width: 2rem;
-        height: 2rem;
-        border-radius: $radius-circle;
-        background: var(--status-danger-bg);
-        color: var(--status-danger-text);
-        font-size: $fs-icon-sm;
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
     }
+  }
 
-    &__message {
-        flex: 1;
-        min-width: 0;
-        font-size: $fs-sm;
-        color: var(--text-secondary);
-        overflow-wrap: anywhere;
+  // Countdown to auto-dismiss, mirrors the toast card's own timer bar
+  // (shared/ui/toast/toast.module.scss) so the same visual language reads
+  // consistently whether the undo action lives in a toast or inline here.
+  &__timer {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: var(--status-danger-text);
+    opacity: 0.4;
+    transform-origin: left;
+    animation: cart-undo-shrink var(--cart-undo-duration, 6000ms) linear forwards;
 
-        strong {
-            color: var(--text-primary);
-            font-weight: $fw-semibold;
-        }
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      display: none;
     }
-
-    &__action {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: $touch-target-min;
-        padding: $spacing-xs $spacing-md;
-        border-radius: $radius-md;
-        background-color: transparent;
-        border: 1px solid var(--border-color);
-        color: var(--text-secondary);
-        font-family: $font-primary;
-        font-size: $fs-sm;
-        font-weight: $fw-semibold;
-        transition:
-            background-color $transition-fast $ease-in-out-smooth,
-            color $transition-fast $ease-in-out-smooth;
-
-        &:hover {
-            background-color: var(--border-color-subtle);
-            color: var(--text-primary);
-        }
-
-        &:focus-visible {
-            outline: 2px solid var(--focus-ring-color);
-            outline-offset: 2px;
-        }
-    }
-
-    // Countdown to auto-dismiss, mirrors the toast card's own timer bar
-    // (shared/ui/toast/toast.module.scss) so the same visual language reads
-    // consistently whether the undo action lives in a toast or inline here.
-    &__timer {
-        position: absolute;
-        inset: auto 0 0 0;
-        height: 2px;
-        background: var(--status-danger-text);
-        opacity: 0.4;
-        transform-origin: left;
-        animation: cart-undo-shrink var(--cart-undo-duration, 6000ms) linear forwards;
-
-        @media (prefers-reduced-motion: reduce) {
-            animation: none;
-            display: none;
-        }
-    }
+  }
 }
 
 @keyframes cart-undo-shrink {
-    from {
-        transform: scaleX(1);
-    }
+  from {
+    transform: scaleX(1);
+  }
 
-    to {
-        transform: scaleX(0);
-    }
+  to {
+    transform: scaleX(0);
+  }
 }

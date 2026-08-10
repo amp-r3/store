@@ -73,9 +73,7 @@ export const adminCustomersApi = baseApi.injectEndpoints({
         const from = (page - 1) * limit;
         const to = page * limit - 1;
 
-        let query = supabase
-          .from('admin_customers_view')
-          .select('*', { count: 'exact' });
+        let query = supabase.from('admin_customers_view').select('*', { count: 'exact' });
 
         // PostgREST parses .or()'s filter list as a comma-separated string,
         // so a raw comma/parenthesis in the search term would break the
@@ -83,7 +81,7 @@ export const adminCustomersApi = baseApi.injectEndpoints({
         const trimmedSearch = search?.trim().replace(/[,()]/g, '');
         if (trimmedSearch) {
           query = query.or(
-            `username.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%,first_name.ilike.%${trimmedSearch}%,last_name.ilike.%${trimmedSearch}%`
+            `username.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%,first_name.ilike.%${trimmedSearch}%,last_name.ilike.%${trimmedSearch}%`,
           );
         }
 
@@ -105,7 +103,10 @@ export const adminCustomersApi = baseApi.injectEndpoints({
       },
       providesTags: (result) =>
         result
-          ? [...result.items.map((item) => ({ type: 'Customer' as const, id: item.id })), { type: 'Customer', id: 'LIST' }]
+          ? [
+              ...result.items.map((item) => ({ type: 'Customer' as const, id: item.id })),
+              { type: 'Customer', id: 'LIST' },
+            ]
           : [{ type: 'Customer', id: 'LIST' }],
     }),
 
@@ -131,7 +132,10 @@ export const adminCustomersApi = baseApi.injectEndpoints({
 
     setAdminUserRole: builder.mutation<null, { userId: string; role: UserRole }>({
       queryFn: async ({ userId, role }) => {
-        const { error } = await supabase.rpc('admin_set_user_role', { p_user_id: userId, p_role: role });
+        const { error } = await supabase.rpc('admin_set_user_role', {
+          p_user_id: userId,
+          p_role: role,
+        });
 
         if (error) {
           return { error: { status: 400, data: error.message } };
@@ -139,9 +143,16 @@ export const adminCustomersApi = baseApi.injectEndpoints({
 
         return { data: null };
       },
-      invalidatesTags: (_result, _error, { userId }) => [{ type: 'Customer', id: userId }, { type: 'Customer', id: 'LIST' }],
+      invalidatesTags: (_result, _error, { userId }) => [
+        { type: 'Customer', id: userId },
+        { type: 'Customer', id: 'LIST' },
+      ],
     }),
   }),
 });
 
-export const { useGetAdminCustomersQuery, useGetAdminCustomerByIdQuery, useSetAdminUserRoleMutation } = adminCustomersApi;
+export const {
+  useGetAdminCustomersQuery,
+  useGetAdminCustomerByIdQuery,
+  useSetAdminUserRoleMutation,
+} = adminCustomersApi;

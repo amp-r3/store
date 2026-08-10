@@ -75,27 +75,45 @@ export const adminStatsApi = baseApi.injectEndpoints({
     // rest of the dashboard — mirrors the RPC split in the migration.
     getAdminRevenueSeries: builder.query<AdminRevenueSeriesPoint[], number | void>({
       queryFn: async (days) => {
-        const { data, error } = await supabase.rpc('admin_revenue_series', days ? { p_days: days } : undefined);
+        const { data, error } = await supabase.rpc(
+          'admin_revenue_series',
+          days ? { p_days: days } : undefined,
+        );
 
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
 
         const rows = data as unknown as { day: string; revenue: number; orders_count: number }[];
-        return { data: rows.map((row) => ({ day: row.day, revenue: Number(row.revenue), ordersCount: row.orders_count })) };
+        return {
+          data: rows.map((row) => ({
+            day: row.day,
+            revenue: Number(row.revenue),
+            ordersCount: row.orders_count,
+          })),
+        };
       },
       providesTags: ['AdminStats'],
     }),
 
     getAdminTopProducts: builder.query<AdminTopProduct[], number | void>({
       queryFn: async (limit) => {
-        const { data, error } = await supabase.rpc('admin_top_products', limit ? { p_limit: limit } : undefined);
+        const { data, error } = await supabase.rpc(
+          'admin_top_products',
+          limit ? { p_limit: limit } : undefined,
+        );
 
         if (error) {
           return { error: { status: 400, data: error.message } };
         }
 
-        const rows = data as unknown as { product_id: number; title: string; thumbnail: string | null; units_sold: number; revenue: number }[];
+        const rows = data as unknown as {
+          product_id: number;
+          title: string;
+          thumbnail: string | null;
+          units_sold: number;
+          revenue: number;
+        }[];
         return {
           data: rows.map((row) => ({
             productId: row.product_id,
@@ -109,7 +127,10 @@ export const adminStatsApi = baseApi.injectEndpoints({
       providesTags: ['AdminStats'],
     }),
 
-    getAdminLowStock: builder.query<AdminLowStockItem[], { threshold?: number; limit?: number } | void>({
+    getAdminLowStock: builder.query<
+      AdminLowStockItem[],
+      { threshold?: number; limit?: number } | void
+    >({
       queryFn: async (args) => {
         const { data, error } = await supabase.rpc('admin_low_stock', {
           ...(args?.threshold !== undefined && { p_threshold: args.threshold }),
@@ -120,7 +141,14 @@ export const adminStatsApi = baseApi.injectEndpoints({
           return { error: { status: 400, data: error.message } };
         }
 
-        const rows = data as unknown as { size_id: number; product_id: number; title: string; thumbnail: string | null; value: string; stock: number }[];
+        const rows = data as unknown as {
+          size_id: number;
+          product_id: number;
+          title: string;
+          thumbnail: string | null;
+          value: string;
+          stock: number;
+        }[];
         return {
           data: rows.map((row) => ({
             sizeId: row.size_id,

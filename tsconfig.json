@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -24,9 +20,7 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     /* Linting */
     "strict": true,
@@ -43,8 +37,5 @@
     ".next-second/types/**/*.ts",
     ".next-second/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "supabase"
-  ]
+  "exclude": ["node_modules", "supabase"]
 }

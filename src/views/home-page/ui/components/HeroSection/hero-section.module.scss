@@ -5,439 +5,463 @@
 // useMagneticPointer; default them off-canvas so the glow is invisible
 // until the first approach.
 @mixin glass-sheen {
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: 1;
-        border-radius: inherit;
-        padding: 1px;
-        background: radial-gradient(6rem circle at var(--sheen-x, -100px) var(--sheen-y, -100px),
-                rgba(var(--primary-accent-light-rgb), 0.55), transparent 60%);
-        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-        mask-composite: exclude;
-        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
-        pointer-events: none;
-    }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      6rem circle at var(--sheen-x, -100px) var(--sheen-y, -100px),
+      rgba(var(--primary-accent-light-rgb), 0.55),
+      transparent 60%
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
 }
 
 @keyframes gradient-flow {
-    0% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
 
-    50% {
-        background-position: 100% 50%;
-    }
+  50% {
+    background-position: 100% 50%;
+  }
 
-    100% {
-        background-position: 0% 50%;
-    }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes blob-float {
-    from {
-        transform: translate(0, 0) scale(1);
-    }
+  from {
+    transform: translate(0, 0) scale(1);
+  }
 
-    to {
-        transform: translate(-4%, 6%) scale(1.08);
-    }
+  to {
+    transform: translate(-4%, 6%) scale(1.08);
+  }
 }
 
 @keyframes blob-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
 
-    0%,
-    100% {
-        opacity: 0.5;
-    }
-
-    50% {
-        opacity: 0.85;
-    }
+  50% {
+    opacity: 0.85;
+  }
 }
 
 @keyframes fade-up {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scroll-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
 
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(6px);
-    }
+  50% {
+    transform: translateY(6px);
+  }
 }
 
 .hero {
-    // Pointer-driven vars, written by usePointerSpotlight; defaulted
-    // off-canvas so the beam/grid stay invisible before the first move.
-    --hero-px: -100rem;
-    --hero-py: -100rem;
-    --hero-nx: 0;
-    --hero-ny: 0;
-    --hero-lit: 0;
-    --hero-beam-radius: 18rem;
+  // Pointer-driven vars, written by usePointerSpotlight; defaulted
+  // off-canvas so the beam/grid stay invisible before the first move.
+  --hero-px: -100rem;
+  --hero-py: -100rem;
+  --hero-nx: 0;
+  --hero-ny: 0;
+  --hero-lit: 0;
+  --hero-beam-radius: 18rem;
 
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  text-align: center;
+
+  background:
+    radial-gradient(ellipse at top, rgba(var(--primary-accent-rgb), 0.12), transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(var(--secondary-accent-rgb), 0.06), transparent 55%),
+    linear-gradient(180deg, var(--gradient-body-start), var(--background-body));
+
+  &__decor {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  &__blob {
+    position: absolute;
+    border-radius: $radius-circle;
+    filter: blur($spacing-xxl);
+    animation:
+      blob-float $animation-gradient-duration $ease-in-out-smooth infinite alternate,
+      blob-pulse $animation-pulse-duration $ease-in-out-smooth infinite;
+
+    &--one {
+      top: -10%;
+      left: -5%;
+      width: 22rem;
+      height: 22rem;
+      background: radial-gradient(circle, rgba(var(--primary-accent-rgb), 0.22), transparent 70%);
+    }
+
+    &--two {
+      bottom: -15%;
+      right: -8%;
+      width: 26rem;
+      height: 26rem;
+      background: radial-gradient(circle, rgba(var(--secondary-accent-rgb), 0.14), transparent 70%);
+      animation-delay: $transition-smooth;
+      animation-duration: $animation-pulse-duration, $animation-gradient-duration;
+    }
+
+    &--three {
+      top: 40%;
+      right: 15%;
+      width: 14rem;
+      height: 14rem;
+      background: radial-gradient(
+        circle,
+        rgba(var(--primary-accent-light-rgb), 0.18),
+        transparent 70%
+      );
+      animation-delay: $transition-layout;
+    }
+  }
+
+  // Soft glow following the cursor, purely compositor-driven (translate3d).
+  &__beam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 36rem;
+    height: 36rem;
+    border-radius: $radius-circle;
+    background: radial-gradient(circle, rgba(var(--primary-accent-rgb), 0.1), transparent 70%);
+    opacity: var(--hero-lit);
+    transform: translate3d(calc(var(--hero-px) - 18rem), calc(var(--hero-py) - 18rem), 0);
+    will-change: transform;
+  }
+
+  // Dot + line grid, revealed only inside the cursor's "flashlight" via mask.
+  &__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(var(--primary-accent-rgb), 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--primary-accent-rgb), 0.1) 1px, transparent 1px),
+      radial-gradient(circle at 1px 1px, rgba(var(--primary-accent-rgb), 0.35) 1px, transparent 0);
+    background-size:
+      28px 28px,
+      28px 28px,
+      28px 28px;
+    opacity: var(--hero-lit);
+    mask-image: radial-gradient(
+      circle var(--hero-beam-radius) at var(--hero-px) var(--hero-py),
+      #000 0%,
+      rgba(0, 0, 0, 0.55) 45%,
+      transparent 75%
+    );
+    -webkit-mask-image: radial-gradient(
+      circle var(--hero-beam-radius) at var(--hero-px) var(--hero-py),
+      #000 0%,
+      rgba(0, 0, 0, 0.55) 45%,
+      transparent 75%
+    );
+  }
+
+  // Static film grain — no animation, kept below reduced-motion gating.
+  &__grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  &__content {
     position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+    max-width: 40rem;
+    padding-bottom: calc($spacing-xxl + $touch-target-comfortable + $safe-area-bottom);
+
+    @media (max-width: 525px) {
+      padding-bottom: calc($spacing-xl + $touch-target-comfortable + $safe-area-bottom);
+    }
+  }
+
+  &__badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-pill;
+    background: var(--glass-background);
+    backdrop-filter: $backdrop-blur;
+    border: 1px solid var(--glass-border-subtle);
+    color: var(--text-secondary);
+    font-size: $fs-sm;
+    font-weight: $fw-semibold;
+    letter-spacing: $letter-spacing-wider;
+    text-transform: uppercase;
+    animation: fade-up $transition-smooth $ease-out-expo $transition-micro both;
+
+    @include glass-sheen;
+  }
+
+  &__badgeIcon {
+    color: var(--primary-accent-light);
+    font-size: $fs-icon-sm;
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    font-weight: $fw-black;
+    line-height: $lh-tight;
+    letter-spacing: $letter-spacing-tight;
+    color: var(--text-primary);
+    background: linear-gradient(
+      135deg,
+      var(--gradient-logo-start),
+      var(--gradient-logo-mid-1) 35%,
+      var(--gradient-logo-mid-2) 65%,
+      var(--gradient-logo-end)
+    );
+    background-size: 300% 300%;
+    // Tracks the cursor instead of animating on a loop — --hero-nx/ny
+    // are unitless -1..1, so multiplying by a percentage stays valid calc().
+    background-position: calc(50% + var(--hero-nx) * 25%) calc(50% + var(--hero-ny) * 25%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fade-up $transition-smooth $ease-out-expo $transition-fast both;
+  }
+
+  &__subtitle {
+    font-size: $fs-md;
+    line-height: $lh-relaxed;
+    color: var(--text-secondary);
+    max-width: 34rem;
+    animation: fade-up $transition-smooth $ease-out-expo $transition-base both;
+
+    @media (max-width: 525px) {
+      font-size: $fs-base;
+    }
+  }
+
+  &__actions {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    min-height: 100svh;
-    overflow: hidden;
-    text-align: center;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-top: $spacing-sm;
+    animation: fade-up $transition-smooth $ease-out-expo $transition-layout both;
 
-    background:
-        radial-gradient(ellipse at top, rgba(var(--primary-accent-rgb), 0.12), transparent 60%),
-        radial-gradient(ellipse at bottom, rgba(var(--secondary-accent-rgb), 0.06), transparent 55%),
-        linear-gradient(180deg, var(--gradient-body-start), var(--background-body));
+    @media (max-width: 480px) {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
 
-    &__decor {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        pointer-events: none;
+  &__cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: $touch-target-comfortable;
+    padding: $spacing-sm $spacing-xxl;
+    border-radius: $radius-pill;
+    background: linear-gradient(135deg, var(--primary-accent-light), var(--primary-accent));
+    color: var(--text-on-accent);
+    font-family: $font-primary;
+    font-size: $fs-base;
+    font-weight: $fw-semibold;
+    box-shadow: var(--shadow-accent);
+    // --magnet-x/y are written by useMagneticPointer; `translate` is a
+    // standalone property so it composes with the `transform` used below
+    // for hover-lift/press without either overwriting the other.
+    translate: var(--magnet-x, 0px) var(--magnet-y, 0px);
+    transition:
+      transform $transition-base $ease-out-expo,
+      box-shadow $transition-base $ease-out-expo,
+      translate $transition-base $ease-spring;
+
+    &[data-magnet='active'] {
+      transition:
+        transform $transition-base $ease-out-expo,
+        box-shadow $transition-base $ease-out-expo,
+        translate $transition-micro linear;
     }
 
-    &__blob {
-        position: absolute;
-        border-radius: $radius-circle;
-        filter: blur($spacing-xxl);
-        animation: blob-float $animation-gradient-duration $ease-in-out-smooth infinite alternate,
-            blob-pulse $animation-pulse-duration $ease-in-out-smooth infinite;
-
-        &--one {
-            top: -10%;
-            left: -5%;
-            width: 22rem;
-            height: 22rem;
-            background: radial-gradient(circle, rgba(var(--primary-accent-rgb), 0.22), transparent 70%);
-        }
-
-        &--two {
-            bottom: -15%;
-            right: -8%;
-            width: 26rem;
-            height: 26rem;
-            background: radial-gradient(circle, rgba(var(--secondary-accent-rgb), 0.14), transparent 70%);
-            animation-delay: $transition-smooth;
-            animation-duration: $animation-pulse-duration, $animation-gradient-duration;
-        }
-
-        &--three {
-            top: 40%;
-            right: 15%;
-            width: 14rem;
-            height: 14rem;
-            background: radial-gradient(circle, rgba(var(--primary-accent-light-rgb), 0.18), transparent 70%);
-            animation-delay: $transition-layout;
-        }
+    @media (max-width: 480px) {
+      width: 100%;
     }
 
-    // Soft glow following the cursor, purely compositor-driven (translate3d).
-    &__beam {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 36rem;
-        height: 36rem;
-        border-radius: $radius-circle;
-        background: radial-gradient(circle, rgba(var(--primary-accent-rgb), 0.1), transparent 70%);
-        opacity: var(--hero-lit);
-        transform: translate3d(calc(var(--hero-px) - 18rem), calc(var(--hero-py) - 18rem), 0);
-        will-change: transform;
+    @media (hover: hover) {
+      &:hover {
+        transform: $hover-lift;
+        box-shadow: var(--shadow-accent-hover);
+      }
     }
 
-    // Dot + line grid, revealed only inside the cursor's "flashlight" via mask.
+    &:active {
+      transform: scale($button-pressed-scale);
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
+      box-shadow: var(--shadow-focus-button);
+    }
+
+    &--secondary {
+      background: var(--glass-background);
+      color: var(--text-primary);
+      box-shadow: none;
+      border: 1px solid var(--glass-border-subtle);
+      backdrop-filter: $backdrop-blur;
+
+      @include glass-sheen;
+
+      @media (hover: hover) {
+        &:hover {
+          box-shadow: var(--shadow-default);
+        }
+      }
+    }
+  }
+
+  &__scrollHint {
+    position: absolute;
+    z-index: 1;
+    bottom: calc($spacing-xl + $safe-area-bottom);
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: $touch-target-min;
+    min-height: $touch-target-min;
+    border-radius: $radius-circle;
+    background: var(--glass-background);
+    backdrop-filter: $backdrop-blur;
+    border: 1px solid var(--glass-border-subtle);
+    color: var(--text-secondary);
+    font-size: $fs-icon-md;
+    translate: var(--magnet-x, 0px) var(--magnet-y, 0px);
+    animation:
+      fade-up $transition-smooth $ease-out-expo $transition-smooth both,
+      scroll-bounce $animation-pulse-duration $ease-in-out-smooth infinite;
+    transition: translate $transition-base $ease-spring;
+
+    @include glass-sheen;
+
+    &[data-magnet='active'] {
+      transition: translate $transition-micro linear;
+    }
+
+    @media (max-width: 525px) {
+      bottom: calc($spacing-lg + $safe-area-bottom);
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--focus-ring-color);
+      outline-offset: $focus-ring-offset;
+    }
+  }
+
+  // No cursor to cast a flashlight with — fall back to a static, dimmed
+  // grid instead of leaving the background empty, and give the title back
+  // its looping gradient since it can no longer follow a pointer.
+  @media (hover: none), (pointer: coarse) {
     &__grid {
-        position: absolute;
-        inset: 0;
-        background-image:
-            linear-gradient(rgba(var(--primary-accent-rgb), 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(var(--primary-accent-rgb), 0.1) 1px, transparent 1px),
-            radial-gradient(circle at 1px 1px, rgba(var(--primary-accent-rgb), 0.35) 1px, transparent 0);
-        background-size: 28px 28px, 28px 28px, 28px 28px;
-        opacity: var(--hero-lit);
-        mask-image: radial-gradient(circle var(--hero-beam-radius) at var(--hero-px) var(--hero-py),
-                #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 75%);
-        -webkit-mask-image: radial-gradient(circle var(--hero-beam-radius) at var(--hero-px) var(--hero-py),
-                #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 75%);
+      opacity: 0.35;
+      mask-image: none;
+      -webkit-mask-image: none;
     }
 
-    // Static film grain — no animation, kept below reduced-motion gating.
-    &__grain {
-        position: absolute;
-        inset: 0;
-        opacity: 0.035;
-        mix-blend-mode: overlay;
-        background-repeat: repeat;
-        background-size: 180px 180px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
-    &__content {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: $spacing-lg;
-        max-width: 40rem;
-        padding-bottom: calc($spacing-xxl + $touch-target-comfortable + $safe-area-bottom);
-
-        @media (max-width: 525px) {
-            padding-bottom: calc($spacing-xl + $touch-target-comfortable + $safe-area-bottom);
-        }
-    }
-
-    &__badge {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: $spacing-xs;
-        padding: $spacing-xs $spacing-md;
-        border-radius: $radius-pill;
-        background: var(--glass-background);
-        backdrop-filter: $backdrop-blur;
-        border: 1px solid var(--glass-border-subtle);
-        color: var(--text-secondary);
-        font-size: $fs-sm;
-        font-weight: $fw-semibold;
-        letter-spacing: $letter-spacing-wider;
-        text-transform: uppercase;
-        animation: fade-up $transition-smooth $ease-out-expo $transition-micro both;
-
-        @include glass-sheen;
-    }
-
-    &__badgeIcon {
-        color: var(--primary-accent-light);
-        font-size: $fs-icon-sm;
+    &__beam {
+      display: none;
     }
 
     &__title {
-        font-family: $font-display;
-        font-size: clamp(2.25rem, 6vw, 4rem);
-        font-weight: $fw-black;
-        line-height: $lh-tight;
-        letter-spacing: $letter-spacing-tight;
-        color: var(--text-primary);
-        background: linear-gradient(135deg,
-                var(--gradient-logo-start),
-                var(--gradient-logo-mid-1) 35%,
-                var(--gradient-logo-mid-2) 65%,
-                var(--gradient-logo-end));
-        background-size: 300% 300%;
-        // Tracks the cursor instead of animating on a loop — --hero-nx/ny
-        // are unitless -1..1, so multiplying by a percentage stays valid calc().
-        background-position: calc(50% + var(--hero-nx) * 25%) calc(50% + var(--hero-ny) * 25%);
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: fade-up $transition-smooth $ease-out-expo $transition-fast both;
+      animation:
+        fade-up $transition-smooth $ease-out-expo $transition-fast both,
+        gradient-flow $animation-gradient-duration $ease-in-out-smooth infinite;
     }
+  }
 
-    &__subtitle {
-        font-size: $fs-md;
-        line-height: $lh-relaxed;
-        color: var(--text-secondary);
-        max-width: 34rem;
-        animation: fade-up $transition-smooth $ease-out-expo $transition-base both;
-
-        @media (max-width: 525px) {
-            font-size: $fs-base;
-        }
-    }
-
-    &__actions {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: $spacing-md;
-        margin-top: $spacing-sm;
-        animation: fade-up $transition-smooth $ease-out-expo $transition-layout both;
-
-        @media (max-width: 480px) {
-            flex-direction: column;
-            width: 100%;
-        }
-    }
-
-    &__cta {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: $touch-target-comfortable;
-        padding: $spacing-sm $spacing-xxl;
-        border-radius: $radius-pill;
-        background: linear-gradient(135deg, var(--primary-accent-light), var(--primary-accent));
-        color: var(--text-on-accent);
-        font-family: $font-primary;
-        font-size: $fs-base;
-        font-weight: $fw-semibold;
-        box-shadow: var(--shadow-accent);
-        // --magnet-x/y are written by useMagneticPointer; `translate` is a
-        // standalone property so it composes with the `transform` used below
-        // for hover-lift/press without either overwriting the other.
-        translate: var(--magnet-x, 0px) var(--magnet-y, 0px);
-        transition:
-            transform $transition-base $ease-out-expo,
-            box-shadow $transition-base $ease-out-expo,
-            translate $transition-base $ease-spring;
-
-        &[data-magnet='active'] {
-            transition:
-                transform $transition-base $ease-out-expo,
-                box-shadow $transition-base $ease-out-expo,
-                translate $transition-micro linear;
-        }
-
-        @media (max-width: 480px) {
-            width: 100%;
-        }
-
-        @media (hover: hover) {
-            &:hover {
-                transform: $hover-lift;
-                box-shadow: var(--shadow-accent-hover);
-            }
-        }
-
-        &:active {
-            transform: scale($button-pressed-scale);
-        }
-
-        &:focus-visible {
-            outline: $focus-ring-width solid var(--focus-ring-color);
-            outline-offset: $focus-ring-offset;
-            box-shadow: var(--shadow-focus-button);
-        }
-
-        &--secondary {
-            background: var(--glass-background);
-            color: var(--text-primary);
-            box-shadow: none;
-            border: 1px solid var(--glass-border-subtle);
-            backdrop-filter: $backdrop-blur;
-
-            @include glass-sheen;
-
-            @media (hover: hover) {
-                &:hover {
-                    box-shadow: var(--shadow-default);
-                }
-            }
-        }
-    }
-
+  @media (prefers-reduced-motion: reduce) {
+    &__badge,
+    &__title,
+    &__subtitle,
+    &__actions,
     &__scrollHint {
-        position: absolute;
-        z-index: 1;
-        bottom: calc($spacing-xl + $safe-area-bottom);
-        left: 0;
-        right: 0;
-        margin-inline: auto;
-        width: fit-content;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: $touch-target-min;
-        min-height: $touch-target-min;
-        border-radius: $radius-circle;
-        background: var(--glass-background);
-        backdrop-filter: $backdrop-blur;
-        border: 1px solid var(--glass-border-subtle);
-        color: var(--text-secondary);
-        font-size: $fs-icon-md;
-        translate: var(--magnet-x, 0px) var(--magnet-y, 0px);
-        animation: fade-up $transition-smooth $ease-out-expo $transition-smooth both,
-            scroll-bounce $animation-pulse-duration $ease-in-out-smooth infinite;
-        transition: translate $transition-base $ease-spring;
-
-        @include glass-sheen;
-
-        &[data-magnet='active'] {
-            transition: translate $transition-micro linear;
-        }
-
-        @media (max-width: 525px) {
-            bottom: calc($spacing-lg + $safe-area-bottom);
-        }
-
-        &:focus-visible {
-            outline: $focus-ring-width solid var(--focus-ring-color);
-            outline-offset: $focus-ring-offset;
-        }
+      animation: none;
     }
 
-    // No cursor to cast a flashlight with — fall back to a static, dimmed
-    // grid instead of leaving the background empty, and give the title back
-    // its looping gradient since it can no longer follow a pointer.
-    @media (hover: none), (pointer: coarse) {
-        &__grid {
-            opacity: 0.35;
-            mask-image: none;
-            -webkit-mask-image: none;
-        }
-
-        &__beam {
-            display: none;
-        }
-
-        &__title {
-            animation: fade-up $transition-smooth $ease-out-expo $transition-fast both,
-                gradient-flow $animation-gradient-duration $ease-in-out-smooth infinite;
-        }
+    &__blob {
+      animation-play-state: $animation-play-state-reduced;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-
-        &__badge,
-        &__title,
-        &__subtitle,
-        &__actions,
-        &__scrollHint {
-            animation: none;
-        }
-
-        &__blob {
-            animation-play-state: $animation-play-state-reduced;
-        }
-
-        &__grid {
-            opacity: 0.3;
-            mask-image: none;
-            -webkit-mask-image: none;
-        }
-
-        &__beam {
-            display: none;
-        }
-
-        &__title {
-            background-position: 50% 50%;
-        }
-
-        &__cta,
-        &__scrollHint {
-            translate: 0 0;
-            transition-duration: $transition-reduced;
-        }
+    &__grid {
+      opacity: 0.3;
+      mask-image: none;
+      -webkit-mask-image: none;
     }
+
+    &__beam {
+      display: none;
+    }
+
+    &__title {
+      background-position: 50% 50%;
+    }
+
+    &__cta,
+    &__scrollHint {
+      translate: 0 0;
+      transition-duration: $transition-reduced;
+    }
+  }
 }

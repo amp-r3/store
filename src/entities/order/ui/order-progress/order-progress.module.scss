@@ -4,245 +4,245 @@
 // part of the scroll area, so the current step stays visible without
 // having to scroll the order details.
 .progress {
-    flex-shrink: 0;
-    border-bottom: 1px solid var(--border-color-subtle);
-    background: var(--glass-background-subtle);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color-subtle);
+  background: var(--glass-background-subtle);
 }
 
 .progress__bar {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    width: 100%;
-    min-height: $touch-target-min;
-    padding: $spacing-xs $spacing-xl;
-    border: none;
-    background: none;
-    font-family: $font-primary;
-    text-align: left;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+  min-height: $touch-target-min;
+  padding: $spacing-xs $spacing-xl;
+  border: none;
+  background: none;
+  font-family: $font-primary;
+  text-align: left;
+  cursor: pointer;
 
-    @media (max-width: 768px) {
-        padding: $spacing-xs $spacing-md;
-    }
+  @media (max-width: 768px) {
+    padding: $spacing-xs $spacing-md;
+  }
 
-    &:hover .progress__current {
-        color: var(--primary-accent);
-    }
+  &:hover .progress__current {
+    color: var(--primary-accent);
+  }
 }
 
 .progress__rail {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xxs;
-    flex-shrink: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xxs;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .progress__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: $radius-circle;
-    background-color: var(--border-color-light);
-    transition: background-color $transition-fast $ease-in-out-smooth;
+  width: 8px;
+  height: 8px;
+  border-radius: $radius-circle;
+  background-color: var(--border-color-light);
+  transition: background-color $transition-fast $ease-in-out-smooth;
 
-    &[data-state='done'],
-    &[data-state='current'] {
-        background-color: var(--primary-accent);
-    }
+  &[data-state='done'],
+  &[data-state='current'] {
+    background-color: var(--primary-accent);
+  }
 }
 
 [data-derailed='true'] .progress__dot[data-state='current'] {
-    background-color: var(--status-danger-text);
+  background-color: var(--status-danger-text);
 }
 
 .progress__current {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: $fs-sm;
-    font-weight: $fw-semibold;
-    color: var(--text-secondary);
-    transition: color $transition-fast $ease-in-out-smooth;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-secondary);
+  transition: color $transition-fast $ease-in-out-smooth;
 }
 
 [data-derailed='true'] .progress__current {
-    color: var(--status-danger-text);
+  color: var(--status-danger-text);
 }
 
 .progress__chevron {
-    flex-shrink: 0;
-    width: $icon-size-sm;
-    height: $icon-size-sm;
-    color: var(--text-muted);
-    transition: transform $transition-fast $ease-in-out-smooth;
+  flex-shrink: 0;
+  width: $icon-size-sm;
+  height: $icon-size-sm;
+  color: var(--text-muted);
+  transition: transform $transition-fast $ease-in-out-smooth;
 
-    &--expanded {
-        transform: rotate(180deg);
-    }
+  &--expanded {
+    transform: rotate(180deg);
+  }
 }
 
 // ─── Expandable timeline panel ───────────────────────────────────────────
 
 .progress__panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows $transition-layout $ease-out-expo;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows $transition-layout $ease-out-expo;
 
-    &--expanded {
-        grid-template-rows: 1fr;
-    }
+  &--expanded {
+    grid-template-rows: 1fr;
+  }
 }
 
 .progress__inner {
-    overflow: hidden;
-    min-height: 0;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .progress__scroll {
-    max-height: 45dvh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    padding: 0 $spacing-xl $spacing-sm;
+  max-height: 45dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 $spacing-xl $spacing-sm;
 
-    @media (max-width: 768px) {
-        padding: 0 $spacing-md $spacing-sm;
-    }
+  @media (max-width: 768px) {
+    padding: 0 $spacing-md $spacing-sm;
+  }
 
-    &::-webkit-scrollbar {
-        display: none;
-    }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
-    scrollbar-width: none;
+  scrollbar-width: none;
 }
 
 .progress__timeline {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .progress__step {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: $spacing-sm;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: $spacing-sm;
 
-    &:last-child .progress__line {
-        display: none;
-    }
+  &:last-child .progress__line {
+    display: none;
+  }
 }
 
 .progress__rail-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .progress__marker {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    margin-top: $spacing-xs;
-    border-radius: $radius-circle;
-    border: 1.5px solid var(--border-color);
-    background-color: var(--background-body);
-    color: var(--text-muted);
-    transition:
-        background-color $transition-fast $ease-in-out-smooth,
-        border-color $transition-fast $ease-in-out-smooth,
-        color $transition-fast $ease-in-out-smooth;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-top: $spacing-xs;
+  border-radius: $radius-circle;
+  border: 1.5px solid var(--border-color);
+  background-color: var(--background-body);
+  color: var(--text-muted);
+  transition:
+    background-color $transition-fast $ease-in-out-smooth,
+    border-color $transition-fast $ease-in-out-smooth,
+    color $transition-fast $ease-in-out-smooth;
 
-    svg {
-        width: $icon-size-sm;
-        height: $icon-size-sm;
-    }
+  svg {
+    width: $icon-size-sm;
+    height: $icon-size-sm;
+  }
 
-    [data-state='current'] & {
-        border-color: var(--primary-accent);
-        color: var(--primary-accent);
-        background-color: rgba(var(--primary-accent-rgb), 0.08);
-    }
+  [data-state='current'] & {
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+    background-color: rgba(var(--primary-accent-rgb), 0.08);
+  }
 
-    [data-state='done'] & {
-        border-color: var(--primary-accent);
-        background-color: var(--primary-accent);
-        color: var(--text-inverse);
-    }
+  [data-state='done'] & {
+    border-color: var(--primary-accent);
+    background-color: var(--primary-accent);
+    color: var(--text-inverse);
+  }
 }
 
 .progress__step[data-terminal] .progress__marker {
-    border-color: var(--status-danger-border);
-    background-color: var(--status-danger-bg);
-    color: var(--status-danger-text);
+  border-color: var(--status-danger-border);
+  background-color: var(--status-danger-bg);
+  color: var(--status-danger-text);
 }
 
 .progress__line {
-    width: 2px;
-    flex: 1;
-    min-height: $spacing-md;
-    margin-block: 2px;
-    background-color: var(--border-color-light);
-    transition: background-color $transition-fast $ease-in-out-smooth;
+  width: 2px;
+  flex: 1;
+  min-height: $spacing-md;
+  margin-block: 2px;
+  background-color: var(--border-color-light);
+  transition: background-color $transition-fast $ease-in-out-smooth;
 
-    [data-state='done'] & {
-        background-color: var(--primary-accent);
-    }
+  [data-state='done'] & {
+    background-color: var(--primary-accent);
+  }
 }
 
 .progress__main {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-bottom: $spacing-md;
-    padding-top: $spacing-xs;
-    min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: $spacing-md;
+  padding-top: $spacing-xs;
+  min-width: 0;
 }
 
 .progress__label {
-    font-size: $fs-sm;
-    font-weight: $fw-semibold;
-    color: var(--text-primary);
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--text-primary);
 
-    [data-state='upcoming'] & {
-        color: var(--text-muted);
-        font-weight: $fw-normal;
-    }
+  [data-state='upcoming'] & {
+    color: var(--text-muted);
+    font-weight: $fw-normal;
+  }
 }
 
 .progress__step[data-terminal] .progress__label {
-    color: var(--status-danger-text);
+  color: var(--status-danger-text);
 }
 
 .progress__time {
-    font-size: $fs-xs;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
+  font-size: $fs-xs;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 480px) {
-    .progress__marker {
-        width: 20px;
-        height: 20px;
-    }
+  .progress__marker {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .progress__dot,
-    .progress__current,
-    .progress__chevron,
-    .progress__panel,
-    .progress__marker,
-    .progress__line {
-        transition: none;
-    }
+  .progress__dot,
+  .progress__current,
+  .progress__chevron,
+  .progress__panel,
+  .progress__marker,
+  .progress__line {
+    transition: none;
+  }
 }

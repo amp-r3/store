@@ -27,7 +27,9 @@
 }
 
 .stat-tile--linked {
-  transition: border-color $transition-base $ease-in-out-smooth, transform $transition-base $ease-in-out-smooth;
+  transition:
+    border-color $transition-base $ease-in-out-smooth,
+    transform $transition-base $ease-in-out-smooth;
 
   &:hover {
     border-color: var(--primary-accent);
