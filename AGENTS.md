@@ -20,7 +20,7 @@ ESLint `--fix` + Prettier on staged `.ts`/`.tsx`, Stylelint `--fix` +
 Prettier on staged `.scss`, then a full `tsc --noEmit` (no per-file
 mode exists) — sequential after the fixers, not concurrent, since a
 concurrent run would read files ESLint's `--fix` is still writing.
-~6s warm, ~14s on a cold `tsconfig.tsbuildinfo`. `git commit --no-verify`
+~5s warm, ~12s on a cold `tsconfig.tsbuildinfo`. `git commit --no-verify`
 bypasses it for WIP/rebase fixups — CI runs the same four checks
 regardless, so bypassing only defers the failure. If a `--fix` collides
 with unstaged hunks of a partially-staged file, lint-staged leaves a
