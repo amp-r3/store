@@ -23,21 +23,31 @@ export class ProductPage extends BasePage {
     return this.page.locator('#product-sizes');
   }
 
-  /** True when the product has real sizes to pick from — a single "One
-   * Size" product renders no size list at all and auto-selects it. */
-  async hasSelectableSizes() {
-    return (await this.sizeList.count()) > 0;
-  }
-
   /** Selects the first in-stock size, or does nothing for a "One Size"
-   * product (auto-selected, no `#product-sizes` block rendered). */
+   * product (auto-selected — `ProductSummary` still renders the
+   * `#product-sizes` wrapper whenever `sizes.length > 0`, but `ProductSizes`
+   * itself renders no options for it). */
   async selectFirstAvailableSize() {
-    if (!(await this.hasSelectableSizes())) return;
+    // The PDP arrives via a client-side navigation, so nothing of it is in
+    // the DOM when this is called. Wait on a web-first assertion before
+    // counting anything: a bare `count()` here can resolve against the
+    // *catalog* page, return 0, and skip the selection — leaving the button
+    // labelled "Select Size", which the "Add to Cart" locator can never
+    // match.
+    await expect(this.purchaseBox).toBeVisible();
+
     const options = this.sizeList.getByRole('option').filter({
       has: this.page.locator('button:not([disabled])'),
     });
-    await expect(options.first()).toBeVisible();
-    await options.first().locator('button').click();
+
+    if ((await options.count()) === 0) {
+      await expect(this.stockLine()).not.toHaveAttribute('data-stock', 'select-size');
+      return;
+    }
+
+    const option = options.first();
+    await option.locator('button').click();
+    await expect(option).toHaveAttribute('aria-selected', 'true');
   }
 
   /** Scoped to `#product-purchase-box`: MobileBar renders a second, icon-only
@@ -50,17 +60,19 @@ export class ProductPage extends BasePage {
   }
 
   async addToCart() {
-    // `click()` alone already auto-scrolls and re-checks actionability, but
-    // doing it explicitly first, plus asserting `enabled` (disabled while
-    // `isLoading`/out of stock/max quantity reached — AddToCartButton.tsx),
-    // turns a real state bug into a clear assertion failure instead of a
-    // generic click timeout indistinguishable from a covered/unstable
-    // element. See `playwright.config.ts`'s `reducedMotion` for why the
-    // element's bounding box can otherwise never "settle" long enough to
-    // pass the click's stability check.
-    await this.addToCartButton.scrollIntoViewIfNeeded();
+    // Assert `enabled` before scrolling: with no size selected the button is
+    // *renamed* to "Select Size" (AddToCartButton.tsx's `isLoading` prop is
+    // never wired, so a resolved "Add to Cart" locator is never actually
+    // disabled) — an unresolved locator should fail here, not inside
+    // `scrollIntoViewIfNeeded`. See `playwright.config.ts`'s `reducedMotion`
+    // for why the element's bounding box can otherwise never "settle" long
+    // enough to pass the click's stability check.
     await expect(this.addToCartButton).toBeEnabled();
+    await this.addToCartButton.scrollIntoViewIfNeeded();
     await this.addToCartButton.click();
+    // The counter layer replaces the add button once quantity > 0 — confirms
+    // the click actually landed before the caller moves on.
+    await expect(this.cartQuantity()).not.toHaveText('0');
   }
 
   stockLine() {

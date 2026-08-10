@@ -75,6 +75,9 @@ export class CatalogPage extends BasePage {
 
   async openFirstProduct() {
     await this.productCardLinks().first().click();
+    // `next/link` client-side nav — `click()` returns before the PDP renders,
+    // and the next POM call must not race it.
+    await expect(this.page).toHaveURL(/\/product\/\d+/);
   }
 
   /** Strips the "View details for " prefix off the first card's accessible
