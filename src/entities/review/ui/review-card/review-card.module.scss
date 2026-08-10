@@ -291,7 +291,7 @@
   color: var(--error-color);
   font-size: $fs-xs;
   font-weight: $fw-semibold;
-  animation: reviewCardFadeIn $transition-base $ease-out-expo;
+  animation: review-card-fade-in $transition-base $ease-out-expo;
 }
 
 .review-card__error-link {
@@ -300,7 +300,7 @@
   font-weight: $fw-bold;
 }
 
-@keyframes reviewCardFadeIn {
+@keyframes review-card-fade-in {
   from {
     opacity: 0;
     transform: translateY(-4px);

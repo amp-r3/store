@@ -382,7 +382,7 @@ $label-notch-padding: $spacing-xxs;
   font-size: $fs-sm;
   color: var(--error-color);
   margin-left: $spacing-md;
-  animation: slideDown $transition-fast $ease-out-expo;
+  animation: slide-down $transition-fast $ease-out-expo;
 }
 
 .description {
@@ -402,7 +402,7 @@ $label-notch-padding: $spacing-xxs;
   margin-left: $spacing-md;
 }
 
-@keyframes slideDown {
+@keyframes slide-down {
   from {
     opacity: 0;
     transform: translateY(-4px);

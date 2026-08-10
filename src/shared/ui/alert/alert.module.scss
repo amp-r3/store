@@ -11,7 +11,7 @@
   font-size: $fs-sm;
   font-weight: $fw-normal;
   line-height: $lh-normal;
-  animation: slideDown $transition-fast $ease-out-expo;
+  animation: slide-down $transition-fast $ease-out-expo;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -61,7 +61,7 @@
   flex: 1;
 }
 
-@keyframes slideDown {
+@keyframes slide-down {
   from {
     opacity: 0;
     transform: translateY(-8px);

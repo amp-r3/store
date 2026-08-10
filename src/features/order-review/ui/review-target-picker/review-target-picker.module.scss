@@ -29,11 +29,11 @@
     backdrop-filter: $backdrop-blur-sm;
 
     &[data-state='open'] {
-      animation: overlayFadeIn $transition-base $ease-out-expo;
+      animation: overlay-fade-in $transition-base $ease-out-expo;
     }
 
     &[data-state='closed'] {
-      animation: overlayFadeOut $transition-base $ease-in-out-smooth forwards;
+      animation: overlay-fade-out $transition-base $ease-in-out-smooth forwards;
     }
   }
 
@@ -60,11 +60,11 @@
     }
 
     &[data-state='open'] {
-      animation: modalFadeIn $transition-base $ease-out-expo;
+      animation: modal-fade-in $transition-base $ease-out-expo;
     }
 
     &[data-state='closed'] {
-      animation: modalFadeOut $transition-base $ease-in-out-smooth forwards;
+      animation: modal-fade-out $transition-base $ease-in-out-smooth forwards;
     }
   }
 
@@ -277,7 +277,7 @@
 }
 
 /* Animations */
-@keyframes modalFadeIn {
+@keyframes modal-fade-in {
   from {
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.96);
@@ -288,7 +288,7 @@
   }
 }
 
-@keyframes modalFadeOut {
+@keyframes modal-fade-out {
   from {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -299,7 +299,7 @@
   }
 }
 
-@keyframes overlayFadeIn {
+@keyframes overlay-fade-in {
   from {
     opacity: 0;
   }
@@ -308,7 +308,7 @@
   }
 }
 
-@keyframes overlayFadeOut {
+@keyframes overlay-fade-out {
   from {
     opacity: 1;
   }

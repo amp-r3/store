@@ -8,11 +8,11 @@
   z-index: $z-index-modal - 1;
 
   &[data-state='open'] {
-    animation: overlayFadeIn $transition-layout $ease-out-expo;
+    animation: overlay-fade-in $transition-layout $ease-out-expo;
   }
 
   &[data-state='closed'] {
-    animation: overlayFadeOut $transition-layout $ease-out-expo;
+    animation: overlay-fade-out $transition-layout $ease-out-expo;
   }
 }
 
@@ -38,11 +38,11 @@
   }
 
   &[data-state='open'] {
-    animation: modalFadeIn $transition-layout $ease-out-expo;
+    animation: modal-fade-in $transition-layout $ease-out-expo;
   }
 
   &[data-state='closed'] {
-    animation: modalFadeOut $transition-layout $ease-out-expo;
+    animation: modal-fade-out $transition-layout $ease-out-expo;
   }
 
   background: var(--background-glass-base);
@@ -225,7 +225,7 @@
   }
 }
 
-@keyframes modalFadeIn {
+@keyframes modal-fade-in {
   from {
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.96);
@@ -237,7 +237,7 @@
   }
 }
 
-@keyframes modalFadeOut {
+@keyframes modal-fade-out {
   from {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -249,7 +249,7 @@
   }
 }
 
-@keyframes overlayFadeIn {
+@keyframes overlay-fade-in {
   from {
     opacity: 0;
   }
@@ -259,7 +259,7 @@
   }
 }
 
-@keyframes overlayFadeOut {
+@keyframes overlay-fade-out {
   from {
     opacity: 1;
   }

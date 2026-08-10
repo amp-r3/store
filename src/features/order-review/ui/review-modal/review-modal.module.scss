@@ -9,11 +9,11 @@
     z-index: 1000;
 
     &[data-state='open'] {
-      animation: overlayFadeIn $transition-base $ease-out-expo;
+      animation: overlay-fade-in $transition-base $ease-out-expo;
     }
 
     &[data-state='closed'] {
-      animation: overlayFadeOut $transition-base $ease-in-out-smooth forwards;
+      animation: overlay-fade-out $transition-base $ease-in-out-smooth forwards;
     }
   }
 
@@ -32,11 +32,11 @@
     box-shadow: var(--shadow-card);
 
     &[data-state='open'] {
-      animation: contentShow $transition-base $ease-out-expo;
+      animation: content-show $transition-base $ease-out-expo;
     }
 
     &[data-state='closed'] {
-      animation: contentHide $transition-base $ease-in-out-smooth forwards;
+      animation: content-hide $transition-base $ease-in-out-smooth forwards;
     }
   }
 
@@ -213,7 +213,7 @@
   }
 }
 
-@keyframes contentShow {
+@keyframes content-show {
   from {
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.96);
@@ -224,7 +224,7 @@
   }
 }
 
-@keyframes contentHide {
+@keyframes content-hide {
   from {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -235,7 +235,7 @@
   }
 }
 
-@keyframes overlayFadeIn {
+@keyframes overlay-fade-in {
   from {
     opacity: 0;
   }
@@ -244,7 +244,7 @@
   }
 }
 
-@keyframes overlayFadeOut {
+@keyframes overlay-fade-out {
   from {
     opacity: 1;
   }

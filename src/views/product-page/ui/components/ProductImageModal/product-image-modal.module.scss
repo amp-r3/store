@@ -13,11 +13,11 @@
   backdrop-filter: $backdrop-blur;
 
   &[data-state='open'] {
-    animation: overlayFadeIn 200ms ease-out;
+    animation: overlay-fade-in 200ms ease-out;
   }
 
   &[data-state='closed'] {
-    animation: overlayFadeOut 200ms ease-in forwards;
+    animation: overlay-fade-out 200ms ease-in forwards;
   }
 }
 
@@ -41,15 +41,15 @@
   z-index: $z-index-modal;
 
   &[data-state='open'] {
-    animation: modalFadeIn 200ms ease-out;
+    animation: modal-fade-in 200ms ease-out;
   }
 
   &[data-state='closed']:not([data-swipe-closing='true']) {
-    animation: modalFadeOut 200ms ease-in;
+    animation: modal-fade-out 200ms ease-in;
   }
 
   &[data-state='closed'][data-swipe-closing='true'] {
-    animation: modalFadeOutSwipe 200ms ease-in forwards;
+    animation: modal-fade-out-swipe 200ms ease-in forwards;
   }
 }
 
@@ -111,7 +111,7 @@
   transform-origin: center;
 }
 
-@keyframes modalFadeIn {
+@keyframes modal-fade-in {
   from {
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.96);
@@ -122,7 +122,7 @@
   }
 }
 
-@keyframes modalFadeOut {
+@keyframes modal-fade-out {
   from {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -133,7 +133,7 @@
   }
 }
 
-@keyframes modalFadeOutSwipe {
+@keyframes modal-fade-out-swipe {
   from {
     opacity: 1;
   }
@@ -142,7 +142,7 @@
   }
 }
 
-@keyframes overlayFadeIn {
+@keyframes overlay-fade-in {
   from {
     opacity: 0;
   }
@@ -151,7 +151,7 @@
   }
 }
 
-@keyframes overlayFadeOut {
+@keyframes overlay-fade-out {
   from {
     opacity: 1;
   }
