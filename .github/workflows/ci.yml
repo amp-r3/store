@@ -12,8 +12,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:
@@ -22,11 +20,16 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm tsc
+      - run: pnpm typecheck
 
       - run: pnpm lint
+
+      - run: pnpm lint:css
+
+      - run: pnpm format:check
 
       # `pnpm build` is deliberately not run here: generateStaticParams and
       # app/sitemap.ts hit the live Supabase project at build time (see
       # AGENTS.md's rendering-mode table), which would need production
-      # secrets in CI. tsc + lint are what's checked until that's set up.
+      # secrets in CI. typecheck/lint/lint:css/format:check are what's
+      # checked until that's set up.
