@@ -3,8 +3,8 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import nextConfig from 'eslint-config-next'
 
-export default [
-  { ignores: ['.next'] },
+const config = [
+  { ignores: ['.next', '.next-second', 'out', 'next-env.d.ts', 'public'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...nextConfig,
@@ -92,3 +92,5 @@ export default [
     },
   },
 ]
+
+export default config
