@@ -7,12 +7,24 @@ Guidance for Claude Code in this repo. `CLAUDE.md` symlinks `AGENTS.md` — edit
 Next.js 16 (App Router, Turbopack), React 19, TypeScript 5.9, Redux Toolkit
 2.9 + RTK Query, redux-persist (localStorage), Supabase (PostgreSQL + Auth
 via `@supabase/ssr`), SCSS Modules + CSS custom properties, React Hook Form +
-Zod. `pnpm dev`/`build`/`start`/`tsc`(`--noEmit`)/`lint`. **No test runner**
-— verify via `pnpm tsc`, `pnpm lint`, manual exercise (curl for
+Zod. `pnpm dev`/`build`/`start`/`typecheck`(`tsc --noEmit`, alias
+`tsc`)/`lint`/`lint:css`/`format`/`format:check`. **No test runner** —
+verify via `pnpm typecheck`, `pnpm lint`, manual exercise (curl for
 server-rendered content; the user checks interactive behavior themselves).
 Needs `.env`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
 `NEXT_PUBLIC_SITE_URL` (canonical/OG/sitemap URLs server-side, where
 `window.location` isn't available — `shared/config/site.ts`).
+
+A Husky `pre-commit` hook runs `lint-staged` (`lint-staged.config.js`):
+ESLint `--fix` + Prettier on staged `.ts`/`.tsx`, Stylelint `--fix` +
+Prettier on staged `.scss`, then a full `tsc --noEmit` (no per-file
+mode exists) — sequential after the fixers, not concurrent, since a
+concurrent run would read files ESLint's `--fix` is still writing.
+~6s warm, ~14s on a cold `tsconfig.tsbuildinfo`. `git commit --no-verify`
+bypasses it for WIP/rebase fixups — CI runs the same four checks
+regardless, so bypassing only defers the failure. If a `--fix` collides
+with unstaged hunks of a partially-staged file, lint-staged leaves a
+backup stash; recover with `git stash list` / `git stash pop`.
 
 ## Entry Points & Data Flow
 
@@ -99,7 +111,14 @@ slice differs from the importing file's own slice:
 ```bash
 grep -rEn "from [\"']@/(entities|features|widgets|views)/[a-zA-Z0-9_-]+/(model|ui|api|lib|config)" src/ app/  # deep import past index.ts (excl. */server.ts)
 grep -rn "from [\"']@/features/" src/features/  # cross-feature runtime import
+grep -rn "eslint-disable" src/ app/  # every suppression must carry a reason on the line above
 ```
+
+`eslint.config.ts`'s five per-layer blocks each set `no-restricted-imports`
+wholesale (flat config replaces a rule's value, it does not merge
+options) — a new pattern must be added to **all five**, or a sixth
+block added for `app/**`, never hoisted into a single repo-wide rule
+(it would be dead inside `src/**` or silently disable these).
 
 ## Forbidden → Use Instead
 
@@ -119,7 +138,15 @@ request-isolated). `useDispatch()`/`useSelector()` →
 `process.env.NEXT_PUBLIC_*` (client) / `process.env.*` (server) — Vite is
 gone. `catch (err: any)` → `catch (err)` + `getErrorMessage(err)` from
 `shared/lib` (handles RTK Query error shapes and raw exceptions — don't
-hand-roll per call site).
+hand-roll per call site). `console.log` → delete it, or `console.warn`/
+`console.error` (`no-console` allows only those two). `dangerouslySetInnerHTML`
+→ nothing; the one legitimate sink (JSON-LD in
+`app/(shop)/product/[id]/page.tsx`) carries an
+`eslint-disable-next-line react/no-danger` naming its sanitizer, and any
+new one must do the same. Unused import → deleted automatically by
+`unused-imports/no-unused-imports --fix`; unused **local** must be
+deleted, not `_`-prefixed (`_` silences ESLint for parameters only —
+tsc's `noUnusedLocals` has no escape hatch).
 
 ## CSS / SCSS, Components & Accessibility
 
@@ -146,6 +173,20 @@ buttons, `aria-live="polite"` for dynamic regions; never remove
 `:focus-visible` without an alternative (`--focus-ring-color`); touch
 targets `$touch-target-min`/`$touch-target-comfortable` (44/48px).
 
+Stylelint enforces `stylelint-config-standard-scss` (`pnpm lint:css`)
+with four deliberate overrides documented in `stylelint.config.mjs`:
+BEM class pattern (the preset is kebab-only), legacy
+`rgba(var(--x-rgb), a)` colour notation (the custom property holds a
+channel triplet), `prefix` media-feature notation, and hand-written
+vendor prefixes kept. A per-file `overrides` block grandfathers ~37
+pre-existing camelCase class names — fixing them means renaming the
+paired TSX component's `style['...']` references too, so it's a known,
+accepted gap (same pattern as `checkout.draft` below), not something
+to "fix" unprompted; new/changed code must be kebab-case BEM. Note the
+rule doesn't see classes built via SCSS `&__element` nesting (only
+literal `.block__element` selectors), so nested BEM naming isn't
+currently enforced. `@keyframes` names and `$variables` are kebab-case.
+
 ## State & RTK Query
 
 URL is the source of truth for catalog UI (`?q=`, `?sortBy=`, `?category=`)
@@ -165,8 +206,10 @@ selectors: type `state` via same-slice import, not `any`; reserve ambient
 
 ## Typing
 
-`strict: true`, `noUnusedLocals`, `noUnusedParameters`. `any` only as a last
-resort with a comment. Forms: Zod + `react-hook-form` via
+`strict: true`, `noUnusedLocals`, `noUnusedParameters`. `pnpm typecheck`
+is the gate and also runs on every commit; `any` is an ESLint `error`,
+not just a convention — used only as a last resort with a comment.
+Forms: Zod + `react-hook-form` via
 `@hookform/resolvers/zod`. Shared interfaces in `shared/types/`; local-only
 types stay in the component/model file.
 
@@ -283,6 +326,10 @@ English only, Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`,
 `style:`, `test:`, `chore:`). One logical change per commit; keep dependent
 cross-layer changes together. No dev-process noise, no `Co-Authored-By`
 trailer; body only for large/complex changes.
+
+The `style:` Prettier reformat commit is listed in
+`.git-blame-ignore-revs`; GitHub applies it automatically, run once
+per local clone: `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
