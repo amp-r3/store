@@ -53,19 +53,6 @@ export class CheckoutPage {
     await expect(radio).toBeChecked();
   }
 
-  /** Reproduced 100% of the time, not flake: clicking a step's CTA while an
-   * imask-driven field (Phone, ZIP) still has focus blurs it on `mousedown`,
-   * which fires its `mode: 'onTouched'` revalidation and re-renders the tree
-   * mid-click — the button's own `click` event is lost with no error, no
-   * console output, nothing (verified via `dispatchEvent('click')` and
-   * `{ force: true }`, both of which bypass the race and work). Blurring
-   * first — the way a user tabbing or clicking elsewhere would — lets that
-   * settle before the click fires. A real app-level race, not test-only;
-   * flagged separately rather than patched in product code here. */
-  private async blurActiveField() {
-    await this.page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
-  }
-
   async fillContacts(input: ContactsInput) {
     const section = await this.activeStep('contacts');
     await section.getByLabel('First name').fill(input.firstName);
@@ -76,7 +63,6 @@ export class CheckoutPage {
 
   async continueToDelivery() {
     const section = await this.activeStep('contacts');
-    await this.blurActiveField();
     await section.getByRole('button', { name: 'Continue to Delivery' }).click();
   }
 
@@ -95,7 +81,6 @@ export class CheckoutPage {
 
   async continueToPayment() {
     const section = await this.activeStep('delivery');
-    await this.blurActiveField();
     await section.getByRole('button', { name: 'Continue to Payment' }).click();
   }
 
@@ -105,7 +90,6 @@ export class CheckoutPage {
 
   async placeOrder() {
     const section = await this.activeStep('payment');
-    await this.blurActiveField();
     await section.getByRole('button', { name: 'Place Order' }).click();
   }
 

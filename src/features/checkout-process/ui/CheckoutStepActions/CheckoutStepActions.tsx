@@ -39,6 +39,13 @@ export const CheckoutStepActions = ({ variant = 'inline' }: CheckoutStepActionsP
           disabled={isSubmitting}
           type={isLastStep ? 'submit' : 'button'}
           form={isLastStep ? 'checkout-form' : undefined}
+          // A masked field (Phone, ZIP) left focused when this is clicked
+          // blurs on mousedown by default, triggering its onTouched
+          // revalidation and a re-render between mousedown and the click —
+          // which loses the click event entirely, with no error. Blocking
+          // the default focus-shift keeps the field focused until the
+          // click itself completes.
+          onMouseDown={(e) => e.preventDefault()}
           onClick={isLastStep ? undefined : goNext}
         >
           {isSubmitting ? (
