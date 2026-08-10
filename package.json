@@ -3,15 +3,21 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@10.33.3",
+  "engines": {
+    "node": ">=22.22.1"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "tsc": "pnpm typecheck",
     "lint": "eslint . --max-warnings=0",
-    "tsc": "tsc --noEmit",
+    "lint:css": "stylelint \"{src,app}/**/*.scss\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint:css": "stylelint \"{src,app}/**/*.scss\""
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -49,7 +55,9 @@
     "eslint-config-next": "^16.3.0",
     "eslint-plugin-unused-imports": "^4.4.1",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
     "jiti": "^2.7.0",
+    "lint-staged": "^17.3.0",
     "prettier": "^3.9.6",
     "sass-embedded": "^1.92.1",
     "stylelint": "^17.14.1",
