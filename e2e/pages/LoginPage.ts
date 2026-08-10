@@ -18,7 +18,13 @@ export class LoginPage {
 
   async fillCredentials(email: string, password: string) {
     await this.page.getByLabel('Email').fill(email);
-    await this.page.getByLabel('Password').fill(password);
+    // Not `getByLabel('Password')`: Playwright's label matching is a
+    // case-insensitive substring by default, and the "Show password"/"Hide
+    // password" toggle button's aria-label also contains "password" — that
+    // makes the query resolve to 2 elements (strict mode violation). `name`
+    // is set by react-hook-form's `register('password')` and stays stable
+    // across the show/hide toggle, unlike `type`.
+    await this.page.locator('input[name="password"]').fill(password);
   }
 
   async submit() {

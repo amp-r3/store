@@ -40,8 +40,15 @@ export class ProductPage extends BasePage {
     await options.first().locator('button').click();
   }
 
+  /** Not scoped to `#product-purchase-box`: on mobile that box can start
+   * below the fold behind `MobileBar`'s fixed dock, which renders its own
+   * "Add to Cart" (icon-only, same accessible name) for the active
+   * product. Only one of the two is ever actionable at a time — the
+   * inactive one sits in an `inert` container, which excludes it from the
+   * accessibility tree — so the global role query naturally resolves to
+   * whichever is currently interactive; `.first()` is a safety net. */
   async addToCart() {
-    await this.purchaseBox.getByRole('button', { name: 'Add to Cart' }).click();
+    await this.page.getByRole('button', { name: 'Add to Cart' }).first().click();
   }
 
   stockLine() {

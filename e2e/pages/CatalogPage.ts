@@ -34,7 +34,11 @@ export class CatalogPage extends BasePage {
 
   async search(query: string) {
     await this.searchInput.fill(query);
-    // 300 ms debounce (AGENTS.md) — wait on the resulting URL, not a sleep.
+    // `/catalog`'s debounced auto-search (AGENTS.md, 300 ms) should update
+    // the URL from the fill alone, but submitting is the same code path
+    // the app itself defines for triggering a search and removes any
+    // dependency on the debounce's timing/focus state — belt and braces.
+    await this.searchInput.press('Enter');
     await expect(this.page).toHaveURL(new RegExp(`q=${encodeURIComponent(query)}`));
   }
 
@@ -69,10 +73,14 @@ export class CatalogPage extends BasePage {
   /** Category buttons in the open popup/overlay carry `aria-pressed`; index
    * 0 is the injected "All Products" pseudo-category (AGENTS.md), so this
    * picks the first *real* one without hardcoding seed data. Returns its
-   * name. */
+   * name. Scoped to the "Category" dialog (`CategoryPopup`/`CategoryOverlay`
+   * both title themselves that way) rather than a bare `button[aria-pressed]`
+   * — unscoped, that selector also matches `ControlPanel`'s "Deals" toggle,
+   * which carries the same attribute. */
   async selectSecondCategory(): Promise<string> {
     await this.categoryButton.click();
-    const options = this.page.locator('button[aria-pressed]');
+    const dialog = this.page.getByRole('dialog', { name: 'Category' });
+    const options = dialog.locator('button[aria-pressed]');
     await expect(options.nth(1)).toBeVisible();
     const name = (await options.nth(1).textContent())?.trim() ?? '';
     await options.nth(1).click();
