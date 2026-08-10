@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 export interface ContactsInput {
   firstName: string;
@@ -27,8 +27,28 @@ export class CheckoutPage {
     return this.page.getByTestId(`checkout-step-${name}`);
   }
 
+  /** `CheckoutSection` keeps all three steps mounted; only the active one is
+   * expanded and non-`inert` (`data-state`, CheckoutSection.tsx). Asserting it
+   * here turns "a previous step silently failed to validate" into a named
+   * failure instead of a click/check timeout on a collapsed section. */
+  private async activeStep(name: 'contacts' | 'delivery' | 'payment') {
+    const section = this.step(name);
+    await expect(section).toHaveAttribute('data-state', 'active');
+    return section;
+  }
+
+  /** `RadioCard` hides its real `<input>` with `clip-path: inset(50%)` — it's
+   * visible but not hit-testable, so Playwright's hit test lands on the
+   * wrapping `<label>` and `.check()` retries until timeout. Click the label
+   * instead, the way a user actually would. */
+  private async selectRadioCard(section: Locator, labelSubstring: string) {
+    const radio = section.getByRole('radio', { name: new RegExp(labelSubstring) });
+    await section.locator('label').filter({ has: radio }).click();
+    await expect(radio).toBeChecked();
+  }
+
   async fillContacts(input: ContactsInput) {
-    const section = this.step('contacts');
+    const section = await this.activeStep('contacts');
     await section.getByLabel('First name').fill(input.firstName);
     await section.getByLabel('Last name').fill(input.lastName);
     await section.getByLabel('Email').fill(input.email);
@@ -36,17 +56,16 @@ export class CheckoutPage {
   }
 
   async continueToDelivery() {
-    await this.step('contacts').getByRole('button', { name: 'Continue to Delivery' }).click();
+    const section = await this.activeStep('contacts');
+    await section.getByRole('button', { name: 'Continue to Delivery' }).click();
   }
 
   async selectDelivery(labelSubstring: string) {
-    await this.step('delivery')
-      .getByRole('radio', { name: new RegExp(labelSubstring) })
-      .check();
+    await this.selectRadioCard(await this.activeStep('delivery'), labelSubstring);
   }
 
   async fillShipping(input: ShippingInput) {
-    const section = this.step('delivery');
+    const section = await this.activeStep('delivery');
     await section.getByLabel('Country').fill(input.country);
     await section.getByLabel('City').fill(input.city);
     await section.getByLabel('Street Address').fill(input.street);
@@ -55,17 +74,17 @@ export class CheckoutPage {
   }
 
   async continueToPayment() {
-    await this.step('delivery').getByRole('button', { name: 'Continue to Payment' }).click();
+    const section = await this.activeStep('delivery');
+    await section.getByRole('button', { name: 'Continue to Payment' }).click();
   }
 
   async selectPayment(labelSubstring: string) {
-    await this.step('payment')
-      .getByRole('radio', { name: new RegExp(labelSubstring) })
-      .check();
+    await this.selectRadioCard(await this.activeStep('payment'), labelSubstring);
   }
 
   async placeOrder() {
-    await this.step('payment').getByRole('button', { name: 'Place Order' }).click();
+    const section = await this.activeStep('payment');
+    await section.getByRole('button', { name: 'Place Order' }).click();
   }
 
   fieldError(text: string | RegExp) {

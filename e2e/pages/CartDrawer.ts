@@ -30,10 +30,10 @@ export class CartDrawer {
     await this.itemRow(title).getByRole('button', { name: 'Remove item' }).click();
   }
 
-  /** The quantity is a bare number between the decrease/increase buttons —
-   * the only bare-digit text node in the row (prices always carry a `$`). */
+  /** The size value is a bare digit too, so the quantity carries a
+   * `data-testid` (AGENTS.md's carve-out for duplicated, unnamed text). */
   quantityOf(title: string) {
-    return this.itemRow(title).getByText(/^\d+$/, { exact: true });
+    return this.itemRow(title).getByTestId('cart-item-quantity');
   }
 
   get total() {

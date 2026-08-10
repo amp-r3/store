@@ -93,7 +93,12 @@ export const CartItem = memo<CartItemProps>(
                   {quantity === 1 ? <IoTrashOutline size={16} /> : <IoRemove size={18} />}
                 </button>
 
-                <span className={styles['cart-item__quantity-value']}>{quantity}</span>
+                <span
+                  className={styles['cart-item__quantity-value']}
+                  data-testid="cart-item-quantity"
+                >
+                  {quantity}
+                </span>
 
                 <button
                   className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
