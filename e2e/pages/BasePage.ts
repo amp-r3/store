@@ -32,9 +32,26 @@ export class BasePage {
   private async ensureNavDock() {
     await expect(this.cartOpenButton).toBeVisible();
     const isInert = () => this.cartOpenButton.evaluate((el) => !!el.closest('[inert]'));
-    if (!(await isInert())) return;
-    await this.page.getByRole('button', { name: 'Back to navigation' }).click();
-    await expect.poll(isInert).toBe(false);
+    if (await isInert()) {
+      await this.page.getByRole('button', { name: 'Back to navigation' }).click();
+      await expect.poll(isInert).toBe(false);
+    }
+
+    // `useHideOnScroll` independently hides the whole bar behind a
+    // translate3d transform once the page has scrolled down (e.g. a prior
+    // `ProductPage.addToCart()`'s `scrollIntoViewIfNeeded`) — CSS
+    // visibility/display stay untouched, so it still reads as "visible" to
+    // Playwright while off-screen, and fixed positioning means the click's
+    // own "scroll into view" can't undo it. Scrolling to the very top
+    // unconditionally re-shows it (`useHideOnScroll`'s TOP_THRESHOLD).
+    const inViewport = await this.cartOpenButton.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.top < window.innerHeight && rect.bottom > 0;
+    });
+    if (!inViewport) {
+      await this.page.evaluate(() => window.scrollTo(0, 0));
+      await expect(this.cartOpenButton).toBeInViewport();
+    }
   }
 
   async openCart() {
