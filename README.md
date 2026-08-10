@@ -118,6 +118,17 @@ kept in sync via triggers.
 
 ---
 
+## 🧪 Testing
+
+**Playwright E2E** (`pnpm test:e2e`) covers the storefront's P0 flows —
+catalog/search, guest cart, auth guards, and a full checkout that places a
+real order — against the live Supabase project rather than a mock backend.
+Needs `SUPABASE_SERVICE_ROLE_KEY` plus a dedicated `E2E_USER_EMAIL` /
+`E2E_USER_PASSWORD` test account in `.env`; see `AGENTS.md`'s "E2E Tests"
+section for the full scenario list and how cleanup works.
+
+---
+
 ## 🛠️ Admin Panel
 
 A full store-management admin panel lives at `/admin`, gated server-side (in
@@ -164,7 +175,7 @@ session picks up the role.
 ## 🔭 Planned Improvements
 
 - **i18n** (Russian/English) via `next-intl`
-- **Unit/E2E tests** (Vitest + Testing Library, Playwright)
+- **Unit tests** (Vitest + Testing Library) — E2E coverage already exists, see [Testing](#-testing)
 - **Payment provider integration** (currently order placement only)
 
 ---

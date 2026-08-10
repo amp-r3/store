@@ -8,9 +8,11 @@ Next.js 16 (App Router, Turbopack), React 19, TypeScript 5.9, Redux Toolkit
 2.9 + RTK Query, redux-persist (localStorage), Supabase (PostgreSQL + Auth
 via `@supabase/ssr`), SCSS Modules + CSS custom properties, React Hook Form +
 Zod. `pnpm dev`/`build`/`start`/`typecheck`(`tsc --noEmit`, alias
-`tsc`)/`lint`/`lint:css`/`format`/`format:check`. **No test runner** —
-verify via `pnpm typecheck`, `pnpm lint`, manual exercise (curl for
-server-rendered content; the user checks interactive behavior themselves).
+`tsc`)/`lint`/`lint:css`/`format`/`format:check`. **No unit test runner** —
+verify component/logic changes via `pnpm typecheck`, `pnpm lint`, manual
+exercise (curl for server-rendered content; the user checks interactive
+behavior themselves). P0 storefront flows have Playwright E2E coverage
+(`pnpm test:e2e`) — see "E2E Tests" below.
 Needs `.env`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
 `NEXT_PUBLIC_SITE_URL` (canonical/OG/sitemap URLs server-side, where
 `window.location` isn't available — `shared/config/site.ts`).
@@ -319,6 +321,58 @@ after any schema change.
 **Hard rule — schema changes only through the CLI**: `supabase migration new
 <name>` → edit the SQL file → `supabase db push`. Never the dashboard SQL
 editor, `psql`/`DATABASE_URL` DDL, or ad-hoc SQL outside a migration.
+
+## E2E Tests
+
+Playwright, `e2e/` at repo root (outside `src/` — the FSD
+`no-restricted-imports` blocks don't apply there). Runs against the **live
+Supabase project**, not a local stack — no `supabase/seed.sql` exists, and
+a `supabase start` database would be schema-only with no products,
+categories, or delivery/payment methods. `pnpm test:e2e` (`--ui` /
+`--report` variants too).
+
+**P0 scenarios covered** (agreed before writing any test — the ones whose
+breakage costs actual conversion/revenue on the day it ships):
+
+| Spec | Scenario | Why P0 |
+|---|---|---|
+| `catalog.spec.ts` | Search/category/sort on `/catalog`, empty state, → PDP | Entry point of every funnel; broken search/catalog = zero traffic reaches a product |
+| `cart.spec.ts` | Guest add-to-cart, qty controls, reload persistence, guest→checkout guard bounce | Captured purchase intent; a silent rehydration/`sizeId`-keying regression drops carts with no error surfaced |
+| `auth.spec.ts` | Protected-route redirect, wrong/right credentials, session-survives-reload, `/login` bounce when authed | Identity gates orders, cart sync, order history |
+| `checkout.spec.ts` | Full 3-step checkout → `Place Order` → success → order in `/user/orders` | The money path — the only test exercising `create_order` end to end |
+
+Wishlist, reviews, notifications, and `/admin` are deliberately **not**
+covered — real functionality, but not revenue-critical on release day.
+
+**`checkout.spec.ts` places a real order** (stock-locking, fee computation,
+`order_number` generation) against the live project. `e2e/auth.setup.ts`
+creates/reuses a dedicated `E2E_USER_EMAIL` account (service-role key,
+idempotent — email confirmation is off by design so it's usable
+immediately) and logs in through the real UI so the session lands in
+**cookies** (`@supabase/ssr`), which is what `proxy.ts` reads — a
+`setSession()` shortcut would only populate localStorage and the guard
+would still bounce it. `e2e/global.teardown.ts` (also service-role, since
+`orders`/`order_items` have zero write policies for the anon/user key)
+restores the stock `create_order` decremented and deletes the orders it
+created — idempotent, safe to re-run after an interrupted run.
+
+Required env vars (local `.env` + CI repo secrets):
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+`NEXT_PUBLIC_SITE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `E2E_USER_EMAIL`,
+`E2E_USER_PASSWORD` — `e2e/support/env.ts` fails fast with a clear message
+if one is missing.
+
+**Selectors**: role/label first — `FormField` renders a real `<label
+htmlFor>`, so `getByLabel('Email')` etc. works throughout auth and
+checkout. `data-testid` only where no accessible name exists or the same
+name is duplicated in the DOM (e.g. `Navbar`/`MobileBar` both render a cart
+button regardless of viewport — CSS hides the inactive one, so `getByRole`
+alone would hit Playwright's strict-mode "2 elements" error; disambiguate
+with `[data-testid="cart-open"]:visible`, not by picking one accessible
+name). Never select on a hashed SCSS Module class name. No
+`page.waitForTimeout` — wait on the URL/DOM state a debounce eventually
+produces (search 300 ms, sort/category 150 ms), or on
+`page.waitForResponse` for a specific round-trip (`create_order`).
 
 ## Git Commits
 
