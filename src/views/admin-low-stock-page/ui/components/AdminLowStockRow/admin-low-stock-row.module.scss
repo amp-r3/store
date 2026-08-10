@@ -12,6 +12,7 @@
     flex-direction: row;
     align-items: center;
     gap: $spacing-md;
+
     @include table.cell-full($collapse-at: 768px);
   }
 }

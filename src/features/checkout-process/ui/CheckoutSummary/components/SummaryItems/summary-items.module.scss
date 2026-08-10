@@ -9,8 +9,7 @@
   flex-direction: column;
   gap: $spacing-xs;
   max-height: 340px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
   padding: $spacing-xxs;

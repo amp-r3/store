@@ -67,7 +67,7 @@
     box-shadow $transition-fast $ease-in-out-smooth,
     background $transition-fast $ease-in-out-smooth;
 
-  &:hover:not(:disabled):not(.controlError) {
+  &:hover:not(:disabled, .controlError) {
     border-color: var(--border-color-strong);
   }
 
@@ -107,7 +107,7 @@
   border-radius: $radius-md;
   font-size: $fs-sm;
 
-  &:hover:not(:disabled):not(.controlError) {
+  &:hover:not(:disabled, .controlError) {
     border-color: var(--border-color);
   }
 }
@@ -137,6 +137,7 @@
 .controlBadge {
   @include status.badge-base;
   @include status.generate-modifiers;
+
   appearance: none;
   font-family: $font-primary;
   cursor: pointer;
@@ -184,6 +185,7 @@
   border: 1px solid var(--border-color-light);
   border-radius: $radius-lg;
   box-shadow: var(--shadow-lg);
+
   // Select portals into #modal-root alongside every Drawer/Dialog, so it
   // needs the layer reserved for overlay-adjacent popups ($z-index-modal is
   // 500) rather than the plain in-flow dropdown layer (100) — otherwise a
@@ -270,7 +272,7 @@
     width: 7px;
     height: 7px;
     border-radius: $radius-circle;
-    background: currentColor;
+    background: currentcolor;
     flex-shrink: 0;
   }
 

@@ -96,6 +96,7 @@
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
+
     // Visually compact (the bar's fixed $topbar-height/--topbar-offset can't
     // grow to fit a full 44px pill) — the hit area is still expanded to the
     // touch-target minimum via ::before, same trick as __dismiss/__count.

@@ -36,7 +36,7 @@
     box-shadow $transition-fast $ease-in-out-smooth,
     background $transition-fast $ease-in-out-smooth;
 
-  &:hover:not(:disabled):not(.controlError) {
+  &:hover:not(:disabled, .controlError) {
     border-color: var(--border-color-strong);
   }
 

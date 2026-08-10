@@ -17,7 +17,6 @@
 }
 
 .content {
-  background-color: var(--background-component);
   border: 1px solid var(--glass-border);
   border-radius: $radius-lg;
   box-shadow: var(--shadow-lg);
@@ -151,6 +150,7 @@
 
 .cancelButton {
   @extend %btn-modal;
+
   background-color: transparent;
   color: var(--text-secondary);
   border: 1px solid var(--border-color);

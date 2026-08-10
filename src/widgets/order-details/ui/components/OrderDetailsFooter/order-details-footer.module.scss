@@ -147,6 +147,7 @@
   // ── Repeat order button (primary) ────────
   &__repeat-btn {
     @extend %btn-base;
+
     background: var(--primary-accent);
     color: var(--text-inverse);
     box-shadow: var(--shadow-accent-sm);
@@ -165,6 +166,7 @@
   // ── Support button (secondary) ───────────
   &__support-btn {
     @extend %btn-base;
+
     background: var(--background-component);
     color: var(--text-primary);
     border-color: var(--border-color-strong);

@@ -110,5 +110,6 @@
 .admin-customer-row__actions {
   display: flex;
   justify-content: flex-end;
+
   @include table.card-actions;
 }

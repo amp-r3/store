@@ -118,7 +118,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border-width: 0;
 }
@@ -127,15 +127,19 @@
   0% {
     transform: scale(1);
   }
+
   10% {
     transform: scale(0.9);
   }
+
   30% {
     transform: scale(1.15);
   }
+
   50% {
     transform: scale(1.05);
   }
+
   100% {
     transform: scale(1);
   }

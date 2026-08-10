@@ -5,7 +5,6 @@
   flex-direction: column;
   gap: $spacing-md;
   height: 100%;
-
   padding: $spacing-lg;
   border-radius: $radius-xl;
   border: 1px solid var(--border-color-subtle);
@@ -17,6 +16,7 @@
   @media (max-width: 1024px) {
     padding: $spacing-md;
   }
+
   @media (max-width: 768px) {
     padding: 0;
     border: none;

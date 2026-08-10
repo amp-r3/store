@@ -14,7 +14,6 @@ $auth-footer-max-width: 500px;
   align-items: center;
   justify-content: center;
   padding: $spacing-md;
-
   background:
     radial-gradient(circle at top, rgba(var(--primary-accent-rgb), 0.12), transparent 38%),
     var(--background-body);
@@ -210,7 +209,7 @@ $auth-footer-max-width: 500px;
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
   }
 }

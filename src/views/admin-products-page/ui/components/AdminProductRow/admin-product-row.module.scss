@@ -20,6 +20,7 @@
     flex-direction: row;
     align-items: center;
     gap: $spacing-md;
+
     // Pinned to row 1 with the actions trigger overlaid on its right edge
     // (see .admin-product-row__actions below) instead of reserving a
     // separate full-width row for a single 44px button.
@@ -51,6 +52,7 @@
 
 .admin-product-row__archived-badge {
   @include chip(var(--border-color-subtle), var(--text-muted), $spacing-xs);
+
   flex-shrink: 0;
 }
 
@@ -86,6 +88,7 @@
 .admin-product-row__actions {
   display: flex;
   justify-content: flex-end;
+
   @include table.card-actions;
 }
 

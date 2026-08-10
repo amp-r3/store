@@ -13,7 +13,7 @@
   z-index: $z-index-sticky;
   max-width: 50rem;
   width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
-  inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
+  inset-inline: 0 var(--removed-body-scroll-bar-size, 0);
   margin-inline: auto;
   background: var(--navbar-bg-default);
   border: 1px solid var(--border-color-subtle);

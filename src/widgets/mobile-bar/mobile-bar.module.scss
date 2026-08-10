@@ -4,15 +4,11 @@
   position: fixed;
   bottom: calc(#{$spacing-md} + #{$safe-area-bottom});
   z-index: calc($z-index-fixed + 1);
-
   width: calc(100% - #{$spacing-xl} * 2 - var(--removed-body-scroll-bar-size, 0px));
-  inset-inline: 0 var(--removed-body-scroll-bar-size, 0px);
+  inset-inline: 0 var(--removed-body-scroll-bar-size, 0);
   margin-inline: auto;
-
   display: grid;
-
   will-change: transform;
-
   transform: translate3d(0, 0, 0);
   transition: transform $transition-base $ease-in-out-smooth;
 
@@ -78,7 +74,6 @@
   gap: $spacing-xs;
   width: 100%;
   padding: $spacing-xs;
-
   background: var(--glass-background);
   backdrop-filter: $backdrop-blur-sm;
   border: 1px solid var(--glass-border);
@@ -94,7 +89,6 @@
   gap: $spacing-xs;
   width: 100%;
   padding: $spacing-xs;
-
   background: var(--glass-background);
   backdrop-filter: $backdrop-blur-sm;
   border: 1px solid var(--glass-border);
@@ -111,6 +105,7 @@
   overflow: hidden;
   width: $touch-target-min;
   opacity: 1;
+
   // Short and non-bouncy so this width change stays off the scroll path.
   transition:
     width $transition-base $ease-out-expo,
@@ -164,12 +159,12 @@
   align-items: center;
   gap: $spacing-xxs;
   padding: $spacing-sm;
-
   background: var(--glass-background);
   backdrop-filter: $backdrop-blur-sm;
   border: 1px solid var(--glass-border);
   border-radius: $radius-pill;
   box-shadow: var(--shadow-default), var(--shadow-card);
+
   @media (max-width: 460px) {
     padding: $spacing-xs;
   }

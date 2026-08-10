@@ -12,6 +12,7 @@
 
 .admin-low-stock-page__threshold-control {
   @include control-toolbar;
+
   display: inline-flex;
   align-items: center;
   width: fit-content;

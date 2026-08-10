@@ -4,7 +4,7 @@
 // stacking/swipe/mount/removal transforms (data-mounted, data-removed,
 // data-swiping, data-expanded), we own every pixel of the card itself
 // (`.card` below) instead of reusing sonner's built-in styled toast.
-//
+
 // Width can't go through sonner's own `--width` var: it's written as an
 // inline style on the <ol> (always wins over a stylesheet rule on the same
 // custom property), so `width` is set directly instead — one extra class
@@ -31,7 +31,7 @@
 // just hugs the card's content. Below 600px sonner's own
 // `[data-sonner-toaster] [data-sonner-toast]` rule (two attribute selectors)
 // outweighs this single class and takes back over, which is what we want.
-//
+
 // `pointer-events: auto` counters a separate issue: Radix's DismissableLayer
 // (every Dialog/Drawer in this app is modal) sets
 // `document.body.style.pointerEvents = 'none'` while mounted, and only
@@ -238,7 +238,7 @@
 // `overflow: hidden` + rounded corners, so no separate radius is needed here.
 .card__timer {
   position: absolute;
-  inset: auto 0 0 0;
+  inset: auto 0 0;
   height: 2px;
   background: var(--toast-accent);
   opacity: 0.4;

@@ -5,7 +5,7 @@
 // > 600px: every child renders as one flat flex-wrap row (search, then the
 // filter controls, then actions) — visually identical to the old per-toolbar
 // container. The toggle button is hidden and never enters the flex flow.
-//
+
 // <= 600px: search takes its own full-width line; the toggle (plus actions,
 // on the same line) becomes a real disclosure button; the filter controls
 // collapse into a grid-rows 0fr -> 1fr accordion below it, so only the
@@ -38,6 +38,7 @@
 
   @media (max-width: 600px) {
     @include control-toolbar;
+
     display: inline-flex;
     align-items: center;
     gap: $spacing-xs;

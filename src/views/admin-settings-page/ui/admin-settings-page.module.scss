@@ -30,6 +30,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: $spacing-lg;
+
   // Cards don't share content height (a longer method name or an extra
   // field can make one taller) — grid's default align-items: stretch would
   // force every card in the row to match the tallest one, leaving dead

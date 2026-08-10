@@ -78,6 +78,7 @@
   &--with-menu {
     .review-card__rating {
       padding-top: $spacing-sm;
+
       // Reserves room for the absolutely positioned ReviewMenu trigger
       // (its own size plus the inset it's offset by) so the rating
       // never sits underneath it.
@@ -118,6 +119,7 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
   box-shadow: var(--shadow-sm);
+
   // The generated hue is kept dark (see getAvatarStyle's l:35) so this
   // light token stays legible against any hash-derived background.
   color: var(--text-primary);
@@ -305,6 +307,7 @@
     opacity: 0;
     transform: translateY(-4px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

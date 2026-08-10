@@ -42,6 +42,7 @@
 
   &:focus-within:not(.controlError) {
     --field-bg: var(--background-component);
+
     border-color: var(--primary-accent);
     box-shadow: var(--shadow-focus-input);
   }

@@ -105,7 +105,6 @@
   min-height: 100svh;
   overflow: hidden;
   text-align: center;
-
   background:
     radial-gradient(ellipse at top, rgba(var(--primary-accent-rgb), 0.12), transparent 60%),
     radial-gradient(ellipse at bottom, rgba(var(--secondary-accent-rgb), 0.06), transparent 55%),
@@ -265,6 +264,7 @@
       var(--gradient-logo-end)
     );
     background-size: 300% 300%;
+
     // Tracks the cursor instead of animating on a loop — --hero-nx/ny
     // are unitless -1..1, so multiplying by a percentage stays valid calc().
     background-position: calc(50% + var(--hero-nx) * 25%) calc(50% + var(--hero-ny) * 25%);
@@ -315,10 +315,11 @@
     font-size: $fs-base;
     font-weight: $fw-semibold;
     box-shadow: var(--shadow-accent);
+
     // --magnet-x/y are written by useMagneticPointer; `translate` is a
     // standalone property so it composes with the `transform` used below
     // for hover-lift/press without either overwriting the other.
-    translate: var(--magnet-x, 0px) var(--magnet-y, 0px);
+    translate: var(--magnet-x, 0) var(--magnet-y, 0);
     transition:
       transform $transition-base $ease-out-expo,
       box-shadow $transition-base $ease-out-expo,
@@ -388,7 +389,7 @@
     border: 1px solid var(--glass-border-subtle);
     color: var(--text-secondary);
     font-size: $fs-icon-md;
-    translate: var(--magnet-x, 0px) var(--magnet-y, 0px);
+    translate: var(--magnet-x, 0) var(--magnet-y, 0);
     animation:
       fade-up $transition-smooth $ease-out-expo $transition-smooth both,
       scroll-bounce $animation-pulse-duration $ease-in-out-smooth infinite;

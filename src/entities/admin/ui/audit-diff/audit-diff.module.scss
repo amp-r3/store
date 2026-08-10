@@ -54,7 +54,7 @@
   background: var(--glass-background-subtle);
   font-size: $fs-xs;
   white-space: pre-wrap;
-  word-break: break-word;
+  overflow-wrap: anywhere;
   max-width: 100%;
 }
 

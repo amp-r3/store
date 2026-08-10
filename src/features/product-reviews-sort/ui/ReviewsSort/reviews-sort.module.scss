@@ -102,6 +102,7 @@
     opacity: 0;
     transform: scale(0.95) translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -113,6 +114,7 @@
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+
   to {
     opacity: 0;
     transform: scale(0.97) translateY(-3px);
@@ -152,7 +154,7 @@
   background: var(--border-color-strong);
   opacity: 0.3;
   border-radius: $radius-pill;
-  margin: 0 auto $spacing-md auto;
+  margin: 0 auto $spacing-md;
 }
 
 .reviews-sort__sheet-header {
@@ -278,6 +280,7 @@
     opacity: 0;
     transform: scale(0.6);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -288,6 +291,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }

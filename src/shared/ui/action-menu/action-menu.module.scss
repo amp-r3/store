@@ -7,6 +7,7 @@
   border-radius: $radius-lg;
   box-shadow: var(--shadow-default);
   min-width: 180px;
+
   // Same rationale as Select's .content: this portals into #modal-root next
   // to Drawer/Dialog layers, so it needs $z-index-popover, not the in-flow
   // dropdown layer.

@@ -55,12 +55,13 @@ $label-notch-padding: $spacing-xxs;
     box-shadow $transition-fast $ease-in-out-smooth,
     background $transition-fast $ease-in-out-smooth;
 
-  &:hover:not(.inputWrapperDisabled):not(.inputWrapperError) {
+  &:hover:not(.inputWrapperDisabled, .inputWrapperError) {
     border-color: var(--border-color-strong);
   }
 
   &:focus-within:not(.inputWrapperError) {
     --field-bg: var(--background-component);
+
     border-color: var(--primary-accent);
     box-shadow: var(--shadow-focus-input);
   }
@@ -77,6 +78,7 @@ $label-notch-padding: $spacing-xxs;
 
 .inputWrapperDisabled {
   --field-bg: var(--border-color-subtle);
+
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -103,20 +105,17 @@ $label-notch-padding: $spacing-xxs;
   top: 50%;
   transform: translateY(-50%);
   transform-origin: left center;
-
   font-family: $font-primary;
   font-size: $float-label-size-resting;
   font-weight: $fw-normal;
   line-height: $lh-ui;
   color: var(--text-muted);
-
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: calc(100% - #{$spacing-xl});
-
   transition:
     top $transition-fast $ease-out-expo,
     left $transition-fast $ease-out-expo,
@@ -315,7 +314,6 @@ $label-notch-padding: $spacing-xxs;
   font-weight: $fw-normal;
   line-height: $lh-normal;
   color: var(--text-primary);
-
   padding: $input-padding-y $input-padding-x;
 
   &::placeholder {
@@ -330,7 +328,7 @@ $label-notch-padding: $spacing-xxs;
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--text-primary);
-    -webkit-box-shadow: 0 0 0px 1000px var(--field-bg) inset;
+    -webkit-box-shadow: 0 0 0 1000px var(--field-bg) inset;
     transition: background-color 5000s ease-in-out 0s;
   }
 }
@@ -355,7 +353,6 @@ $label-notch-padding: $spacing-xxs;
   flex-shrink: 0;
   align-self: center;
   margin-right: $spacing-sm;
-
   font-family: $font-primary;
   font-size: $fs-xs;
   font-weight: $fw-normal;

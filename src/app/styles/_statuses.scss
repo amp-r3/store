@@ -3,7 +3,7 @@
 
 // =============================================
 //   STATUS BADGE — MAP & MIXINS
-//
+
 //   Covers all three domain types:
 //     OrderStatus:    pending | processing | shipped | completed | cancelled |
 //                     returned | refunded
@@ -126,7 +126,7 @@ $status-map: (
     width: 7px;
     height: 7px;
     border-radius: $radius-circle;
-    background: currentColor;
+    background: currentcolor;
     flex-shrink: 0;
   }
 }

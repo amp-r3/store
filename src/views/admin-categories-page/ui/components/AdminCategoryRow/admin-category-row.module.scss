@@ -44,5 +44,6 @@
   display: flex;
   justify-content: flex-end;
   gap: $spacing-xs;
+
   @include table.card-actions;
 }

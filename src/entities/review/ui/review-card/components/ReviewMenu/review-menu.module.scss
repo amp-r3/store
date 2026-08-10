@@ -121,6 +121,7 @@
     opacity: 0;
     transform: scale($scale-down-md) translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);

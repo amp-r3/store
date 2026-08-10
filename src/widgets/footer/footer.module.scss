@@ -93,8 +93,7 @@
   }
 
   @media (max-width: 1024px) and (min-width: 601px) {
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     align-items: flex-start;
     gap: $spacing-lg;
 
@@ -410,6 +409,7 @@
   .footer__projectLink,
   .footer__item {
     transition: none;
+
     &:hover {
       transform: none;
     }

@@ -55,7 +55,6 @@
   font-size: $fs-sm;
   color: var(--text-secondary);
   line-height: $lh-relaxed;
-
   display: -webkit-box;
   line-clamp: 3;
   -webkit-line-clamp: 3;
@@ -89,5 +88,6 @@
 .admin-review-row__actions {
   display: flex;
   justify-content: flex-end;
+
   @include table.card-actions;
 }

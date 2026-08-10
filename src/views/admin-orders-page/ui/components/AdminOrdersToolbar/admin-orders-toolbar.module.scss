@@ -13,6 +13,7 @@
   // inputs read as the same control family as the Status select next to them.
   input[type='date'] {
     @include control-toolbar;
+
     min-width: 150px;
     cursor: pointer;
     color-scheme: light dark;

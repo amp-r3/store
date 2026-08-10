@@ -14,6 +14,7 @@
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -120,5 +121,5 @@
   color: var(--text-primary);
   text-align: right;
   line-height: $lh-ui;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }

@@ -3,6 +3,7 @@
 
 .admin-delivery-method-card {
   @include panel;
+
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
@@ -13,6 +14,7 @@
   align-items: center;
   justify-content: space-between;
   gap: $spacing-md;
+
   // nowrap on purpose: flex-wrap's line-break decision is based on each
   // item's *unshrunk* preferred size, so with wrap allowed a long title
   // pushed .toggle onto its own line even though the title (min-width: 0 +

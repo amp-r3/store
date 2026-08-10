@@ -6,18 +6,17 @@
   padding: $spacing-lg;
   width: 100%;
   position: relative;
-
   background: rgba(var(--background-component-rgb), 0.4);
   border: 1px solid var(--border-color);
   border-radius: $radius-lg;
   transition: all $transition-base $ease-in-out-smooth;
 
-  @media (width < 768px) {
+  @media (max-width: 768px) {
     gap: $spacing-md;
     padding: $spacing-md;
   }
 
-  @media (width < 480px) {
+  @media (max-width: 480px) {
     padding: $spacing-sm;
   }
 
@@ -51,7 +50,7 @@
       width: 72px;
       height: 72px;
 
-      @media (width < 768px) {
+      @media (max-width: 768px) {
         width: 64px;
         height: 64px;
       }
@@ -81,12 +80,12 @@
     border: 1px solid transparent;
     transition: border-color $transition-base $ease-in-out-smooth;
 
-    @media (width < 768px) {
+    @media (max-width: 768px) {
       width: 96px;
       height: 96px;
     }
 
-    @media (width < 480px) {
+    @media (max-width: 480px) {
       width: 80px;
       height: 80px;
     }
@@ -119,7 +118,7 @@
     min-width: 0;
     gap: $spacing-sm;
 
-    @media (width < 480px) {
+    @media (max-width: 480px) {
       gap: $spacing-md;
     }
   }
@@ -133,7 +132,7 @@
     align-items: flex-start;
     gap: $spacing-md;
 
-    @media (width < 480px) {
+    @media (max-width: 480px) {
       flex-direction: column;
       align-items: stretch;
       gap: $spacing-xs;
@@ -148,14 +147,13 @@
     color: var(--text-primary);
     line-height: $lh-tight;
     margin: 0;
-
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     transition: color $transition-fast;
 
-    @media (width < 480px) {
+    @media (max-width: 480px) {
       -webkit-line-clamp: 1;
     }
 
@@ -171,7 +169,7 @@
     flex-shrink: 0;
     gap: $spacing-xs;
 
-    @media (width < 480px) {
+    @media (max-width: 480px) {
       align-items: flex-start;
     }
   }
@@ -184,7 +182,7 @@
     white-space: nowrap;
     line-height: 1;
 
-    @media (width < 768px) {
+    @media (max-width: 768px) {
       font-size: $fs-base;
     }
   }
@@ -196,7 +194,7 @@
     gap: $spacing-xs;
     flex-wrap: wrap;
 
-    @media (width < 480px) {
+    @media (max-width: 480px) {
       justify-content: flex-start;
     }
   }
@@ -226,11 +224,10 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    column-gap: $spacing-sm;
-    row-gap: $spacing-xs;
+    gap: $spacing-xs $spacing-sm;
     margin-top: auto;
 
-    @media (width < 768px) {
+    @media (max-width: 768px) {
       column-gap: $spacing-xs;
     }
   }
@@ -259,7 +256,7 @@
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
     font-family: $font-primary;
 
-    @media (width < 768px) {
+    @media (max-width: 768px) {
       padding: 2px 8px;
     }
   }
@@ -274,7 +271,7 @@
     font-weight: $fw-bold;
     color: var(--text-primary);
 
-    @media (width < 768px) {
+    @media (max-width: 768px) {
       font-size: $fs-xs;
     }
   }
@@ -288,7 +285,7 @@
     text-align: center;
     font-variant-numeric: tabular-nums;
 
-    @media (width < 768px) {
+    @media (max-width: 768px) {
       font-size: $fs-sm;
       width: 1.5rem;
     }
@@ -334,7 +331,7 @@
       width: 32px;
       height: 32px;
 
-      @media (width < 768px) {
+      @media (max-width: 768px) {
         width: 28px;
         height: 28px;
       }
@@ -367,12 +364,12 @@
       margin-left: auto;
       flex-shrink: 0;
 
-      @media (width < 768px) {
+      @media (max-width: 768px) {
         color: var(--error-color);
         background: rgba(var(--error-color-rgb), 0.08);
       }
 
-      @media (width < 480px) {
+      @media (max-width: 480px) {
         position: absolute;
         top: $spacing-sm;
         right: $spacing-sm;

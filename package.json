@@ -10,7 +10,8 @@
     "lint": "eslint . --max-warnings=0",
     "tsc": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint:css": "stylelint \"{src,app}/**/*.scss\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -51,6 +52,8 @@
     "jiti": "^2.7.0",
     "prettier": "^3.9.6",
     "sass-embedded": "^1.92.1",
+    "stylelint": "^17.14.1",
+    "stylelint-config-standard-scss": "^17.0.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.52.0"
   }

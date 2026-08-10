@@ -45,7 +45,6 @@
   height: 100%;
   width: 100%;
   padding: $spacing-xl;
-
   animation: slide-up 0.5s $ease-out-expo forwards;
 
   // --- 1. Visual Centerpiece ---
@@ -72,7 +71,6 @@
     align-items: center;
     justify-content: center;
     border-radius: $radius-circle;
-
     background: var(--glass-background);
     backdrop-filter: $backdrop-blur;
     border: 1px solid var(--glass-border);
@@ -135,22 +133,17 @@
     align-items: center;
     justify-content: center;
     gap: $spacing-sm;
-
     padding: $spacing-md $spacing-xl;
     min-height: $touch-target-comfortable;
-
     background: var(--primary-accent);
     color: var(--text-on-accent, var(--text-inverse));
-
     font-family: $font-display;
     font-weight: $fw-semibold;
     font-size: $fs-base;
-
     border: none;
     border-radius: $radius-pill;
     cursor: pointer;
     box-shadow: var(--shadow-accent);
-
     transition: all $transition-base $ease-spring;
 
     &:hover {
@@ -202,18 +195,14 @@
     display: inline-flex;
     align-items: center;
     gap: $spacing-xs;
-
     padding: $spacing-xs $spacing-md;
-
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-color);
     border-radius: $radius-md;
-
     color: var(--text-secondary);
     font-size: $fs-sm;
     font-weight: $fw-normal;
     cursor: pointer;
-
     transition: all $transition-fast ease;
 
     &:hover {

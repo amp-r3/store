@@ -23,12 +23,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: calc($z-index-modal + 1);
-
     width: min(550px, 92vw);
     max-height: 85vh;
     display: flex;
     flex-direction: column;
-
     background: var(--glass-background-fallback);
 
     @supports (backdrop-filter: blur(1px)) {

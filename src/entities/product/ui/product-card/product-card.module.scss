@@ -11,7 +11,6 @@
   overflow: hidden;
   color: var(--text-primary);
   container-type: inline-size;
-
   transition:
     box-shadow $transition-base $ease-out-expo,
     border-color $transition-base $ease-out-expo,
@@ -93,7 +92,7 @@
 .card__discount {
   padding: $spacing-xxs $spacing-sm;
   background: var(--secondary-accent-dark);
-  color: #ffffff;
+  color: #fff;
   border-radius: $radius-pill;
   text-align: center;
   font-size: $fs-sm;

@@ -5,14 +5,11 @@
   background: var(--background-component);
   border: 1px solid var(--border-color-subtle);
   border-radius: $radius-md;
-
   padding: $spacing-sm $spacing-md;
   min-height: max-content;
-
   cursor: pointer;
   overflow: hidden;
   display: block;
-
   transition:
     background $transition-base $ease-in-out-smooth,
     border-color $transition-base $ease-in-out-smooth,

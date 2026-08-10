@@ -65,7 +65,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border-width: 0;
 
@@ -74,7 +74,7 @@
     width: auto;
     height: auto;
     margin: 0;
-    clip: auto;
+    clip-path: none;
     overflow: visible;
     font-size: $fs-xs;
     color: var(--text-muted);
@@ -112,7 +112,6 @@
   @media (max-width: $collapse-at) {
     grid-column: 2 / -1;
     grid-row: 1;
-    justify-self: end;
-    align-self: start;
+    place-self: start end;
   }
 }

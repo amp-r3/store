@@ -5,6 +5,7 @@
     opacity: 0;
     transform: translateY($spacing-sm);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -23,15 +24,11 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
-
   height: auto;
   min-height: auto;
-  overflow-y: visible;
-  overflow-x: visible;
-
+  overflow: visible;
   padding: 0;
   margin: 0;
-
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
 

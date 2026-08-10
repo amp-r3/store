@@ -72,6 +72,7 @@
   &.icon-only {
     width: $touch-target-min;
     flex-shrink: 0;
+
     // Only rendered inside MobileBar; kept short and non-bouncy to stay off the scroll path.
     transition:
       width $transition-base $ease-out-expo,

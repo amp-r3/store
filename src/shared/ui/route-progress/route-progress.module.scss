@@ -19,6 +19,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -28,6 +29,7 @@
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -42,6 +44,7 @@
   background: linear-gradient(90deg, var(--loader-grad-start), var(--loader-grad-end));
   z-index: $z-index-toast;
   pointer-events: none;
+
   // Delayed onset (see animation-delay below) so a fast navigation never
   // flashes the bar at all.
   opacity: 0;

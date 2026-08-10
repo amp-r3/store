@@ -15,7 +15,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-
   padding: $spacing-lg;
 
   @media (min-width: 768px) {
@@ -24,7 +23,6 @@
 
   width: 100%;
   max-width: 500px;
-
   background-color: var(--glass-background);
   backdrop-filter: $backdrop-blur;
   border: 1px solid var(--border-color);
@@ -55,7 +53,7 @@
 .errorTitle {
   font-size: $fs-xl;
   font-weight: $fw-semibold;
-  margin: 0 0 $spacing-sm 0;
+  margin: 0 0 $spacing-sm;
   line-height: $lh-tight;
 
   @media (max-width: 480px) {
@@ -68,7 +66,6 @@
   color: var(--text-secondary);
   line-height: $lh-normal;
   max-width: 100%;
-
   margin-bottom: $spacing-lg;
 
   @media (min-width: 768px) {
@@ -85,7 +82,6 @@
   font-size: $fs-base;
   font-weight: $fw-semibold;
   transition: $transition-base;
-
   min-height: $touch-target-min;
   display: inline-flex;
   align-items: center;
