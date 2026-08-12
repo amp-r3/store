@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useTransition } from 'react';
+import { useCallback, useEffect, useMemo, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { endRouteProgress, startRouteProgress } from '@/shared/lib/routeProgress';
 
@@ -23,13 +23,25 @@ export function useTransitionRouter() {
     return undefined;
   }, [isPending]);
 
-  const push = (href: string, options?: NavigateOptions) => {
-    startTransition(() => router.push(href, options));
-  };
+  const push = useCallback(
+    (href: string, options?: NavigateOptions) => {
+      startTransition(() => router.push(href, options));
+    },
+    [router],
+  );
 
-  const replace = (href: string, options?: NavigateOptions) => {
-    startTransition(() => router.replace(href, options));
-  };
+  const replace = useCallback(
+    (href: string, options?: NavigateOptions) => {
+      startTransition(() => router.replace(href, options));
+    },
+    [router],
+  );
 
-  return { push, replace, isPending };
+  // Memoized so consumers that put this return value (or a destructured
+  // function from it) in a dependency array — e.g. useUrlState's
+  // setSearchParams, which useAuthUrlError's effect depends on — don't
+  // re-run every render. Without this, push/replace/the returned object
+  // were new references each render, chaining into an infinite render loop
+  // wherever they fed a useCallback/useEffect dependency array.
+  return useMemo(() => ({ push, replace, isPending }), [push, replace, isPending]);
 }
