@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useUrlState, useTransitionRouter } from '@/shared/lib/hooks';
 
@@ -15,6 +15,14 @@ export function useSearch() {
     setInputValue(queryFromUrl);
   }, [queryFromUrl]);
 
+  // Read via a ref, not a reactive dependency — an unrelated URL change
+  // (sort/category/page while the user is still typing) would otherwise
+  // restart this 300ms timer on every keystroke's debounce window.
+  const searchParamsRef = useRef(searchParams);
+  useEffect(() => {
+    searchParamsRef.current = searchParams;
+  }, [searchParams]);
+
   useEffect(() => {
     if (!isCatalogPage) return;
 
@@ -23,7 +31,7 @@ export function useSearch() {
     if (trimmedQuery === queryFromUrl) return;
 
     const timerId = setTimeout(() => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParamsRef.current);
 
       if (trimmedQuery) {
         params.set('q', trimmedQuery);
@@ -35,7 +43,7 @@ export function useSearch() {
     }, 300);
 
     return () => clearTimeout(timerId);
-  }, [inputValue, queryFromUrl, searchParams, setSearchParams, isCatalogPage]);
+  }, [inputValue, queryFromUrl, setSearchParams, isCatalogPage]);
 
   const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);

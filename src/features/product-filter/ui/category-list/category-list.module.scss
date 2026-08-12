@@ -13,11 +13,19 @@
     gap: $spacing-xs;
   }
 
+  &__empty {
+    padding: $spacing-md;
+    color: var(--text-secondary);
+    font-size: $fs-sm;
+    text-align: center;
+  }
+
   &__item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    min-width: 0;
     padding: $spacing-sm $spacing-md;
     background: var(--glass-background-subtle);
     border: 1px solid var(--border-color);
@@ -30,6 +38,12 @@
     position: relative;
     overflow: hidden;
     transition: all $transition-fast $ease-in-out-smooth;
+
+    &-label {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
     @media (hover: hover) {
       &:hover:not([aria-pressed='true']) {

@@ -8,6 +8,13 @@
   margin: 0;
   list-style: none;
 
+  &__empty {
+    padding: $spacing-md;
+    color: var(--text-secondary);
+    font-size: $fs-sm;
+    text-align: center;
+  }
+
   &__item {
     display: flex;
     align-items: center;

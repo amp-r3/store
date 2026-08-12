@@ -36,7 +36,9 @@ export const ControlPanel: FC<ControlPanelProps> = ({
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   const isFilter =
-    activeCategoryOption?.slug !== 'all' || activeSortOption.id !== 'default' || isDealsActive;
+    (activeCategoryOption?.slug ?? 'all') !== 'all' ||
+    activeSortOption.id !== 'default' ||
+    isDealsActive;
 
   const panelRef = useRef<HTMLDivElement>(null);
   const sortBtnRef = useRef<HTMLButtonElement>(null);
@@ -159,7 +161,6 @@ export const ControlPanel: FC<ControlPanelProps> = ({
           isOpen={isSortOpen}
           sortingOptions={sortingOptions}
           activeSortOption={activeSortOption}
-          triggerRef={sortBtnRef}
           changeSort={handleSortChange}
           onClose={() => setIsSortOpen(false)}
         />

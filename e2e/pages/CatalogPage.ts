@@ -12,10 +12,11 @@ export class CatalogPage extends BasePage {
     await this.navigate(`/catalog${qs}`);
   }
 
-  /** Two `SearchForm`s (Navbar + MobileBar) share `id="input"` — only one
-   * is CSS-visible per viewport. */
+  /** Two `SearchForm`s (Navbar + MobileBar) share the same accessible name
+   * ("Search") — only one is CSS-visible per viewport, disambiguated by
+   * `data-testid` per AGENTS.md's documented pattern for this exact case. */
   private get searchInput() {
-    return this.page.locator('#input:visible');
+    return this.page.locator('[data-testid="search-input"]:visible');
   }
 
   private get sortButton() {
@@ -62,7 +63,7 @@ export class CatalogPage extends BasePage {
 
   async selectSort(label: string) {
     await this.sortButton.click();
-    await this.page.getByRole('option', { name: label }).click();
+    await this.page.getByRole('button', { name: label, exact: true }).click();
     // 150 ms debounce before the sort param actually changes.
     await expect(this.sortButton).toHaveAttribute('aria-label', `Sort by: ${label}`);
   }

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useRef } from 'react';
+import { ChangeEvent, FC, useEffect, useId, useRef } from 'react';
 import { useHaptics } from '@/shared/lib/hooks';
 import { IoClose } from 'react-icons/io5';
 import styles from './search-form.module.scss';
@@ -23,6 +23,7 @@ export const SearchForm: FC<SearchFormProps> = ({
   autoFocus,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
   const { soft } = useHaptics();
   const blurInput = () => {
     if (inputRef.current) {
@@ -44,19 +45,25 @@ export const SearchForm: FC<SearchFormProps> = ({
   };
 
   return (
-    <form className={styles.searchForm} role="search" onSubmit={handleFormSubmit}>
+    <form
+      className={styles.searchForm}
+      role="search"
+      aria-label="Site search"
+      onSubmit={handleFormSubmit}
+    >
       <div className={styles.searchForm__wrapper}>
         <input
-          id="input"
+          id={inputId}
+          data-testid="search-input"
           className={styles.searchForm__input}
           type="text"
           ref={inputRef}
           placeholder="Search"
+          aria-label="Search"
           value={inputValue}
           onChange={handleSearch}
           onFocus={onFocus}
           onBlur={onBlur}
-          autoFocus={autoFocus}
         />
         <button
           type="button"
@@ -66,6 +73,7 @@ export const SearchForm: FC<SearchFormProps> = ({
             soft();
             blurInput();
           }}
+          disabled={!inputValue}
           aria-label="Clear search"
         >
           <IoClose />

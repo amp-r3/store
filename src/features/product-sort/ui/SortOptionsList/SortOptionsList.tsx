@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import { IoCheckmark } from 'react-icons/io5';
 import { SortingOption } from '@/entities/product';
 import style from './sort-options-list.module.scss';
@@ -23,19 +23,30 @@ export const SortOptionsList = forwardRef<HTMLUListElement, SortOptionsListProps
       [changeSort],
     );
 
+    useEffect(() => {
+      return () => {
+        if (timerRef.current) clearTimeout(timerRef.current);
+      };
+    }, []);
+
+    if (sortingOptions.length === 0) {
+      return <p className={style['sort-options-list__empty']}>No sort options available.</p>;
+    }
+
     return (
-      <ul className={style['sort-options-list']} role="listbox" aria-label="Sort options" ref={ref}>
+      <ul className={style['sort-options-list']} aria-label="Sort options" ref={ref}>
         {sortingOptions.map((option) => {
           const isActive = option.id === activeSortOption?.id;
           const Icon = option.icon;
 
           return (
-            <li key={option.id} role="option" aria-selected={isActive}>
+            <li key={option.id}>
               <button
                 className={`${style['sort-options-list__item']} ${
                   isActive ? style['sort-options-list__item--active'] : ''
                 }`}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => handleSelect(option.sortBy, option.order)}
               >
                 <div className={style['sort-options-list__item-content']}>

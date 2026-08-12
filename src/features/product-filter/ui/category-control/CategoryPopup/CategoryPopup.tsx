@@ -24,6 +24,7 @@ export const CategoryPopup: FC<ICategoryProps> = ({
         <Dialog.Overlay className={style['category-popup__backdrop']} />
         <Dialog.Content
           className={style['category-popup__window']}
+          aria-describedby={undefined}
           onPointerDownOutside={ignoreToastInteraction}
         >
           <div className={style['category-popup__header']}>

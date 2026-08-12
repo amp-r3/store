@@ -7,7 +7,6 @@ import { useMediaQuery } from '@/shared/lib/hooks';
 export interface SortControlProps {
   sortingOptions: SortingOption[];
   activeSortOption: SortingOption;
-  triggerRef: React.RefObject<HTMLButtonElement | null>;
   changeSort: (newSortBy: string | null, newOrder: string | null) => void;
   onClose: () => void;
   isOpen: boolean;
