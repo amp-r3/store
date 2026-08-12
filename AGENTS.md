@@ -8,11 +8,13 @@ Next.js 16 (App Router, Turbopack), React 19, TypeScript 5.9, Redux Toolkit
 2.9 + RTK Query, redux-persist (localStorage), Supabase (PostgreSQL + Auth
 via `@supabase/ssr`), SCSS Modules + CSS custom properties, React Hook Form +
 Zod. `pnpm dev`/`build`/`start`/`typecheck`(`tsc --noEmit`, alias
-`tsc`)/`lint`/`lint:css`/`format`/`format:check`. **No unit test runner** —
-verify component/logic changes via `pnpm typecheck`, `pnpm lint`, manual
-exercise (curl for server-rendered content; the user checks interactive
-behavior themselves). P0 storefront flows have Playwright E2E coverage
-(`pnpm test:e2e`) — see "E2E Tests" below.
+`tsc`)/`lint`/`lint:css`/`format`/`format:check`. Pure logic (money math,
+Redux reducers/selectors, Zod schemas, stock/status gating) has Vitest unit
+coverage (`pnpm test:unit`) — see "Unit Tests" below; component rendering
+still relies on manual exercise (curl for server-rendered content; the user
+checks interactive behavior themselves) since there's no Testing Library
+layer. P0 storefront flows have Playwright E2E coverage (`pnpm test:e2e`) —
+see "E2E Tests" below.
 Needs `.env`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
 `NEXT_PUBLIC_SITE_URL` (canonical/OG/sitemap URLs server-side, where
 `window.location` isn't available — `shared/config/site.ts`).
@@ -321,6 +323,36 @@ after any schema change.
 **Hard rule — schema changes only through the CLI**: `supabase migration new
 <name>` → edit the SQL file → `supabase db push`. Never the dashboard SQL
 editor, `psql`/`DATABASE_URL` DDL, or ad-hoc SQL outside a migration.
+
+## Unit Tests
+
+Vitest, `vitest.config.ts` at repo root, `pnpm test:unit` (`test:unit:watch`
+for watch mode). Scope is deliberately narrow: **pure logic only** — money
+math, Redux reducers/selectors, Zod schemas, stock/status gating, order-
+progress derivation. No jsdom, no Testing Library, no component rendering —
+that stays either manual exercise or Playwright's job. `test.environment:
+'node'`, colocated `*.test.ts` files (`.test.ts`, not `.spec.ts`, to stay
+lexically distinct from `e2e/specs/*.spec.ts`), `include: ['src/**/*.test.ts']`
+with `e2e/**` explicitly excluded — Vitest's default glob would otherwise
+collect the Playwright specs and fail. Vitest does not read `tsconfig.json`'s
+`paths`, so the `@/*` alias is re-declared in `vitest.config.ts`'s
+`resolve.alias`. No `"types": ["vitest/globals"]` in `tsconfig.json` (would
+narrow the ambient `@types/*` auto-include) — every test file imports
+`describe`/`it`/`expect`/etc. from `'vitest'` explicitly rather than relying
+on globals. `test.env` stubs the three `NEXT_PUBLIC_*` vars so a module that
+reads them at import time (e.g. `shared/config/images.ts`, which throws
+without `NEXT_PUBLIC_SUPABASE_URL`) can't take the whole suite down — the CI
+`check` job that runs `pnpm test:unit` carries no secrets, by design.
+
+Colocated test files are subject to the same FSD `no-restricted-imports`
+blocks (§1) as any other file in their layer — a test under `src/shared/**`
+still can't import `@/entities`/`@/features`/etc. Any logic that needs
+testing but lives behind `next/navigation`, `next/headers`, `server-only`, or
+the Supabase client is out of scope here (RTK Query `queryFn` bodies, hooks
+that call `useUrlState`/`useRouter`, anything importing `@/shared/api`'s
+barrel) — extract the pure part into its own module first if it's worth
+covering, the way `computeMaxReachedIndex` was pulled out of
+`useCheckoutStepper.ts` into its own file.
 
 ## E2E Tests
 

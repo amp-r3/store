@@ -28,6 +28,8 @@ jobs:
 
       - run: pnpm format:check
 
+      - run: pnpm test:unit
+
       # `pnpm build` is deliberately not run in this job: generateStaticParams
       # and app/sitemap.ts hit the live Supabase project at build time (see
       # AGENTS.md's rendering-mode table). The `e2e` job below does run it,

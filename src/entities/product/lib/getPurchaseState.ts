@@ -16,18 +16,22 @@ export const getPurchaseState = ({
   const isSizeSelected = !hasSizes || (selectedSizeId !== undefined && selectedSizeId !== null);
   const selectedSize = hasSizes && sizes ? sizes.find((s) => s.id === selectedSizeId) : null;
 
-  const currentStock =
-    hasSizes && sizes
-      ? selectedSize
-        ? selectedSize.stock
-        : sizes.some((s) => s.stock > 0)
-          ? 5
-          : 0
-      : 0;
-  const currentInStock = currentStock > 0;
+  // Without a chosen size there's no single stock count to report — 0 is the
+  // honest "unknown" value here, not a stand-in for "definitely out of
+  // stock". currentInStock is derived separately below so purchase controls
+  // stay interactive (and the "select a size" prompt still fires) as long as
+  // at least one size has stock.
+  const currentStock = selectedSize ? selectedSize.stock : 0;
+
+  const currentInStock = selectedSize
+    ? selectedSize.stock > 0
+    : hasSizes && !!sizes && sizes.some((s) => s.stock > 0);
+
+  const isOutOfStock = !currentInStock;
   const isLowStock = currentStock > 0 && currentStock < 5;
-  const isOutOfStock = currentStock === 0;
-  const isMaxReached = (quantity ?? 0) >= (currentStock ?? 0);
+  // Meaningless without a selected size — there's no specific stock count to
+  // compare `quantity` against yet.
+  const isMaxReached = isSizeSelected && (quantity ?? 0) >= (currentStock ?? 0);
 
   return {
     isSizeSelected,

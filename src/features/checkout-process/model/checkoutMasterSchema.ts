@@ -31,7 +31,10 @@ const paymentShape = {
 };
 
 const addressRefine = (data: z.infer<z.ZodObject<typeof deliveryShape>>, ctx: z.RefinementCtx) => {
-  if (data.deliveryMethodCode && data.deliveryMethodCode !== 'pickup') {
+  // Address is required unless the method is explicitly pickup — an omitted
+  // deliveryMethodCode must NOT be treated the same as pickup and skip
+  // validation.
+  if (data.deliveryMethodCode !== 'pickup') {
     if (!data.country || data.country.trim().length < 2) {
       ctx.addIssue({
         code: 'custom',

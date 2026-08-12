@@ -22,7 +22,21 @@ const POSTCODE_MASKS: Record<string, FactoryOpts> = {
 
 export const DEFAULT_POSTCODE_MASK: FactoryOpts = { mask: /^[A-Za-z0-9 -]{0,10}$/ };
 
+const DIACRITIC_MARKS = /[̀-ͯ]/g;
+const REPEATED_WHITESPACE = /\s+/g;
+
+// Case/whitespace/diacritic-insensitive lookup key — the checkout country
+// field is free text, so "Germany", "  Germany  ", "GERMANY", and an
+// accented variant should all resolve to the same table entry.
+const normalizeCountryName = (country: string): string =>
+  country
+    .trim()
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(DIACRITIC_MARKS, '')
+    .replace(REPEATED_WHITESPACE, ' ');
+
 export const getPostcodeMask = (country?: string): FactoryOpts => {
   if (!country) return DEFAULT_POSTCODE_MASK;
-  return POSTCODE_MASKS[country.trim().toLowerCase()] ?? DEFAULT_POSTCODE_MASK;
+  return POSTCODE_MASKS[normalizeCountryName(country)] ?? DEFAULT_POSTCODE_MASK;
 };

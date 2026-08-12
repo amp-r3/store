@@ -120,6 +120,11 @@ kept in sync via triggers.
 
 ## 🧪 Testing
 
+**Vitest unit tests** (`pnpm test:unit`) cover pure business logic — cart/
+order money math, Redux reducers and selectors, checkout/catalog Zod
+schemas, stock and order-status gating. No DOM, no Testing Library; see
+`AGENTS.md`'s "Unit Tests" section for scope and setup.
+
 **Playwright E2E** (`pnpm test:e2e`) covers the storefront's P0 flows —
 catalog/search, guest cart, auth guards, and a full checkout that places a
 real order — against the live Supabase project rather than a mock backend.
@@ -175,7 +180,7 @@ session picks up the role.
 ## 🔭 Planned Improvements
 
 - **i18n** (Russian/English) via `next-intl`
-- **Unit tests** (Vitest + Testing Library) — E2E coverage already exists, see [Testing](#-testing)
+- **Component tests** (Testing Library) — pure logic already has Vitest coverage, see [Testing](#-testing)
 - **Payment provider integration** (currently order placement only)
 
 ---

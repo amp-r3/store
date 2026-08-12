@@ -61,10 +61,11 @@ export const notificationSlice = createSlice({
       state.queue.push(notification);
 
       if (state.queue.length > MAX_QUEUE) {
+        // Prefer evicting the oldest non-sticky entry, but a queue that's
+        // entirely sticky must still shrink back to MAX_QUEUE rather than
+        // grow unbounded — fall back to the oldest entry overall.
         const oldestRemovableIndex = state.queue.findIndex((item) => !item.sticky);
-        if (oldestRemovableIndex !== -1) {
-          state.queue.splice(oldestRemovableIndex, 1);
-        }
+        state.queue.splice(oldestRemovableIndex !== -1 ? oldestRemovableIndex : 0, 1);
       }
     },
     dismissNotification: (state, action: PayloadAction<number>) => {
