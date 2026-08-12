@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { HiChevronDown, HiLockClosed } from 'react-icons/hi';
 import { CheckoutFormValues } from '../../model/checkoutMasterSchema';
@@ -11,6 +11,7 @@ import { SummaryItems, SummaryTotals } from './components';
 
 export const CheckoutSummary = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const collapsibleId = useId();
   const { soft } = useHaptics();
 
   const { orderTotals, checkoutItems } = useCheckoutContext();
@@ -31,6 +32,7 @@ export const CheckoutSummary = () => {
         className={`${style.summary__mobile_header} ${isExpanded ? style['summary__mobile_header--expanded'] : ''}`}
         onClick={toggleExpanded}
         aria-expanded={isExpanded}
+        aria-controls={collapsibleId}
       >
         <div className={style.summary__mobile_header_info}>
           <span className={style.summary__mobile_header_title}>Order Summary</span>
@@ -45,12 +47,15 @@ export const CheckoutSummary = () => {
 
       {/* Collapsible Content */}
       <div
+        id={collapsibleId}
         className={`${style.summary__collapsible} ${isExpanded ? style['summary__collapsible--expanded'] : ''}`}
       >
         <div className={style.summary__collapsible_inner}>
           <h2 className={style.summary__title}>
             Order Summary
-            <span className={style.summary__count}>{checkoutItems.length} items</span>
+            <span className={style.summary__count}>
+              {checkoutItems.length} item{checkoutItems.length === 1 ? '' : 's'}
+            </span>
           </h2>
 
           <SummaryItems />

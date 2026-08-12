@@ -52,12 +52,17 @@
 
 .delivery-option__info {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 1px;
 }
 
 .delivery-option__label {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-family: $font-primary;
   font-size: $fs-sm;
   font-weight: $fw-semibold;
@@ -84,6 +89,9 @@
 }
 
 .delivery-option__duration {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-family: $font-primary;
   font-size: $fs-xs;
   font-weight: $fw-normal;

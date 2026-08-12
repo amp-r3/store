@@ -33,6 +33,10 @@ interface CheckoutContextValue {
   isShippingRequired: boolean;
   isDeliveryLoading: boolean;
   isPaymentLoading: boolean;
+  isDeliveryError: boolean;
+  isPaymentError: boolean;
+  refetchDeliveryMethods(): void;
+  refetchPaymentMethods(): void;
   selectDelivery(id: string, code: DeliveryOptions): void;
   selectPayment(id: string, code: PaymentOptions): void;
   step: StepType;
@@ -42,6 +46,7 @@ interface CheckoutContextValue {
   goNext(): Promise<void>;
   goToStep(step: StepType): Promise<void>;
   isLoading: boolean;
+  isError: boolean;
   isSubmitting: boolean;
   submitOrder(formData: CheckoutFormValues): Promise<void>;
   applyPreviousAddress(): void;
@@ -110,6 +115,10 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
       isShippingRequired: delivery.isShippingRequired,
       isDeliveryLoading: delivery.isDeliveryLoading,
       isPaymentLoading: delivery.isPaymentLoading,
+      isDeliveryError: delivery.isDeliveryError,
+      isPaymentError: delivery.isPaymentError,
+      refetchDeliveryMethods: delivery.refetchDeliveryMethods,
+      refetchPaymentMethods: delivery.refetchPaymentMethods,
       selectDelivery,
       selectPayment,
       step: stepper.step,
@@ -119,6 +128,7 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
       goNext: stepper.goNext,
       goToStep: stepper.goToStep,
       isLoading: details.isLoading || details.isFetching,
+      isError: details.isError || delivery.isError,
       isSubmitting,
       submitOrder,
       applyPreviousAddress,
@@ -126,12 +136,33 @@ export const CheckoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
       showPreviousAddressChip,
     }),
     [
-      details,
+      details.checkoutItems,
+      details.checkoutDetails,
+      details.totals,
+      details.isLoading,
+      details.isFetching,
+      details.isError,
       orderTotals,
-      delivery,
+      delivery.deliveryMethods,
+      delivery.paymentMethods,
+      delivery.selectedDelivery,
+      delivery.selectedPayment,
+      delivery.isShippingRequired,
+      delivery.isDeliveryLoading,
+      delivery.isPaymentLoading,
+      delivery.isError,
+      delivery.isDeliveryError,
+      delivery.isPaymentError,
+      delivery.refetchDeliveryMethods,
+      delivery.refetchPaymentMethods,
       selectDelivery,
       selectPayment,
-      stepper,
+      stepper.step,
+      stepper.stepIndex,
+      stepper.isLastStep,
+      stepper.maxReachedIndex,
+      stepper.goNext,
+      stepper.goToStep,
       isSubmitting,
       submitOrder,
       applyPreviousAddress,

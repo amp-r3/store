@@ -1,4 +1,4 @@
-import { FormField, MaskedFormField, InfoBanner, Alert } from '@/shared/ui';
+import { FormField, MaskedFormField, InfoBanner, Alert, Button } from '@/shared/ui';
 import style from './checkout-shipping.module.scss';
 import { Controller, useFormContext } from 'react-hook-form';
 import { CheckoutFormValues } from '../../model/checkoutMasterSchema';
@@ -18,6 +18,8 @@ export const CheckoutShipping = () => {
     deliveryMethods,
     selectedDelivery,
     isDeliveryLoading,
+    isDeliveryError,
+    refetchDeliveryMethods,
     isShippingRequired,
     totals,
     selectDelivery,
@@ -35,22 +37,31 @@ export const CheckoutShipping = () => {
         )}
         <h3 className={style['shipping__title']}>Delivery Method</h3>
         <div className={style['shipping__group']} role="radiogroup" aria-label="Delivery Method">
-          {isDeliveryLoading
-            ? Array.from({ length: 3 }).map((_, index) => (
-                <DeliveryOptionSkeleton key={`skeleton-mock-${index}`} />
-              ))
-            : deliveryMethods?.map((opt) => {
-                const isSelected = selectedDelivery?.id === opt.id;
-                return (
-                  <DeliveryOption
-                    handleSelect={selectDelivery}
-                    isSelected={isSelected}
-                    cartTotal={totals.total}
-                    option={opt}
-                    key={opt.id}
-                  />
-                );
-              })}
+          {isDeliveryLoading ? (
+            Array.from({ length: 3 }).map((_, index) => (
+              <DeliveryOptionSkeleton key={`skeleton-mock-${index}`} />
+            ))
+          ) : isDeliveryError ? (
+            <Alert variant="error">
+              Couldn&apos;t load delivery methods.{' '}
+              <Button type="button" variant="ghost" onClick={refetchDeliveryMethods}>
+                Retry
+              </Button>
+            </Alert>
+          ) : (
+            deliveryMethods?.map((opt) => {
+              const isSelected = selectedDelivery?.id === opt.id;
+              return (
+                <DeliveryOption
+                  handleSelect={selectDelivery}
+                  isSelected={isSelected}
+                  cartTotal={totals.total}
+                  option={opt}
+                  key={opt.id}
+                />
+              );
+            })
+          )}
         </div>
       </div>
 

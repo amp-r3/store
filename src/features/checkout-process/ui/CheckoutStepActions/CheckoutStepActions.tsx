@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi';
 import { useCheckoutContext } from '../../model/CheckoutContext';
 import { CHECKOUT_STEPS } from '../../model/checkoutConfig';
@@ -16,10 +17,34 @@ export const CheckoutStepActions = ({ variant = 'inline' }: CheckoutStepActionsP
     useCheckoutContext();
   const { cta, ctaIcon } = CHECKOUT_STEPS[step];
 
+  const [isValidating, setIsValidating] = useState(false);
+  // Ref, not just the isValidating state, because a genuine double-click can
+  // fire both handlers before React re-renders with the disabled button.
+  const isValidatingRef = useRef(false);
+
+  const handleNext = async () => {
+    if (isValidatingRef.current) return;
+    isValidatingRef.current = true;
+    setIsValidating(true);
+    try {
+      await goNext();
+    } finally {
+      isValidatingRef.current = false;
+      setIsValidating(false);
+    }
+  };
+
+  const isBusy = isSubmitting || isValidating;
+
   return (
     <div className={`${style.actions} ${variant === 'bar' ? style['actions--bar'] : ''}`}>
       {variant === 'bar' && (
-        <SummaryTotalRow isFinal label="Total" value={formatPrice(orderTotals.finalTotalPrice)} />
+        <SummaryTotalRow
+          isFinal
+          label="Total"
+          value={formatPrice(orderTotals.finalTotalPrice)}
+          testId="summary-total-bar"
+        />
       )}
 
       <div className={style.actions__buttons}>
@@ -36,7 +61,8 @@ export const CheckoutStepActions = ({ variant = 'inline' }: CheckoutStepActionsP
 
         <button
           className={style.actions__cta}
-          disabled={isSubmitting}
+          disabled={isBusy}
+          aria-busy={isBusy || undefined}
           type={isLastStep ? 'submit' : 'button'}
           form={isLastStep ? 'checkout-form' : undefined}
           // A masked field (Phone, ZIP) left focused when this is clicked
@@ -46,10 +72,13 @@ export const CheckoutStepActions = ({ variant = 'inline' }: CheckoutStepActionsP
           // the default focus-shift keeps the field focused until the
           // click itself completes.
           onMouseDown={(e) => e.preventDefault()}
-          onClick={isLastStep ? undefined : goNext}
+          onClick={isLastStep ? undefined : handleNext}
         >
-          {isSubmitting ? (
-            <Loader size="sm" />
+          {isBusy ? (
+            <>
+              <Loader size="sm" />
+              <span className="sr-only">{cta}</span>
+            </>
           ) : (
             <>
               <span className={style['actions__cta-icon-step']}>{ctaIcon}</span>

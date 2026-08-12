@@ -15,6 +15,7 @@ export const useCheckoutDelivery = (
     isLoading: isDeliveryLoading,
     isFetching: isDeliveryFetching,
     isError: isDeliveryError,
+    refetch: refetchDeliveryMethods,
   } = useGetDeliveryMethodsQuery();
 
   const {
@@ -22,6 +23,7 @@ export const useCheckoutDelivery = (
     isLoading: isPaymentLoading,
     isFetching: isPaymentFetching,
     isError: isPaymentError,
+    refetch: refetchPaymentMethods,
   } = useGetPaymentMethodsQuery();
 
   const selectedDelivery = useMemo(
@@ -53,7 +55,11 @@ export const useCheckoutDelivery = (
     isLoading: isDeliveryLoading || isPaymentLoading,
     isFetching: isDeliveryFetching || isPaymentFetching,
     isError: isDeliveryError || isPaymentError,
+    isDeliveryError,
+    isPaymentError,
     isDeliveryLoading,
     isPaymentLoading,
+    refetchDeliveryMethods,
+    refetchPaymentMethods,
   };
 };

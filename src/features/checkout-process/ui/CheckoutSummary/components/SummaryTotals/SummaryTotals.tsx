@@ -16,7 +16,7 @@ export const SummaryTotals = () => {
 
   return (
     <div className={style.totals}>
-      <SummaryTotalRow label="Subtotal" value={formatPrice(subtotal)} />
+      <SummaryTotalRow label="Subtotal" value={formatPrice(subtotal)} testId="summary-subtotal" />
 
       {hasDiscount && (
         <SummaryTotalRow
@@ -28,6 +28,7 @@ export const SummaryTotals = () => {
           }
           value={`− ${formatPrice(discountAmount)}`}
           valueVariant="discount"
+          testId="summary-discount"
         />
       )}
 
@@ -37,6 +38,7 @@ export const SummaryTotals = () => {
             label="Delivery"
             value={hasFreeShipping ? 'Free' : `+ ${formatPrice(deliveryCost)}`}
             valueVariant={hasFreeShipping ? 'free' : undefined}
+            testId="summary-delivery"
           />
 
           {almostFreeShipping && (
@@ -64,6 +66,7 @@ export const SummaryTotals = () => {
               }
               value={`+ ${formatPrice(feePercentageAmount)}`}
               valueVariant="fee"
+              testId="summary-payment-fee"
             />
           )}
 
@@ -72,18 +75,29 @@ export const SummaryTotals = () => {
               label="Fixed fee"
               value={`+ ${formatPrice(feeFixed)}`}
               valueVariant="fee"
+              testId="summary-fixed-fee"
             />
           )}
 
           {feePercentage === 0 && feeFixed === 0 && (
-            <SummaryTotalRow label="Payment fee" value="Free" valueVariant="free" />
+            <SummaryTotalRow
+              label="Payment fee"
+              value="Free"
+              valueVariant="free"
+              testId="summary-payment-fee"
+            />
           )}
         </>
       )}
 
       <div className={style.divider} role="presentation" />
 
-      <SummaryTotalRow isFinal label="Total" value={formatPrice(orderTotals.finalTotalPrice)} />
+      <SummaryTotalRow
+        isFinal
+        label="Total"
+        value={formatPrice(orderTotals.finalTotalPrice)}
+        testId="summary-total"
+      />
     </div>
   );
 };
