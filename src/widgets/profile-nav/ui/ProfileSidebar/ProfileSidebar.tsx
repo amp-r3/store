@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Link from 'next/link';
 
 import { SessionUser } from '@/entities/session';
@@ -19,33 +20,35 @@ interface ProfileSidebarLinkProps {
   unreadCount: number;
 }
 
-const ProfileSidebarLink = ({
-  item: { id, to, end, icon: Icon, label },
-  unreadCount,
-}: ProfileSidebarLinkProps) => {
-  const isActive = useIsNavActive(to, end);
-  const isNotifications = id === 'notifications';
-  const hasUnread = unreadCount >= 1;
+const ProfileSidebarLink = memo<ProfileSidebarLinkProps>(
+  ({ item: { id, to, end, icon: Icon, label }, unreadCount }) => {
+    const isActive = useIsNavActive(to, end);
+    const isNotifications = id === 'notifications';
+    const hasUnread = unreadCount >= 1;
 
-  return (
-    <Link
-      href={to}
-      replace
-      aria-label={
-        isNotifications ? (hasUnread ? `${label}, ${unreadCount} unread` : label) : undefined
-      }
-      className={`${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
-    >
-      <Icon className={style['profile-sidebar__icon']} />
-      <span aria-hidden={isNotifications ? 'true' : undefined}>{label}</span>
-      {isNotifications && hasUnread && (
-        <span className={style['profile-sidebar__badge']} aria-hidden="true">
-          {unreadCount > 9 ? '9+' : unreadCount}
-        </span>
-      )}
-    </Link>
-  );
-};
+    return (
+      <Link
+        href={to}
+        replace
+        aria-label={
+          isNotifications ? (hasUnread ? `${label}, ${unreadCount} unread` : label) : undefined
+        }
+        aria-current={isActive ? 'page' : undefined}
+        className={`${style['profile-sidebar__nav-link']} ${isActive ? style['profile-sidebar__nav-link--active'] : ''}`}
+      >
+        <Icon className={style['profile-sidebar__icon']} />
+        <span aria-hidden={isNotifications ? 'true' : undefined}>{label}</span>
+        {isNotifications && hasUnread && (
+          <span className={style['profile-sidebar__badge']} aria-hidden="true">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
+      </Link>
+    );
+  },
+);
+
+ProfileSidebarLink.displayName = 'ProfileSidebarLink';
 
 export const ProfileSidebar = ({ user, unreadCount, items }: ProfileSidebarProps) => {
   return (
@@ -63,7 +66,7 @@ export const ProfileSidebar = ({ user, unreadCount, items }: ProfileSidebarProps
         </div>
       </Link>
 
-      <nav className={style['profile-sidebar__nav']}>
+      <nav className={style['profile-sidebar__nav']} aria-label="Profile sections">
         {items.map((item) => (
           <ProfileSidebarLink key={item.id} item={item} unreadCount={unreadCount} />
         ))}

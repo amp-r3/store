@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Link from 'next/link';
 import { LuArrowLeft, LuUserRound } from 'react-icons/lu';
 
@@ -7,20 +8,23 @@ import { ADMIN_NAV_ITEMS, type AdminNavItem } from '../../config/navItems';
 
 import style from './admin-sidebar.module.scss';
 
-const AdminSidebarNavLink = ({ to, end, icon: Icon, label }: AdminNavItem) => {
+const AdminSidebarNavLink = memo<AdminNavItem>(({ to, end, icon: Icon, label }) => {
   const isActive = useIsNavActive(to, end);
 
   return (
     <Link
       href={to}
       replace
+      aria-current={isActive ? 'page' : undefined}
       className={`${style['admin-sidebar__nav-link']} ${isActive ? style['admin-sidebar__nav-link--active'] : ''}`}
     >
       <Icon className={style['admin-sidebar__icon']} />
       <span>{label}</span>
     </Link>
   );
-};
+});
+
+AdminSidebarNavLink.displayName = 'AdminSidebarNavLink';
 
 export const AdminSidebar = () => (
   <aside className={style['admin-sidebar']}>
@@ -35,7 +39,7 @@ export const AdminSidebar = () => (
       </Link>
     </div>
 
-    <nav className={style['admin-sidebar__nav']}>
+    <nav className={style['admin-sidebar__nav']} aria-label="Admin sections">
       {ADMIN_NAV_ITEMS.map((item) => (
         <AdminSidebarNavLink key={item.id} {...item} />
       ))}

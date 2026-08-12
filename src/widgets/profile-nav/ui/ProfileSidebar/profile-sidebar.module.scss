@@ -63,9 +63,14 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xxs;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .profile-sidebar__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-family: $font-display;
   font-size: $fs-md;
   font-weight: $fw-semibold;
@@ -74,6 +79,9 @@
 }
 
 .profile-sidebar__email {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: $fs-sm;
   color: var(--text-secondary);
   font-family: $font-primary;

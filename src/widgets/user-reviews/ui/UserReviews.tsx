@@ -12,6 +12,8 @@ import {
   PendingReviewCard,
   PendingReviewCardSkeleton,
   ReviewProductPreview,
+  ProductReview,
+  UnreviewedPurchase,
 } from '@/entities/review';
 
 import { UserReviewsHeader, UserReviewsTabs, UserReviewsEmpty } from './components';
@@ -20,6 +22,13 @@ import style from './user-reviews.module.scss';
 
 /** Cap the entry-animation stagger so long lists don't crawl in. */
 const MAX_STAGGER_INDEX = 8;
+const REVIEWS_PANEL_ID = 'user-reviews-panel';
+
+// Stable references so productIds/productsById below don't invalidate their
+// memo on every render while a query is uninitialized/skipped — `data ?? []`
+// inline would create a new array identity each time.
+const EMPTY_REVIEWS: ProductReview[] = [];
+const EMPTY_PENDING: UnreviewedPurchase[] = [];
 
 export const UserReviews = () => {
   const dispatch = useAppDispatch();
@@ -28,13 +37,13 @@ export const UserReviews = () => {
   const tab: ReviewsTab = searchParams.get('tab') === 'pending' ? 'pending' : 'written';
 
   const {
-    data: reviews = [],
+    data: reviews = EMPTY_REVIEWS,
     isLoading: isReviewsLoading,
     isError: isReviewsError,
   } = useGetMyReviewsQuery();
 
   const {
-    data: pending = [],
+    data: pending = EMPTY_PENDING,
     isLoading: isPendingLoading,
     isError: isPendingError,
   } = useGetUnreviewedPurchasesQuery();
@@ -159,14 +168,21 @@ export const UserReviews = () => {
         writtenCount={reviews.length}
         pendingCount={pending.length}
         onChange={handleTabChange}
+        panelId={REVIEWS_PANEL_ID}
       />
+
+      <span className="sr-only" role="status">
+        {isTabLoading
+          ? 'Loading...'
+          : `${tab === 'written' ? reviews.length : pending.length} ${tab === 'written' ? 'reviews' : 'pending items'}`}
+      </span>
 
       <div
         className={style['user-reviews__list']}
         role="tabpanel"
-        id={`user-reviews-panel-${tab}`}
+        id={REVIEWS_PANEL_ID}
         aria-labelledby={`user-reviews-tab-${tab}`}
-        aria-live="polite"
+        tabIndex={0}
       >
         {renderList()}
       </div>

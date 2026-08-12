@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import style from './product-summary.module.scss';
 import { ProductSizes } from './components/ProductSizes/ProductSizes';
 import { ProductSizesSkeleton } from './components/ProductSizes/ProductSizesSkeleton';
@@ -46,15 +46,20 @@ export const ProductSummary = ({
   isSizesLoading = false,
 }: ProductSummaryProps) => {
   const [isSizesHighlighted, setIsSizesHighlighted] = useState(false);
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleRequestSize = () => {
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
       setIsSizesHighlighted(true);
-      window.setTimeout(() => setIsSizesHighlighted(false), 500);
+      highlightTimerRef.current = setTimeout(() => setIsSizesHighlighted(false), 500);
     };
 
     window.addEventListener(REQUEST_SIZE_EVENT, handleRequestSize);
-    return () => window.removeEventListener(REQUEST_SIZE_EVENT, handleRequestSize);
+    return () => {
+      window.removeEventListener(REQUEST_SIZE_EVENT, handleRequestSize);
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    };
   }, []);
 
   return (

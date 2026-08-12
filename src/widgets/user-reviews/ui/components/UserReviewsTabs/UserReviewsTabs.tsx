@@ -7,6 +7,7 @@ interface UserReviewsTabsProps {
   writtenCount: number;
   pendingCount: number;
   onChange: (tab: ReviewsTab) => void;
+  panelId: string;
 }
 
 export const UserReviewsTabs = ({
@@ -14,6 +15,7 @@ export const UserReviewsTabs = ({
   writtenCount,
   pendingCount,
   onChange,
+  panelId,
 }: UserReviewsTabsProps) => {
   const items: SegmentedTabItem<ReviewsTab>[] = [
     { id: 'written', label: 'Written', count: writtenCount },
@@ -27,6 +29,7 @@ export const UserReviewsTabs = ({
       onChange={onChange}
       idPrefix="user-reviews"
       ariaLabel="Review sections"
+      panelId={panelId}
     />
   );
 };

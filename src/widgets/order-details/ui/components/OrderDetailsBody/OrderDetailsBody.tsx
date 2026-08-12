@@ -37,7 +37,9 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
           subtitle={
             order.deliveryMethods.code === 'pickup'
               ? 'The nearest pick-up point to you'
-              : `${order.shippingAddress.country}, ${order.shippingAddress.city}`
+              : [order.shippingAddress.country, order.shippingAddress.city]
+                  .filter(Boolean)
+                  .join(', ') || 'No address on file'
           }
         />
         <OrderInfoCard
@@ -67,6 +69,8 @@ export const OrderDetailsBody: FC<OrderDetailsBodyProps> = ({
           <div className={style['body__list']}>
             {isLoading || isFetching ? (
               <OrderItemSkeleton count={ITEMS_PREVIEW_COUNT} />
+            ) : orderItems.length === 0 ? (
+              <p className={style['body__empty']}>No items found for this order.</p>
             ) : (
               orderItems.map((product) => (
                 <OrderItem key={product.id} item={product} onClose={onClose} />

@@ -9,7 +9,6 @@
 
 .image-wrapper {
   position: relative;
-  cursor: pointer;
   width: 100%;
   height: 100%;
   min-height: 300px;
@@ -74,10 +73,41 @@
   filter: drop-shadow(0 8px 24px rgba(var(--primary-accent-rgb), 0.12));
 }
 
+.image-zoom-trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: $focus-ring-width solid var(--focus-ring-color);
+    outline-offset: -$focus-ring-offset;
+  }
+}
+
+.image-fallback {
+  position: absolute;
+  inset: $spacing-xl;
+  display: grid;
+  place-items: center;
+  font-size: $fs-icon-lg * 2;
+  color: var(--text-muted);
+
+  @media (max-width: 768px) {
+    inset: $spacing-lg;
+  }
+}
+
 .image-add-to-favorites {
   position: absolute;
   top: $spacing-md;
   right: $spacing-md;
+  z-index: 2;
   display: grid;
   place-items: center;
   width: $touch-target-comfortable;

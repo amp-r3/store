@@ -26,7 +26,6 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
   goodsTotal,
   onOpenChange,
   orderCartProduct,
-  formatOrderDate,
   onRateClick,
   direction,
   events,
@@ -68,7 +67,7 @@ export const OrderDetailsDrawer: FC<OrderDetailsDrawerProps> = ({
               orderId={order.orderId}
               orderStatus={order.status}
               isFetching={isFetching || isItemsFetching}
-              orderDate={formatOrderDate(order.createdAt)}
+              orderDate={order.createdAt}
             />
 
             {/* ── STICKY PROGRESS ── */}

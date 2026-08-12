@@ -162,26 +162,6 @@
       }
     }
   }
-
-  // ── Support button (secondary) ───────────
-  &__support-btn {
-    @extend %btn-base;
-
-    background: var(--background-component);
-    color: var(--text-primary);
-    border-color: var(--border-color-strong);
-    box-shadow: var(--shadow-xs);
-
-    &:hover:not(:disabled) {
-      background: var(--status-neutral-bg);
-      border-color: var(--primary-accent);
-      transform: $hover-lift;
-
-      svg {
-        transform: scale($scale-up-sm);
-      }
-    }
-  }
 }
 
 // ── Reduced motion ────────────────────────────
@@ -191,8 +171,7 @@
       transition-duration: $transition-reduced;
     }
 
-    &__repeat-btn:hover:not(:disabled),
-    &__support-btn:hover:not(:disabled) {
+    &__repeat-btn:hover:not(:disabled) {
       transform: none;
 
       svg {

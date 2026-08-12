@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
   HiOutlineClipboardDocument,
   HiOutlineClipboardDocumentCheck,
@@ -23,12 +23,20 @@ export const OrderDetailsHeader: FC<OrderDetailsHeaderProps> = ({
   isFetching,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   const handleCopyId = async () => {
     try {
       await navigator.clipboard.writeText(orderId);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy', err);
     }
@@ -42,6 +50,7 @@ export const OrderDetailsHeader: FC<OrderDetailsHeaderProps> = ({
             <span className="sr-only">Order ID </span>#{orderId}
           </h2>
           <button
+            type="button"
             onClick={handleCopyId}
             className={style['header__copy-btn']}
             aria-label={isCopied ? 'Order ID copied to clipboard' : 'Copy Order ID to clipboard'}

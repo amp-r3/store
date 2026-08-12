@@ -62,6 +62,11 @@ export const MobileBar = () => {
   const { selectedSizeId } = useSelectedSize(sizes);
   const { onIncrease, onDecrease } = useCartActions();
 
+  const [isNavigating, setIsNavigating] = useState(false);
+  // Ref, not just the isNavigating state, because a genuine double-click can
+  // fire both handlers before React re-renders with the disabled button.
+  const isNavigatingRef = useRef(false);
+
   const prevProductRef = useRef(product);
   if (product) prevProductRef.current = product;
   const displayProduct = product || prevProductRef.current;
@@ -163,6 +168,9 @@ export const MobileBar = () => {
       requestSize();
       return;
     }
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    setIsNavigating(true);
     const cartProduct: CartProduct[] = [
       { sizeId: selectedSizeId as number, productId: displayProduct.id, quantity: 1 },
     ];
@@ -182,6 +190,7 @@ export const MobileBar = () => {
             <Link
               href="/"
               aria-label="Home"
+              aria-current={isHomeActive ? 'page' : undefined}
               className={navLinkClass(isHomeActive)}
               onClick={() => soft()}
             >
@@ -189,11 +198,19 @@ export const MobileBar = () => {
             </Link>
             <Link
               href="/wishlist"
-              aria-label="Open wishlist"
+              aria-label={
+                isWishlistLoaded ? `Open wishlist, ${wishlistTotals} items` : 'Open wishlist'
+              }
+              aria-current={isWishlistActive ? 'page' : undefined}
               className={navLinkClass(isWishlistActive)}
               onClick={() => soft()}
+              data-testid="wishlist-open"
             >
-              {isWishlistLoaded && <span className={style.navbar__badge}>{wishlistTotals}</span>}
+              {isWishlistLoaded && (
+                <span className={style.navbar__badge} aria-hidden="true">
+                  {wishlistTotals}
+                </span>
+              )}
               <FaRegHeart />
             </Link>
           </div>
@@ -215,25 +232,35 @@ export const MobileBar = () => {
             <button
               type="button"
               className={style.navbar__tab}
-              aria-label="Open cart"
+              aria-label={isCartLoaded ? `Open cart, ${cartTotals} items` : 'Open cart'}
               data-testid="cart-open"
               onClick={() => {
                 dispatch(openCart());
                 soft();
               }}
             >
-              {isCartLoaded && <span className={style.navbar__badge}>{cartTotals}</span>}
+              {isCartLoaded && (
+                <span className={style.navbar__badge} aria-hidden="true">
+                  {cartTotals}
+                </span>
+              )}
               <IoCartOutline />
             </button>
             {isAuthReady ? (
               <Link
                 href="/user"
-                aria-label="Open profile"
+                aria-label={
+                  hasUnread && !isInUserSection
+                    ? `Open profile, ${unreadCount} unread`
+                    : 'Open profile'
+                }
+                aria-current={isUserActive ? 'page' : undefined}
                 className={navLinkClass(isUserActive)}
                 onClick={() => soft()}
+                data-testid="profile-open"
               >
                 {hasUnread && !isInUserSection && (
-                  <span className={style.navbar__badge}>
+                  <span className={style.navbar__badge} aria-hidden="true">
                     {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
                   </span>
                 )}
@@ -243,6 +270,8 @@ export const MobileBar = () => {
               <Link
                 href="/login"
                 aria-label="Sign in"
+                aria-current={isLoginActive ? 'page' : undefined}
+                data-testid="sign-in-open"
                 className={navLinkClass(isLoginActive)}
                 onClick={() => soft()}
               >
@@ -301,18 +330,32 @@ export const MobileBar = () => {
                 buttonText={isSizeSelected ? 'Add to Cart' : 'Select Size'}
                 outOfStockText="Out of Stock"
                 iconOnly
+                data-testid="add-to-cart-mobile-bar"
               />
               <div
                 className={`${style['navbar__buy-wrapper']} ${!showQuickBuy ? style['navbar__buy-wrapper--hidden'] : ''}`}
                 inert={!showQuickBuy || undefined}
               >
-                <QuickBuyButton onClick={handleQuickBuy} disabled={!currentInStock} iconOnly />
+                <QuickBuyButton
+                  onClick={handleQuickBuy}
+                  disabled={!currentInStock}
+                  isLoading={isNavigating}
+                  iconOnly
+                  data-testid="quick-buy-mobile-bar"
+                />
               </div>
             </>
           )}
         </div>
       </nav>
-      {isSearchOpen && <div className={style.navbar__backdrop} onClick={closeSearch}></div>}
+      {isSearchOpen && (
+        <button
+          type="button"
+          className={style.navbar__backdrop}
+          onClick={closeSearch}
+          aria-label="Close search"
+        />
+      )}
     </>
   );
 };

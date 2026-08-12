@@ -24,10 +24,10 @@ export const ProductInfo = ({ category, brand, title, rating, reviewsCount }: Pr
 
       <h1 className={style['title']}>{title}</h1>
 
-      <div
-        className={style['rating']}
-        aria-label={`Rating ${rating} out of 5, based on ${reviewsCount} reviews`}
-      >
+      <div className={style['rating']}>
+        <span className="sr-only">
+          Rating {rating} out of 5, based on {reviewsCount} reviews
+        </span>
         <span className={style['rating-value']} aria-hidden="true">
           {rating}
         </span>
@@ -35,7 +35,7 @@ export const ProductInfo = ({ category, brand, title, rating, reviewsCount }: Pr
         <a
           href="#reviews"
           className={style['rating-count']}
-          aria-label={`Look all ${reviewsCount} reviews`}
+          aria-label={`See all ${reviewsCount} reviews`}
         >
           {reviewsCount} reviews
         </a>

@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
-import { LuMessageSquareQuote, LuCopyCheck } from 'react-icons/lu';
+import { LuCopyCheck } from 'react-icons/lu';
 import style from './order-details-footer.module.scss';
 import { addToCheckout, clearCheckout } from '@/features/checkout-process';
 import { CartProduct } from '@/entities/cart';
@@ -43,6 +43,7 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
 
       <div className={style['footer__btn-container']}>
         <button
+          type="button"
           className={style['footer__repeat-btn']}
           onClick={() => {
             setModal(true);
@@ -50,10 +51,6 @@ export const OrderDetailsFooter: FC<OrderDetailsFooterProps> = ({
         >
           <FiRefreshCcw />
           Repeat order
-        </button>
-        <button className={style['footer__support-btn']}>
-          <LuMessageSquareQuote />
-          Support
         </button>
       </div>
       <Modal

@@ -47,7 +47,7 @@ export const ProductSizes = ({
       <span className={style['product-sizes__title']} aria-hidden="true">
         Select Size
       </span>
-      <ul className={style['product-sizes__list']} role="listbox" aria-label="Select product size">
+      <ul className={style['product-sizes__list']} aria-label="Select product size">
         {sizes.map((size) => {
           const isActive = size.id === activeSizeId;
           const isOutOfStock = size.stock === 0;
@@ -57,12 +57,13 @@ export const ProductSizes = ({
             : style['product-sizes__item'];
 
           return (
-            <li key={size.id} role="option" aria-selected={isActive}>
+            <li key={size.id}>
               <button
                 type="button"
                 className={itemClassName}
                 onClick={() => handleSelect(size.id)}
                 disabled={isOutOfStock}
+                aria-pressed={isActive}
                 aria-label={`Size ${size.value}${isOutOfStock ? ', out of stock' : ''}`}
               >
                 {size.value}

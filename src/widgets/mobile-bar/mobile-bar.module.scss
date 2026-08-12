@@ -261,5 +261,8 @@
   position: fixed;
   inset: 0;
   z-index: $z-index-fixed;
+  padding: 0;
+  border: none;
   background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }

@@ -8,7 +8,7 @@ import {
   AdminOrderDetailsFooter,
 } from '../components';
 import { OrderProgress, OrderStatusEvent } from '@/entities/order';
-import { formatDate, getModalRoot, ignoreToastInteraction } from '@/shared/lib';
+import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
 import style from './admin-order-details-drawer.module.scss';
 import { AdminOrderDetailsProps } from '../AdminOrderDetails';
 
@@ -72,8 +72,8 @@ export const AdminOrderDetailsDrawer: FC<AdminOrderDetailsDrawerProps> = ({
               orderId={order.orderId}
               orderStatus={order.status}
               isFetching={isFetching || isItemsFetching}
-              orderDate={formatDate(order.createdAt, 'full')}
-              updatedDate={formatDate(order.updatedAt, 'full')}
+              orderDate={order.createdAt}
+              updatedDate={order.updatedAt}
             />
 
             {/* ── STICKY PROGRESS ── */}

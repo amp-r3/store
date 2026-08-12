@@ -27,6 +27,9 @@ export const DealsShowcase = memo(({ initialProducts }: DealsShowcaseProps = {})
   const isLoading = isLiveLoading && !products;
   const { soft } = useHaptics();
 
+  // Deliberate graceful degradation: this is one secondary shelf on the
+  // homepage, not the whole page — a failed fetch just renders nothing
+  // rather than surfacing an ErrorView.
   if (error && !products?.length) return null;
   if (!isLoading && (!products || products.length === 0)) return null;
 

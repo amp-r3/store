@@ -11,5 +11,6 @@ export const getDisplayName = (user: SessionUser): string => {
   if (user.firstName || user.lastName) {
     return `${user.firstName || ''} ${user.lastName || ''}`.trim();
   }
-  return `@${user.username}`;
+  if (user.username) return `@${user.username}`;
+  return user.email || 'User';
 };

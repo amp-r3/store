@@ -33,6 +33,9 @@ export const CategoryRow = memo(
     const isLoading = isLiveLoading && !data;
     const { light } = useHaptics();
 
+    // Deliberate graceful degradation: this is one secondary shelf among
+    // several on the homepage, not the whole page — a failed row just
+    // renders nothing rather than surfacing an ErrorView per category.
     if (error && !data?.ids.length) return null;
     if (!isLoading && (!data || data.ids.length === 0)) return null;
 

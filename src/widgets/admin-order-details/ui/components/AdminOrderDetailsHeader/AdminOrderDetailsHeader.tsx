@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
   HiOutlineClipboardDocument,
   HiOutlineClipboardDocumentCheck,
@@ -6,6 +6,7 @@ import {
 } from 'react-icons/hi2';
 import style from './admin-order-details-header.module.scss';
 import { OrderStatus, ORDER_STATUS_MAP } from '@/entities/order';
+import { formatDate } from '@/shared/lib';
 import { StatusBadge } from '@/shared/ui';
 
 interface AdminOrderDetailsHeaderProps {
@@ -24,12 +25,20 @@ export const AdminOrderDetailsHeader: FC<AdminOrderDetailsHeaderProps> = ({
   isFetching,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   const handleCopyId = async () => {
     try {
       await navigator.clipboard.writeText(orderId);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy', err);
     }
@@ -43,6 +52,7 @@ export const AdminOrderDetailsHeader: FC<AdminOrderDetailsHeaderProps> = ({
             <span className="sr-only">Order ID </span>#{orderId}
           </h2>
           <button
+            type="button"
             onClick={handleCopyId}
             className={style['header__copy-btn']}
             aria-label={isCopied ? 'Order ID copied to clipboard' : 'Copy Order ID to clipboard'}
@@ -63,12 +73,12 @@ export const AdminOrderDetailsHeader: FC<AdminOrderDetailsHeaderProps> = ({
           <HiOutlineCalendar className={style['header__meta-icon']} aria-hidden="true" />
           <span>
             <span className="sr-only">Placed </span>
-            <time dateTime={orderDate}>{orderDate}</time>
+            <time dateTime={orderDate}>{formatDate(orderDate, 'full')}</time>
           </span>
           <span aria-hidden="true">·</span>
           <span>
             <span className="sr-only">Last updated </span>
-            <time dateTime={updatedDate}>{updatedDate}</time>
+            <time dateTime={updatedDate}>{formatDate(updatedDate, 'full')}</time>
           </span>
         </div>
       </div>

@@ -123,6 +123,13 @@
     }
   }
 
+  &__empty {
+    padding: $spacing-md;
+    color: var(--text-secondary);
+    font-size: $fs-sm;
+    text-align: center;
+  }
+
   &__receipt {
     display: flex;
     flex-direction: column;

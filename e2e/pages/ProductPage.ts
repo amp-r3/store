@@ -36,9 +36,7 @@ export class ProductPage extends BasePage {
     // match.
     await expect(this.purchaseBox).toBeVisible();
 
-    const options = this.sizeList.getByRole('option').filter({
-      has: this.page.locator('button:not([disabled])'),
-    });
+    const options = this.sizeList.locator('button:not([disabled])');
 
     if ((await options.count()) === 0) {
       await expect(this.stockLine()).not.toHaveAttribute('data-stock', 'select-size');
@@ -46,8 +44,8 @@ export class ProductPage extends BasePage {
     }
 
     const option = options.first();
-    await option.locator('button').click();
-    await expect(option).toHaveAttribute('aria-selected', 'true');
+    await option.click();
+    await expect(option).toHaveAttribute('aria-pressed', 'true');
   }
 
   /** Scoped to `#product-purchase-box`: MobileBar renders a second, icon-only

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Link from 'next/link';
 
 import { SessionUser } from '@/entities/session';
@@ -20,47 +21,48 @@ interface ProfileMobileNavTabProps {
   onClick: () => void;
 }
 
-const ProfileMobileNavTab = ({
-  item: { id, to, end, icon: Icon, shortLabel },
-  unreadCount,
-  onClick,
-}: ProfileMobileNavTabProps) => {
-  const isActive = useIsNavActive(to, end);
-  const isNotifications = id === 'notifications';
-  const hasUnread = unreadCount >= 1;
-  const badgeCount = unreadCount > 9 ? '9+' : unreadCount;
+const ProfileMobileNavTab = memo<ProfileMobileNavTabProps>(
+  ({ item: { id, to, end, icon: Icon, shortLabel }, unreadCount, onClick }) => {
+    const isActive = useIsNavActive(to, end);
+    const isNotifications = id === 'notifications';
+    const hasUnread = unreadCount >= 1;
+    const badgeCount = unreadCount > 9 ? '9+' : unreadCount;
 
-  return (
-    <Link
-      href={to}
-      replace
-      aria-label={
-        isNotifications
-          ? hasUnread
-            ? `${shortLabel}, ${unreadCount} unread`
-            : shortLabel
-          : undefined
-      }
-      className={`${style['profile-mobile-nav__tab']} ${isActive ? style['profile-mobile-nav__tab--active'] : ''}`}
-      onClick={onClick}
-    >
-      <span className={style['profile-mobile-nav__icon-wrap']}>
-        <Icon className={style['profile-mobile-nav__icon']} />
-        {isNotifications && hasUnread && (
-          <span className={style['profile-mobile-nav__badge']} aria-hidden="true">
-            {badgeCount}
-          </span>
-        )}
-      </span>
-      <span
-        className={style['profile-mobile-nav__label']}
-        aria-hidden={isNotifications ? 'true' : undefined}
+    return (
+      <Link
+        href={to}
+        replace
+        aria-label={
+          isNotifications
+            ? hasUnread
+              ? `${shortLabel}, ${unreadCount} unread`
+              : shortLabel
+            : undefined
+        }
+        aria-current={isActive ? 'page' : undefined}
+        className={`${style['profile-mobile-nav__tab']} ${isActive ? style['profile-mobile-nav__tab--active'] : ''}`}
+        onClick={onClick}
       >
-        {shortLabel}
-      </span>
-    </Link>
-  );
-};
+        <span className={style['profile-mobile-nav__icon-wrap']}>
+          <Icon className={style['profile-mobile-nav__icon']} />
+          {isNotifications && hasUnread && (
+            <span className={style['profile-mobile-nav__badge']} aria-hidden="true">
+              {badgeCount}
+            </span>
+          )}
+        </span>
+        <span
+          className={style['profile-mobile-nav__label']}
+          aria-hidden={isNotifications ? 'true' : undefined}
+        >
+          {shortLabel}
+        </span>
+      </Link>
+    );
+  },
+);
+
+ProfileMobileNavTab.displayName = 'ProfileMobileNavTab';
 
 export const ProfileMobileNav = ({ user, unreadCount, items }: ProfileMobileNavProps) => {
   const { soft } = useHaptics();

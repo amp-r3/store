@@ -37,9 +37,16 @@ export const NavActions = () => {
 
   return (
     <div className={style['nav-actions']}>
-      <Link href={'/wishlist'} aria-label="open wishlist" className={btnClass}>
+      <Link
+        href={'/wishlist'}
+        aria-label={isWishlistLoaded ? `Open wishlist, ${wishlistTotals} items` : 'Open wishlist'}
+        className={btnClass}
+        data-testid="wishlist-open"
+      >
         {isWishlistLoaded && (
-          <span className={style['nav-actions__btn__count']}>{wishlistTotals}</span>
+          <span className={style['nav-actions__btn__count']} aria-hidden="true">
+            {wishlistTotals}
+          </span>
         )}
         <FaRegHeart />
       </Link>
@@ -50,25 +57,34 @@ export const NavActions = () => {
           soft();
         }}
         type="button"
-        aria-label="open cart"
+        aria-label={isCartLoaded ? `Open cart, ${cartTotals} items` : 'Open cart'}
         data-testid="cart-open"
         className={btnClass}
       >
-        {isCartLoaded && <span className={style['nav-actions__btn__count']}>{cartTotals}</span>}
+        {isCartLoaded && (
+          <span className={style['nav-actions__btn__count']} aria-hidden="true">
+            {cartTotals}
+          </span>
+        )}
         <IoCartOutline />
       </button>
 
       {isAuthReady ? (
-        <Link href={'/user'} aria-label="open profile" className={btnClass}>
+        <Link
+          href={'/user'}
+          aria-label={hasUnread ? `Open profile, ${unreadCount} unread` : 'Open profile'}
+          className={btnClass}
+          data-testid="profile-open"
+        >
           {hasUnread && (
-            <span className={style['nav-actions__btn__count']}>
+            <span className={style['nav-actions__btn__count']} aria-hidden="true">
               {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
             </span>
           )}
           <FaUser />
         </Link>
       ) : (
-        <Link href={'/login'} aria-label="sign in" className={btnClass}>
+        <Link href={'/login'} aria-label="Sign in" className={btnClass} data-testid="sign-in-open">
           <FaArrowRightToBracket />
         </Link>
       )}

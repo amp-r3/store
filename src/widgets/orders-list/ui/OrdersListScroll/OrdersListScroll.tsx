@@ -24,7 +24,7 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isFetching) {
+        if (entries[0]?.isIntersecting && hasMore && !isFetching) {
           onLoadMore();
         }
       },
@@ -36,9 +36,7 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
     }
 
     return () => {
-      if (triggerElement) {
-        observer.unobserve(triggerElement);
-      }
+      observer.disconnect();
     };
   }, [hasMore, isFetching, onLoadMore]);
 
@@ -77,7 +75,9 @@ export const OrdersListScroll: FC<OrdersListProps> = ({
       <div ref={triggerRef} className={style['scroll-trigger']} />
 
       {!isLoading && !hasMore && orders.length > 0 && (
-        <p className={style['end-of-list']}>All orders have been loaded.</p>
+        <p className={style['end-of-list']} role="status">
+          All orders have been loaded.
+        </p>
       )}
     </section>
   );
