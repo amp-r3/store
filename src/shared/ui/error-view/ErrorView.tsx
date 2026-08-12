@@ -29,7 +29,7 @@ export const ErrorView: FC<ErrorViewProps> = ({ error }) => {
         <p className={style.errorMessage}>
           {error || "We couldn't complete your request. Please try again later."}
         </p>
-        <button onClick={onRetry} className={style.errorButton}>
+        <button type="button" onClick={onRetry} className={style.errorButton}>
           Try Again
         </button>
       </div>

@@ -58,6 +58,7 @@ export const ShareCopyBtn = () => {
 
   return (
     <button
+      type="button"
       className={style['share-copy-btn']}
       onClick={shareContent}
       aria-label={ariaLabel}

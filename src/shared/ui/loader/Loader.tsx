@@ -12,7 +12,7 @@ export const Loader = ({ size }: { size?: LoaderSize }) => {
     : `${style.spinnerSvg} ${style['spinnerSvg--md']}`;
 
   return (
-    <div className={wrapperClass}>
+    <div className={wrapperClass} aria-hidden="true">
       <svg className={svgClass} viewBox="0 0 50 50">
         <defs>
           <linearGradient

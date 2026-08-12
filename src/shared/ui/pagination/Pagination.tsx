@@ -81,6 +81,7 @@ export const Pagination = ({
         aria-label="Pagination"
       >
         <button
+          type="button"
           className={`${style.pagination__item} ${isFirst ? style['pagination__item--disabled'] : ''}`}
           onClick={onPrevious}
           disabled={isFirst}
@@ -115,6 +116,7 @@ export const Pagination = ({
 
               return (
                 <button
+                  type="button"
                   key={pageNumber}
                   className={`${style.pagination__item} ${isActive ? style['pagination__item--active'] : ''}`}
                   onClick={() => handlePageChange(pageNumber)}
@@ -130,6 +132,7 @@ export const Pagination = ({
         )}
 
         <button
+          type="button"
           className={`${style.pagination__item} ${isLast ? style['pagination__item--disabled'] : ''}`}
           onClick={onNext}
           disabled={isLast}

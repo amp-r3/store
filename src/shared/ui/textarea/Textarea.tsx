@@ -17,7 +17,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     const describedBy =
       [
-        error ? errorId : null,
+        typeof error === 'string' && error ? errorId : null,
         !error && description ? descriptionId : null,
         props['aria-describedby'] ?? null,
       ]

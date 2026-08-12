@@ -41,7 +41,7 @@ export const NoResults = ({ query, description }: NoResultsProps) => {
           )}
         </p>
 
-        <button onClick={handleReset} className={style.noResults__btn}>
+        <button type="button" onClick={handleReset} className={style.noResults__btn}>
           Reset Filters
         </button>
       </div>

@@ -81,7 +81,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
     // aria-describedby must be merged here rather than overwritten by it.
     const describedBy =
       [
-        error ? errorId : null,
+        typeof error === 'string' && error ? errorId : null,
         !error && description ? descriptionId : null,
         warning ? warningId : null,
         optional ? optionalId : null,

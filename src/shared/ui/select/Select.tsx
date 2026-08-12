@@ -59,7 +59,10 @@ export const Select = ({
   const isBadge = variant === 'badge';
 
   const describedBy =
-    [error ? errorId : null, !error && description ? descriptionId : null]
+    [
+      typeof error === 'string' && error ? errorId : null,
+      !error && description ? descriptionId : null,
+    ]
       .filter(Boolean)
       .join(' ') || undefined;
 

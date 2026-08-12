@@ -60,9 +60,11 @@ export const Modal: FC<ModalProps> = ({
               </Dialog.Close>
             )}
             <button
+              type="button"
               className={`${style.actionButton} ${style[actionVariant]}`}
               onClick={onAction}
               disabled={isLoading}
+              aria-busy={isLoading || undefined}
             >
               {actionLabel}
             </button>
