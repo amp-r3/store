@@ -9,6 +9,7 @@ interface QuickBuyButtonProps {
   disabled?: boolean;
   className?: string;
   iconOnly?: boolean;
+  'data-testid'?: string;
 }
 
 export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
@@ -17,6 +18,7 @@ export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
   disabled = false,
   className = '',
   iconOnly = false,
+  'data-testid': dataTestId,
 }) => {
   const { light } = useHaptics();
 
@@ -32,9 +34,11 @@ export const QuickBuyButton: React.FC<QuickBuyButtonProps> = ({
   return (
     <button
       type="button"
+      data-testid={dataTestId}
       className={`${styles.button} ${iconOnly ? styles['button--icon-only'] : ''} ${className}`}
       onClick={handleClick}
       disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
       aria-label="Buy Now"
     >
       {isLoading ? <FaSpinner className={styles.spinning} /> : <FaBolt className={styles.icon} />}

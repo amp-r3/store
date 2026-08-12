@@ -14,6 +14,7 @@ interface AddToCartButtonProps {
   buttonText?: string;
   outOfStockText?: string;
   iconOnly?: boolean;
+  'data-testid'?: string;
 }
 
 export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
@@ -28,6 +29,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   buttonText = 'Add to Cart',
   outOfStockText = 'Out of Stock',
   iconOnly = false,
+  'data-testid': dataTestId,
 }) => {
   const isActive = quantity > 0;
   const [animateQty, setAnimateQty] = useState(false);
@@ -51,6 +53,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   return (
     <div
       className={`${styles.container} ${isActive ? styles['is-active'] : ''} ${iconOnly ? styles['icon-only'] : ''} ${className}`}
+      data-testid={dataTestId}
     >
       <button
         type="button"
@@ -58,7 +61,6 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         onClick={(e) => handleAction(e, onAddToCart)}
         disabled={isLoading || (!isActive && (!inStock || isMaxReached))}
         inert={isActive ? true : undefined}
-        aria-label={iconOnly ? displayAddText : undefined}
       >
         {isLoading ? (
           <FaSpinner className={`${styles.icon} ${styles.spinning}`} />
@@ -79,7 +81,10 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
           <FaMinus />
         </button>
 
-        <span className={`${styles['counter-qty']} ${animateQty ? styles['qty-pop'] : ''}`}>
+        <span
+          className={`${styles['counter-qty']} ${animateQty ? styles['qty-pop'] : ''}`}
+          aria-live="polite"
+        >
           {quantity}
         </span>
 

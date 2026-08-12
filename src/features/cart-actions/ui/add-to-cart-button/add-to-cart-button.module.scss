@@ -38,7 +38,13 @@
     border-color: var(--border-color-subtle);
     box-shadow: none;
     transform: none;
-    pointer-events: none;
+
+    // Scoped to .add-btn, not the container — .add-btn:disabled fires this
+    // while the counter is visible (isActive + isLoading), and the counter's
+    // own +/- buttons carry their own disabled state independently.
+    .add-btn {
+      pointer-events: none;
+    }
   }
 
   @media (hover: hover) {

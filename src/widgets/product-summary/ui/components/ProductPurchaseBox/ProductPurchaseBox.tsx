@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import style from './product-purchase-box.module.scss';
 import { CartProduct } from '@/entities/cart';
 import { addToCheckout, clearCheckout } from '@/features/checkout-process';
@@ -35,6 +35,17 @@ export const ProductPurchaseBox = ({
   const router = useRouter();
   const [isWarning, setIsWarning] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  // Ref, not just the isNavigating state, because a genuine double-click can
+  // fire both handlers before React re-renders with the disabled button.
+  const isNavigatingRef = useRef(false);
+  const shakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
+    };
+  }, []);
 
   const { isSizeSelected, currentStock, currentInStock, isLowStock, isOutOfStock, isMaxReached } =
     getPurchaseState({ quantity, sizes, selectedSizeId, hasSizes });
@@ -46,7 +57,8 @@ export const ProductPurchaseBox = ({
   const triggerWarning = () => {
     setIsWarning(true);
     setIsShaking(true);
-    setTimeout(() => setIsShaking(false), 400);
+    if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
+    shakeTimerRef.current = setTimeout(() => setIsShaking(false), 400);
   };
 
   const handleAddToCart = () => {
@@ -62,6 +74,9 @@ export const ProductPurchaseBox = ({
       triggerWarning();
       return;
     }
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    setIsNavigating(true);
     dispatch(clearCheckout());
     dispatch(addToCheckout(cartProduct));
     router.push('/checkout');
@@ -159,11 +174,14 @@ export const ProductPurchaseBox = ({
           className={style['purchase-box__add-to-cart']}
           buttonText={isSizeSelected ? 'Add to Cart' : 'Select Size'}
           outOfStockText="Out of Stock"
+          data-testid="add-to-cart-purchase-box"
         />
         <QuickBuyButton
           onClick={handleQuickBuy}
           disabled={!currentInStock}
+          isLoading={isNavigating}
           className={style['purchase-box__quick-buy']}
+          data-testid="quick-buy-purchase-box"
         />
       </div>
 
