@@ -11,7 +11,16 @@ export const useAuthUrlError = () => {
   useEffect(() => {
     // 1. Get providers that have failed before from sessionStorage
     const storedFailed = sessionStorage.getItem(AUTH_STORAGE_KEYS.blockedProviders);
-    const failedList: AuthProviderId[] = storedFailed ? JSON.parse(storedFailed) : [];
+    let failedList: AuthProviderId[] = [];
+    if (storedFailed) {
+      try {
+        const parsed: unknown = JSON.parse(storedFailed);
+        if (Array.isArray(parsed)) failedList = parsed;
+      } catch {
+        // Corrupted sessionStorage value — fall back to an empty list rather
+        // than taking the whole auth page down.
+      }
+    }
     setFailedProviders(failedList);
 
     // 2. Parse search params

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Loader } from '@/shared/ui';
 import style from './sign-in-button.module.scss';
 import { PROVIDER_CONFIG, type AuthProviderId } from '@/shared/config';
@@ -15,39 +16,36 @@ interface SignInButtonProps {
   disabled?: boolean;
 }
 
-export const SignInButton = ({
-  provider,
-  className,
-  onClick,
-  hasFailed,
-  isLoading,
-  disabled,
-}: SignInButtonProps) => {
-  const { label, icon, slug } = PROVIDER_CONFIG[provider];
-  const buttonLabel = hasFailed ? `Try ${label} again` : `Continue with ${label}`;
+export const SignInButton = memo<SignInButtonProps>(
+  ({ provider, className, onClick, hasFailed, isLoading, disabled }) => {
+    const { label, icon, slug } = PROVIDER_CONFIG[provider];
+    const buttonLabel = hasFailed ? `Try ${label} again` : `Continue with ${label}`;
 
-  const buttonClasses = [
-    style['sign-in'],
-    style[`sign-in--${slug}`],
-    hasFailed ? style['sign-in--failed'] : '',
-    isLoading ? style['sign-in--loading'] : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+    const buttonClasses = [
+      style['sign-in'],
+      style[`sign-in--${slug}`],
+      hasFailed ? style['sign-in--failed'] : '',
+      isLoading ? style['sign-in--loading'] : '',
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-  return (
-    <button
-      className={buttonClasses}
-      type="button"
-      aria-label={buttonLabel}
-      aria-busy={isLoading || undefined}
-      disabled={disabled || isLoading}
-      onClick={onClick}
-    >
-      <span className={style['sign-in__icon']}>{isLoading ? <Loader size="xs" /> : icon}</span>
+    return (
+      <button
+        className={buttonClasses}
+        type="button"
+        aria-label={buttonLabel}
+        aria-busy={isLoading || undefined}
+        disabled={disabled || isLoading}
+        onClick={onClick}
+      >
+        <span className={style['sign-in__icon']}>{isLoading ? <Loader size="xs" /> : icon}</span>
 
-      <span className={style['sign-in__label']}>{buttonLabel}</span>
-    </button>
-  );
-};
+        <span className={style['sign-in__label']}>{buttonLabel}</span>
+      </button>
+    );
+  },
+);
+
+SignInButton.displayName = 'SignInButton';

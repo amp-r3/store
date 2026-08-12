@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { reviewSchema, ReviewFormData } from '@/features/order-review/model/reviewSchema';
@@ -25,7 +25,9 @@ export const useReviewModal = () => {
   const [addOrUpdateReview, { isLoading }] = useAddOrUpdateReviewMutation();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const currentUserReview = myReviews?.find((r) => r.productId === Number(productId));
+  const currentUserReview = productId
+    ? myReviews?.find((r) => r.productId === Number(productId))
+    : undefined;
 
   const form = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
@@ -34,19 +36,24 @@ export const useReviewModal = () => {
 
   const { reset } = form;
 
+  // Read via refs, not reactive deps — a refetch/late resolution of
+  // myReviews while the modal is already open must not reset the form and
+  // discard whatever the user has typed. Only opening the modal should.
+  const currentUserReviewRef = useRef(currentUserReview);
+  currentUserReviewRef.current = currentUserReview;
+  const initialRatingRef = useRef(initialRating);
+  initialRatingRef.current = initialRating;
+
   useEffect(() => {
-    if (isOpen) {
-      setSubmitError(null);
-      if (currentUserReview) {
-        reset({
-          rating: currentUserReview.rating,
-          comment: currentUserReview.comment || '',
-        });
-      } else {
-        reset({ rating: initialRating ?? 0, comment: '' });
-      }
+    if (!isOpen) return;
+    setSubmitError(null);
+    const review = currentUserReviewRef.current;
+    if (review) {
+      reset({ rating: review.rating, comment: review.comment || '' });
+    } else {
+      reset({ rating: initialRatingRef.current ?? 0, comment: '' });
     }
-  }, [isOpen, currentUserReview, initialRating, reset]);
+  }, [isOpen, reset]);
 
   const handleClose = () => dispatch(closeReviewModal());
 

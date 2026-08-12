@@ -1,12 +1,13 @@
 import { Dialog } from 'radix-ui';
 import { Drawer } from 'vaul';
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { LuStar } from 'react-icons/lu';
 import { EnrichedOrderItem } from '@/entities/order';
 import style from './review-target-picker.module.scss';
 import { useMediaQuery } from '@/shared/lib/hooks';
 import { getModalRoot, ignoreToastInteraction } from '@/shared/lib';
+import { EmptyState } from '@/shared/ui';
 import { OrderItem } from '@/entities/order';
 import { OrderItemSkeleton } from '@/entities/order';
 
@@ -23,23 +24,19 @@ interface ReviewTargetRowProps {
   onSelect(item: EnrichedOrderItem): void;
 }
 
-const ReviewTargetRow = ({ item, onSelect }: ReviewTargetRowProps) => (
-  <div
-    className={style['review-target']}
-    role="button"
-    tabIndex={0}
-    aria-label={`Rate ${item.product.title}`}
-    onClick={() => onSelect(item)}
-    onKeyDown={(event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onSelect(item);
-      }
-    }}
-  >
+const ReviewTargetRow = memo<ReviewTargetRowProps>(({ item, onSelect }) => (
+  <div className={style['review-target']}>
     <OrderItem item={item} linkToProduct={false} />
+    <button
+      type="button"
+      className={style['review-target__trigger']}
+      onClick={() => onSelect(item)}
+      aria-label={`Rate ${item.product.title}`}
+    />
   </div>
-);
+));
+
+ReviewTargetRow.displayName = 'ReviewTargetRow';
 
 export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
   orderItems,
@@ -87,6 +84,12 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
             <div className={style['review-drawer__body']}>
               {isLoading ? (
                 <OrderItemSkeleton count={3} />
+              ) : orderItems.length === 0 ? (
+                <EmptyState
+                  icon={<LuStar />}
+                  title="Nothing to rate"
+                  text="This order has no items left to review."
+                />
               ) : (
                 orderItems.map((product) => (
                   <ReviewTargetRow key={product.id} item={product} onSelect={onAction} />
@@ -129,6 +132,12 @@ export const ReviewTargetPicker: FC<ReviewTargetPickerProps> = ({
           <div className={style['review-modal__body']}>
             {isLoading ? (
               <OrderItemSkeleton count={3} />
+            ) : orderItems.length === 0 ? (
+              <EmptyState
+                icon={<LuStar />}
+                title="Nothing to rate"
+                text="This order has no items left to review."
+              />
             ) : (
               orderItems.map((product) => (
                 <ReviewTargetRow key={product.id} item={product} onSelect={onAction} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { useReviewModal } from '../../model/useReviewModal';
 import { Dialog } from 'radix-ui';
 import { Controller } from 'react-hook-form';
@@ -29,6 +29,11 @@ export const ReviewModal: React.FC = () => {
 
   const commentLength = watch('comment')?.length ?? 0;
 
+  const commentId = useId();
+  const ratingLabelId = useId();
+  const ratingErrorId = useId();
+  const commentErrorId = useId();
+
   return (
     <Dialog.Root open={!!isOpen} onOpenChange={handleOpenChange}>
       <Dialog.Portal container={getModalRoot()}>
@@ -50,7 +55,7 @@ export const ReviewModal: React.FC = () => {
 
           <form className={style['review-modal__form']} onSubmit={handleSubmit(onSubmit)}>
             <div className={style['review-modal__field']}>
-              <span id="review-rating-label" className={style['review-modal__label']}>
+              <span id={ratingLabelId} className={style['review-modal__label']}>
                 Rating *
               </span>
               <Controller
@@ -60,8 +65,8 @@ export const ReviewModal: React.FC = () => {
                   <div
                     className={style['review-modal__stars']}
                     role="radiogroup"
-                    aria-labelledby="review-rating-label"
-                    aria-describedby={errors.rating ? 'review-rating-error' : undefined}
+                    aria-labelledby={ratingLabelId}
+                    aria-describedby={errors.rating ? ratingErrorId : undefined}
                   >
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -85,11 +90,7 @@ export const ReviewModal: React.FC = () => {
                 )}
               />
               {errors.rating && (
-                <span
-                  id="review-rating-error"
-                  className={style['review-modal__error']}
-                  role="alert"
-                >
+                <span id={ratingErrorId} className={style['review-modal__error']} role="alert">
                   {errors.rating.message}
                 </span>
               )}
@@ -97,25 +98,22 @@ export const ReviewModal: React.FC = () => {
 
             <div className={style['review-modal__field']}>
               <div className={style['review-modal__label-row']}>
-                <label htmlFor="comment" className={style['review-modal__label']}>
+                <label htmlFor={commentId} className={style['review-modal__label']}>
                   Comment (optional)
                 </label>
                 <span className={style['review-modal__char-count']}>{commentLength}/2000</span>
               </div>
               <textarea
-                id="comment"
+                id={commentId}
                 {...register('comment')}
                 className={style['review-modal__textarea']}
                 placeholder="What did you like or dislike? What is this product used for?"
                 maxLength={2000}
-                aria-describedby={errors.comment ? 'review-comment-error' : undefined}
+                aria-invalid={!!errors.comment}
+                aria-describedby={errors.comment ? commentErrorId : undefined}
               />
               {errors.comment && (
-                <span
-                  id="review-comment-error"
-                  className={style['review-modal__error']}
-                  role="alert"
-                >
+                <span id={commentErrorId} className={style['review-modal__error']} role="alert">
                   {errors.comment.message}
                 </span>
               )}

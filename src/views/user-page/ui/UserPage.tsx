@@ -10,7 +10,7 @@ import { ChangePasswordSection } from './components/change-password-section/Chan
 export const UserPage = () => {
   const user = useAppSelector(selectUser);
   const router = useRouter();
-  const [deleteAccount, { error: deleteError, reset: resetDeleteError }] =
+  const [deleteAccount, { error: deleteError, isLoading: isDeleting, reset: resetDeleteError }] =
     useDeleteAccountMutation();
   const [signOut] = useSignOutMutation();
 
@@ -58,6 +58,7 @@ export const UserPage = () => {
             }}
             onLogout={handleLogout}
             onDeleteAccount={handleDeleteAccount}
+            isDeleting={isDeleting}
             deleteError={deleteError ? getErrorMessage(deleteError) : undefined}
           />
           <ChangePasswordSection hasPasswordIdentity={hasPasswordIdentity} />

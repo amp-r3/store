@@ -12,6 +12,7 @@ interface UserProfileViewProps {
   onEditClick: () => void;
   onLogout: () => void;
   onDeleteAccount: () => void;
+  isDeleting?: boolean;
   deleteError?: string;
 }
 
@@ -58,6 +59,7 @@ export const UserProfileView = ({
   providers,
   onLogout,
   onDeleteAccount,
+  isDeleting,
   deleteError,
 }: UserProfileViewProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -97,12 +99,6 @@ export const UserProfileView = ({
         </div>
       </section>
 
-      {deleteError && (
-        <p className={style['profile-view__delete-error']} role="alert">
-          {deleteError}
-        </p>
-      )}
-
       <Modal
         isOpen={isLogoutModalOpen}
         onOpenChange={setIsLogoutModalOpen}
@@ -125,8 +121,15 @@ export const UserProfileView = ({
         icon={<CgTrash size={50} />}
         actionLabel="Delete Account"
         actionVariant="danger"
+        isLoading={isDeleting}
         onAction={onDeleteAccount}
-      />
+      >
+        {deleteError && (
+          <p className={style['profile-view__delete-error']} role="alert">
+            {deleteError}
+          </p>
+        )}
+      </Modal>
     </div>
   );
 };

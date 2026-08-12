@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { LuMail } from 'react-icons/lu';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { Alert, FormField, useAuthCardLoading } from '@/shared/ui';
-import { useCapsLock, useHaptics } from '@/shared/lib';
+import { useCapsLock, useHaptics, getErrorMessage } from '@/shared/lib';
 import { useLoginMutation } from '@/entities/session';
 import { LoginSchema, loginSchema } from '../../model/loginSchema';
 import { useOAuthSignIn } from '../../lib/useOAuthSignIn';
@@ -67,6 +67,8 @@ export const LoginForm = () => {
     } catch (err) {
       if (typeof err === 'object' && err !== null && 'status' in err && err.status === 401) {
         setError('root', { message: 'Invalid email or password' });
+      } else {
+        setError('root', { type: 'server', message: getErrorMessage(err) });
       }
     }
   };
@@ -95,7 +97,7 @@ export const LoginForm = () => {
               autoCapitalize="none"
               spellCheck={false}
               autoComplete="email"
-              error={errors.email?.message || !!errors.root}
+              error={errors.email?.message}
               icon={<LuMail />}
               placeholder="you@example.com"
               {...register('email')}
@@ -107,7 +109,7 @@ export const LoginForm = () => {
               icon={<RiLockPasswordLine />}
               placeholder="Enter your password"
               autoComplete="current-password"
-              error={errors.password?.message || !!errors.root}
+              error={errors.password?.message}
               warning={isCapsLockOn ? 'Caps Lock is on' : undefined}
               {...register('password')}
               {...capsLockProps}

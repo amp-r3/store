@@ -1,15 +1,15 @@
 @use 'app/styles/index' as *;
 
 .review-target {
-  cursor: pointer;
+  position: relative;
   border-radius: $radius-lg;
   transition: background-color $transition-base $ease-out-expo;
 
-  &:hover {
+  &:has(.review-target__trigger:hover) {
     background: var(--glass-background-subtle);
   }
 
-  &:focus-visible {
+  &:has(.review-target__trigger:focus-visible) {
     outline: 2px solid var(--focus-ring-color);
     outline-offset: 2px;
   }
@@ -17,6 +17,17 @@
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
+}
+
+.review-target__trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: inherit;
+  cursor: pointer;
 }
 
 /* ── Desktop Dialog Styles ── */

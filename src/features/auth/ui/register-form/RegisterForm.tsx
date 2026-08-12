@@ -135,7 +135,12 @@ export const RegisterForm = () => {
               placeholder="At least 6 characters"
               autoComplete="new-password"
               aria-describedby={PASSWORD_REQUIREMENTS_ID}
-              error={!!errors.password}
+              // Client-side rule violations stay a bare boolean — PasswordRequirements
+              // below already lists them, so a duplicate message here would be noise.
+              // The server's fuzzy "too weak" rejection has nowhere else to show up.
+              error={
+                errors.password?.type === 'server' ? errors.password.message : !!errors.password
+              }
               warning={isCapsLockOn ? 'Caps Lock is on' : undefined}
               {...register('password')}
               {...capsLockProps}
