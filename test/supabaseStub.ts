@@ -59,14 +59,16 @@ export interface SupabaseStub {
     signOut: ReturnType<typeof vi.fn>;
   };
   __setTable(table: string, result: SupabaseTableResult): void;
+  __setRpc(result: SupabaseTableResult): void;
 }
 
 export function createSupabaseStub(config: SupabaseStubConfig = {}): SupabaseStub {
   const tables: Record<string, SupabaseTableResult> = { ...(config.tables ?? {}) };
+  let rpcResult: SupabaseTableResult = { data: null, error: null };
 
   return {
     from: vi.fn((table: string) => createChain(tables[table] ?? { data: null, error: null })),
-    rpc: vi.fn(() => createChain({ data: null, error: null })),
+    rpc: vi.fn(() => createChain(rpcResult)),
     auth: {
       getUser: vi.fn(
         config.auth?.getUser ??
@@ -87,6 +89,12 @@ export function createSupabaseStub(config: SupabaseStubConfig = {}): SupabaseStu
     // from the same mocked client (e.g. a happy-path list vs. an error).
     __setTable(table: string, result: SupabaseTableResult) {
       tables[table] = result;
+    },
+    // Reconfigures the result every `supabase.rpc(...)` call resolves with —
+    // there's only ever one in-flight RPC per test, unlike tables, so a
+    // single mutable slot (not a per-name map) is enough.
+    __setRpc(result: SupabaseTableResult) {
+      rpcResult = result;
     },
   };
 }

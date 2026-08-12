@@ -3,6 +3,8 @@ import { render, RenderOptions as RTLRenderOptions } from '@testing-library/reac
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { makeStore, AppStore } from '@/app/store';
+
+export type { AppStore };
 import { restoreCart, CartData } from '@/entities/cart';
 
 // Deliberately does not reuse AppProviders (src/app/providers/AppProviders.tsx):
