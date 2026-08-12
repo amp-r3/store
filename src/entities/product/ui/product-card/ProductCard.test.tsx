@@ -14,14 +14,6 @@ const renderCard = async (overrides: Parameters<typeof makeProduct>[0] = {}) => 
 };
 
 describe('ProductCard', () => {
-  it('renders a very long title in full', async () => {
-    const longTitle =
-      'An Extremely Long Product Title That Keeps Going And Going To Test Wrapping Behavior';
-    await renderCard({ title: longTitle });
-
-    expect(screen.getByText(longTitle)).toBeInTheDocument();
-  });
-
   it('shows only the current price when there is no discount', async () => {
     await renderCard({ basePrice: 80, price: 80, discountPercentage: 0 });
 

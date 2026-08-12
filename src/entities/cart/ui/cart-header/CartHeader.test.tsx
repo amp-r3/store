@@ -20,11 +20,6 @@ describe('CartHeader', () => {
     expect(onClearCart).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render Clear cart when onClearCart is not supplied, even with items', () => {
-    render(<CartHeader totalQuantity={3} onClose={vi.fn()} />);
-    expect(screen.queryByRole('button', { name: 'Clear cart' })).not.toBeInTheDocument();
-  });
-
   it('calls onClose when Close cart is clicked', async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();

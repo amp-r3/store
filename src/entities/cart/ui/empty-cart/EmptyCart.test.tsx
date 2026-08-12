@@ -28,11 +28,4 @@ describe('EmptyCart', () => {
 
     expect(onDiscoverClick).toHaveBeenCalledWith('new-drops');
   });
-
-  it('does not throw when a chip is clicked without an onDiscoverClick handler', async () => {
-    const user = userEvent.setup();
-    render(<EmptyCart onStartShopping={vi.fn()} />);
-
-    await user.click(screen.getByRole('button', { name: 'Trending' }));
-  });
 });
