@@ -1,10 +1,10 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC, ReactNode } from 'react';
 import { Drawer } from 'vaul';
 import { VisuallyHidden } from 'radix-ui';
-import { IoWarningOutline } from 'react-icons/io5';
+import { IoTrashOutline } from 'react-icons/io5';
 
 import styles from './cart-drawer.module.scss';
-import { Modal } from '@/shared/ui';
+import { Alert, ErrorView } from '@/shared/ui';
 import { selectIsAuth } from '@/entities/session';
 import { addToCheckout } from '@/features/checkout-process';
 import { useHaptics, useTransitionRouter } from '@/shared/lib/hooks';
@@ -13,6 +13,7 @@ import { useAppDispatch } from '@/shared/model';
 import { useAppSelector } from '@/shared/model';
 import { useCartActions } from '@/features/cart-actions';
 import { useCartDetails } from '@/entities/cart';
+import { CartData } from '@/entities/cart';
 import { CartItem } from '@/entities/cart';
 import { CartItemSkeleton } from '@/entities/cart';
 import { CartFooter } from '@/entities/cart';
@@ -30,6 +31,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const {
     cartDetails,
     isEmpty,
+    isError,
     totals,
     isLoading,
     isFetching,
@@ -38,7 +40,6 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     refetchCart,
   } = useCartDetails(isOpen);
   const isAuth = useAppSelector(selectIsAuth);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useTransitionRouter();
   const { soft } = useHaptics();
   const dispatch = useAppDispatch();
@@ -73,14 +74,24 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   };
 
   const handleCheckout = async () => {
-    try {
-      if (isAuth) {
-        refetchCart();
+    let itemsForCheckout = cartItems;
+
+    if (isAuth) {
+      try {
+        const freshCart = await refetchCart().unwrap();
+        itemsForCheckout = (Object.entries(freshCart) as [string, CartData][]).map(
+          ([sizeId, info]) => ({
+            sizeId: Number(sizeId),
+            productId: info.productId,
+            quantity: info.quantity,
+          }),
+        );
+      } catch (error) {
+        console.error('Error reconciling cart:', error);
       }
-    } catch (error) {
-      console.error('Error reconciling cart:', error);
     }
-    dispatch(addToCheckout(cartItems));
+
+    dispatch(addToCheckout(itemsForCheckout));
     router.push('/checkout');
     onClose();
   };
@@ -101,6 +112,7 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   );
 
   const showEmptyState = isEmpty && !showSkeleton && pendingRemovals.length === 0;
+  const showErrorState = isError && showEmptyState;
 
   let cartRows: ReactNode[];
 
@@ -113,7 +125,23 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
       ? cartItems.map((item) => <CartItemSkeleton key={`skeleton-${item.sizeId}`} />)
       : cartItems.reduce<ReactNode[]>((acc, item, index) => {
           const productDetails = cartDetails[index];
-          if (!productDetails) return acc;
+          if (!productDetails) {
+            acc.push(
+              <div key={item.sizeId} className={styles.cart__unavailable}>
+                <Alert variant="warning">This product is no longer available.</Alert>
+                <button
+                  type="button"
+                  className={styles['cart__unavailable-remove']}
+                  onClick={() => onRemove(item.sizeId, item.productId, item.quantity)}
+                  aria-label="Remove unavailable item"
+                >
+                  <IoTrashOutline size={18} aria-hidden="true" />
+                  Remove
+                </button>
+              </div>,
+            );
+            return acc;
+          }
 
           acc.push(
             <CartItem
@@ -149,80 +177,70 @@ export const CartDrawer: FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   }
 
   return (
-    <>
-      <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()} direction="right">
-        <Drawer.Portal container={modalRoot}>
-          <Drawer.Overlay className={styles.cart__backdrop} />
+    <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()} direction="right">
+      <Drawer.Portal container={modalRoot}>
+        <Drawer.Overlay className={styles.cart__backdrop} />
 
-          <Drawer.Content
-            className={styles.cart}
-            aria-describedby={undefined}
-            onOpenAutoFocus={(e) => {
-              e.preventDefault();
-              if (document.activeElement instanceof HTMLElement) {
-                document.activeElement.blur();
-              }
-            }}
-            onPointerDownOutside={ignoreToastInteraction}
-          >
-            <VisuallyHidden.Root>
-              <Drawer.Title>Shopping Cart</Drawer.Title>
-            </VisuallyHidden.Root>
-
-            <div className={styles.cart__header}>
-              <CartHeader
-                totalQuantity={totalQuantity || 0}
-                onClose={onClose}
-                onClearCart={isEmpty ? undefined : onClearCart}
-              />
-            </div>
-
-            <div className={styles.cart__scrollArea}>
-              <div className={styles.cart__body}>
-                {removalUndo.clearedEntry && (
-                  <CartUndoStrip
-                    message={`Cart cleared · ${removalUndo.clearedEntry.count} item${removalUndo.clearedEntry.count === 1 ? '' : 's'}`}
-                    actionLabel="Restore"
-                    durationMs={CART_UNDO_DURATION_MS}
-                    onAction={handleUndoClear}
-                  />
-                )}
-
-                {showEmptyState ? <EmptyCart onStartShopping={onStartShopping} /> : cartRows}
-              </div>
-            </div>
-
-            {!isEmpty && (
-              <CartFooter
-                subtotal={totals.subtotal}
-                total={totals.total}
-                discountAmount={totals.discountAmount}
-                discountPercent={totals.discountPercent}
-                shippingProgress={totals.shippingProgress}
-                remainingForFreeShipping={totals.remainingForFreeShipping}
-                isLoading={isLoading}
-                isFetching={isFetching}
-                isUpdating={isUpdating}
-                onCheckout={handleCheckout}
-              />
-            )}
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
-      {!isAuth && (
-        <Modal
-          isOpen={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          title="You are not registered"
-          description="To continue you need to register"
-          icon={<IoWarningOutline size={50} />}
-          actionLabel="register"
-          onAction={() => {
-            router.push('/register');
-            setIsModalOpen(false);
+        <Drawer.Content
+          className={styles.cart}
+          aria-describedby={undefined}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            if (document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
           }}
-        />
-      )}
-    </>
+          onPointerDownOutside={ignoreToastInteraction}
+        >
+          <VisuallyHidden.Root>
+            <Drawer.Title>Shopping Cart</Drawer.Title>
+          </VisuallyHidden.Root>
+
+          <div className={styles.cart__header}>
+            <CartHeader
+              totalQuantity={totalQuantity || 0}
+              onClose={onClose}
+              onClearCart={isEmpty ? undefined : onClearCart}
+            />
+          </div>
+
+          <div className={styles.cart__scrollArea}>
+            <div className={styles.cart__body}>
+              {removalUndo.clearedEntry && (
+                <CartUndoStrip
+                  message={`Cart cleared · ${removalUndo.clearedEntry.count} item${removalUndo.clearedEntry.count === 1 ? '' : 's'}`}
+                  actionLabel="Restore"
+                  durationMs={CART_UNDO_DURATION_MS}
+                  onAction={handleUndoClear}
+                />
+              )}
+
+              {showErrorState ? (
+                <ErrorView error="We couldn't load your cart. Please try again." />
+              ) : showEmptyState ? (
+                <EmptyCart onStartShopping={onStartShopping} />
+              ) : (
+                cartRows
+              )}
+            </div>
+          </div>
+
+          {!isEmpty && (
+            <CartFooter
+              subtotal={totals.subtotal}
+              total={totals.total}
+              discountAmount={totals.discountAmount}
+              discountPercent={totals.discountPercent}
+              shippingProgress={totals.shippingProgress}
+              remainingForFreeShipping={totals.remainingForFreeShipping}
+              isLoading={isLoading}
+              isFetching={isFetching}
+              isUpdating={isUpdating}
+              onCheckout={handleCheckout}
+            />
+          )}
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 };

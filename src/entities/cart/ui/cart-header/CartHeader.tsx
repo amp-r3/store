@@ -38,12 +38,22 @@ export const CartHeader: FC<CartHeaderProps> = ({ totalQuantity, onClose, onClea
 
         <div className={styles.actions}>
           {!isCartEmpty && onClearCart && (
-            <button className={styles.clearBtn} onClick={onClearCart} aria-label="Clear cart">
+            <button
+              type="button"
+              className={styles.clearBtn}
+              onClick={onClearCart}
+              aria-label="Clear cart"
+            >
               <IoTrashOutline size={18} />
               <span>Clear</span>
             </button>
           )}
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close cart">
+          <button
+            type="button"
+            className={styles.closeBtn}
+            onClick={onClose}
+            aria-label="Close cart"
+          >
             <IoClose size={24} />
           </button>
         </div>

@@ -86,6 +86,7 @@ export const CartItem = memo<CartItemProps>(
             <div className={styles['cart-item__footer']}>
               <div className={styles['cart-item__quantity-ctrl']}>
                 <button
+                  type="button"
                   className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
                   onClick={() => onDecrease?.(sizeId, id)}
                   aria-label="Decrease quantity"
@@ -101,6 +102,7 @@ export const CartItem = memo<CartItemProps>(
                 </span>
 
                 <button
+                  type="button"
                   className={`${styles['cart-item__btn']} ${styles['cart-item__btn--qty']}`}
                   onClick={() => onIncrease?.(sizeId, id, stock)}
                   aria-label="Increase quantity"
@@ -126,6 +128,7 @@ export const CartItem = memo<CartItemProps>(
               )}
 
               <button
+                type="button"
                 className={`${styles['cart-item__btn']} ${styles['cart-item__btn--remove']}`}
                 onClick={() => onRemove?.(sizeId, id, quantity)}
                 aria-label="Remove item"

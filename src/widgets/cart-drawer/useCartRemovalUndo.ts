@@ -97,7 +97,8 @@ export const useCartRemovalUndo = ({
 
       if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
       clearTimerRef.current = setTimeout(dismissCleared, CART_UNDO_DURATION_MS);
-      setClearedEntry({ snapshot, count: Object.keys(snapshot).length });
+      const count = Object.values(snapshot).reduce((sum, entry) => sum + entry.quantity, 0);
+      setClearedEntry({ snapshot, count });
     },
     [dismissCleared],
   );

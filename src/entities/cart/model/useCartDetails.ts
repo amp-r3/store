@@ -25,7 +25,7 @@ interface CartDetailsReturn {
   totals: ReturnType<typeof calculateCartTotals>;
 }
 
-type RefetchType = () => void;
+type RefetchType = ReturnType<typeof useGetCartQuery>['refetch'];
 
 export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
   const isAuth = useAppSelector(selectIsAuth);

@@ -71,6 +71,33 @@
   }
 
   // =============================================
+  //               UNAVAILABLE PRODUCT ROW
+  // =============================================
+  &__unavailable {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__unavailable-remove {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    align-self: flex-start;
+    padding: $spacing-xs $spacing-sm;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-color-subtle);
+    border-radius: $radius-md;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--error-color);
+      border-color: var(--error-color);
+    }
+  }
+
+  // =============================================
   //               BACKDROP
   // =============================================
   &__backdrop {
