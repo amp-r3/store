@@ -8,6 +8,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // Shared test helpers (renderWithProviders, fixtures, a Supabase stub)
+      // live outside src/ — the FSD no-restricted-imports blocks in
+      // eslint.config.ts glob src/<layer>/**/*.{ts,tsx}, which includes
+      // colocated *.test.tsx, so a helper under src/shared/** couldn't
+      // import makeStore from @/app/store.
+      '@test': fileURLToPath(new URL('./test', import.meta.url)),
     },
   },
   test: {

@@ -55,6 +55,18 @@ vi.stubGlobal('IntersectionObserver', IntersectionObserverStub);
 // object URLs on unmount/replace; ProductReviews scrolls a card into view
 // after "Load more".
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
+// jsdom throws "not implemented" for the Pointer Events capture methods.
+// vaul (CartDrawer) and Radix's drag-based primitives call these on any
+// pointerdown inside their content, not just on a dedicated drag handle.
+if (!window.HTMLElement.prototype.hasPointerCapture) {
+  window.HTMLElement.prototype.hasPointerCapture = vi.fn(() => false);
+}
+if (!window.HTMLElement.prototype.setPointerCapture) {
+  window.HTMLElement.prototype.setPointerCapture = vi.fn();
+}
+if (!window.HTMLElement.prototype.releasePointerCapture) {
+  window.HTMLElement.prototype.releasePointerCapture = vi.fn();
+}
 if (!window.URL.createObjectURL) {
   window.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
 }
@@ -65,3 +77,19 @@ if (!window.URL.revokeObjectURL) {
 // Radix Portal (CartDrawer, modals, dropdowns) falls back to document.body
 // when getModalRoot()'s `#modal-root` lookup returns null — no fixture
 // needed for portal-based components under RTL.
+
+// revalidate.ts ('use server') calls next/cache's revalidatePath and
+// authz.ts's getServerSession, which imports the 'server-only' package — a
+// build-time Next.js convention with no real npm package, so a plain
+// Vite/jsdom run can't resolve it. Real builds strip 'use server' function
+// bodies into an RPC stub; Vitest has no equivalent transform, so mock the
+// module outright. orderApi/reviewApi/adminProductsApi/adminReviewsApi all
+// import this to revalidate after a mutation, and @/app/store.ts
+// side-effect-imports order and review purely to register their RTK Query
+// endpoints — so this mock is required for any test/renderWithProviders.tsx
+// render, not just ones that exercise a revalidating mutation.
+vi.mock('@/shared/api/revalidate', () => ({
+  revalidateProduct: vi.fn(),
+  revalidateProducts: vi.fn(),
+  revalidateStorefront: vi.fn(),
+}));

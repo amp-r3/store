@@ -9,12 +9,13 @@ Next.js 16 (App Router, Turbopack), React 19, TypeScript 5.9, Redux Toolkit
 via `@supabase/ssr`), SCSS Modules + CSS custom properties, React Hook Form +
 Zod. `pnpm dev`/`build`/`start`/`typecheck`(`tsc --noEmit`, alias
 `tsc`)/`lint`/`lint:css`/`format`/`format:check`. Pure logic (money math,
-Redux reducers/selectors, Zod schemas, stock/status gating) has Vitest unit
-coverage (`pnpm test:unit`) — see "Unit Tests" below; component rendering
-still relies on manual exercise (curl for server-rendered content; the user
-checks interactive behavior themselves) since there's no Testing Library
-layer. P0 storefront flows have Playwright E2E coverage (`pnpm test:e2e`) —
-see "E2E Tests" below.
+Redux reducers/selectors, Zod schemas, stock/status gating) and key
+interactive widgets/forms have Vitest coverage (`pnpm test:unit`) — see
+"Unit & Component Tests" below; full-page composition and rendering modes
+(SSR/ISR/CSR) still rely on manual exercise (curl for server-rendered
+content; the user checks interactive behavior themselves). P0 storefront
+flows have Playwright E2E coverage (`pnpm test:e2e`) — see "E2E Tests"
+below.
 Needs `.env`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
 `NEXT_PUBLIC_SITE_URL` (canonical/OG/sitemap URLs server-side, where
 `window.location` isn't available — `shared/config/site.ts`).
@@ -324,35 +325,140 @@ after any schema change.
 <name>` → edit the SQL file → `supabase db push`. Never the dashboard SQL
 editor, `psql`/`DATABASE_URL` DDL, or ad-hoc SQL outside a migration.
 
-## Unit Tests
+## Unit & Component Tests
 
 Vitest, `vitest.config.ts` at repo root, `pnpm test:unit` (`test:unit:watch`
-for watch mode). Scope is deliberately narrow: **pure logic only** — money
-math, Redux reducers/selectors, Zod schemas, stock/status gating, order-
-progress derivation. No jsdom, no Testing Library, no component rendering —
-that stays either manual exercise or Playwright's job. `test.environment:
-'node'`, colocated `*.test.ts` files (`.test.ts`, not `.spec.ts`, to stay
-lexically distinct from `e2e/specs/*.spec.ts`), `include: ['src/**/*.test.ts']`
-with `e2e/**` explicitly excluded — Vitest's default glob would otherwise
-collect the Playwright specs and fail. Vitest does not read `tsconfig.json`'s
-`paths`, so the `@/*` alias is re-declared in `vitest.config.ts`'s
-`resolve.alias`. No `"types": ["vitest/globals"]` in `tsconfig.json` (would
-narrow the ambient `@types/*` auto-include) — every test file imports
-`describe`/`it`/`expect`/etc. from `'vitest'` explicitly rather than relying
-on globals. `test.env` stubs the three `NEXT_PUBLIC_*` vars so a module that
-reads them at import time (e.g. `shared/config/images.ts`, which throws
-without `NEXT_PUBLIC_SUPABASE_URL`) can't take the whole suite down — the CI
-`check` job that runs `pnpm test:unit` carries no secrets, by design.
+for watch mode). One config, two `test.projects` (`extends: true` inherits
+`resolve.alias`/`env`/`exclude` from the root config into both):
+
+- **`unit`** — `environment: 'node'`, `include: ['src/**/*.test.ts']`. Pure
+  logic only: money math, Redux reducers/selectors, Zod schemas,
+  stock/status gating, order-progress derivation.
+- **`component`** — `environment: 'jsdom'`, `include: ['src/**/*.test.tsx']`,
+  `setupFiles: ['./vitest.setup.ts']`. React Testing Library (`@testing-
+  library/react` + `user-event` + `jest-dom`) for key interactive
+  widgets/forms — cart, catalog/product cards, filters/sort, auth and
+  checkout forms. Not full-page composition or SSR/ISR/CSR rendering
+  modes — that's still manual exercise or Playwright's job (see "E2E
+  Tests").
+
+`.test.ts`/`.test.tsx` (not `.spec.ts`), colocated next to the component,
+to stay lexically distinct from `e2e/specs/*.spec.ts` and route to the
+right project by extension. `e2e/**` is excluded at the root — Vitest's
+default glob would otherwise collect the Playwright specs and fail. Vitest
+does not read `tsconfig.json`'s `paths`, so `@/*` (`./src`) and `@test/*`
+(`./test`) are both re-declared in `vitest.config.ts`'s `resolve.alias`. No
+`"types": ["vitest/globals"]` in `tsconfig.json` (would narrow the ambient
+`@types/*` auto-include) — every test file imports `describe`/`it`/`expect`/
+etc. from `'vitest'` explicitly rather than relying on globals. `test.env`
+stubs the three `NEXT_PUBLIC_*` vars so a module that reads them at import
+time (e.g. `shared/config/images.ts`, which throws without
+`NEXT_PUBLIC_SUPABASE_URL`) can't take the whole suite down — the CI `check`
+job that runs `pnpm test:unit` carries no secrets, by design. `next/image`
+needs no mock: its unconfigured-host throw
+(`node_modules/next/dist/shared/lib/image-loader.js`) is gated on
+`process.env.NODE_ENV !== 'test'`, which Vitest sets.
+
+**`vitest.setup.ts`** (component project only) stubs what jsdom doesn't
+implement: `matchMedia` (defaults `matches: false` — components branch to
+their desktop layout, e.g. `SortControl`/`CategoryControl` render the Radix
+dropdown, not the mobile bottom sheet, unless a test overrides it),
+`ResizeObserver`/`IntersectionObserver`, `scrollIntoView`,
+`URL.createObjectURL`/`revokeObjectURL`, and the Pointer Events capture
+methods (`setPointerCapture`/`releasePointerCapture`/`hasPointerCapture` —
+vaul/Radix drag-based primitives call these on any pointerdown inside their
+content). It also globally mocks `@/shared/api/revalidate`: that module is a
+Next.js Server Action (`'use server'`) whose real body imports `next/cache`
+and `authz.ts`'s `server-only` — a build-time convention with no actual npm
+package, unresolvable outside a Next build. `@/app/store.ts`'s `makeStore()`
+side-effect-imports `@/entities/order`/`review` purely to register their RTK
+Query endpoints, so this mock is required for *any* `renderWithProviders`
+render, not just ones exercising a revalidating mutation. Radix/vaul portals
+(`CartDrawer`, modals, dropdowns) fall back to `document.body` when
+`getModalRoot()`'s `#modal-root` lookup returns `null` — no fixture needed.
+
+**`test/`** (repo root, alongside `e2e/` — outside `src/`, deliberately: the
+FSD `no-restricted-imports` blocks glob `src/<layer>/**/*.{ts,tsx}`, which
+includes colocated `*.test.tsx`, so a helper importing `makeStore` from
+`@/app/store` couldn't live under `src/shared/**`) holds shared test
+infrastructure, imported via the `@test/*` alias:
+
+- `renderWithProviders.tsx` — wraps a component in `<Provider store={store
+  ?? makeStore()}>`. Deliberately doesn't reuse `AppProviders`
+  (`src/app/providers/AppProviders.tsx`): that also renders `AppEffects`
+  (`useAuthSync`/`useNotificationsSync` → live Supabase) and starts
+  `persistStore()`, both gated on `typeof window !== 'undefined'`, true
+  under jsdom. Exports `createTestStore` (= `makeStore`) for tests that need
+  to seed the store *before* mount — see below. `cartItems` seeds
+  `cart.items` synchronously via the real `restoreCart` action.
+- `seedApi.ts` — `seedSizes`/`seedProductArray`/`seedDeliveryMethods` wrap
+  `productsApi`/`orderApi`'s `util.upsertQueryData`, pre-filling the RTK
+  Query cache so a component's `useXQuery` finds data already present
+  instead of firing its real `queryFn`. **`upsertQueryData` is async
+  (returns a promise) — it must be awaited on a store built via
+  `createTestStore()` *before* that store is handed to
+  `renderWithProviders`.** Seeding after render is too late: a component
+  subscribes to its query on mount, and with no cached data yet it fires
+  the real `queryFn` (hitting the unmocked Supabase client, and reading
+  loading-state defaults like `stock ?? 0` in the meantime) —
+  `src/entities/cart/ui/cart-item/CartItem.test.tsx` is the reference
+  example of the build-store → await-seed → render sequence.
+- `supabaseStub.ts` — `createSupabaseStub()` mocks
+  `@/shared/api/supabase/client`'s `supabase` singleton. Every RTK Query
+  `queryFn` in this repo goes through it (`supabase.auth.*` directly, or a
+  `fetch*(supabase, ...)` helper in `api/queries.ts` chaining off
+  `.from(table)...`), so one mock controls every network path a component
+  test can hit. `.from()` returns a thenable Proxy chain (`createChain`) —
+  any property access returns a function returning the same proxy, so an
+  arbitrarily long `.select().eq().order().single()` resolves without
+  enumerating each method; only `.then` breaks the chain. `__setTable(table,
+  result)` reconfigures a table's response after creation, since different
+  tests in the same file often need different responses from the one
+  `vi.mock`-created instance (e.g. a happy-path list vs. an error) — see
+  `CartDrawer.test.tsx`. To reconfigure the stub from inside a test, import
+  the *real* specifier (`import { supabase } from
+  '@/shared/api/supabase/client'`) after mocking it with a **dynamic**
+  `import()` inside the factory (`vi.mock('@/shared/api/supabase/client',
+  async () => { const { createSupabaseStub } = await
+  import('@test/supabaseStub'); return { supabase: createSupabaseStub() };
+  })`) — a top-level `const stub = createSupabaseStub()` referenced by the
+  factory hits `vi.mock`'s hoist-above-imports semantics (the binding is
+  still in its TDZ when the hoisted factory runs); the dynamic import
+  sidesteps it. Cast the imported `supabase` to `SupabaseStub` to call
+  `__setTable`/`vi.fn()` methods on it.
+- `fixtures.ts` — `makeProduct`/`makeSize`/`makeCartItemDetails`/
+  `makeDeliveryMethod`/`makeCategory` factories with sensible defaults +
+  overrides, typed from each entity's public API.
+
+**Mocking `next/navigation`**: give `useRouter`/`useSearchParams` **stable
+object references**, not a fresh object per call
+(`src/features/auth/ui/login-form/LoginForm.test.tsx` has the reference
+pattern). `useTransitionRouter` and `useUrlState` put the router/
+searchParams object straight into `useCallback`/`useEffect` dependency
+arrays (the same pattern `0b7f8ee` fixed in production) — a mock returning
+`() => ({ push: vi.fn(), ... })` recreates that object every render,
+producing an infinite re-render loop (observed as a Vitest worker OOM, not
+a clean test failure) instead of a one-time mount.
 
 Colocated test files are subject to the same FSD `no-restricted-imports`
 blocks (§1) as any other file in their layer — a test under `src/shared/**`
-still can't import `@/entities`/`@/features`/etc. Any logic that needs
-testing but lives behind `next/navigation`, `next/headers`, `server-only`, or
-the Supabase client is out of scope here (RTK Query `queryFn` bodies, hooks
-that call `useUrlState`/`useRouter`, anything importing `@/shared/api`'s
-barrel) — extract the pure part into its own module first if it's worth
+still can't import `@/entities`/`@/features`/etc. (`@test/*` is a distinct
+alias, not `@/`-prefixed, so it isn't covered by those blocks). Any logic
+that needs testing but lives behind `next/headers` or otherwise can't run
+under jsdom even with `next/navigation`/Supabase mocked is out of scope
+here — extract the pure part into its own module first if it's worth
 covering, the way `computeMaxReachedIndex` was pulled out of
 `useCheckoutStepper.ts` into its own file.
+
+**Query conventions** (component tests): role/label/text first —
+`screen.getByRole`/`getByLabelText`/`getByText` — `data-testid` only where
+no accessible name exists or the same name is duplicated in the DOM (same
+rule "E2E Tests" states below; `cart-item-quantity` is the component-test
+example — the quantity value and a size chip are both bare digits with no
+accessible name to key off). Use `findBy*`/`waitFor` for anything that
+settles after a render (debounced filters, a seeded RTK Query cache
+resolving, a mutation's pending state) rather than asserting synchronously
+on a query that resolves a tick later.
 
 ## E2E Tests
 
