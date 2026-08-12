@@ -13,13 +13,16 @@ interface AdminCustomerDetailsHeaderProps {
 
 const getDisplayName = (customer: AdminCustomer) => {
   const fullName = `${customer.firstName ?? ''} ${customer.lastName ?? ''}`.trim();
-  return fullName || `@${customer.username}`;
+  if (fullName) return fullName;
+  if (customer.username) return `@${customer.username}`;
+  return customer.email || 'Customer';
 };
 
 const getInitial = (customer: AdminCustomer) => {
   const name = customer.firstName || customer.lastName;
   if (name) return name.charAt(0).toUpperCase();
-  return customer.username.charAt(0).toUpperCase();
+  if (customer.username) return customer.username.charAt(0).toUpperCase();
+  return '?';
 };
 
 export const AdminCustomerDetailsHeader: FC<AdminCustomerDetailsHeaderProps> = ({
@@ -44,7 +47,9 @@ export const AdminCustomerDetailsHeader: FC<AdminCustomerDetailsHeaderProps> = (
 
       <div className={style['header__info']}>
         <h2 className={style['header__name']}>{getDisplayName(customer)}</h2>
-        <span className={style['header__username']}>@{customer.username}</span>
+        {customer.username && (
+          <span className={style['header__username']}>@{customer.username}</span>
+        )}
         <span className={style['header__email']}>{customer.email}</span>
       </div>
     </div>

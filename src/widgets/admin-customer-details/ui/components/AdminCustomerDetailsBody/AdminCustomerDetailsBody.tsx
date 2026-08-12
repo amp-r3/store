@@ -8,6 +8,7 @@ import {
   LuCalendarCheck,
   LuPackageOpen,
   LuScrollText,
+  LuTriangleAlert,
 } from 'react-icons/lu';
 
 import {
@@ -33,7 +34,11 @@ const formatNullableDate = (dateStr: string | null) =>
   dateStr ? formatDate(dateStr, 'medium') : '—';
 
 export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ customer }) => {
-  const { data, isLoading } = useGetAllOrdersQuery({
+  const {
+    data,
+    isLoading,
+    isError: isOrdersError,
+  } = useGetAllOrdersQuery({
     page: 1,
     limit: RECENT_ORDERS_LIMIT,
     status: 'all',
@@ -46,7 +51,11 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
   // Only admins ever have audit-log rows tied to their id as actor — skip
   // the request entirely for regular customers rather than firing a query
   // that would always come back empty.
-  const { data: auditData, isLoading: isAuditLoading } = useGetAdminAuditLogQuery(
+  const {
+    data: auditData,
+    isLoading: isAuditLoading,
+    isError: isAuditError,
+  } = useGetAdminAuditLogQuery(
     { page: 1, limit: RECENT_ACTIVITY_LIMIT, actorId: customer.id },
     { skip: !isAdmin },
   );
@@ -107,6 +116,12 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
               </div>
             ))}
           </div>
+        ) : isOrdersError ? (
+          <EmptyState
+            icon={<LuTriangleAlert />}
+            title="Couldn't load orders"
+            text="Something went wrong loading this customer's orders. Please try again later."
+          />
         ) : orders.length === 0 ? (
           <EmptyState
             icon={<LuPackageOpen />}
@@ -149,6 +164,12 @@ export const AdminCustomerDetailsBody: FC<AdminCustomerDetailsBodyProps> = ({ cu
 
           {isAuditLoading ? (
             <AuditLogList entries={[]} isLoading limit={RECENT_ACTIVITY_LIMIT} compact />
+          ) : isAuditError ? (
+            <EmptyState
+              icon={<LuTriangleAlert />}
+              title="Couldn't load activity"
+              text="Something went wrong loading this admin's activity. Please try again later."
+            />
           ) : auditEntries.length === 0 ? (
             <EmptyState
               icon={<LuScrollText />}

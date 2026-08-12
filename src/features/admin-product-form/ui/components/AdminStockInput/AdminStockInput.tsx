@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import { LuMinus, LuPlus } from 'react-icons/lu';
 
 import { useSetAdminStockMutation } from '@/entities/admin';
+import { getErrorMessage } from '@/shared/lib';
+import { showToast } from '@/shared/ui';
 import style from './admin-stock-input.module.scss';
 
 const LOW_STOCK_THRESHOLD = 5;
@@ -20,7 +22,14 @@ export const AdminStockInput = ({ sizeId, productId, stock, ariaLabel }: AdminSt
   const handleCommit = (value: string) => {
     const next = Math.max(0, Math.trunc(Number(value) || 0));
     if (next === stock) return;
-    setStock({ sizeId, productId, stock: next });
+    // The optimistic cache patch already rolls back on failure — which
+    // remounts this input (key={stock}) back to the pre-edit value — so
+    // only the error itself needs surfacing here.
+    setStock({ sizeId, productId, stock: next })
+      .unwrap()
+      .catch((err) => {
+        showToast('error', "Couldn't update stock", { description: getErrorMessage(err) });
+      });
   };
 
   // preventDefault on mousedown keeps focus on the input (a plain click

@@ -172,9 +172,14 @@ export const useProductMediaDraft = (product?: AdminProductDetail): UseProductMe
         };
 
         validateProductImageFile(file, 'gallery').then(({ error, warning }) => {
+          // Guard on file identity, not just index — picking a second file
+          // into the same slot before the first validation resolves must
+          // not let the stale result overwrite the newer one.
           setGallery((latest) =>
             latest.map((s) =>
-              s.index === index ? { ...s, isValidating: false, error, warning } : s,
+              s.index === index && s.file === file
+                ? { ...s, isValidating: false, error, warning }
+                : s,
             ),
           );
         });

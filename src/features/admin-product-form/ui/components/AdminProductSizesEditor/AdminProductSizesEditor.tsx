@@ -30,7 +30,10 @@ export const AdminProductSizesEditor = ({ productId }: AdminProductSizesEditorPr
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleAdd = async () => {
-    if (!newValue.trim()) return;
+    // Guards the Enter-keydown path too — the Button's own disabled state
+    // only blocks a second click, not a second Enter press fired before
+    // the first request resolves.
+    if (!newValue.trim() || isAdding) return;
 
     setAddError(null);
     try {
