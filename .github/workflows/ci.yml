@@ -28,7 +28,9 @@ jobs:
 
       - run: pnpm format:check
 
-      - run: pnpm test:unit
+      # Report-only for now — no global coverage.thresholds in
+      # vitest.config.ts yet (see the comment there for why).
+      - run: pnpm test:unit:coverage
 
       # `pnpm build` is deliberately not run in this job: generateStaticParams
       # and app/sitemap.ts hit the live Supabase project at build time (see

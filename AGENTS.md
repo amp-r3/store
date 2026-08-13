@@ -328,8 +328,23 @@ editor, `psql`/`DATABASE_URL` DDL, or ad-hoc SQL outside a migration.
 ## Unit & Component Tests
 
 Vitest, `vitest.config.ts` at repo root, `pnpm test:unit` (`test:unit:watch`
-for watch mode). One config, two `test.projects` (`extends: true` inherits
-`resolve.alias`/`env`/`exclude` from the root config into both):
+for watch mode, `test:unit:coverage` for a `@vitest/coverage-v8` report — CI's
+`check` job runs the coverage variant). One config, two `test.projects`
+(`extends: true` inherits `resolve.alias`/`env`/`exclude` from the root
+config into both):
+
+`coverage` is declared once at root (not per-project) so `unit` and
+`component` merge into one report; reporters are `text`/`html`/`lcov`
+(`coverage/`, gitignored). **Deliberately no `coverage.thresholds`** — most
+of `src/` (admin, most `views/`/`widgets/`) has no test coverage by design
+(see the P0 rationale under "E2E Tests"), so a repo-wide gate would fail
+immediately and just get disabled. Add narrow per-glob thresholds only on
+directories that actually have tests, once that coverage is deliberately
+built out further. The `text` reporter's terminal table silently drops some
+fully-covered files under this two-project setup (a cosmetic quirk of
+istanbul's report merging, not a data problem) — trust `coverage/lcov.info`
+or the HTML report over the terminal table when a specific file's number
+matters.
 
 - **`unit`** — `environment: 'node'`, `include: ['src/**/*.test.ts']`. Pure
   logic only: money math, Redux reducers/selectors, Zod schemas,
@@ -344,7 +359,18 @@ for watch mode). One config, two `test.projects` (`extends: true` inherits
 
 `.test.ts`/`.test.tsx` (not `.spec.ts`), colocated next to the component,
 to stay lexically distinct from `e2e/specs/*.spec.ts` and route to the
-right project by extension. `e2e/**` is excluded at the root — Vitest's
+right project by extension. A slice/selector/schema test can stay `.test.ts`
+(node) even when the module it tests touches the Supabase client directly
+(e.g. `authSlice.ts` importing `authApi` for its `extraReducers` matchers) —
+the browser client itself has no Next-specific import. Only
+`createTestStore()`/`makeStore()` (`@/app/store.ts`) forces `.test.tsx`: that
+module side-effect-imports `@/entities/order`/`review` to register their RTK
+Query endpoints, and those pull in `@/shared/api/revalidate`, which
+`vitest.setup.ts`'s mock only applies to the component project (see below).
+`cartApi.test.tsx`, `useCartActions.test.tsx`, and
+`useLocalDataMerge.test.tsx` all need it for this reason;
+`authSlice.test.ts` and `checkoutSlice.test.ts` don't, since neither calls
+`createTestStore`. `e2e/**` is excluded at the root — Vitest's
 default glob would otherwise collect the Playwright specs and fail. Vitest
 does not read `tsconfig.json`'s `paths`, so `@/*` (`./src`) and `@test/*`
 (`./test`) are both re-declared in `vitest.config.ts`'s `resolve.alias`. No
@@ -390,19 +416,26 @@ infrastructure, imported via the `@test/*` alias:
   `persistStore()`, both gated on `typeof window !== 'undefined'`, true
   under jsdom. Exports `createTestStore` (= `makeStore`) for tests that need
   to seed the store *before* mount — see below. `cartItems` seeds
-  `cart.items` synchronously via the real `restoreCart` action.
-- `seedApi.ts` — `seedSizes`/`seedProductArray`/`seedDeliveryMethods` wrap
-  `productsApi`/`orderApi`'s `util.upsertQueryData`, pre-filling the RTK
-  Query cache so a component's `useXQuery` finds data already present
-  instead of firing its real `queryFn`. **`upsertQueryData` is async
-  (returns a promise) — it must be awaited on a store built via
-  `createTestStore()` *before* that store is handed to
-  `renderWithProviders`.** Seeding after render is too late: a component
-  subscribes to its query on mount, and with no cached data yet it fires
-  the real `queryFn` (hitting the unmocked Supabase client, and reading
-  loading-state defaults like `stock ?? 0` in the meantime) —
+  `cart.items` synchronously via the real `restoreCart` action; `authUser`
+  (a `SessionUser`) dispatches the real `setSession` before render so
+  `selectIsAuth` is true — used for the authenticated branch of RTK Query
+  mutations/hooks (`cartApi.test.tsx`, `useCartActions.test.tsx`) instead of
+  reaching into `preloadedState` (off-limits — see the file's own comment on
+  RTK's generic-inference conflict).
+- `seedApi.ts` — `seedSizes`/`seedProductArray`/`seedDeliveryMethods`/
+  `seedMyReviews`/`seedCart` wrap the matching entity API's
+  `util.upsertQueryData`, pre-filling the RTK Query cache so a component's
+  `useXQuery` finds data already present instead of firing its real
+  `queryFn`. **`upsertQueryData` is async (returns a promise) — it must be
+  awaited on a store built via `createTestStore()` *before* that store is
+  handed to `renderWithProviders`.** Seeding after render is too late: a
+  component subscribes to its query on mount, and with no cached data yet it
+  fires the real `queryFn` (hitting the unmocked Supabase client, and
+  reading loading-state defaults like `stock ?? 0` in the meantime) —
   `src/entities/cart/ui/cart-item/CartItem.test.tsx` is the reference
-  example of the build-store → await-seed → render sequence.
+  example of the build-store → await-seed → render sequence. `seedCart`
+  seeds `cartApi`'s `getCart` query specifically — the authenticated-cart
+  equivalent of `cartItems` seeding the guest cart's Redux slice.
 - `supabaseStub.ts` — `createSupabaseStub()` mocks
   `@/shared/api/supabase/client`'s `supabase` singleton. Every RTK Query
   `queryFn` in this repo goes through it (`supabase.auth.*` directly, or a
@@ -425,7 +458,25 @@ infrastructure, imported via the `@test/*` alias:
   factory hits `vi.mock`'s hoist-above-imports semantics (the binding is
   still in its TDZ when the hoisted factory runs); the dynamic import
   sidesteps it. Cast the imported `supabase` to `SupabaseStub` to call
-  `__setTable`/`vi.fn()` methods on it.
+  `__setTable`/`vi.fn()` methods on it. Also stubs `auth.getSession` (every
+  `cartApi`/`wishlistApi` mutation reads the session this way, not via
+  `getUser`) and `auth.onAuthStateChange`, whose registered callback is
+  driven from a test via `__emitAuthChange(event, session)` — this is what
+  exercises `useSessionSync`/`useLocalDataMerge`
+  (`useLocalDataMerge.test.tsx`), since neither hook is reachable any other
+  way. `__getCalls(table?)` returns every `.from(table)...` chain call
+  recorded so far as `{ table, method, args }` — `createChain`'s Proxy
+  otherwise discards call arguments, so this is the only way to assert
+  *what payload* a `.upsert(...)`/`.insert(...)` actually received (e.g.
+  confirming a cart-merge upsert carries the right rows). **The stub
+  instance is shared across every test in a file** (`vi.mock`'s factory
+  runs once per file) — `__reset()` restores tables/rpc to the stub's
+  original config and clears recorded calls + auth-change callbacks; call
+  it in `beforeEach` whenever a file uses `__setTable` with an error
+  and later asserts a success path, or uses `__getCalls` — see
+  `cartApi.test.tsx` for the reference pattern (its "success paths" tests
+  failed by reading a prior test's error config until `__reset()` was
+  added).
 - `fixtures.ts` — `makeProduct`/`makeSize`/`makeCartItemDetails`/
   `makeDeliveryMethod`/`makeCategory` factories with sensible defaults +
   overrides, typed from each entity's public API.

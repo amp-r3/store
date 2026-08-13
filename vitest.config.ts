@@ -26,6 +26,27 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'stub-anon-key',
       NEXT_PUBLIC_SITE_URL: 'http://localhost:3000',
     },
+    // Declared once at root (not per-project) so `unit` and `component` both
+    // report into one merged result rather than two separate ones.
+    // Deliberately no `thresholds` — most of src/ (admin, views, widgets)
+    // has no test coverage yet by design (AGENTS.md's E2E section explains
+    // what's out of scope), so a repo-wide gate would fail immediately and
+    // just get disabled. `pnpm test:unit:coverage` is report-only until a
+    // later pass adds narrow per-glob thresholds on the directories that
+    // actually have tests.
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**'],
+      exclude: [
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/index.ts',
+        '**/*.d.ts',
+        'src/app/styles/**',
+        '**/database.types.ts',
+      ],
+    },
     projects: [
       {
         extends: true,

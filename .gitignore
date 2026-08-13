@@ -26,6 +26,9 @@ blob-report
 playwright/.cache
 e2e/.auth
 
+# Vitest coverage
+coverage
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,6 +1,7 @@
 import { productsApi } from '@/entities/product';
 import { orderApi } from '@/entities/order';
 import { reviewApi } from '@/entities/review';
+import { cartApi, CartData } from '@/entities/cart';
 import { Product, ProductSize } from '@/entities/product';
 import { DeliveryMethod } from '@/entities/order';
 import { ProductReview } from '@/entities/review';
@@ -22,3 +23,6 @@ export const seedDeliveryMethods = (store: TestStore, methods: DeliveryMethod[])
 
 export const seedMyReviews = (store: TestStore, reviews: ProductReview[]) =>
   store.dispatch(reviewApi.util.upsertQueryData('getMyReviews', undefined, reviews));
+
+export const seedCart = (store: TestStore, cart: Record<number, CartData>) =>
+  store.dispatch(cartApi.util.upsertQueryData('getCart', undefined, cart));

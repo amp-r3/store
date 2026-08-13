@@ -6,6 +6,7 @@ import { makeStore, AppStore } from '@/app/store';
 
 export type { AppStore };
 import { restoreCart, CartData } from '@/entities/cart';
+import { setSession, SessionUser } from '@/entities/session';
 
 // Deliberately does not reuse AppProviders (src/app/providers/AppProviders.tsx):
 // it also renders AppEffects (useAuthSync/useNotificationsSync -> live
@@ -36,15 +37,28 @@ export const createTestStore = makeStore;
 interface RenderWithProvidersOptions extends Omit<RTLRenderOptions, 'wrapper'> {
   /** Seeds cart.items (guest/local cart) before first render. */
   cartItems?: Record<number, CartData>;
+  /** Dispatches the real `setSession` before render so `selectIsAuth` is
+   * true — used instead of `preloadedState` (see the note above on RTK's
+   * generic-inference conflict). Auth-path tests (cartApi mutations,
+   * useCartActions' authed branch) pass a fixture SessionUser here. */
+  authUser?: SessionUser;
   store?: AppStore;
 }
 
 export const renderWithProviders = (
   ui: ReactElement,
-  { cartItems, store = createTestStore(), ...renderOptions }: RenderWithProvidersOptions = {},
+  {
+    cartItems,
+    authUser,
+    store = createTestStore(),
+    ...renderOptions
+  }: RenderWithProvidersOptions = {},
 ) => {
   if (cartItems) {
     store.dispatch(restoreCart(cartItems));
+  }
+  if (authUser) {
+    store.dispatch(setSession({ user: authUser, token: authUser.accessToken }));
   }
 
   const Wrapper = ({ children }: { children: ReactNode }) => (

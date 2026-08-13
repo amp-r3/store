@@ -19,7 +19,11 @@ const initialState: AuthState = {
 // lives in supabase-js's own session storage and useAuthSync restores it into
 // memory on INITIAL_SESSION, so persisting it here too would just be a second
 // XSS-exfiltratable copy with no functional benefit.
-const stripAccessToken = createTransform<AuthState, AuthState>(
+// Exported at module level (not re-exported through the slice's index.ts —
+// it's an internal persistence detail, not part of the slice's public API)
+// so authSlice.test.ts can verify it directly rather than only indirectly
+// through persistStorage's serialized output.
+export const stripAccessToken = createTransform<AuthState, AuthState>(
   (inboundState) => ({
     ...inboundState,
     token: null,
