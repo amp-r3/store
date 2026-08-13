@@ -77,6 +77,45 @@ export default defineConfig({
         // category as the already-excluded **/index.ts.
         'src/**/server.ts',
       ],
+      // No single repo-wide threshold (see the block comment above) — most
+      // of src/ (admin aside, most views/widgets/UI components) is
+      // deliberately untested today, so a blanket number would either fail
+      // immediately or be set low enough to be meaningless. These per-glob
+      // entries instead gate the specific model/lib/api directories the
+      // logic-first sweep actually landed thorough coverage on — set a few
+      // points under each directory's current number (pnpm
+      // test:unit:coverage) as slack, not copied 1:1, so a single
+      // untested branch doesn't redden CI. Add a new entry here only once a
+      // directory's coverage is deliberately built out this far; a
+      // partially-covered directory (e.g. checkout-process/model,
+      // order/api, review/api — still mixed) isn't ready for a gate yet.
+      thresholds: {
+        'src/entities/cart/model/**': { statements: 90, branches: 90, functions: 90, lines: 90 },
+        'src/entities/cart/api/**': { statements: 75, branches: 60, functions: 85, lines: 75 },
+        'src/entities/order/lib/**': { statements: 95, branches: 90, functions: 95, lines: 95 },
+        'src/entities/order/model/**': { statements: 90, functions: 90, lines: 90 },
+        'src/entities/product/lib/**': { statements: 90, branches: 85, functions: 85, lines: 95 },
+        'src/entities/session/model/**': { statements: 85, branches: 90, functions: 85, lines: 85 },
+        'src/entities/wishlist/model/**': {
+          statements: 90,
+          branches: 95,
+          functions: 85,
+          lines: 90,
+        },
+        'src/entities/wishlist/api/**': { statements: 80, branches: 75, functions: 90, lines: 80 },
+        'src/features/checkout-process/lib/**': {
+          statements: 90,
+          branches: 85,
+          functions: 95,
+          lines: 90,
+        },
+        'src/views/catalog-page/model/**': {
+          statements: 90,
+          branches: 85,
+          functions: 95,
+          lines: 90,
+        },
+      },
     },
     projects: [
       {

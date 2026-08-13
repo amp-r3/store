@@ -335,12 +335,26 @@ config into both):
 
 `coverage` is declared once at root (not per-project) so `unit` and
 `component` merge into one report; reporters are `text`/`html`/`lcov`
-(`coverage/`, gitignored). **Deliberately no `coverage.thresholds`** — most
-of `src/` (admin, most `views/`/`widgets/`) has no test coverage by design
-(see the P0 rationale under "E2E Tests"), so a repo-wide gate would fail
-immediately and just get disabled. Add narrow per-glob thresholds only on
-directories that actually have tests, once that coverage is deliberately
-built out further. The `text` reporter's terminal table silently drops some
+(`coverage/`, gitignored). **No single repo-wide `coverage.thresholds`** —
+most of `src/` (admin, most `views/`/`widgets/`) has no test coverage by
+design (see the P0 rationale under "E2E Tests"), so a blanket number would
+either fail immediately or be set low enough to be meaningless. Instead,
+`vitest.config.ts`'s `coverage.thresholds` carries one narrow per-glob entry
+per directory the logic-first sweep actually landed thorough coverage on —
+currently `entities/cart`'s `model` and `api`, `entities/order`'s `lib` and
+`model`, `entities/product/lib`, `entities/session/model`,
+`entities/wishlist`'s `model` and `api`, `features/checkout-process/lib`,
+and `views/catalog-page/model` (ten entries total, not a blanket per-entity
+`model`/`lib`/`api` sweep — e.g. `product/api` and `session/api` are still
+excluded). Each is set a few points under that directory's actual number as
+slack, not copied 1:1, so a single new untested branch doesn't redden CI. A
+directory
+still mixing covered and uncovered files (`checkout-process/model`,
+`order/api`, `review/api`, `shared/lib/hooks` — a flat multi-purpose
+directory, not a cohesive unit) isn't ready for a gate; add one only once
+its own coverage is deliberately built out this far, sized off a fresh
+`pnpm test:unit:coverage` run rather than guessed. The `text` reporter's
+terminal table silently drops some
 fully-covered files under this two-project setup (a cosmetic quirk of
 istanbul's report merging, not a data problem) — trust `coverage/lcov.info`
 or the HTML report over the terminal table when a specific file's number
