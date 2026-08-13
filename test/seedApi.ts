@@ -2,8 +2,15 @@ import { productsApi } from '@/entities/product';
 import { orderApi } from '@/entities/order';
 import { reviewApi } from '@/entities/review';
 import { cartApi, CartData } from '@/entities/cart';
-import { Product, ProductSize } from '@/entities/product';
-import { DeliveryMethod } from '@/entities/order';
+import { wishlistApi } from '@/entities/wishlist';
+import {
+  Product,
+  ProductSize,
+  ProductParams,
+  ProductsResponse,
+  Categories,
+} from '@/entities/product';
+import { DeliveryMethod, PaymentMethod, ShippingAddress } from '@/entities/order';
 import { ProductReview } from '@/entities/review';
 import { AppStore as TestStore } from '@/app/store';
 
@@ -26,3 +33,21 @@ export const seedMyReviews = (store: TestStore, reviews: ProductReview[]) =>
 
 export const seedCart = (store: TestStore, cart: Record<number, CartData>) =>
   store.dispatch(cartApi.util.upsertQueryData('getCart', undefined, cart));
+
+export const seedPaymentMethods = (store: TestStore, methods: PaymentMethod[]) =>
+  store.dispatch(orderApi.util.upsertQueryData('getPaymentMethods', undefined, methods));
+
+export const seedProducts = (store: TestStore, params: ProductParams, response: ProductsResponse) =>
+  store.dispatch(productsApi.util.upsertQueryData('getProducts', params, response));
+
+export const seedCategories = (store: TestStore, categories: Categories) =>
+  store.dispatch(productsApi.util.upsertQueryData('getCategories', undefined, categories));
+
+export const seedProductById = (store: TestStore, id: number, product: Product) =>
+  store.dispatch(productsApi.util.upsertQueryData('getProductById', id, product));
+
+export const seedWishlist = (store: TestStore, wishlist: Record<number, boolean>) =>
+  store.dispatch(wishlistApi.util.upsertQueryData('getWishlist', undefined, wishlist));
+
+export const seedLastShippingAddress = (store: TestStore, address: ShippingAddress | null) =>
+  store.dispatch(orderApi.util.upsertQueryData('getLastShippingAddress', undefined, address));

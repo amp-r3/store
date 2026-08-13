@@ -1,6 +1,7 @@
 import { Product, ProductSize, Category } from '@/entities/product';
 import { CartItemDetails } from '@/entities/cart';
-import { DeliveryMethod } from '@/entities/order';
+import { DeliveryMethod, PaymentMethod } from '@/entities/order';
+import { CheckoutFormValues } from '@/features/checkout-process';
 
 let nextId = 1;
 const uniqueId = () => nextId++;
@@ -67,5 +68,36 @@ export const makeDeliveryMethod = (overrides: Partial<DeliveryMethod> = {}): Del
 export const makeCategory = (overrides: Partial<Category> = {}): Category => ({
   slug: 'apparel',
   name: 'Apparel',
+  ...overrides,
+});
+
+export const makePaymentMethod = (overrides: Partial<PaymentMethod> = {}): PaymentMethod => ({
+  id: `00000000-0000-0000-0000-${String(uniqueId()).padStart(12, '0')}`,
+  code: 'cash_on_delivery',
+  name: 'Cash on Delivery',
+  feePercentage: 0,
+  feeFixed: 0,
+  ...overrides,
+});
+
+// A `checkout.draft` shape valid enough to pass checkoutMasterSchema as-is —
+// tests exercising draft restore/sanitization (useCheckoutDraft) can spread
+// overrides to invalidate a single field (e.g. a stale deliveryMethodId).
+export const makeCheckoutDraft = (
+  overrides: Partial<CheckoutFormValues> = {},
+): Partial<CheckoutFormValues> => ({
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
+  phone: '+15551234567',
+  deliveryMethodId: `00000000-0000-0000-0000-${String(uniqueId()).padStart(12, '0')}`,
+  deliveryMethodCode: 'standard',
+  country: 'USA',
+  city: 'New York',
+  street: 'Main St',
+  housenumber: '1',
+  postcode: '10001',
+  paymentMethodCode: 'cash_on_delivery',
+  paymentMethodId: `00000000-0000-0000-0000-${String(uniqueId()).padStart(12, '0')}`,
   ...overrides,
 });

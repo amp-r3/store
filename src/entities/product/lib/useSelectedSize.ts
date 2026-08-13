@@ -20,6 +20,16 @@ const subscribe = (listener: () => void) => {
 const getSnapshot = () => rawSelectedSizeId;
 const getServerSnapshot = () => undefined;
 
+// Test-only: the module-level selection above outlives any single test
+// (and any single renderHook instance), so a test file must clear it in
+// afterEach or an earlier test's selection leaks into a later one. `export *`
+// in the slice's index.ts re-exports this like anything else here, but it
+// has no production caller — treat it as test infrastructure, not part of
+// the intended public API.
+export const resetSelectedSize = () => {
+  rawSelectedSizeId = undefined;
+};
+
 export const useSelectedSize = (sizes?: ProductSize[]) => {
   const rawId = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const selectedSizeId = sizes?.some((size) => size.id === rawId) ? rawId : undefined;
