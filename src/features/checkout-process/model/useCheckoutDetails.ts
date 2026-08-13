@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { Product } from '@/entities/product';
 import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
 import { calculateCartTotals } from '@/entities/cart';
-import { selectCheckoutItemsArray } from '@/features/checkout-process';
+import { selectCheckoutItemsArray } from './checkoutSelectors';
 import { CartItemDetails, CartProduct } from '@/entities/cart';
+import { joinCheckoutDetails } from './joinCheckoutDetails';
 
 interface CheckoutDetailsReturn {
   checkoutItems: CartProduct[];
@@ -31,26 +31,10 @@ export const useCheckoutDetails = (freeShippingThreshold: number | null): Checko
     isError: isProductsError,
   } = useProductsByIds(productIds, true);
 
-  const checkoutDetails = useMemo(() => {
-    const productsMap = products.reduce<Record<number, Product>>(
-      (acc: Record<number, Product>, product: Product) => {
-        acc[product.id] = product;
-        return acc;
-      },
-      {},
-    );
-
-    return checkoutItems.map((item: CartProduct) => {
-      const serverProduct = productsMap[item.productId];
-      if (!serverProduct) return null;
-
-      return {
-        ...serverProduct,
-        sizeId: item.sizeId,
-        quantity: item.quantity,
-      };
-    });
-  }, [products, checkoutItems]);
+  const checkoutDetails = useMemo(
+    () => joinCheckoutDetails(checkoutItems, products),
+    [products, checkoutItems],
+  );
 
   const totals = useMemo(() => {
     const validItems = checkoutDetails.filter(

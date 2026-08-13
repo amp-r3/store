@@ -5,6 +5,7 @@ import { useGetLastShippingAddressQuery, DeliveryMethod, PaymentMethod } from '@
 import { saveCheckoutDraft } from './checkoutSlice';
 import { selectCheckoutDraft } from './checkoutSelectors';
 import { CheckoutFormValues } from './checkoutMasterSchema';
+import { sanitizeCheckoutDraft } from './sanitizeCheckoutDraft';
 
 const DRAFT_SAVE_DELAY = 500;
 
@@ -39,19 +40,7 @@ export const useCheckoutDraft = ({
 
     hasRestoredRef.current = true;
 
-    const deliveryValid =
-      !!draft.deliveryMethodId && deliveryMethods.some((m) => m.id === draft.deliveryMethodId);
-    const paymentValid =
-      !!draft.paymentMethodId && paymentMethods.some((m) => m.id === draft.paymentMethodId);
-
-    reset({
-      ...getValues(),
-      ...draft,
-      deliveryMethodId: deliveryValid ? draft.deliveryMethodId : '',
-      deliveryMethodCode: deliveryValid ? draft.deliveryMethodCode : undefined,
-      paymentMethodId: paymentValid ? draft.paymentMethodId : '',
-      paymentMethodCode: paymentValid ? draft.paymentMethodCode : undefined,
-    });
+    reset({ ...getValues(), ...sanitizeCheckoutDraft(draft, deliveryMethods, paymentMethods) });
   }, [draft, deliveryMethods, paymentMethods, reset, getValues]);
 
   useEffect(() => {

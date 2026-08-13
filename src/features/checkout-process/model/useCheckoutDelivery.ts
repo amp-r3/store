@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   useGetDeliveryMethodsQuery,
   useGetPaymentMethodsQuery,
+  pickFreeShippingThreshold,
   DeliveryOptions,
   PaymentOptions,
 } from '@/entities/order';
@@ -37,9 +38,7 @@ export const useCheckoutDelivery = (
   );
 
   const freeShippingThreshold = useMemo(
-    () =>
-      deliveryMethods?.find((method) => method.freeFromPrice !== null && method.freeFromPrice > 0)
-        ?.freeFromPrice ?? null,
+    () => pickFreeShippingThreshold(deliveryMethods),
     [deliveryMethods],
   );
 

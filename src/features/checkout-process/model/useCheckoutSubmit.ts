@@ -5,8 +5,9 @@ import { useHaptics } from '@/shared/lib/hooks';
 import { getErrorMessage } from '@/shared/lib';
 import { showToast } from '@/shared/ui';
 import { useClearCartMutation, CartProduct } from '@/entities/cart';
-import { useCreateOrderMutation, CreateOrderPayload } from '@/entities/order';
+import { useCreateOrderMutation } from '@/entities/order';
 import { CheckoutFormValues } from './checkoutMasterSchema';
+import { buildCreateOrderPayload } from './buildCreateOrderPayload';
 
 interface UseCheckoutSubmitParams {
   checkoutItems: CartProduct[];
@@ -26,26 +27,7 @@ export const useCheckoutSubmit = ({
 
   const submitOrder = useCallback(
     async (formData: CheckoutFormValues) => {
-      const payload: CreateOrderPayload = {
-        p_shipping_address: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          country: isShippingRequired ? formData.country : 'N/A',
-          city: isShippingRequired ? formData.city : 'N/A',
-          street: isShippingRequired ? formData.street : 'N/A',
-          housenumber: isShippingRequired ? formData.housenumber : 'N/A',
-          postcode: isShippingRequired ? formData.postcode : 'N/A',
-        },
-        p_payment_method_id: formData.paymentMethodId,
-        p_delivery_method_id: formData.deliveryMethodId,
-        p_items: checkoutItems.map((item) => ({
-          product_id: item.productId,
-          size_id: item.sizeId,
-          quantity: item.quantity,
-        })),
-      };
+      const payload = buildCreateOrderPayload(formData, checkoutItems, isShippingRequired);
 
       try {
         const { order_number: orderId } = await createOrder(payload).unwrap();

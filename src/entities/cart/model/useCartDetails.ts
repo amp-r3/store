@@ -11,7 +11,7 @@ import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
 import { calculateCartTotals } from '../lib/cartHelper';
 import { selectIsAuth } from '@/entities/session';
-import { useGetDeliveryMethodsQuery } from '@/entities/order';
+import { useGetDeliveryMethodsQuery, pickFreeShippingThreshold } from '@/entities/order';
 
 interface CartDetailsReturn {
   cartDetails: (CartItem | null)[];
@@ -45,10 +45,7 @@ export const useCartDetails = (isOpen: boolean = true): CartDetailsReturn => {
     isError: isDeliveryError,
   } = useGetDeliveryMethodsQuery();
 
-  const freeShippingThreshold =
-    deliveryMethods?.find(
-      (method) => method && method.freeFromPrice !== null && method.freeFromPrice > 0,
-    )?.freeFromPrice ?? null;
+  const freeShippingThreshold = pickFreeShippingThreshold(deliveryMethods);
 
   const unifiedCartItems = useMemo(() => {
     if (isAuth && data) {

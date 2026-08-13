@@ -14,3 +14,4 @@ export * from './hooks';
 export * from './storage';
 export * from './getModalRoot';
 export * from './routeProgress';
+export * from './isRangeError';

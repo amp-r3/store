@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { isRangeError } from '../isRangeError';
 
 export function usePaginationBounds(
   currentPage: number,
@@ -8,13 +9,7 @@ export function usePaginationBounds(
   error?: unknown,
 ) {
   useEffect(() => {
-    const isRangeError =
-      error &&
-      typeof error === 'object' &&
-      'status' in error &&
-      (error.status === 'PGRST103' || error.status === 416);
-
-    if (isRangeError) {
+    if (isRangeError(error)) {
       setPage(1);
       return;
     }

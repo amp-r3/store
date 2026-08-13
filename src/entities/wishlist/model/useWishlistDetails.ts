@@ -2,8 +2,10 @@ import { useMemo } from 'react';
 import { Product } from '@/entities/product';
 import { useAppSelector } from '@/shared/model';
 import { useProductsByIds } from '@/entities/product';
-import { WishlistData, useGetWishlistQuery, selectFavoritesArray } from '@/entities/wishlist';
 import { selectIsAuth } from '@/entities/session';
+import { WishlistData, selectFavoritesArray } from './wishlistSelectors';
+import { useGetWishlistQuery } from '../api/wishlistApi';
+import { unifyWishlist } from '../lib/unifyWishlist';
 
 interface WishlistDetailsReturn {
   wishlistDetails: Product[];
@@ -26,14 +28,10 @@ export const useWishlistDetails = (): WishlistDetailsReturn => {
     isFetching: isWishlistFetching,
   } = useGetWishlistQuery(undefined, { skip: !isAuth });
 
-  const unifiedWishlistItems = useMemo(() => {
-    if (isAuth && data) {
-      return (Object.entries(data) as [string, boolean][]).map(([id]) => ({
-        id: Number(id),
-      }));
-    }
-    return localWishlistItems;
-  }, [isAuth, data, localWishlistItems]);
+  const unifiedWishlistItems = useMemo(
+    () => unifyWishlist(isAuth, data, localWishlistItems),
+    [isAuth, data, localWishlistItems],
+  );
 
   const productIds = useMemo(
     () => unifiedWishlistItems.map((item) => item.id),

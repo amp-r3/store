@@ -6,10 +6,10 @@ import {
   getItemsToRender,
   useGetCategoriesQuery,
   useGetProductsQuery,
-  type ProductParams,
   type ProductsResponse,
   type Categories,
 } from '@/entities/product';
+import { buildProductParams, computeShouldSkip, deriveCatalogStatus } from './catalogDerivation';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -49,29 +49,27 @@ export function useProductCatalog(
     setLastKnownTotal(null);
   }, [filterKey]);
 
-  const params = useMemo(() => {
-    const p: ProductParams = { page: filters.page };
-    if (query) p.search = query;
-    if (filters.activeSortOption) {
-      p.sortBy = filters.activeSortOption.sortBy;
-      p.order = filters.activeSortOption.order;
-    }
-    if (categoryId !== 'all' && categoryName) p.category = categoryName;
-    if (filters.isDealsActive) p.deals = true;
+  const params = useMemo(
+    () =>
+      buildProductParams({
+        page: filters.page,
+        query,
+        sortOption: filters.activeSortOption,
+        categorySlug: categoryId,
+        categoryName,
+        deals: filters.isDealsActive,
+      }),
+    [
+      filters.page,
+      query,
+      filters.activeSortOption,
+      categoryId,
+      categoryName,
+      filters.isDealsActive,
+    ],
+  );
 
-    return p;
-  }, [
-    filters.page,
-    query,
-    filters.activeSortOption,
-    categoryId,
-    categoryName,
-    filters.isDealsActive,
-  ]);
-
-  const totalPages = lastKnownTotal !== null ? Math.ceil(lastKnownTotal / ITEMS_PER_PAGE) : null;
-  const shouldSkip =
-    lastKnownTotal !== null && totalPages !== null && totalPages > 0 && filters.page > totalPages;
+  const shouldSkip = computeShouldSkip(filters.page, lastKnownTotal, ITEMS_PER_PAGE);
 
   const {
     data: productsQueryData,
@@ -92,18 +90,14 @@ export function useProductCatalog(
 
   usePaginationBounds(filters.page, totalItems, ITEMS_PER_PAGE, filters.setPage, productsError);
 
-  const isOutOfBoundsError =
-    productsError &&
-    typeof productsError === 'object' &&
-    'status' in productsError &&
-    (productsError.status === 416 || productsError.status === 'PGRST103');
-
-  const displayLoading =
-    (productsQueryLoading && !productsResponse) || isOutOfBoundsError || shouldSkip;
-  const displayFetching = productsFetching || isOutOfBoundsError || shouldSkip;
-  const displayError = isOutOfBoundsError ? null : productsError;
-
-  const isEmpty = Boolean(!displayLoading && !displayError && productsResponse && totalItems === 0);
+  const { displayLoading, displayFetching, displayError, isEmpty } = deriveCatalogStatus({
+    isLoading: productsQueryLoading,
+    isFetching: productsFetching,
+    error: productsError,
+    response: productsResponse,
+    totalItems,
+    shouldSkip,
+  });
 
   const itemsToRender = useMemo(
     () => getItemsToRender(productsResponse, !!displayLoading, ITEMS_PER_PAGE),
